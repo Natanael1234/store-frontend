@@ -70,6 +70,8 @@ export class RegisterComponent {
   protected error?: string;
   protected loading: boolean = false;
 
+  private submitted = false;
+
   maxPasswordLength = PasswordConstants.MAX_LENGTH;
   maxEmailLength = EmailConstants.MAX_LENGTH;
   maxUsernameLength = UserConfigs.NAME_MAX_LENGTH;
@@ -131,6 +133,7 @@ export class RegisterComponent {
   });
 
   protected submit() {
+    this.submitted = true;
     this.form.updateValueAndValidity();
     if (!this.form.valid) {
       return;
@@ -286,6 +289,14 @@ export class RegisterComponent {
       return this.repeatPasswordRemoteValidationContext.remoteError;
     }
     return '';
+  }
+
+  protected get acceptTermsHasError() {
+    const acceptTerms = this.form.controls.acceptTerms;
+    return (
+      acceptTerms.hasError('required') &&
+      (!acceptTerms.pristine || this.submitted)
+    );
   }
 
   protected togglePasswordVisibility(event: Event) {

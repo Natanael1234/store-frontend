@@ -4,10 +4,11 @@ import { AuthService } from './auth.service';
 import { HttpService } from '../http/http.service';
 import { RegisterRequestDto } from './dtos/register.request.dto';
 import { of, throwError } from 'rxjs';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AuthResponseDto } from './dtos/auth.response.dto';
 import { Role } from '../user/role/role.enum';
 import { TokenService } from '../token/token.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AuthService', () => {
   let httpServiceStub: Partial<HttpService>;
@@ -65,12 +66,14 @@ describe('AuthService', () => {
     };
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         { provide: HttpService, useValue: httpServiceStub },
         { provide: TokenService, useValue: tokenServiceStub },
-      ],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
 
     authService = TestBed.inject(AuthService);
   });

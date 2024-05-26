@@ -89,22 +89,16 @@
   <!-- accept terms -->
   <mat-checkbox
     id="accept-terms-checkbox"
-    appearance="outline"
-    class="red-text"
+    color="basic"
+    [classList]="[acceptTermsHasError ? 'invalid' : '']"
     formControlName="acceptTerms"
     >Aceito os Termos de Serviço *
   </mat-checkbox>
 
-  <button
-    id="submit"
-    type="submit"
-    color="accent"
-    mat-raised-button
-    [disabled]="loading"
-  >
+  <button mat-flat-button id="submit" type="submit" [disabled]="loading">
     Registrar
   </button>
-  <button id="login" type="button" mat-raised-button [disabled]="loading">
+  <button mat-stroked-button id="login" type="button" [disabled]="loading">
     Já tem uma conta? <b>Login</b>
   </button>
 </form>
