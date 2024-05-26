@@ -1,0 +1,111 @@
+<form [formGroup]="form" (submit)="submit()">
+  <!-- main error -->
+  @if (loading) {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+
+  } @if (error) {
+  <app-alert
+    [showCloseButton]="true"
+    type="danger"
+    icon="warning"
+    (onClose)="error = undefined"
+  >
+    {{ error }}
+  </app-alert>
+
+  }
+
+  <!-- name -->
+  <mat-form-field id="name-field" appearance="outline">
+    <mat-label>Nome</mat-label>
+    <input
+      id="name-input"
+      formControlName="name"
+      matInput
+      type="text"
+      autoComplete="off"
+      [maxlength]="maxUsernameLength"
+    />
+    <mat-error id="name-error"> {{ getNameErrorMessage() }}</mat-error>
+  </mat-form-field>
+
+  <!-- email -->
+  <mat-form-field id="email-field" appearance="outline">
+    <mat-label>Email</mat-label>
+    <input
+      id="email-input"
+      formControlName="email"
+      matInput
+      type="email"
+      autoComplete="off"
+      [maxlength]="maxEmailLength"
+    />
+    <mat-error id="email-error">{{ getEmailErrorMessage() }}</mat-error>
+  </mat-form-field>
+
+  <!-- password -->
+  <mat-form-field id="password-field" appearance="outline">
+    <mat-label>Senha</mat-label>
+    <input
+      id="password-input"
+      formControlName="password"
+      matInput
+      [type]="showPassword ? 'text' : 'password'"
+      autoComplete="off"
+      [maxlength]="maxPasswordLength"
+      class="material-icons-outlined"
+    />
+    <mat-icon
+      id="email-error"
+      matSuffix
+      (click)="togglePasswordVisibility($event)"
+      >{{ showPassword ? "visibility" : "visibility_off" }}</mat-icon
+    >
+
+    <mat-error id="password-error">{{ getPasswordErrorMessage() }}</mat-error>
+  </mat-form-field>
+
+  <!-- repeat password -->
+  <mat-form-field id="repeat-password-field" appearance="outline">
+    <mat-label>Repita a Senha</mat-label>
+    <input
+      id="repeat-password-input"
+      formControlName="repeatPassword"
+      matInput
+      [type]="showRepeatPassword ? 'text' : 'password'"
+      autoComplete="off"
+      [maxlength]="maxPasswordLength"
+      class="material-icons-outlined"
+    />
+    <mat-icon matSuffix (click)="toggleRepeatPasswordVisibility($event)">{{
+      showRepeatPassword ? "visibility" : "visibility_off"
+    }}</mat-icon>
+
+    <mat-error id="repeat-password-error">{{
+      getRepeatPasswordErrorMessage()
+    }}</mat-error>
+  </mat-form-field>
+
+  <!-- accept terms -->
+  <mat-checkbox
+    id="accept-terms-checkbox"
+    appearance="outline"
+    class="red-text"
+    formControlName="acceptTerms"
+    >Aceito os Termos de Serviço *
+  </mat-checkbox>
+
+  <button
+    id="submit"
+    type="submit"
+    color="accent"
+    mat-raised-button
+    [disabled]="loading"
+  >
+    Registrar
+  </button>
+  <button id="login" type="button" mat-raised-button [disabled]="loading">
+    Já tem uma conta? <b>Login</b>
+  </button>
+</form>
+''
