@@ -3,18 +3,17 @@
   @if (loading) {
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 
-  } @if (error) {
+  } @if (mainError) {
   <app-alert
     [showCloseButton]="true"
     type="danger"
     icon="warning"
-    (onClose)="error = undefined"
+    (onClose)="mainError = undefined"
   >
-    {{ error }}
+    {{ mainError }}
   </app-alert>
 
   }
-
   <!-- name -->
   <mat-form-field id="name-field" appearance="outline">
     <mat-label>Nome</mat-label>

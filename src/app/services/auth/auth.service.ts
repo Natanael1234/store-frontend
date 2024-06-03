@@ -4,6 +4,7 @@ import { RegisterRequestDto } from './dtos/register.request.dto';
 import { HttpService } from '../http/http.service';
 import { AuthResponseDto } from './dtos/auth.response.dto';
 import { TokenService } from '../token/token.service';
+import { HttpStatusCode } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,7 @@ export class AuthService {
     const registerObservable = new Observable(
       (observer: Subscriber<AuthResponseDto>) => {
         const postObservable = this.httpService.post(
-          '/authentication/register',
+          'authentication/register',
           data
         );
 
@@ -31,7 +32,17 @@ export class AuthService {
             observer.next(response);
           },
           error: (error: any) => {
-            observer.error(error.message);
+            if (error.status == 0) {
+              observer.error('Falha na requisição.'); // TODO: extrair texto
+            } else if (
+              error.error?.statusCode == HttpStatusCode.UnprocessableEntity
+            ) {
+              observer.error(error);
+            } else if (error.error?.statusCode && error.error.message) {
+              observer.error(error);
+            } else {
+              observer.error(error.message);
+            }
           },
           complete: () => {
             observer.complete();

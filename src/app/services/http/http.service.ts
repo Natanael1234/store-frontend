@@ -15,6 +15,10 @@ export class HttpService {
       throw new Error('Missing request path');
     }
     path.replace(/^\//, '');
-    return this.http.post<T>(`${this.apiUrl}/${path}`, data);
+    if (path.startsWith('/')) {
+      path = path.substring(1);
+    }
+    const url = `${this.apiUrl}/${path}`;
+    return this.http.post<T>(url, data);
   }
 }

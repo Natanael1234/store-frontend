@@ -67,7 +67,7 @@ export class RegisterComponent {
   private router: Router = inject(Router);
 
   protected data?: any;
-  protected error?: string;
+  protected mainError?: string;
   protected loading: boolean = false;
 
   private submitted = false;
@@ -126,7 +126,7 @@ export class RegisterComponent {
     acceptTerms: new FormControl(false, {
       validators: [
         Validators.requiredTrue,
-        remoteValidator(this.passwordRemoteValidationContext),
+        remoteValidator(this.acceptTermsRemoteValidationContext),
       ],
       updateOn: 'change',
     }),
@@ -135,16 +135,22 @@ export class RegisterComponent {
   protected submit() {
     this.submitted = true;
     this.form.updateValueAndValidity();
-    if (!this.form.valid) {
-      return;
-    }
+
     const data = this.form.getRawValue() as RegisterRequestDto;
-    this.error = undefined;
+    this.mainError = undefined;
 
     this.loading = true;
     this.form.disable();
 
     const observable = this.authService.register(data);
+
+    this.nameRemoteValidationContext.remoteError = undefined;
+    this.emailRemoteValidationContext.remoteError = undefined;
+    this.passwordRemoteValidationContext.remoteError = undefined;
+    this.repeatPasswordRemoteValidationContext.remoteError = undefined;
+    this.acceptTermsRemoteValidationContext.remoteError = undefined;
+    this.form.controls.acceptTerms.markAllAsTouched();
+    this.form.updateValueAndValidity();
 
     observable.subscribe({
       next: (authResponse: AuthResponseDto) => {
@@ -152,57 +158,50 @@ export class RegisterComponent {
       },
       error: (error: any) => {
         this.loading = false;
-        this.setRemoteErrors(error);
+        if (typeof error == 'string') {
+          this.mainError = error;
+        } else if (typeof error.error?.message == 'string') {
+          this.mainError = error.error.message;
+        } else {
+          // name
+          if (error.error?.message?.name) {
+            this.nameRemoteValidationContext.remoteError =
+              error.error?.message.name;
+          }
+          // email
+          if (error.error?.message?.email) {
+            this.emailRemoteValidationContext.remoteError =
+              error.error?.message.email;
+          }
+          // password
+          if (error.error?.message?.password) {
+            this.passwordRemoteValidationContext.remoteError =
+              error.error?.message.password;
+          }
+          // repeat password
+          if (error.error?.message?.repeatPassword) {
+            this.repeatPasswordRemoteValidationContext.remoteError =
+              error.error?.message.repeatPassword;
+          }
+          // accept terms
+          if (error.error?.message?.acceptTerms) {
+            this.acceptTermsRemoteValidationContext.remoteError =
+              error.error?.message.acceptTerms;
+          }
+          this.mainError = undefined;
+          this.form.updateValueAndValidity();
+          this.form.markAllAsTouched();
+        }
+
         this.form.enable();
       },
       complete: () => {
-        this.error = undefined;
+        this.mainError = undefined;
         this.loading = false;
         this.form.reset();
         this.router.navigate(['/login']);
       },
     });
-  }
-
-  protected setRemoteErrors(error: any) {
-    this.nameRemoteValidationContext.remoteError = undefined;
-    this.emailRemoteValidationContext.remoteError = undefined;
-    this.passwordRemoteValidationContext.remoteError = undefined;
-    this.repeatPasswordRemoteValidationContext.remoteError = undefined;
-    this.acceptTermsRemoteValidationContext.remoteError = undefined;
-
-    if (typeof error.error?.message == 'string') {
-      this.error = error.error.message;
-    } else {
-      // name
-      if (error.error?.message?.name) {
-        this.nameRemoteValidationContext.remoteError =
-          error.error?.message.name;
-      }
-      // email
-      if (error.error?.message?.email) {
-        this.emailRemoteValidationContext.remoteError =
-          error.error?.message.email;
-      }
-      // password
-      if (error.error?.message?.password) {
-        this.passwordRemoteValidationContext.remoteError =
-          error.error?.message.password;
-      }
-      // repeat password
-      if (error.error?.message?.repeatPassword) {
-        this.repeatPasswordRemoteValidationContext.remoteError =
-          error.error?.message.repeatPassword;
-      }
-      // accept terms
-      if (error.error?.message?.acceptTerms) {
-        this.acceptTermsRemoteValidationContext.remoteError =
-          error.error?.message.acceptTerms;
-      }
-      this.error = undefined;
-      this.form.updateValueAndValidity();
-      this.form.markAllAsTouched();
-    }
   }
 
   protected getNameErrorMessage() {
@@ -294,7 +293,7 @@ export class RegisterComponent {
   protected get acceptTermsHasError() {
     const acceptTerms = this.form.controls.acceptTerms;
     return (
-      acceptTerms.hasError('required') &&
+      (acceptTerms.hasError('required') || acceptTerms.hasError('remote')) &&
       (!acceptTerms.pristine || this.submitted)
     );
   }
