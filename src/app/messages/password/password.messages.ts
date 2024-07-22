@@ -1,8 +1,8 @@
 import { TextMessage } from '../text/text.messages';
 
 export class PasswordMessage extends TextMessage {
-  STRONG?: String;
-  DONT_MATCHES?: String;
+  STRONG?: string;
+  DONT_MATCHES?: string;
 
   constructor(options?: { minLength?: number; maxLength?: number }) {
     super(options);

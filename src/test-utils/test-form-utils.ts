@@ -50,6 +50,7 @@ export function testCheckbox(
   options: {
     label: string;
     checked: boolean;
+    error?: boolean;
   }
 ) {
   expect(checkbox?.tagName).toEqual('MAT-CHECKBOX');
@@ -73,14 +74,31 @@ export function testCheckbox(
 
   expect(input.type).toEqual('checkbox');
   expect(input.checked).toEqual(options.checked);
+
+  if (options.error === true) {
+    expect(input.classList).toContain('invalid');
+  } else if (options.error === false) {
+    expect(input.classList).not.toContain('invalid');
+  }
 }
 
 export function testButton(
   button: HTMLButtonElement,
   options: {
+    id: string;
     label: string;
     type: 'reset' | 'submit' | 'button';
-    color?: 'accent' | 'primary' | null;
+    color: 'accent' | 'primary' | 'warn' | null;
+    style?:
+      | 'basic'
+      | 'raised'
+      | 'stroked'
+      | 'flat'
+      | 'icon'
+      | 'fab'
+      | 'mini-fab'
+      | null;
+    disabled?: boolean | null;
   }
 ) {
   expect(button).toBeInstanceOf(HTMLButtonElement);
@@ -92,5 +110,37 @@ export function testButton(
 
   if (options.type !== null) {
     expect(button.type).toEqual(options.type);
+  }
+
+  if (options.id != null) {
+    expect(button.id).toEqual(options.id);
+  }
+
+  switch (options.style) {
+    case null:
+    case undefined:
+    case 'basic':
+      expect(button.hasAttribute('mat-button')).toBeTrue();
+      break;
+    case 'raised':
+      expect(button.hasAttribute('mat-raised-button')).toBeTrue();
+      break;
+    case 'stroked':
+      expect(button.hasAttribute('mat-stroked-button')).toBeTrue();
+      break;
+    case 'flat':
+      expect(button.hasAttribute('mat-flat-button')).toBeTrue();
+      break;
+    case 'icon':
+      expect(button.hasAttribute('mat-icon-button')).toBeTrue();
+      break;
+    case 'fab':
+      expect(button.hasAttribute('mat-fab-button')).toBeTrue();
+      break;
+    case 'mini-fab':
+      expect(button.hasAttribute('mat-mini-fab-button')).toBeTrue();
+      break;
+    default:
+      break;
   }
 }

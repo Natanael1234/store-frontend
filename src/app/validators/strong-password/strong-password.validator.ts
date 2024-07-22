@@ -6,13 +6,18 @@ export function strongPasswordValidator(): ValidatorFn {
     const password: string = control.value;
 
     if (!password) {
-      return null;
+      return { required: true };
     }
 
     // min length
-    // if (password.length < PasswordConstants.MIN_LENGTH) {
-    //   return { weakPassword: true };
-    // }
+    if (password.length < PasswordConstants.MIN_LENGTH) {
+      return { minlength: true };
+    }
+
+    // max length
+    if (password.length > PasswordConstants.MAX_LENGTH) {
+      return { maxlength: true };
+    }
 
     // lowercase letter
     if (!/[a-z]/.test(password)) {
@@ -32,6 +37,10 @@ export function strongPasswordValidator(): ValidatorFn {
     // special character
     if (!/[!@#$%^&*()\-_+=]/.test(password)) {
       return { weakPassword: true };
+    }
+
+    if (/\s/.test(password)) {
+      return { invalidPassword: true };
     }
 
     return null;

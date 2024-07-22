@@ -7,20 +7,21 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import {
+  EmailValidator,
   FormControl,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
 import { RegisterRequestDto } from '../../services/auth/dtos/register.request.dto';
-import { PasswordConstants } from '../../constants/password/password.constants';
 import { EmailConstants } from '../../constants/email/email.constants';
 import { strongPasswordValidator } from '../../validators/strong-password/strong-password.validator';
 import { matchingFieldsValidator } from '../../validators/matching-password/matching-password.validator';
 import { PasswordMessage } from '../../messages/password/password.messages';
 import { TextMessage } from '../../messages/text/text.messages';
-import { EmailMessage } from '../../messages/email/ermail.messages';
+import { EmailMessage } from '../../messages/email/email.messages';
 import { AlertComponent } from '../../components/alert/alert.component';
 import { Router } from '@angular/router';
 import { AuthResponseDto } from '../../services/auth/dtos/auth.response.dto';
@@ -29,6 +30,8 @@ import {
   RemoteValidationContext,
   remoteValidator,
 } from '../../validators/remote/remote.validator';
+import { emailValidator } from '../../validators/email/email.validator';
+import { nameValidator } from '../../validators/name/name.validator';
 
 const _NameMessage = new TextMessage({
   minLength: UserConfigs.NAME_MIN_LENGTH,
@@ -36,19 +39,19 @@ const _NameMessage = new TextMessage({
 });
 
 const _EmailMessage = new EmailMessage({
-  minLength: PasswordConstants.MIN_LENGTH,
-  maxLength: PasswordConstants.MAX_LENGTH,
+  maxLength: EmailConstants.MAX_LENGTH,
 });
 
 const _PasswordMessage = new PasswordMessage({
-  minLength: PasswordConstants.MIN_LENGTH,
-  maxLength: PasswordConstants.MAX_LENGTH,
+  minLength: UserConfigs.PASSWORD_MIN_LENGTH,
+  maxLength: UserConfigs.PASSWORD_MAX_LENGTH,
 });
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [
+    FormsModule,
     ReactiveFormsModule,
     MatIconModule,
     MatInputModule,
@@ -72,7 +75,7 @@ export class RegisterComponent {
 
   private submitted = false;
 
-  maxPasswordLength = PasswordConstants.MAX_LENGTH;
+  maxPasswordLength = UserConfigs.PASSWORD_MAX_LENGTH;
   maxEmailLength = EmailConstants.MAX_LENGTH;
   maxUsernameLength = UserConfigs.NAME_MAX_LENGTH;
 
@@ -88,18 +91,19 @@ export class RegisterComponent {
   form = new FormGroup({
     name: new FormControl('', {
       validators: [
-        Validators.required,
-        Validators.minLength(UserConfigs.NAME_MIN_LENGTH),
-        Validators.maxLength(UserConfigs.NAME_MAX_LENGTH),
+        nameValidator({
+          required: true,
+          minlength: UserConfigs.NAME_MIN_LENGTH,
+          maxlength: UserConfigs.NAME_MAX_LENGTH,
+        }),
         remoteValidator(this.nameRemoteValidationContext),
       ],
       updateOn: 'change',
     }),
     email: new FormControl('', {
       validators: [
-        Validators.required,
-        Validators.email,
-        Validators.maxLength(EmailConstants.MAX_LENGTH),
+        Validators.required, // mover para o validador
+        emailValidator(),
         remoteValidator(this.emailRemoteValidationContext),
       ],
       updateOn: 'change',
@@ -107,8 +111,8 @@ export class RegisterComponent {
     password: new FormControl('', {
       validators: [
         Validators.required,
-        Validators.minLength(PasswordConstants.MIN_LENGTH),
-        Validators.maxLength(PasswordConstants.MAX_LENGTH),
+        Validators.minLength(UserConfigs.PASSWORD_MIN_LENGTH),
+        Validators.maxLength(UserConfigs.PASSWORD_MAX_LENGTH),
         strongPasswordValidator(),
         remoteValidator(this.passwordRemoteValidationContext),
       ],
@@ -117,7 +121,7 @@ export class RegisterComponent {
     repeatPassword: new FormControl('', {
       validators: [
         Validators.required,
-        Validators.maxLength(PasswordConstants.MAX_LENGTH),
+        Validators.maxLength(UserConfigs.PASSWORD_MAX_LENGTH),
         matchingFieldsValidator('password'),
         remoteValidator(this.repeatPasswordRemoteValidationContext),
       ],
@@ -132,8 +136,11 @@ export class RegisterComponent {
     }),
   });
 
-  protected submit() {
+  protected onSubmit() {
     this.submitted = true;
+    if (!this.form.valid) {
+      return;
+    }
     this.form.updateValueAndValidity();
 
     const data = this.form.getRawValue() as RegisterRequestDto;
@@ -213,7 +220,7 @@ export class RegisterComponent {
     if (nameFormControl.hasError('required')) {
       return _NameMessage.REQUIRED;
     }
-    if (nameFormControl.hasError('invalid')) {
+    if (nameFormControl.hasError('name')) {
       return _NameMessage.INVALID;
     }
     if (nameFormControl.hasError('minlength')) {
@@ -239,10 +246,10 @@ export class RegisterComponent {
     if (emailFormControl.hasError('email')) {
       return _EmailMessage.INVALID;
     }
-    if (emailFormControl.hasError('minLength')) {
+    if (emailFormControl.hasError('minlength')) {
       return _EmailMessage.MIN_LEN;
     }
-    if (emailFormControl.hasError('maxLength')) {
+    if (emailFormControl.hasError('maxlength')) {
       return _EmailMessage.MAX_LEN;
     }
     if (emailFormControl.hasError('remote')) {
@@ -267,8 +274,11 @@ export class RegisterComponent {
     if (passwordFormControl.hasError('minlength')) {
       return _PasswordMessage.MIN_LEN;
     }
-    if (passwordFormControl.hasError('maxLength')) {
+    if (passwordFormControl.hasError('maxlength')) {
       return _PasswordMessage.MAX_LEN;
+    }
+    if (passwordFormControl.hasError('invalidPassword')) {
+      return _PasswordMessage.INVALID;
     }
     if (passwordFormControl.hasError('remote')) {
       return this.passwordRemoteValidationContext.remoteError;
@@ -283,6 +293,9 @@ export class RegisterComponent {
     }
     if (repeatPasswordFormControl.hasError('matchingFields')) {
       return _PasswordMessage.DONT_MATCHES;
+    }
+    if (repeatPasswordFormControl.hasError('maxlength')) {
+      return _PasswordMessage.MAX_LEN;
     }
     if (repeatPasswordFormControl.hasError('remote')) {
       return this.repeatPasswordRemoteValidationContext.remoteError;

@@ -1,4 +1,4 @@
-<form [formGroup]="form" (submit)="submit()">
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
   <!-- main error -->
   @if (loading) {
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
@@ -94,9 +94,12 @@
     >Aceito os Termos de Serviço *
   </mat-checkbox>
 
-  <button mat-flat-button id="submit" type="submit" [disabled]="loading">
+  <!-- login -->
+  <button mat-flat-button id="register" type="submit" [disabled]="loading">
     Registrar
   </button>
+
+  <!-- register -->
   <button mat-stroked-button id="login" type="button" [disabled]="loading">
     Já tem uma conta? <b>Login</b>
   </button>
