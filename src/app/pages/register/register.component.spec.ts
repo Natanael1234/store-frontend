@@ -11,21 +11,21 @@ import { of, throwError } from 'rxjs';
 import { HttpStatusCode } from '@angular/common/http';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
-import { RegisterComponent } from '../register.component';
-import { AuthService } from '../../../services/auth/auth.service';
-import { LoginComponent } from '../../login/login.component';
-import { AlertComponent } from '../../../components/alert/alert.component';
+import { RegisterComponent } from './register.component';
+import { AuthService } from '../../services/auth/auth.service';
+import { LoginComponent } from '../login/login.component';
+import { AlertComponent } from '../../components/alert/alert.component';
 import {
   testButton,
   testCheckbox,
   testForm,
   testFormField,
-} from '../../../../test-utils/test-form-utils';
-import { UserConfigs } from '../../../configs/user/user.configs';
-import { EmailConstants } from '../../../constants/email/email.constants';
-import { TextMessage } from '../../../messages/text/text.messages';
-import { PasswordMessage } from '../../../messages/password/password.messages';
-import { Role } from '../../../services/user/role/role.enum';
+} from '../../../test-utils/test-form-utils';
+import { UserConfigs } from '../../configs/user/user.configs';
+import { EmailConstants } from '../../constants/email/email.constants';
+import { TextMessage } from '../../messages/text/text.messages';
+import { PasswordMessage } from '../../messages/password/password.messages';
+import { Role } from '../../services/user/role/role.enum';
 import { Router } from '@angular/router';
 
 type FormData = {
