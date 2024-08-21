@@ -24,6 +24,8 @@
       type="text"
       autoComplete="off"
       [maxlength]="maxUsernameLength"
+      autofocus
+      autocomplete="off"
     />
     <mat-error id="name-error"> {{ getNameErrorMessage() }}</mat-error>
   </mat-form-field>
@@ -53,6 +55,8 @@
       autoComplete="off"
       [maxlength]="maxPasswordLength"
       class="material-icons-outlined"
+      autocomplete="new-password"
+      (blur)="onPasswordBlur($event)"
     />
     <mat-icon
       id="email-error"
@@ -72,9 +76,10 @@
       formControlName="repeatPassword"
       matInput
       [type]="showRepeatPassword ? 'text' : 'password'"
-      autoComplete="off"
       [maxlength]="maxPasswordLength"
       class="material-icons-outlined"
+      autocomplete="off"
+      autoComplete="new-password"
     />
     <mat-icon matSuffix (click)="toggleRepeatPasswordVisibility($event)">{{
       showRepeatPassword ? "visibility" : "visibility_off"
@@ -91,6 +96,8 @@
     color="basic"
     [classList]="[acceptTermsHasError ? 'invalid' : '']"
     formControlName="acceptTerms"
+    (focus)="acceptTermsBlurred = false"
+    (blur)="acceptTermsBlurred = true"
     >Aceito os Termos de Serviço *
   </mat-checkbox>
 

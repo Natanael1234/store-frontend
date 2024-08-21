@@ -12,6 +12,7 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
@@ -32,6 +33,7 @@ import {
 } from '../../validators/remote/remote.validator';
 import { emailValidator } from '../../validators/email/email.validator';
 import { nameValidator } from '../../validators/name/name.validator';
+import { debounceTime, tap } from 'rxjs';
 
 const _NameMessage = new TextMessage({
   minLength: UserConfigs.NAME_MIN_LENGTH,
@@ -75,66 +77,88 @@ export class RegisterComponent {
 
   private submitted = false;
 
-  maxPasswordLength = UserConfigs.PASSWORD_MAX_LENGTH;
-  maxEmailLength = EmailConstants.MAX_LENGTH;
-  maxUsernameLength = UserConfigs.NAME_MAX_LENGTH;
+  protected maxPasswordLength = UserConfigs.PASSWORD_MAX_LENGTH;
+  protected maxEmailLength = EmailConstants.MAX_LENGTH;
+  protected maxUsernameLength = UserConfigs.NAME_MAX_LENGTH;
 
-  showPassword: boolean = false;
-  showRepeatPassword: boolean = false;
+  protected showPassword: boolean = false;
+  protected showRepeatPassword: boolean = false;
 
-  nameRemoteValidationContext: RemoteValidationContext = {};
-  emailRemoteValidationContext: RemoteValidationContext = {};
-  passwordRemoteValidationContext: RemoteValidationContext = {};
-  repeatPasswordRemoteValidationContext: RemoteValidationContext = {};
-  acceptTermsRemoteValidationContext: RemoteValidationContext = {};
+  protected acceptTermsBlurred = false;
+
+  protected nameRemoteValidationContext: RemoteValidationContext = {};
+  protected emailRemoteValidationContext: RemoteValidationContext = {};
+  protected passwordRemoteValidationContext: RemoteValidationContext = {};
+  protected repeatPasswordRemoteValidationContext: RemoteValidationContext = {};
+  protected acceptTermsRemoteValidationContext: RemoteValidationContext = {};
 
   form = new FormGroup({
     name: new FormControl('', {
-      validators: [
-        nameValidator({
-          required: true,
-          minlength: UserConfigs.NAME_MIN_LENGTH,
-          maxlength: UserConfigs.NAME_MAX_LENGTH,
-        }),
-        remoteValidator(this.nameRemoteValidationContext),
-      ],
-      updateOn: 'change',
+      validators: this.nameValidators,
+      updateOn: 'blur',
     }),
     email: new FormControl('', {
-      validators: [
-        Validators.required, // mover para o validador
-        emailValidator(),
-        remoteValidator(this.emailRemoteValidationContext),
-      ],
-      updateOn: 'change',
+      validators: this.emailValidators,
+      updateOn: 'blur',
     }),
     password: new FormControl('', {
-      validators: [
-        Validators.required,
-        Validators.minLength(UserConfigs.PASSWORD_MIN_LENGTH),
-        Validators.maxLength(UserConfigs.PASSWORD_MAX_LENGTH),
-        strongPasswordValidator(),
-        remoteValidator(this.passwordRemoteValidationContext),
-      ],
-      updateOn: 'change',
+      validators: this.passwordValidators,
+      updateOn: 'blur',
     }),
     repeatPassword: new FormControl('', {
-      validators: [
-        Validators.required,
-        Validators.maxLength(UserConfigs.PASSWORD_MAX_LENGTH),
-        matchingFieldsValidator('password'),
-        remoteValidator(this.repeatPasswordRemoteValidationContext),
-      ],
-      updateOn: 'change',
+      validators: this.repeatPasswordValidators,
+      updateOn: 'blur',
     }),
     acceptTerms: new FormControl(false, {
-      validators: [
-        Validators.requiredTrue,
-        remoteValidator(this.acceptTermsRemoteValidationContext),
-      ],
-      updateOn: 'change',
+      validators: this.acceptTermsValidator,
+      updateOn: 'blur',
     }),
   });
+
+  protected get nameValidators() {
+    return [
+      nameValidator({
+        required: true,
+        minlength: UserConfigs.NAME_MIN_LENGTH,
+        maxlength: UserConfigs.NAME_MAX_LENGTH,
+      }),
+      remoteValidator(this.nameRemoteValidationContext),
+    ];
+  }
+
+  protected get emailValidators() {
+    return [
+      Validators.required, // mover para o validador
+      emailValidator(),
+      remoteValidator(this.emailRemoteValidationContext),
+    ];
+  }
+
+  protected get passwordValidators() {
+    return [
+      Validators.required,
+      Validators.minLength(UserConfigs.PASSWORD_MIN_LENGTH),
+      Validators.maxLength(UserConfigs.PASSWORD_MAX_LENGTH),
+      strongPasswordValidator(),
+      remoteValidator(this.passwordRemoteValidationContext),
+    ];
+  }
+
+  protected get repeatPasswordValidators() {
+    return [
+      Validators.required,
+      Validators.maxLength(UserConfigs.PASSWORD_MAX_LENGTH),
+      matchingFieldsValidator('password'),
+      remoteValidator(this.repeatPasswordRemoteValidationContext),
+    ];
+  }
+
+  protected get acceptTermsValidator() {
+    return [
+      Validators.requiredTrue,
+      remoteValidator(this.acceptTermsRemoteValidationContext),
+    ];
+  }
 
   protected onSubmit() {
     this.submitted = true;
@@ -214,49 +238,47 @@ export class RegisterComponent {
   protected getNameErrorMessage() {
     const nameFormControl: FormControl = this.form.controls.name;
 
+    let nameError: string | null | undefined = '';
     if (nameFormControl.hasError('null')) {
-      return _NameMessage.NULL;
+      nameError = _NameMessage.NULL;
+    } else if (nameFormControl.hasError('required')) {
+      nameError = _NameMessage.REQUIRED;
+    } else if (nameFormControl.hasError('name')) {
+      nameError = _NameMessage.INVALID;
+    } else if (nameFormControl.hasError('minlength')) {
+      nameError = _NameMessage.MIN_LEN;
+    } else if (nameFormControl.hasError('maxlength')) {
+      nameError = _NameMessage.MAX_LEN;
+    } else if (nameFormControl.hasError('remote')) {
+      nameError = this.nameRemoteValidationContext.remoteError;
     }
-    if (nameFormControl.hasError('required')) {
-      return _NameMessage.REQUIRED;
-    }
-    if (nameFormControl.hasError('name')) {
-      return _NameMessage.INVALID;
-    }
-    if (nameFormControl.hasError('minlength')) {
-      return _NameMessage.MIN_LEN;
-    }
-    if (nameFormControl.hasError('maxlength')) {
-      return _NameMessage.MAX_LEN;
-    }
-    if (nameFormControl.hasError('remote')) {
-      return this.nameRemoteValidationContext.remoteError;
-    }
-    return '';
+    return nameError;
+  }
+
+  protected onPasswordBlur(e: FocusEvent) {
+    this.form.controls.repeatPassword.updateValueAndValidity({
+      emitEvent: false,
+    });
   }
 
   protected getEmailErrorMessage() {
     const emailFormControl = this.form.controls.email;
+    let emailError: string | null | undefined = '';
     if (emailFormControl.hasError('null')) {
-      return _EmailMessage.NULL;
-    }
-    if (emailFormControl.hasError('required')) {
-      return _EmailMessage.REQUIRED;
-    }
-    if (emailFormControl.hasError('email')) {
-      return _EmailMessage.INVALID;
-    }
-    if (emailFormControl.hasError('minlength')) {
-      return _EmailMessage.MIN_LEN;
-    }
-    if (emailFormControl.hasError('maxlength')) {
-      return _EmailMessage.MAX_LEN;
-    }
-    if (emailFormControl.hasError('remote')) {
-      return this.emailRemoteValidationContext.remoteError;
+      emailError = _EmailMessage.NULL;
+    } else if (emailFormControl.hasError('required')) {
+      emailError = _EmailMessage.REQUIRED;
+    } else if (emailFormControl.hasError('email')) {
+      emailError = _EmailMessage.INVALID;
+    } else if (emailFormControl.hasError('minlength')) {
+      emailError = _EmailMessage.MIN_LEN;
+    } else if (emailFormControl.hasError('maxlength')) {
+      emailError = _EmailMessage.MAX_LEN;
+    } else if (emailFormControl.hasError('remote')) {
+      emailError = this.emailRemoteValidationContext.remoteError;
     }
 
-    return '';
+    return emailError;
   }
 
   protected getPasswordErrorMessage() {
@@ -305,10 +327,17 @@ export class RegisterComponent {
 
   protected get acceptTermsHasError() {
     const acceptTerms = this.form.controls.acceptTerms;
-    return (
-      (acceptTerms.hasError('required') || acceptTerms.hasError('remote')) &&
-      (!acceptTerms.pristine || this.submitted)
-    );
+    const required = acceptTerms.hasError('required');
+    const hasError = acceptTerms.hasError('remote');
+    const pristine = acceptTerms.pristine;
+    const submitted = this.submitted;
+
+    const blurred = this.acceptTermsBlurred;
+
+    const showError =
+      (required || hasError) && (!pristine || submitted || blurred);
+
+    return showError;
   }
 
   protected togglePasswordVisibility(event: Event) {

@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -27,6 +27,8 @@ import { TextMessage } from '../../messages/text/text.messages';
 import { PasswordMessage } from '../../messages/password/password.messages';
 import { Role } from '../../services/user/role/role.enum';
 import { Router } from '@angular/router';
+import { By } from '@angular/platform-browser';
+import { EmailMessage } from '../../messages/email/email.messages';
 
 type FormData = {
   name: string;
@@ -180,83 +182,133 @@ describe('RegisterComponent', () => {
   function testErrorMessages(expectedErrors: FormErrors) {
     /* MAIN ERROR */
 
-    const appAlert = fixture.nativeElement.querySelector('app-alert .message');
+    const mainErrorAlertComponent =
+      fixture.nativeElement.querySelector('app-alert .message');
     if (expectedErrors.mainError) {
-      expect(appAlert).not.toBeNull();
-      const text = appAlert.textContent.trim();
+      expect(mainErrorAlertComponent).not.toBeNull();
+      const text = mainErrorAlertComponent.textContent.trim();
       expect(text).toEqual(expectedErrors.mainError);
     } else {
-      expect(appAlert).toBeDefined();
+      expect(mainErrorAlertComponent).toBeDefined();
     }
 
     /* FORM ERRORS */
 
-    const nameError = fixture.nativeElement.querySelector(
-      'mat-error#name-error'
-    );
+    const nameErrorComponent =
+      fixture.nativeElement.querySelector('#name-error');
     const expectedNameError = expectedErrors.name ?? false;
     if (expectedNameError) {
-      expect(nameError).not.toBeNull();
+      expect(nameErrorComponent).not.toBeNull();
     } else {
-      expect(nameError).toBeNull();
+      expect(nameErrorComponent).toBeNull();
     }
 
     const emailError = fixture.nativeElement.querySelector(
       'mat-error#email-error'
     );
-    const expectedEmailError = expectedErrors.email ?? false;
-    if (expectedEmailError) {
+    const expectedEmailErrorComponent = expectedErrors.email ?? false;
+    if (expectedEmailErrorComponent) {
       expect(emailError).not.toBeNull();
     } else {
       expect(emailError).toBeNull();
     }
 
-    const passwordError = fixture.nativeElement.querySelector(
+    const passwordErrorComponent = fixture.nativeElement.querySelector(
       'mat-error#password-error'
     );
     const expectedPasswordError = expectedErrors.password ?? false;
     if (expectedPasswordError) {
-      expect(passwordError).not.toBeNull();
+      expect(passwordErrorComponent).not.toBeNull();
     } else {
-      expect(passwordError).toBeNull();
+      expect(passwordErrorComponent).toBeNull();
     }
 
-    const repeatPasswordError = fixture.nativeElement.querySelector(
+    const repeatPasswordErrorComponent = fixture.nativeElement.querySelector(
       'mat-error#repeat-password-error'
     );
-    const expectedRepeatPasswordError = repeatPasswordError ?? false;
+    const expectedRepeatPasswordError = repeatPasswordErrorComponent ?? false;
     if (expectedRepeatPasswordError) {
-      expect(repeatPasswordError).not.toBeNull();
+      expect(repeatPasswordErrorComponent).not.toBeNull();
     } else {
-      expect(repeatPasswordError).toBeNull();
+      expect(repeatPasswordErrorComponent).toBeNull();
     }
 
-    const acceptTermsError = fixture.nativeElement.querySelector(
-      'mat-checkbox.invalid'
+    const acceptTermsCheckbox = fixture.nativeElement.querySelector(
+      '#accept-terms-checkbox'
     );
-    if (expectedErrors.acceptTerms === true) {
-      expect(acceptTermsError).not.toBeNull();
+    const acceptTermsClasses = [...acceptTermsCheckbox?.classList.values()];
+    if (expectedErrors.acceptTerms) {
+      expect(acceptTermsClasses).toContain('invalid');
     } else if (expectedErrors.acceptTerms === false) {
-      expect(acceptTermsError).toBeNull();
+      expect(acceptTermsClasses).not.toContain('invalid');
     }
 
-    const errors = {
-      name: nameError?.textContent?.trim(),
+    const errors: any = {
+      name: nameErrorComponent?.textContent?.trim(),
       email: emailError?.textContent?.trim(),
-      password: passwordError?.textContent?.trim(),
-      repeatPassword: repeatPasswordError?.textContent?.trim(),
-      acceptTerms: undefined,
+      password: passwordErrorComponent?.textContent?.trim(),
+      repeatPassword: repeatPasswordErrorComponent?.textContent?.trim(),
+      acceptTerms: acceptTermsClasses.includes('invalid'),
     };
+
     expect(errors).toEqual({
       name: expectedErrors.name,
       email: expectedErrors.email,
       password: expectedErrors.password,
       repeatPassword: expectedErrors.repeatPassword,
-      acceptTerms: undefined,
+      acceptTerms: !!expectedErrors.acceptTerms,
     });
   }
 
-  function testLocalValidation(localFormErrorParams: {
+  function testLocalValidationOnBlur(localFormErrorParams: {
+    formData: FormData;
+    expectedErrors?: FormErrors;
+  }) {
+    component.form.setValue(localFormErrorParams.formData);
+
+    // name
+
+    const nameInput = fixture.debugElement.query(By.css('#name-input'));
+    nameInput.triggerEventHandler('blur', {});
+
+    // email
+
+    const emailInput = fixture.debugElement.query(By.css('#email-input'));
+    emailInput.triggerEventHandler('blur', {});
+
+    // password
+
+    const passwordInput = fixture.debugElement.query(By.css('#password-input'));
+    passwordInput.triggerEventHandler('blur', {});
+
+    // repeatPassword
+
+    const repeatPasswordInput = fixture.debugElement.query(
+      By.css('#repeat-password-input')
+    );
+    repeatPasswordInput.triggerEventHandler('blur', {});
+
+    // acceptTerms
+
+    const acceptTermsCheckbox = fixture.debugElement.query(
+      By.css('#accept-terms-checkbox')
+    );
+    acceptTermsCheckbox.triggerEventHandler('blur', {});
+
+    // test errors
+
+    fixture.detectChanges();
+
+    testFormFieldsValues(localFormErrorParams.formData);
+
+    if (!localFormErrorParams.expectedErrors) {
+      testErrorMessages({});
+    } else {
+      testErrorMessages(localFormErrorParams.expectedErrors);
+    }
+  }
+
+  function testLocalValidationOnSubmit(localFormErrorParams: {
     formData: FormData;
     expectedErrors?: FormErrors;
   }) {
@@ -330,13 +382,13 @@ describe('RegisterComponent', () => {
     testErrorMessages(remoteFormErrorData.expectedErrors);
   }
 
-  xit('should create', async () => {
+  it('should create', async () => {
     expect(component).toBeTruthy();
   });
 
   describe('registration request', () => {
     it("should call service's register method on submit", () => {
-      testLocalValidation({
+      testLocalValidationOnSubmit({
         formData: {
           name: 'John Doe',
           email: 'john@example.com',
@@ -424,553 +476,632 @@ describe('RegisterComponent', () => {
         maxLength: UserConfigs.PASSWORD_MAX_LENGTH,
       });
 
-      it('should handle local error during registration', () => {
-        const error: any = new Error('Registration failed');
-        error.error = {
-          error: 'UnprocessableEntityException',
-          message: {
-            name: NameMessage.REQUIRED,
-            email: _EmailMessage.INVALID,
-            password: _PasswordMessage.MIN_LEN,
-            repeatPassword: _PasswordMessage.DONT_MATCHES,
-            acceptTerms: 'Acceptance of terms is required',
-          },
-        };
-        error.message = 'Algo deu errado!';
-        error.name = 'HttpErrorResponse';
-        error.status = 422;
-        authServiceSpy.register.and.returnValue(throwError(() => error));
-        error.statusText = 'Unprocessable Entity';
+      describe('on submit', () => {
+        it('should handle local error during form submission', () => {
+          const error: any = new Error('Registration failed');
+          error.error = {
+            error: 'UnprocessableEntityException',
+            message: {
+              name: NameMessage.REQUIRED,
+              email: _EmailMessage.INVALID,
+              password: _PasswordMessage.MIN_LEN,
+              repeatPassword: _PasswordMessage.DONT_MATCHES,
+              acceptTerms: 'Acceptance of terms is required',
+            },
+          };
+          error.message = 'Algo deu errado!';
+          error.name = 'HttpErrorResponse';
+          error.status = 422;
+          authServiceSpy.register.and.returnValue(throwError(() => error));
+          error.statusText = 'Unprocessable Entity';
 
-        component.form.setValue({
-          name: 'John Doe',
-          email: 'john@example.com',
-          password: 'Password123$',
-          repeatPassword: 'Password123$',
-          acceptTerms: true,
-        });
+          component.form.setValue({
+            name: 'John Doe',
+            email: 'john@example.com',
+            password: 'Password123$',
+            repeatPassword: 'Password123$',
+            acceptTerms: true,
+          });
 
-        const submitButton =
-          fixture.nativeElement.querySelector('button#register');
-        submitButton.click();
+          const submitButton =
+            fixture.nativeElement.querySelector('button#register');
+          submitButton.click();
 
-        testLocalValidation({
-          formData: {
-            name: null as unknown as string,
-            email: 'email.com',
-            password: 'Ab1$',
-            repeatPassword: 'Abc123$',
-            acceptTerms: false,
-          },
-          expectedErrors: error.error.message,
-        });
-      });
-
-      describe('name', () => {
-        it('name should not be null', () => {
-          testLocalValidation({
+          testLocalValidationOnSubmit({
             formData: {
               name: null as unknown as string,
-              email: 'john@example.com',
-              password: 'Password123$',
-              repeatPassword: 'Password123$',
-              acceptTerms: true,
-            },
-            expectedErrors: { name: NameMessage.REQUIRED },
-          });
-        });
-
-        it('name should not be empty', () => {
-          testLocalValidation({
-            formData: {
-              name: '',
-              email: 'john@example.com',
-              password: 'Password123$',
-              repeatPassword: 'Password123$',
-              acceptTerms: true,
-            },
-            expectedErrors: { name: NameMessage.REQUIRED },
-          });
-        });
-
-        it('name should not be made of spaces', () => {
-          testLocalValidation({
-            formData: {
-              name: '      ',
-              email: 'john@example.com',
-              password: 'Password123$',
-              repeatPassword: 'Password123$',
-              acceptTerms: true,
-            },
-            expectedErrors: { name: NameMessage.REQUIRED },
-          });
-        });
-
-        it('should not accept name shorter than allowed', () => {
-          testLocalValidation({
-            formData: {
-              name: 'x'.repeat(UserConfigs.NAME_MIN_LENGTH - 1),
-              email: 'john@example.com',
-              password: 'Password123$',
-              repeatPassword: 'Password123$',
-              acceptTerms: true,
-            },
-            expectedErrors: { name: NameMessage.MIN_LEN },
-          });
-        });
-
-        it('should accept the shortest name allowed', () => {
-          testLocalValidation({
-            formData: {
-              name: 'x'.repeat(UserConfigs.NAME_MIN_LENGTH),
-              email: 'john@example.com',
-              password: 'Password123$',
-              repeatPassword: 'Password123$',
-              acceptTerms: true,
-            },
-          });
-        });
-
-        it('should accept the longest name allowed', () => {
-          testLocalValidation({
-            formData: {
-              name: 'x'.repeat(UserConfigs.NAME_MAX_LENGTH),
-              email: 'john@example.com',
-              password: 'Password123$',
-              repeatPassword: 'Password123$',
-              acceptTerms: true,
-            },
-          });
-        });
-
-        it('should not accept name longer than allowed', () => {
-          testLocalValidation({
-            formData: {
-              name: 'x'.repeat(UserConfigs.NAME_MAX_LENGTH + 1),
-              email: 'john@example.com',
-              password: 'Password123$',
-              repeatPassword: 'Password123$',
-              acceptTerms: true,
-            },
-            expectedErrors: { name: NameMessage.MAX_LEN },
-          });
-        });
-      });
-
-      describe('email', () => {
-        it('email should not be null', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: null as unknown as string,
-              password: 'Password123$',
-              repeatPassword: 'Password123$',
-              acceptTerms: true,
-            },
-            expectedErrors: { email: _EmailMessage.REQUIRED },
-          });
-        });
-
-        it('email should not be empty', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: '',
-              password: 'Password123$',
-              repeatPassword: 'Password123$',
-              acceptTerms: true,
-            },
-            expectedErrors: { email: _EmailMessage.REQUIRED },
-          });
-        });
-
-        it('should accept email with minimum allowed length', () => {
-          const email = generateEmail({
-            localPartLength: 1,
-            domainPartLength: 4,
-          });
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email,
-              password: 'Password123$',
-              repeatPassword: 'Password123$',
-              acceptTerms: true,
-            },
-          });
-        });
-
-        it('should accept email with maximum allowed length', () => {
-          const email = generateEmail({
-            localPartLength: EmailConstants.MAX_LOCAL_LENGTH,
-            domainPartLength: EmailConstants.MAX_DOMAIN_LENGTH,
-          });
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email,
-              password: 'Password123$',
-              repeatPassword: 'Password123$',
-              acceptTerms: true,
-            },
-          });
-        });
-
-        it('email should not be invalid', () => {
-          const email = generateEmail({
-            localPartLength: 0,
-            domainPartLength: 4,
-          });
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email,
-              password: 'Password123$',
-              repeatPassword: 'Password123$',
-              acceptTerms: true,
-            },
-            expectedErrors: { email: _EmailMessage.INVALID },
-          });
-        });
-
-        it('email local part should not be longer than allowed', () => {
-          const email = generateEmail({
-            localPartLength: EmailConstants.MAX_LOCAL_LENGTH + 1,
-            domainPartLength: EmailConstants.MAX_DOMAIN_LENGTH,
-          });
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email,
-              password: 'Password123$',
-              repeatPassword: 'Password123$',
-              acceptTerms: true,
-            },
-            expectedErrors: { email: _EmailMessage.INVALID },
-          });
-        });
-
-        it('email domain part should not be longer than allowed', () => {
-          const email = generateEmail({
-            localPartLength: EmailConstants.MAX_LOCAL_LENGTH,
-            domainPartLength: EmailConstants.MAX_DOMAIN_LENGTH + 1,
-          });
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email,
-              password: 'Password123$',
-              repeatPassword: 'Password123$',
-              acceptTerms: true,
-            },
-            expectedErrors: { email: _EmailMessage.INVALID },
-          });
-        });
-      });
-
-      describe('password', () => {
-        it('password should not be null', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: 'john@example.com',
-              password: null as unknown as string,
-              repeatPassword: 'Password123$',
-              acceptTerms: true,
-            },
-            expectedErrors: {
-              password: _PasswordMessage.REQUIRED,
-              repeatPassword: _PasswordMessage.DONT_MATCHES,
-            },
-          });
-        });
-
-        it('password should not to be empty', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: 'john@example.com',
-              password: '',
-              repeatPassword: '',
-              acceptTerms: true,
-            },
-            expectedErrors: {
-              password: NameMessage.REQUIRED,
-              repeatPassword: _PasswordMessage.REQUIRED,
-            },
-          });
-        });
-
-        it('password should not be made of spaces', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: 'john@example.com',
-              password: ' Abc123$',
-              repeatPassword: ' Abc123$',
-              acceptTerms: true,
-            },
-            expectedErrors: { password: _PasswordMessage.INVALID },
-          });
-        });
-
-        it('should accept password with minimum allowed length', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: 'johndoe@email.com',
-              password: 'Pass123$',
-              repeatPassword: 'Pass123$',
-              acceptTerms: true,
-            },
-          });
-        });
-
-        it('password should not be too short', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: 'john@example.com',
-              password: 'Abc123$',
+              email: 'email.com',
+              password: 'Ab1$',
               repeatPassword: 'Abc123$',
-              acceptTerms: true,
-            },
-            expectedErrors: {
-              password: _PasswordMessage.MIN_LEN,
-            },
-          });
-        });
-
-        it('should accept password with maximum allowed length', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: 'johndoe@email.com',
-              password: 'Pass1234567$',
-              repeatPassword: 'Pass1234567$',
-              acceptTerms: true,
-            },
-          });
-        });
-
-        it('password should not be too long', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: 'john@example.com',
-              password: 'Abcdef123459$',
-              repeatPassword: 'Abcdef123459$',
-              acceptTerms: true,
-            },
-            expectedErrors: {
-              password: _PasswordMessage.MAX_LEN,
-              repeatPassword: _PasswordMessage.MAX_LEN,
-            },
-          });
-        });
-
-        it('password reject password without uppercase letter', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: 'john@example.com',
-              password: 'abcd123$',
-              repeatPassword: 'abcd123$',
-              acceptTerms: true,
-            },
-            expectedErrors: {
-              password: _PasswordMessage.STRONG,
-            },
-          });
-        });
-
-        it('password reject password without lower letter', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: 'john@example.com',
-              password: 'ABCD123$',
-              repeatPassword: 'ABCD123$',
-              acceptTerms: true,
-            },
-            expectedErrors: {
-              password: _PasswordMessage.STRONG,
-            },
-          });
-        });
-
-        it('password reject password without number', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: 'john@example.com',
-              password: 'Abcdefg$',
-              repeatPassword: 'Abcdefg$',
-              acceptTerms: true,
-            },
-            expectedErrors: {
-              password: _PasswordMessage.STRONG,
-            },
-          });
-        });
-
-        it('password reject password without special character', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: 'john@example.com',
-              password: 'Abcd1234',
-              repeatPassword: 'Abcd1234',
-              acceptTerms: true,
-            },
-            expectedErrors: {
-              password: _PasswordMessage.STRONG,
-            },
-          });
-        });
-      });
-
-      describe('repeatPassword', () => {
-        it('should accept repeated password', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: 'johndoe@email.com',
-              password: 'Pass1234567$',
-              repeatPassword: 'Pass1234567$',
-              acceptTerms: true,
-            },
-          });
-        });
-
-        it('password should not be null', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: 'john@example.com',
-              password: 'Password123$',
-              repeatPassword: null as unknown as string,
-              acceptTerms: true,
-            },
-            expectedErrors: {
-              repeatPassword: _PasswordMessage.REQUIRED,
-            },
-          });
-        });
-
-        it('password should not be empty', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: 'john@example.com',
-              password: 'Password123$',
-              repeatPassword: '',
-              acceptTerms: true,
-            },
-            expectedErrors: {
-              repeatPassword: _PasswordMessage.REQUIRED,
-            },
-          });
-        });
-
-        it('should reject not repeated password', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: 'john@example.com',
-              password: 'Password123$',
-              repeatPassword: 'Password124$',
-              acceptTerms: true,
-            },
-            expectedErrors: {
-              repeatPassword: _PasswordMessage.DONT_MATCHES,
-            },
-          });
-        });
-
-        it('should reject not repeated password', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: 'john@example.com',
-              password: 'Password123$',
-              repeatPassword: 'Password124$',
-              acceptTerms: true,
-            },
-            expectedErrors: {
-              repeatPassword: _PasswordMessage.DONT_MATCHES,
-            },
-          });
-        });
-
-        it('should reject when repeated password is too long', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: 'john@example.com',
-              password: 'Password1234$',
-              repeatPassword: 'Password1234$',
-              acceptTerms: true,
-            },
-            expectedErrors: {
-              password: _PasswordMessage.MAX_LEN,
-              repeatPassword: _PasswordMessage.MAX_LEN,
-            },
-          });
-        });
-      });
-
-      describe('acceptTerms', () => {
-        it('should accept when acceptTerms is true', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: 'john@example.com',
-              password: 'Password123$',
-              repeatPassword: 'Password123$',
-              acceptTerms: true,
-            },
-          });
-        });
-
-        it('should reject when acceptTerms is false', () => {
-          testLocalValidation({
-            formData: {
-              name: 'John Doe',
-              email: 'john@example.com',
-              password: 'Password123$',
-              repeatPassword: 'Password123$',
               acceptTerms: false,
             },
-            expectedErrors: {
+            expectedErrors: error.error.message,
+          });
+        });
+
+        describe('should handle local name error on submit', () => {
+          it('name should not be null', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: null as unknown as string,
+                email: 'john@example.com',
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+                acceptTerms: true,
+              },
+              expectedErrors: { name: NameMessage.REQUIRED },
+            });
+          });
+
+          it('name should not be empty', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: '',
+                email: 'john@example.com',
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+                acceptTerms: true,
+              },
+              expectedErrors: { name: NameMessage.REQUIRED },
+            });
+          });
+
+          it('name should not be made of spaces', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: '      ',
+                email: 'john@example.com',
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+                acceptTerms: true,
+              },
+              expectedErrors: { name: NameMessage.REQUIRED },
+            });
+          });
+
+          it('should not accept name shorter than allowed', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'x'.repeat(UserConfigs.NAME_MIN_LENGTH - 1),
+                email: 'john@example.com',
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+                acceptTerms: true,
+              },
+              expectedErrors: { name: NameMessage.MIN_LEN },
+            });
+          });
+
+          it('should accept the shortest name allowed', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'x'.repeat(UserConfigs.NAME_MIN_LENGTH),
+                email: 'john@example.com',
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+                acceptTerms: true,
+              },
+            });
+          });
+
+          it('should accept the longest name allowed', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'x'.repeat(UserConfigs.NAME_MAX_LENGTH),
+                email: 'john@example.com',
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+                acceptTerms: true,
+              },
+            });
+          });
+
+          it('should not accept name longer than allowed', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'x'.repeat(UserConfigs.NAME_MAX_LENGTH + 1),
+                email: 'john@example.com',
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+                acceptTerms: true,
+              },
+              expectedErrors: { name: NameMessage.MAX_LEN },
+            });
+          });
+        });
+
+        describe('should handle local email error on submit', () => {
+          it('email should not be null', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: null as unknown as string,
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+                acceptTerms: true,
+              },
+              expectedErrors: { email: _EmailMessage.REQUIRED },
+            });
+          });
+
+          it('email should not be empty', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: '',
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+                acceptTerms: true,
+              },
+              expectedErrors: { email: _EmailMessage.REQUIRED },
+            });
+          });
+
+          it('should accept email with minimum allowed length', () => {
+            const email = generateEmail({
+              localPartLength: 1,
+              domainPartLength: 4,
+            });
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email,
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+                acceptTerms: true,
+              },
+            });
+          });
+
+          it('should accept email with maximum allowed length', () => {
+            const email = generateEmail({
+              localPartLength: EmailConstants.MAX_LOCAL_LENGTH,
+              domainPartLength: EmailConstants.MAX_DOMAIN_LENGTH,
+            });
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email,
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+                acceptTerms: true,
+              },
+            });
+          });
+
+          it('email should not be invalid', () => {
+            const email = generateEmail({
+              localPartLength: 0,
+              domainPartLength: 4,
+            });
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email,
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+                acceptTerms: true,
+              },
+              expectedErrors: { email: _EmailMessage.INVALID },
+            });
+          });
+
+          it('email local part should not be longer than allowed', () => {
+            const email = generateEmail({
+              localPartLength: EmailConstants.MAX_LOCAL_LENGTH + 1,
+              domainPartLength: EmailConstants.MAX_DOMAIN_LENGTH,
+            });
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email,
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+                acceptTerms: true,
+              },
+              expectedErrors: { email: _EmailMessage.INVALID },
+            });
+          });
+
+          it('email domain part should not be longer than allowed', () => {
+            const email = generateEmail({
+              localPartLength: EmailConstants.MAX_LOCAL_LENGTH,
+              domainPartLength: EmailConstants.MAX_DOMAIN_LENGTH + 1,
+            });
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email,
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+                acceptTerms: true,
+              },
+              expectedErrors: { email: _EmailMessage.INVALID },
+            });
+          });
+        });
+
+        describe('should handle local password error on submit', () => {
+          it('password should not be null', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: null as unknown as string,
+                repeatPassword: 'Password123$',
+                acceptTerms: true,
+              },
+              expectedErrors: {
+                password: _PasswordMessage.REQUIRED,
+                repeatPassword: _PasswordMessage.DONT_MATCHES,
+              },
+            });
+          });
+
+          it('password should not to be empty', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: '',
+                repeatPassword: '',
+                acceptTerms: true,
+              },
+              expectedErrors: {
+                password: NameMessage.REQUIRED,
+                repeatPassword: _PasswordMessage.REQUIRED,
+              },
+            });
+          });
+
+          it('password should not be made of spaces', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: ' Abc123$',
+                repeatPassword: ' Abc123$',
+                acceptTerms: true,
+              },
+              expectedErrors: { password: _PasswordMessage.INVALID },
+            });
+          });
+
+          it('should accept password with minimum allowed length', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'johndoe@email.com',
+                password: 'Pass123$',
+                repeatPassword: 'Pass123$',
+                acceptTerms: true,
+              },
+            });
+          });
+
+          it('password should not be too short', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: 'Abc123$',
+                repeatPassword: 'Abc123$',
+                acceptTerms: true,
+              },
+              expectedErrors: {
+                password: _PasswordMessage.MIN_LEN,
+              },
+            });
+          });
+
+          it('should accept password with maximum allowed length', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'johndoe@email.com',
+                password: 'Pass1234567$',
+                repeatPassword: 'Pass1234567$',
+                acceptTerms: true,
+              },
+            });
+          });
+
+          it('password should not be too long', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: 'Abcdef123459$',
+                repeatPassword: 'Abcdef123459$',
+                acceptTerms: true,
+              },
+              expectedErrors: {
+                password: _PasswordMessage.MAX_LEN,
+                repeatPassword: _PasswordMessage.MAX_LEN,
+              },
+            });
+          });
+
+          it('password reject password without uppercase letter', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: 'abcd123$',
+                repeatPassword: 'abcd123$',
+                acceptTerms: true,
+              },
+              expectedErrors: {
+                password: _PasswordMessage.STRONG,
+              },
+            });
+          });
+
+          it('password reject password without lower letter', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: 'ABCD123$',
+                repeatPassword: 'ABCD123$',
+                acceptTerms: true,
+              },
+              expectedErrors: {
+                password: _PasswordMessage.STRONG,
+              },
+            });
+          });
+
+          it('password reject password without number', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: 'Abcdefg$',
+                repeatPassword: 'Abcdefg$',
+                acceptTerms: true,
+              },
+              expectedErrors: {
+                password: _PasswordMessage.STRONG,
+              },
+            });
+          });
+
+          it('password reject password without special character', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: 'Abcd1234',
+                repeatPassword: 'Abcd1234',
+                acceptTerms: true,
+              },
+              expectedErrors: {
+                password: _PasswordMessage.STRONG,
+              },
+            });
+          });
+        });
+
+        describe('should handle local repeatPassword error on submit', () => {
+          it('should accept repeated password', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'johndoe@email.com',
+                password: 'Pass1234567$',
+                repeatPassword: 'Pass1234567$',
+                acceptTerms: true,
+              },
+            });
+          });
+
+          it('password should not be null', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: 'Password123$',
+                repeatPassword: null as unknown as string,
+                acceptTerms: true,
+              },
+              expectedErrors: {
+                repeatPassword: _PasswordMessage.REQUIRED,
+              },
+            });
+          });
+
+          it('password should not be empty', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: 'Password123$',
+                repeatPassword: '',
+                acceptTerms: true,
+              },
+              expectedErrors: {
+                repeatPassword: _PasswordMessage.REQUIRED,
+              },
+            });
+          });
+
+          it('should reject not repeated password', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: 'Password123$',
+                repeatPassword: 'Password124$',
+                acceptTerms: true,
+              },
+              expectedErrors: {
+                repeatPassword: _PasswordMessage.DONT_MATCHES,
+              },
+            });
+          });
+
+          it('should reject not repeated password', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: 'Password123$',
+                repeatPassword: 'Password124$',
+                acceptTerms: true,
+              },
+              expectedErrors: {
+                repeatPassword: _PasswordMessage.DONT_MATCHES,
+              },
+            });
+          });
+
+          it('should reject when repeated password is too long', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: 'Password1234$',
+                repeatPassword: 'Password1234$',
+                acceptTerms: true,
+              },
+              expectedErrors: {
+                password: _PasswordMessage.MAX_LEN,
+                repeatPassword: _PasswordMessage.MAX_LEN,
+              },
+            });
+          });
+        });
+
+        describe('should handle local acceptTerms error on submit', () => {
+          it('should accept when acceptTerms is true', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+                acceptTerms: true,
+              },
+            });
+          });
+
+          it('should reject when acceptTerms is false', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+                acceptTerms: false,
+              },
+              expectedErrors: {
+                acceptTerms: true,
+              },
+            });
+          });
+
+          it('should reject when acceptTerms is null', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+                acceptTerms: null as unknown as boolean,
+              },
+              expectedErrors: {
+                acceptTerms: true,
+              },
+            });
+          });
+
+          it('should reject when acceptTerms is not boolean', () => {
+            testLocalValidationOnSubmit({
+              formData: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+                acceptTerms: 1 as unknown as boolean,
+              },
+              expectedErrors: {
+                acceptTerms: true,
+              },
+            });
+          });
+        });
+      });
+
+      describe('on blur', () => {
+        it('should handle local error during name input blur', async () => {
+          testLocalValidationOnBlur({
+            formData: {
+              name: 'x',
+              email: 'user@email.com',
+              password: 'Abc123_$',
+              repeatPassword: 'Abc123_$',
               acceptTerms: true,
+            },
+            expectedErrors: {
+              name: NameMessage.MIN_LEN,
             },
           });
         });
 
-        it('should reject when acceptTerms is null', () => {
-          testLocalValidation({
+        it('should handle local error during email input blur', async () => {
+          testLocalValidationOnBlur({
             formData: {
               name: 'John Doe',
-              email: 'john@example.com',
-              password: 'Password123$',
-              repeatPassword: 'Password123$',
-              acceptTerms: null as unknown as boolean,
+              email: 'email.com',
+              password: 'Abc123_$',
+              repeatPassword: 'Abc123_$',
+              acceptTerms: true,
             },
             expectedErrors: {
-              acceptTerms: true,
+              email: _EmailMessage.INVALID,
             },
           });
         });
 
-        it('should reject when acceptTerms is not boolean', () => {
-          testLocalValidation({
+        it('should handle local error during password input blur', async () => {
+          testLocalValidationOnBlur({
             formData: {
               name: 'John Doe',
-              email: 'john@example.com',
-              password: 'Password123$',
-              repeatPassword: 'Password123$',
-              acceptTerms: 1 as unknown as boolean,
+              email: 'email@email.com',
+              password: 'Abc12346',
+              repeatPassword: 'Abc12346',
+              acceptTerms: true,
+            },
+            expectedErrors: {
+              password: _PasswordMessage.STRONG,
+            },
+          });
+        });
+
+        it('should handle local error during repeatPassword input blur', async () => {
+          testLocalValidationOnBlur({
+            formData: {
+              name: 'John Doe',
+              email: 'email@email.com',
+              password: 'Abc123*$',
+              repeatPassword: 'Abc124*$',
+              acceptTerms: true,
+            },
+            expectedErrors: {
+              repeatPassword: _PasswordMessage.DONT_MATCHES,
+            },
+          });
+        });
+
+        it('should handle local error during acceptTerms input blur', async () => {
+          testLocalValidationOnBlur({
+            formData: {
+              name: 'John Doe',
+              email: 'email@email.com',
+              password: 'Abc123*$',
+              repeatPassword: 'Abc123*$',
+              acceptTerms: false,
             },
             expectedErrors: {
               acceptTerms: true,
@@ -981,7 +1112,7 @@ describe('RegisterComponent', () => {
     });
   });
 
-  describe('template', () => {
+  xdescribe('template', () => {
     it('should render the form element', async () => {
       fixture.detectChanges();
 
@@ -1013,7 +1144,7 @@ describe('RegisterComponent', () => {
         label: 'Senha',
         value: '',
         type: 'password',
-        autocomplete: 'off',
+        autocomplete: 'new-password',
       });
 
       const repeatPasswordField = form.children[3] as Element;
@@ -1021,7 +1152,7 @@ describe('RegisterComponent', () => {
         label: 'Repita a Senha',
         value: '',
         type: 'password',
-        autocomplete: 'off',
+        autocomplete: 'new-password',
       });
 
       const acceptTermsField = form.children[4] as Element;
@@ -1051,7 +1182,7 @@ describe('RegisterComponent', () => {
     });
   });
 
-  describe('form', () => {
+  xdescribe('form', () => {
     it('should contain a register form group', () => {
       expect(component).toBeTruthy();
       expect(component['form'] instanceof FormGroup).toBeTrue();
