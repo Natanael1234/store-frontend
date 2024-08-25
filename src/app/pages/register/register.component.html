@@ -59,7 +59,7 @@
       (blur)="onPasswordBlur($event)"
     />
     <mat-icon
-      id="email-error"
+      id="show-password-icon"
       matSuffix
       (click)="togglePasswordVisibility($event)"
       >{{ showPassword ? "visibility" : "visibility_off" }}</mat-icon
@@ -81,9 +81,12 @@
       autocomplete="off"
       autoComplete="new-password"
     />
-    <mat-icon matSuffix (click)="toggleRepeatPasswordVisibility($event)">{{
-      showRepeatPassword ? "visibility" : "visibility_off"
-    }}</mat-icon>
+    <mat-icon
+      matSuffix
+      id="show-repeat-password-icon"
+      (click)="toggleRepeatPasswordVisibility($event)"
+      >{{ showRepeatPassword ? "visibility" : "visibility_off" }}</mat-icon
+    >
 
     <mat-error id="repeat-password-error">{{
       getRepeatPasswordErrorMessage()

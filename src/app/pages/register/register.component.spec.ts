@@ -1112,7 +1112,7 @@ describe('RegisterComponent', () => {
     });
   });
 
-  xdescribe('template', () => {
+  describe('template', () => {
     it('should render the form element', async () => {
       fixture.detectChanges();
 
@@ -1123,6 +1123,8 @@ describe('RegisterComponent', () => {
       const form = div.children[0] as HTMLFormElement;
       testForm(form, 7);
 
+      // name
+
       const nameField = form.children[0] as Element;
       testFormField(nameField, {
         label: 'Nome',
@@ -1130,6 +1132,8 @@ describe('RegisterComponent', () => {
         type: 'text',
         autocomplete: 'off',
       });
+
+      // email
 
       const emailField = form.children[1] as Element;
       testFormField(emailField, {
@@ -1139,6 +1143,8 @@ describe('RegisterComponent', () => {
         autocomplete: 'off',
       });
 
+      // password
+
       const passwordField = form.children[2] as Element;
       testFormField(passwordField, {
         label: 'Senha',
@@ -1147,6 +1153,32 @@ describe('RegisterComponent', () => {
         autocomplete: 'new-password',
       });
 
+      const hidePasswordIcon = passwordField.querySelector(
+        '#show-password-icon'
+      )!;
+
+      hidePasswordIcon.dispatchEvent(new MouseEvent('click', { button: 1 }));
+      fixture.detectChanges();
+
+      testFormField(passwordField, {
+        label: 'Senha',
+        value: '',
+        type: 'text',
+        autocomplete: 'new-password',
+      });
+
+      hidePasswordIcon.dispatchEvent(new MouseEvent('click', { button: 1 }));
+      fixture.detectChanges();
+
+      testFormField(passwordField, {
+        label: 'Senha',
+        value: '',
+        type: 'password',
+        autocomplete: 'new-password',
+      });
+
+      // repeat password
+
       const repeatPasswordField = form.children[3] as Element;
       testFormField(repeatPasswordField, {
         label: 'Repita a Senha',
@@ -1154,6 +1186,8 @@ describe('RegisterComponent', () => {
         type: 'password',
         autocomplete: 'new-password',
       });
+
+      // accept terms
 
       const acceptTermsField = form.children[4] as Element;
       testCheckbox(acceptTermsField, {
@@ -1179,23 +1213,6 @@ describe('RegisterComponent', () => {
         color: null,
         style: 'stroked',
       });
-    });
-  });
-
-  xdescribe('form', () => {
-    it('should contain a register form group', () => {
-      expect(component).toBeTruthy();
-      expect(component['form'] instanceof FormGroup).toBeTrue();
-    });
-
-    it('should contain name form control', () => {
-      expect(component['form'].get('name') instanceof FormGroup).toBeDefined();
-      expect(component['form'].get('name')?.value).toEqual('');
-    });
-
-    it('should contain email form control', () => {
-      expect(component['form'].get('email') instanceof FormGroup).toBeDefined();
-      expect(component['form'].get('email')?.value).toEqual('');
     });
   });
 });
