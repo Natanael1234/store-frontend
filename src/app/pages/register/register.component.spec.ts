@@ -1186,6 +1186,29 @@ describe('RegisterComponent', () => {
         type: 'password',
         autocomplete: 'new-password',
       });
+      const hideRepeatPasswordIcon = repeatPasswordField.querySelector(
+        '#show-repeat-password-icon'
+      )!;
+      hideRepeatPasswordIcon.dispatchEvent(
+        new MouseEvent('click', { button: 1 })
+      );
+      fixture.detectChanges();
+      testFormField(repeatPasswordField, {
+        label: 'Repita a Senha',
+        value: '',
+        type: 'text',
+        autocomplete: 'new-password',
+      });
+      hideRepeatPasswordIcon.dispatchEvent(
+        new MouseEvent('click', { button: 1 })
+      );
+      fixture.detectChanges();
+      testFormField(repeatPasswordField, {
+        label: 'Repita a Senha',
+        value: '',
+        type: 'password',
+        autocomplete: 'new-password',
+      });
 
       // accept terms
 
