@@ -1,0 +1,13 @@
+form {
+  display: flex;
+  flex-direction: column;
+  padding: 50px;
+  gap: 24px;
+}
+
+mat-form-field {
+}
+
+button:not([mat-icon-button]) {
+  padding: 18px !important;
+}
