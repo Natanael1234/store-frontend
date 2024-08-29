@@ -95,7 +95,6 @@ describe('RegisterComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         RegisterComponent,
-        LoginComponent,
         FormsModule,
         ReactiveFormsModule,
         MatIconModule,
@@ -748,7 +747,7 @@ describe('RegisterComponent', () => {
                 acceptTerms: true,
               },
               expectedErrors: {
-                password: NameMessage.REQUIRED,
+                password: _PasswordMessage.REQUIRED,
                 repeatPassword: _PasswordMessage.REQUIRED,
               },
             });

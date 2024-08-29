@@ -1,1 +1,71 @@
-<p>login works!</p>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <!-- main error -->
+  @if (loading) {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+
+  } @if (mainError) {
+  <app-alert
+    [showCloseButton]="true"
+    type="danger"
+    icon="warning"
+    (onClose)="mainError = undefined"
+  >
+    {{ mainError }}
+  </app-alert>
+
+  }
+
+  <!-- email -->
+  <mat-form-field id="email-field" appearance="outline">
+    <mat-label>Email</mat-label>
+    <input
+      id="email-input"
+      formControlName="email"
+      matInput
+      type="email"
+      autoComplete="on"
+      [maxlength]="maxEmailLength"
+    />
+    <mat-error id="email-error">{{ getEmailErrorMessage() }}</mat-error>
+  </mat-form-field>
+
+  <!-- password -->
+  <mat-form-field id="password-field" appearance="outline">
+    <mat-label>Senha</mat-label>
+    <input
+      id="password-input"
+      formControlName="password"
+      matInput
+      [type]="showPassword ? 'text' : 'password'"
+      autoComplete="off"
+      [maxlength]="maxPasswordLength"
+      class="material-icons-outlined"
+      autocomplete="on"
+    />
+    <mat-icon
+      id="show-password-icon"
+      matSuffix
+      (click)="togglePasswordVisibility($event)"
+      >{{ showPassword ? "visibility" : "visibility_off" }}</mat-icon
+    >
+
+    <mat-error id="password-error">{{ getPasswordErrorMessage() }}</mat-error>
+  </mat-form-field>
+
+  <!-- login -->
+  <button mat-flat-button id="login" type="submit" [disabled]="loading">
+    Login
+  </button>
+
+  <!-- register -->
+  <button
+    mat-stroked-button
+    id="register"
+    type="button"
+    [disabled]="loading"
+    routerLink="/register"
+  >
+    Não tem tem uma conta? <b>Cadastre-se</b>
+  </button>
+</form>
+''

@@ -110,7 +110,13 @@
   </button>
 
   <!-- register -->
-  <button mat-stroked-button id="login" type="button" [disabled]="loading">
+  <button
+    mat-stroked-button
+    id="login"
+    type="button"
+    [disabled]="loading"
+    routerLink="/login"
+  >
     Já tem uma conta? <b>Login</b>
   </button>
 </form>
