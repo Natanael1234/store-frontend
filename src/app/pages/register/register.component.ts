@@ -7,12 +7,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import {
-  EmailValidator,
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
@@ -33,7 +31,6 @@ import {
 } from '../../validators/remote/remote.validator';
 import { emailValidator } from '../../validators/email/email.validator';
 import { nameValidator } from '../../validators/name/name.validator';
-import { debounceTime, tap } from 'rxjs';
 
 const _NameMessage = new TextMessage({
   minLength: UserConfigs.NAME_MIN_LENGTH,
@@ -230,6 +227,7 @@ export class RegisterComponent {
         this.mainError = undefined;
         this.loading = false;
         this.form.reset();
+        this.acceptTermsBlurred = false;
         this.router.navigate(['/login']);
       },
     });
@@ -263,49 +261,51 @@ export class RegisterComponent {
 
   protected getEmailErrorMessage() {
     const emailFormControl = this.form.controls.email;
-    let emailError: string | null | undefined = '';
+    let emailErrorMessage: string | null | undefined = '';
     if (emailFormControl.hasError('null')) {
-      emailError = _EmailMessage.NULL;
+      emailErrorMessage = _EmailMessage.NULL;
     } else if (emailFormControl.hasError('required')) {
-      emailError = _EmailMessage.REQUIRED;
+      emailErrorMessage = _EmailMessage.REQUIRED;
     } else if (emailFormControl.hasError('email')) {
-      emailError = _EmailMessage.INVALID;
+      emailErrorMessage = _EmailMessage.INVALID;
     } else if (emailFormControl.hasError('minlength')) {
-      emailError = _EmailMessage.MIN_LEN;
+      emailErrorMessage = _EmailMessage.MIN_LEN;
     } else if (emailFormControl.hasError('maxlength')) {
-      emailError = _EmailMessage.MAX_LEN;
+      emailErrorMessage = _EmailMessage.MAX_LEN;
     } else if (emailFormControl.hasError('remote')) {
-      emailError = this.emailRemoteValidationContext.remoteError;
+      emailErrorMessage = this.emailRemoteValidationContext.remoteError;
     }
 
-    return emailError;
+    return emailErrorMessage;
   }
 
   protected getPasswordErrorMessage() {
     const passwordFormControl = this.form.controls.password;
 
+    let passwordErrorMessage = '';
     if (passwordFormControl.hasError('null')) {
-      return _PasswordMessage.NULL;
+      passwordErrorMessage = _PasswordMessage.NULL;
     }
     if (passwordFormControl.hasError('required')) {
-      return _PasswordMessage.REQUIRED;
+      passwordErrorMessage = _PasswordMessage.REQUIRED;
     }
     if (passwordFormControl.hasError('weakPassword')) {
-      return _PasswordMessage.STRONG;
+      passwordErrorMessage = _PasswordMessage.STRONG as string;
     }
     if (passwordFormControl.hasError('minlength')) {
-      return _PasswordMessage.MIN_LEN;
+      passwordErrorMessage = _PasswordMessage.MIN_LEN as string;
     }
     if (passwordFormControl.hasError('maxlength')) {
-      return _PasswordMessage.MAX_LEN;
+      passwordErrorMessage = _PasswordMessage.MAX_LEN as string;
     }
     if (passwordFormControl.hasError('invalidPassword')) {
-      return _PasswordMessage.INVALID;
+      passwordErrorMessage = _PasswordMessage.INVALID;
     }
     if (passwordFormControl.hasError('remote')) {
-      return this.passwordRemoteValidationContext.remoteError;
+      passwordErrorMessage = this.passwordRemoteValidationContext
+        .remoteError as string;
     }
-    return '';
+    return passwordErrorMessage;
   }
 
   protected getRepeatPasswordErrorMessage() {
