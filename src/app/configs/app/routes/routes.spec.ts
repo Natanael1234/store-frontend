@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
 import routeConfig from './routes';
-import { HomeComponent } from './pages/home/home.component';
-import { RegisterComponent } from './pages/register/register.component';
-import { LoginComponent } from './pages/login/login.component';
-import { NewPasswordComponent } from './pages/new-password/new-password.component';
+import { HomeComponent } from '../../../pages/home/home.component';
+import { RegisterComponent } from '../../../pages/register/register.component';
+import { LoginComponent } from '../../../pages/login/login.component';
+import { NewPasswordComponent } from '../../../pages/new-password/new-password.component';
 
 describe('routeConfig', () => {
   it('should be defined', () => {
