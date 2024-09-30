@@ -508,7 +508,7 @@ describe('LoginComponent', () => {
             });
           });
 
-          it('password reject password without special character', () => {
+          it('password reject password without special caracter', () => {
             testLocalValidationOnSubmit({
               formData: { email: 'john@example.com', password: 'Abcd1234' },
               expectedErrors: { password: _PasswordMessage.INVALID },

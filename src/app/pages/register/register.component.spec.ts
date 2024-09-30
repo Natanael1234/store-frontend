@@ -865,7 +865,7 @@ describe('RegisterComponent', () => {
             });
           });
 
-          it('password reject password without special character', () => {
+          it('password reject password without special caracter', () => {
             testLocalValidationOnSubmit({
               formData: {
                 name: 'John Doe',

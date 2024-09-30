@@ -79,7 +79,7 @@ describe('Strong Password Validator', () => {
     expect(result).toEqual({ weakPassword: true });
   });
 
-  it('should return error for a password without special characters', () => {
+  it('should return error for a password without special caracters', () => {
     const validator = strongPasswordValidator();
     const control = new FormControl('StrongPass1');
     const result = validator(control);

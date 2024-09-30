@@ -3,7 +3,7 @@ import { nameValidator } from './name.validator';
 import { UserConfigs } from '../../configs/user/user.configs';
 
 describe('Strong Name Validator', () => {
-  describe('characters', () => {
+  describe('caracters', () => {
     it('should accept the punctuation', () => {
       const name = 'xxxxxx.';
       const control = new FormControl(name);
@@ -11,7 +11,7 @@ describe('Strong Name Validator', () => {
       expect(result).toBeNull();
     });
 
-    it('should accept special characters', () => {
+    it('should accept special caracters', () => {
       const name = "xxxxxx@-'";
       const control = new FormControl(name);
       const result = nameValidator()(control);

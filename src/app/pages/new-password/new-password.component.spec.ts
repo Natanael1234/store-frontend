@@ -578,7 +578,7 @@ describe('NewPasswordComponent', () => {
             });
           });
 
-          it('password reject password without special character', () => {
+          it('password reject password without special caracter', () => {
             testLocalValidationOnSubmit({
               formData: {
                 hash: 'SOME_HASH',
