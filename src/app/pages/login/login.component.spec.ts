@@ -4,7 +4,6 @@ import { LoginComponent } from './login.component';
 import { HttpStatusCode } from '@angular/common/http';
 import {
   testButton,
-  testCheckbox,
   testForm,
   testFormField,
 } from '../../../test-utils/test-form-utils';
@@ -28,6 +27,7 @@ import { UserConfigs } from '../../configs/user/user.configs';
 import { EmailConstants } from '../../constants/email/email.constants';
 import { PasswordMessage } from '../../messages/password/password.messages';
 import { TextMessage } from '../../messages/text/text.messages';
+import { ExceptionName } from '../../utils/exception-names/exception-text.enum';
 
 type LoginFormData = { email: string; password: string };
 
@@ -292,7 +292,7 @@ describe('LoginComponent', () => {
             statusCode: HttpStatusCode.UnprocessableEntity,
             statusText: 'Unprocessable Entity',
             error: {
-              error: 'UnprocessableEntityException',
+              error: ExceptionName.UNPROCESSABLE_ENTITY,
               message: 'Algo deu errado!',
             },
           },
@@ -309,7 +309,7 @@ describe('LoginComponent', () => {
             statusCode: HttpStatusCode.UnprocessableEntity,
             statusText: 'Unprocessable Entity',
             error: {
-              error: 'UnprocessableEntityException',
+              error: ExceptionName.UNPROCESSABLE_ENTITY,
               message: { email: 'Error 2', password: 'Error 3' },
             },
           },
@@ -331,7 +331,7 @@ describe('LoginComponent', () => {
         it('should handle local error during form submission', () => {
           const error: any = new Error('Login failed');
           error.error = {
-            error: 'UnprocessableEntityException',
+            error: ExceptionName.UNPROCESSABLE_ENTITY,
             message: {
               email: _EmailMessage.INVALID,
               password: _PasswordMessage.MIN_LEN,
@@ -508,7 +508,7 @@ describe('LoginComponent', () => {
             });
           });
 
-          it('password reject password without special character', () => {
+          it('password reject password without special caracter', () => {
             testLocalValidationOnSubmit({
               formData: { email: 'john@example.com', password: 'Abcd1234' },
               expectedErrors: { password: _PasswordMessage.INVALID },

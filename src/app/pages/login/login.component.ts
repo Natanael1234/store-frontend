@@ -125,6 +125,7 @@ export class LoginComponent {
       },
       error: (error: any) => {
         this.loading = false;
+        // TODO: replace else if by if
         if (typeof error == 'string') {
           this.mainError = error;
         } else if (typeof error.error?.message == 'string') {

@@ -11,7 +11,7 @@ describe('EmailConstants', () => {
       MAX_LENGTH: 320,
       MIN_LOCAL_LENGTH: 1,
       MAX_LOCAL_LENGTH: 64,
-      Min_DOMAIN_LENGTH: 4,
+      MIN_DOMAIN_LENGTH: 4,
       MAX_DOMAIN_LENGTH: 255,
     });
   });

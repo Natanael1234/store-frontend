@@ -8,7 +8,10 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AuthResponseDto } from './dtos/auth.response.dto';
 import { Role } from '../user/role/role.enum';
 import { TokenService } from '../token/token.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('AuthService', () => {
   let httpServiceStub: Partial<HttpService>;
@@ -66,14 +69,14 @@ describe('AuthService', () => {
     };
 
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [
+      imports: [],
+      providers: [
         { provide: HttpService, useValue: httpServiceStub },
         { provide: TokenService, useValue: tokenServiceStub },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-});
+      ],
+    });
 
     authService = TestBed.inject(AuthService);
   });
@@ -93,7 +96,7 @@ describe('AuthService', () => {
         },
         complete: () => {
           expect(httpServiceStub.post).toHaveBeenCalledWith(
-            '/authentication/register',
+            'authentication/register',
             data
           );
           expect(tokenServiceStub.setToken).toHaveBeenCalledOnceWith(

@@ -8,7 +8,7 @@ describe('PasswordConstants', () => {
   it('should have valid keys and values', () => {
     const fields: any = { ...PasswordConstants };
     expect(fields).toEqual({
-      MIN_LENGTH: 6,
+      MIN_LENGTH: 8,
       MAX_LENGTH: 12,
     });
   });

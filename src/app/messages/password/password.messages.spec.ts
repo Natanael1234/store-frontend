@@ -35,7 +35,7 @@ describe('PasswordMessage', () => {
     expect({
       ...new PasswordMessage({
         minLength: UserConfigs.PASSWORD_MIN_LENGTH,
-        maxLength: UserConfigs.NAME_MAX_LENGTH,
+        maxLength: UserConfigs.PASSWORD_MAX_LENGTH,
       }),
     }).toEqual({
       NULL: 'Nulo.',
