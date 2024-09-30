@@ -1,10 +1,11 @@
 import { Routes } from '@angular/router';
+import routeConfig from './routes';
 import { HomeComponent } from './pages/home/home.component';
-import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
+import { LoginComponent } from './pages/login/login.component';
 import { NewPasswordComponent } from './pages/new-password/new-password.component';
 
-const routeConfig: Routes = [
+const expectedRoutes: Routes = [
   { path: '', component: HomeComponent, title: 'Home Page' },
   {
     path: 'register',
@@ -23,4 +24,12 @@ const routeConfig: Routes = [
   },
 ];
 
-export default routeConfig;
+describe('routeConfig', () => {
+  it('should be defined', () => {
+    expect(routeConfig).toBeDefined();
+  });
+
+  it('should have valid keys and values', () => {
+    expect(routeConfig).toEqual(routeConfig);
+  });
+});

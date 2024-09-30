@@ -6,6 +6,7 @@ import { AuthResponseDto } from './dtos/auth.response.dto';
 import { TokenService } from '../token/token.service';
 import { HttpStatusCode } from '@angular/common/http';
 import { LoginRequestDto } from './dtos/login.request.dto';
+import { NewPasswordRequestDto } from './dtos/new-password.request.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -64,6 +65,31 @@ export class AuthService {
     );
 
     return loginObservable;
+  }
+
+  createNewPassword(data: NewPasswordRequestDto): Observable<AuthResponseDto> {
+    const newPasswordObservable = new Observable(
+      (observer: Subscriber<AuthResponseDto>) => {
+        const postObservable = this.httpService.post(
+          'authentication/new-password',
+          data
+        );
+
+        postObservable.subscribe({
+          next: (response: AuthResponseDto) => {
+            this.processAuthResponse(observer, response);
+          },
+          error: (error: any) => {
+            this.processError(observer, error);
+          },
+          complete: () => {
+            observer.complete();
+          },
+        });
+      }
+    );
+
+    return newPasswordObservable;
   }
 
   private processAuthResponse(

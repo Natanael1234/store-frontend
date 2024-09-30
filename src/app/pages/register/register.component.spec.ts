@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { RouterTestingModule } from '@angular/router/testing';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInput, MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,7 +13,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
 import { RegisterComponent } from './register.component';
 import { AuthService } from '../../services/auth/auth.service';
-import { LoginComponent } from '../login/login.component';
 import { AlertComponent } from '../../components/alert/alert.component';
 import {
   testButton,
@@ -28,7 +27,7 @@ import { PasswordMessage } from '../../messages/password/password.messages';
 import { Role } from '../../services/user/role/role.enum';
 import { Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
-import { EmailMessage } from '../../messages/email/email.messages';
+import { ExceptionName } from '../../utils/exception-names/exception-text.enum';
 
 type FormData = {
   name: string;
@@ -417,7 +416,7 @@ describe('RegisterComponent', () => {
             statusCode: HttpStatusCode.UnprocessableEntity,
             statusText: 'Unprocessable Entity',
             error: {
-              error: 'UnprocessableEntityException',
+              error: ExceptionName.UNPROCESSABLE_ENTITY,
               message: 'Algo deu errado!',
             },
           },
@@ -446,7 +445,7 @@ describe('RegisterComponent', () => {
             statusCode: HttpStatusCode.UnprocessableEntity,
             statusText: 'Unprocessable Entity',
             error: {
-              error: 'UnprocessableEntityException',
+              error: ExceptionName.UNPROCESSABLE_ENTITY,
               message: {
                 name: 'Error 1',
                 email: 'Error 2',
@@ -479,7 +478,7 @@ describe('RegisterComponent', () => {
         it('should handle local error during form submission', () => {
           const error: any = new Error('Registration failed');
           error.error = {
-            error: 'UnprocessableEntityException',
+            error: ExceptionName.UNPROCESSABLE_ENTITY,
             message: {
               name: NameMessage.REQUIRED,
               email: _EmailMessage.INVALID,
@@ -488,11 +487,11 @@ describe('RegisterComponent', () => {
               acceptTerms: 'Acceptance of terms is required',
             },
           };
-          error.message = 'Algo deu errado!';
-          error.name = 'HttpErrorResponse';
+          error.message = 'Algo deu errado!'; // TODO:
+          error.name = 'HttpErrorResponse'; // TODO:
           error.status = 422;
           authServiceSpy.register.and.returnValue(throwError(() => error));
-          error.statusText = 'Unprocessable Entity';
+          error.statusText = 'Unprocessable Entity'; // TODO:
 
           component.form.setValue({
             name: 'John Doe',
