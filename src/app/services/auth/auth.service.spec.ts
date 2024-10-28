@@ -1,80 +1,60 @@
-import { TestBed } from '@angular/core/testing';
-import { AuthService } from './auth.service';
-
-import { HttpService } from '../http/http.service';
-import { RegisterRequestDto } from './dtos/register.request.dto';
 import { of, throwError } from 'rxjs';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { AuthResponseDto } from './dtos/auth.response.dto';
-import { Role } from '../user/role/role.enum';
+import { HttpService } from '../http/http.service';
 import { TokenService } from '../token/token.service';
-import {
-  provideHttpClient,
-  withInterceptorsFromDi,
-} from '@angular/common/http';
+import { Role } from '../user/role/role.enum';
+import { AuthResponseDto } from './dtos/auth.response.dto';
+import { TestBed } from '@angular/core/testing';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from './auth.service';
+import { RegisterRequestDto } from './dtos/register.request.dto';
+import { LoginRequestDto } from './dtos/login.request.dto';
+import { NewPasswordRequestDto } from './dtos/new-password.request.dto';
+import { RequestPasswordCreationLinkRequestDto } from './dtos/request-password-creation-link.request.dto';
+
+let mockAuthResponse: AuthResponseDto = {
+  status: 'success',
+  data: {
+    user: {
+      id: '891db31e-dfb5-42ed-b912-48b98463b004',
+      name: 'John Doe',
+      email: 'john@example.com',
+      roles: [Role.USER],
+      active: true,
+      created: '2024-02-03T19:05:21.689Z',
+      updated: '2024-02-03T19:05:21.689Z',
+      deletedAt: null,
+    },
+    payload: {
+      type: 'bearer',
+      token:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6MTcwNzA3MzUyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0In0.LaW-Z0DkU5ZheRtst0mvZ3WtMgMmMeawJVke9qtCVyE',
+      refreshToken:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6NDI5ODk4NzEyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0IiwianRpIjoiMTI4In0.bJTClITMvD5NCDt5DjTmxn3DIjFOabEvsCvnK795VXU',
+    },
+  },
+};
 
 describe('AuthService', () => {
-  let httpServiceStub: Partial<HttpService>;
-  let tokenServiceStub: Partial<TokenService>;
   let authService: AuthService;
+  let mockedHttpService: any;
+  let mockedTokenService: any;
 
-  const data: RegisterRequestDto = {
-    name: 'User 1',
-    email: 'user1@email.com',
-    password: 'Password123$',
-    repeatPassword: 'Password123$',
-    acceptTerms: true,
-  };
+  beforeEach(async () => {
+    mockedTokenService = jasmine.createSpyObj('TokenService', [
+      'getToken',
+      'setToken',
+      'getRefreshToken',
+      'setRefreshToken',
+      'clearTokens',
+    ]);
 
-  const mockAuthResponse: AuthResponseDto = {
-    status: 'success',
-    data: {
-      user: {
-        id: '891db31e-dfb5-42ed-b912-48b98463b004',
-        name: 'John Doe',
-        email: 'john@example.com',
-        roles: [Role.USER],
-        active: true,
-        created: '2024-02-03T19:05:21.689Z',
-        updated: '2024-02-03T19:05:21.689Z',
-        deletedAt: null,
-      },
-      payload: {
-        type: 'bearer',
-        token:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6MTcwNzA3MzUyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0In0.LaW-Z0DkU5ZheRtst0mvZ3WtMgMmMeawJVke9qtCVyE',
-        refreshToken:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6NDI5ODk4NzEyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0IiwianRpIjoiMTI4In0.bJTClITMvD5NCDt5DjTmxn3DIjFOabEvsCvnK795VXU',
-      },
-    },
-  };
-
-  beforeEach(() => {
-    httpServiceStub = {
-      post: jasmine.createSpy('post').and.returnValue(of(mockAuthResponse)),
-    };
-    tokenServiceStub = {
-      setToken: jasmine.createSpy('setToken').and.returnValue(undefined),
-      getToken: jasmine
-        .createSpy('getToken')
-        .and.returnValue(of('example_token')),
-      getRefreshToken: jasmine
-        .createSpy('getRefreshToken')
-        .and.returnValue(of('example_refresh_token')),
-      setRefreshToken: jasmine
-        .createSpy('setRefreshToken')
-        .and.returnValue(undefined),
-
-      clearTokens: jasmine.createSpy('clearTokens').and.returnValue(undefined),
-    };
+    mockedHttpService = jasmine.createSpyObj('HttpService', ['post']);
 
     TestBed.configureTestingModule({
-      imports: [],
       providers: [
-        { provide: HttpService, useValue: httpServiceStub },
-        { provide: TokenService, useValue: tokenServiceStub },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting(),
+        { provide: TokenService, useValue: mockedTokenService },
+        { provide: HttpService, useValue: mockedHttpService },
+        AuthService,
       ],
     });
 
@@ -86,31 +66,49 @@ describe('AuthService', () => {
   });
 
   describe('register', () => {
-    it('should call HttpService post method with correct parameters', () => {
-      authService.register(data).subscribe({
-        next: (value: AuthResponseDto) => {
-          expect(value).toEqual(mockAuthResponse);
+    it('should call register method', async () => {
+      const authesponse: RegisterRequestDto = {
+        name: 'User 1',
+        email: 'user1@email.com',
+        password: 'Password123$',
+        repeatPassword: 'Password123$',
+        acceptTerms: true,
+      };
+
+      mockedHttpService.post.and.returnValue(of(mockAuthResponse));
+      mockedTokenService.setToken.and.returnValue(null);
+      mockedTokenService.setRefreshToken.and.returnValue(null);
+
+      authService.register(authesponse).subscribe({
+        next: (registerResponse: AuthResponseDto) => {
+          expect(mockedHttpService.post)
+            .withContext('httpService.post "authentication/register" call')
+            .toHaveBeenCalledOnceWith('authentication/register', authesponse);
+
+          expect(registerResponse)
+            .withContext(
+              'httpService.post "postauthentication/register" response'
+            )
+            .toEqual(mockAuthResponse);
+
+          expect(mockedTokenService.setToken)
+            .withContext('tokenService.setToken call')
+            .toHaveBeenCalledOnceWith(mockAuthResponse.data.payload.token);
+
+          expect(mockedTokenService.setRefreshToken)
+            .withContext('tokenService.setRefreshToken call')
+            .toHaveBeenCalledOnceWith(
+              mockAuthResponse.data.payload.refreshToken
+            );
         },
-        error: (err: any) => {
-          expect(true).withContext('not expected error').toBeFalsy();
-        },
-        complete: () => {
-          expect(httpServiceStub.post).toHaveBeenCalledWith(
-            'authentication/register',
-            data
-          );
-          expect(tokenServiceStub.setToken).toHaveBeenCalledOnceWith(
-            mockAuthResponse.data.payload.token
-          );
-          expect(tokenServiceStub.setRefreshToken).toHaveBeenCalledOnceWith(
-            mockAuthResponse.data.payload.refreshToken
-          );
+        error: (error: HttpErrorResponse) => {
+          expect(true).withContext('Error not expected.').toBeFalsy();
         },
       });
     });
 
-    it('should fail to register user', () => {
-      httpServiceStub.post = () =>
+    it('should fail calling register method', async () => {
+      mockedHttpService.post = () =>
         throwError(() => new Error('Simulated error'));
 
       const registerDto: RegisterRequestDto = {
@@ -129,6 +127,179 @@ describe('AuthService', () => {
           expect(true).withContext('not reachable code').toBeFalsy();
         },
       });
+    });
+  });
+
+  describe('login', () => {
+    it('should call login method', () => {
+      const loginData: LoginRequestDto = {
+        email: 'User 1',
+        password: 'Password123$',
+      };
+
+      mockedHttpService.post.and.returnValue(of(mockAuthResponse));
+      mockedTokenService.setToken.and.returnValue(null);
+      mockedTokenService.setRefreshToken.and.returnValue(null);
+
+      authService.login(loginData).subscribe({
+        next: (authesponse: AuthResponseDto) => {
+          expect(mockedHttpService.post)
+            .withContext('httpService.post "authentication/login" call')
+            .toHaveBeenCalledOnceWith('authentication/login', loginData);
+
+          expect(authesponse)
+            .withContext('httpService.post "postauthentication/login" response')
+            .toEqual(mockAuthResponse);
+
+          expect(mockedTokenService.setToken)
+            .withContext('tokenService.setToken call')
+            .toHaveBeenCalledOnceWith(mockAuthResponse.data.payload.token);
+
+          expect(mockedTokenService.setRefreshToken)
+            .withContext('tokenService.setRefreshToken call')
+            .toHaveBeenCalledOnceWith(
+              mockAuthResponse.data.payload.refreshToken
+            );
+        },
+        error: (error: HttpErrorResponse) => {
+          expect(true).withContext('Error not expected.').toBeFalsy();
+        },
+      });
+    });
+
+    it('should fail calling login method', () => {
+      mockedHttpService.post = () =>
+        throwError(() => new Error('Simulated error'));
+
+      const loginDto: LoginRequestDto = {
+        email: 'usuario@teste.com',
+        password: 'senha',
+      };
+
+      authService.login(loginDto).subscribe({
+        error: (err) => {
+          expect(err).toEqual('Simulated error');
+        },
+        complete: () => {
+          expect(true).withContext('not reachable code').toBeFalsy();
+        },
+      });
+    });
+  });
+
+  describe('createNewPassword', () => {
+    it('should call createNewPassword method', async () => {
+      const createNewPasswordData: NewPasswordRequestDto = {
+        hash: 'User 1',
+        password: 'Password123$',
+        repeatPassword: 'Password123$',
+      };
+
+      mockedHttpService.post.and.returnValue(of(mockAuthResponse));
+      mockedTokenService.setToken.and.returnValue(null);
+      mockedTokenService.setRefreshToken.and.returnValue(null);
+
+      authService.createNewPassword(createNewPasswordData).subscribe({
+        next: (authesponse: AuthResponseDto) => {
+          expect(mockedHttpService.post)
+            .withContext('httpService.post "authentication/new-password" call')
+            .toHaveBeenCalledOnceWith(
+              'authentication/new-password',
+              createNewPasswordData
+            );
+
+          expect(authesponse)
+            .withContext(
+              'httpService.post "postauthentication/new-password" response'
+            )
+            .toEqual(mockAuthResponse);
+
+          expect(mockedTokenService.setToken)
+            .withContext('tokenService.setToken call')
+            .toHaveBeenCalledOnceWith(mockAuthResponse.data.payload.token);
+
+          expect(mockedTokenService.setRefreshToken)
+            .withContext('tokenService.setRefreshToken call')
+            .toHaveBeenCalledOnceWith(
+              mockAuthResponse.data.payload.refreshToken
+            );
+        },
+        error: (error: HttpErrorResponse) => {
+          expect(true).withContext('Error not expected.').toBeFalsy();
+        },
+      });
+    });
+
+    it('should fail calling createNewPassword method', async () => {
+      mockedHttpService.post = () =>
+        throwError(() => new Error('Simulated error'));
+
+      const newPasswordDto: NewPasswordRequestDto = {
+        hash: 'SOME_HASH',
+        password: 'senha',
+        repeatPassword: 'senha',
+      };
+
+      authService.createNewPassword(newPasswordDto).subscribe({
+        error: (err) => {
+          expect(err).toEqual('Simulated error');
+        },
+        complete: () => {
+          expect(true).withContext('not reachable code').toBeFalsy();
+        },
+      });
+    });
+  });
+
+  describe('requestPasswordCreationLink', () => {
+    it('should call requestPasswordCreationLink method', async () => {
+      const requestPasswordCreationLinkRequestDto: RequestPasswordCreationLinkRequestDto =
+        { email: 'user1@email.com' };
+
+      mockedHttpService.post.and.returnValue(of(true));
+
+      authService
+        .requestPasswordCreationLink(requestPasswordCreationLinkRequestDto)
+        .subscribe({
+          next: (registerResponse: boolean) => {
+            expect(mockedHttpService.post)
+              .withContext(
+                'httpService.post "authentication/request-password-creation" call'
+              )
+              .toHaveBeenCalledOnceWith(
+                'authentication/request-password-creation',
+                requestPasswordCreationLinkRequestDto
+              );
+
+            expect(registerResponse)
+              .withContext(
+                'httpService.post "authentication/request-password-creationr" response'
+              )
+              .toBeTrue();
+          },
+          error: (error: HttpErrorResponse) => {
+            expect(true).withContext('Error not expected.').toBeFalsy();
+          },
+        });
+    });
+
+    it('should fail calling requestPasswordCreationLink method', async () => {
+      mockedHttpService.post = () =>
+        throwError(() => new Error('Simulated error'));
+
+      const requestPasswordCreationLinkDto: RequestPasswordCreationLinkRequestDto =
+        { email: 'usuario@teste.com' };
+
+      authService
+        .requestPasswordCreationLink(requestPasswordCreationLinkDto)
+        .subscribe({
+          error: (err) => {
+            expect(err).toEqual('Simulated error');
+          },
+          complete: () => {
+            expect(true).withContext('not reachable code').toBeFalsy();
+          },
+        });
     });
   });
 });

@@ -7,6 +7,7 @@ import { TokenService } from '../token/token.service';
 import { HttpStatusCode } from '@angular/common/http';
 import { LoginRequestDto } from './dtos/login.request.dto';
 import { NewPasswordRequestDto } from './dtos/new-password.request.dto';
+import { RequestPasswordCreationLinkRequestDto } from './dtos/request-password-creation-link.request.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +25,6 @@ export class AuthService {
           'authentication/register',
           data
         );
-
         postObservable.subscribe({
           next: (response: AuthResponseDto) => {
             this.processAuthResponse(observer, response);
@@ -90,6 +90,33 @@ export class AuthService {
     );
 
     return newPasswordObservable;
+  }
+
+  requestPasswordCreationLink(
+    data: RequestPasswordCreationLinkRequestDto
+  ): Observable<boolean> {
+    const requestPasswordCreationLinkObservable = new Observable(
+      (observer: Subscriber<boolean>) => {
+        const postObservable = this.httpService.post(
+          'authentication/request-password-creation',
+          data
+        );
+
+        postObservable.subscribe({
+          next: (response: boolean) => {
+            observer.next(response);
+          },
+          error: (error: any) => {
+            this.processError(observer, error);
+          },
+          complete: () => {
+            observer.complete();
+          },
+        });
+      }
+    );
+
+    return requestPasswordCreationLinkObservable;
   }
 
   private processAuthResponse(
