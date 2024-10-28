@@ -8,6 +8,7 @@ import { HttpStatusCode } from '@angular/common/http';
 import { LoginRequestDto } from './dtos/login.request.dto';
 import { NewPasswordRequestDto } from './dtos/new-password.request.dto';
 import { RequestPasswordCreationLinkRequestDto } from './dtos/request-password-creation-link.request.dto';
+import { UpdateLoggedInUserPasswordRequestDto } from './dtos/update-logged-in-user-password.request.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -72,6 +73,33 @@ export class AuthService {
       (observer: Subscriber<AuthResponseDto>) => {
         const postObservable = this.httpService.post(
           'authentication/new-password',
+          data
+        );
+
+        postObservable.subscribe({
+          next: (response: AuthResponseDto) => {
+            this.processAuthResponse(observer, response);
+          },
+          error: (error: any) => {
+            this.processError(observer, error);
+          },
+          complete: () => {
+            observer.complete();
+          },
+        });
+      }
+    );
+
+    return newPasswordObservable;
+  }
+
+  updateLoggedInUserPassword(
+    data: UpdateLoggedInUserPasswordRequestDto
+  ): Observable<AuthResponseDto> {
+    const newPasswordObservable = new Observable(
+      (observer: Subscriber<AuthResponseDto>) => {
+        const postObservable = this.httpService.post(
+          'authentication/update-logged-in-user-password',
           data
         );
 
