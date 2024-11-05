@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class HttpService {
-  apiUrl = 'http://localhost:3000/api'; // TODO:
+  apiUrl = 'http://localhost:3000/api'; // TODO: move api url to config file
 
   http: HttpClient = inject(HttpClient);
 

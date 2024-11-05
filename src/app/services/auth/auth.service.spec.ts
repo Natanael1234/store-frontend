@@ -10,6 +10,12 @@ import { RegisterRequestDto } from './dtos/register.request.dto';
 import { LoginRequestDto } from './dtos/login.request.dto';
 import { NewPasswordRequestDto } from './dtos/new-password.request.dto';
 import { RequestPasswordCreationLinkRequestDto } from './dtos/request-password-creation-link.request.dto';
+import { UpdateLoggedInUserPasswordRequestDto } from './dtos/update-logged-in-user-password.request.dto';
+
+const TEST_TOKEN =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6MTcwNzA3MzUyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0In0.LaW-Z0DkU5ZheRtst0mvZ3WtMgMmMeawJVke9qtCVyE';
+const TEST_REFRESH_TOKEN =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6NDI5ODk4NzEyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0IiwianRpIjoiMTI4In0.bJTClITMvD5NCDt5DjTmxn3DIjFOabEvsCvnK795VXU';
 
 let mockAuthResponse: AuthResponseDto = {
   status: 'success',
@@ -26,10 +32,8 @@ let mockAuthResponse: AuthResponseDto = {
     },
     payload: {
       type: 'bearer',
-      token:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6MTcwNzA3MzUyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0In0.LaW-Z0DkU5ZheRtst0mvZ3WtMgMmMeawJVke9qtCVyE',
-      refreshToken:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6NDI5ODk4NzEyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0IiwianRpIjoiMTI4In0.bJTClITMvD5NCDt5DjTmxn3DIjFOabEvsCvnK795VXU',
+      token: TEST_TOKEN,
+      refreshToken: TEST_REFRESH_TOKEN,
     },
   },
 };
@@ -86,9 +90,7 @@ describe('AuthService', () => {
             .toHaveBeenCalledOnceWith('authentication/register', authesponse);
 
           expect(registerResponse)
-            .withContext(
-              'httpService.post "postauthentication/register" response'
-            )
+            .withContext('httpService.post "authentication/register" response')
             .toEqual(mockAuthResponse);
 
           expect(mockedTokenService.setToken)
@@ -148,7 +150,7 @@ describe('AuthService', () => {
             .toHaveBeenCalledOnceWith('authentication/login', loginData);
 
           expect(authesponse)
-            .withContext('httpService.post "postauthentication/login" response')
+            .withContext('httpService.post "authentication/login" response')
             .toEqual(mockAuthResponse);
 
           expect(mockedTokenService.setToken)
@@ -210,7 +212,7 @@ describe('AuthService', () => {
 
           expect(authesponse)
             .withContext(
-              'httpService.post "postauthentication/new-password" response'
+              'httpService.post "authentication/new-password" response'
             )
             .toEqual(mockAuthResponse);
 
@@ -292,6 +294,73 @@ describe('AuthService', () => {
 
       authService
         .requestPasswordCreationLink(requestPasswordCreationLinkDto)
+        .subscribe({
+          error: (err) => {
+            expect(err).toEqual('Simulated error');
+          },
+          complete: () => {
+            expect(true).withContext('not reachable code').toBeFalsy();
+          },
+        });
+    });
+  });
+
+  describe('updateLoggedInUserPassword', () => {
+    it('should call updateLoggedInUserPassword method', async () => {
+      const updateLogedInUserPasswordData: UpdateLoggedInUserPasswordRequestDto =
+        { password: 'Password123$', repeatPassword: 'Password123$' };
+
+      mockedHttpService.post.and.returnValue(of(mockAuthResponse));
+      mockedTokenService.setToken.and.returnValue(null);
+      mockedTokenService.getToken.and.returnValue(
+        mockAuthResponse.data.payload.token
+      );
+      mockedTokenService.setRefreshToken.and.returnValue(null);
+
+      authService
+        .updateLoggedInUserPassword(updateLogedInUserPasswordData)
+        .subscribe({
+          next: (authesponse: AuthResponseDto) => {
+            expect(mockedHttpService.post)
+              .withContext(
+                'httpService.post "authentication/update-logged-in-user-password" call'
+              )
+              .toHaveBeenCalledOnceWith(
+                'authentication/update-logged-in-user-password',
+                updateLogedInUserPasswordData
+              );
+
+            expect(authesponse)
+              .withContext(
+                'httpService.post "authentication/update-logged-in-user-password" response'
+              )
+              .toEqual(mockAuthResponse);
+
+            expect(mockedTokenService.setToken)
+              .withContext('tokenService.setToken call')
+              .toHaveBeenCalledOnceWith(mockAuthResponse.data.payload.token);
+
+            expect(mockedTokenService.setRefreshToken)
+              .withContext('tokenService.setRefreshToken call')
+              .toHaveBeenCalledOnceWith(
+                mockAuthResponse.data.payload.refreshToken
+              );
+          },
+          error: (error: HttpErrorResponse) => {
+            expect(true).withContext('Error not expected.').toBeFalsy();
+          },
+        });
+    });
+
+    it('should fail calling createNewPassword method', async () => {
+      mockedHttpService.post = () =>
+        throwError(() => new Error('Simulated error'));
+
+      const updateLoggedInUserPasswordDto: UpdateLoggedInUserPasswordRequestDto =
+        { password: 'senha', repeatPassword: 'senha' };
+
+      authService
+        .updateLoggedInUserPassword(updateLoggedInUserPasswordDto)
         .subscribe({
           error: (err) => {
             expect(err).toEqual('Simulated error');
