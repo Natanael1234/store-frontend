@@ -4,7 +4,6 @@ import { TokenService } from './token.service';
 let store: { [key: string]: string } = {};
 
 export class LocalStorageMock implements Storage {
-  // https://armno.medium.com/til-mocking-localstorage-and-sessionstorage-in-angular-unit-tests-a765abdc9d87
   constructor() {}
   getItem(key: string): string | null {
     return store[key] || null;

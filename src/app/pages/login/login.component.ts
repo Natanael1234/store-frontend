@@ -123,23 +123,23 @@ export class LoginComponent {
       next: (authResponse: AuthResponseDto) => {
         this.loading = false;
       },
-      error: (error: any) => {
+      error: (remoteError: any) => {
         this.loading = false;
         // TODO: replace else if by if
-        if (typeof error == 'string') {
-          this.mainError = error;
-        } else if (typeof error.error?.message == 'string') {
-          this.mainError = error.error.message;
+        if (typeof remoteError == 'string') {
+          this.mainError = remoteError;
+        } else if (typeof remoteError.error?.message == 'string') {
+          this.mainError = remoteError.error.message;
         } else {
           // email
-          if (error.error?.message?.email) {
+          if (remoteError.error?.message?.email) {
             this.emailRemoteValidationContext.remoteError =
-              error.error?.message.email;
+              remoteError.error?.message.email;
           }
           // password
-          if (error.error?.message?.password) {
+          if (remoteError.error?.message?.password) {
             this.passwordRemoteValidationContext.remoteError =
-              error.error?.message.password;
+              remoteError.error?.message.password;
           }
           this.mainError = undefined;
           this.form.updateValueAndValidity();

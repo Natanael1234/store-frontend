@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 
-// https://www.syncfusion.com/blogs/post/best-practices-for-jwt-authentication-in-angular-apps.aspx
-
 @Injectable({
   providedIn: 'root',
 })
@@ -12,7 +10,7 @@ export class TokenService {
   constructor() {}
 
   getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+    return localStorage.getItem(this.TOKEN_KEY) || null;
   }
 
   setToken(token: string): void {
@@ -20,7 +18,7 @@ export class TokenService {
   }
 
   getRefreshToken(): string | null {
-    return localStorage.getItem(this.REFRESH_TOKEN_KEY);
+    return localStorage.getItem(this.REFRESH_TOKEN_KEY) || null;
   }
 
   setRefreshToken(refreshToken: string): void {

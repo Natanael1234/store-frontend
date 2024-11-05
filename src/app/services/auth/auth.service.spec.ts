@@ -12,6 +12,11 @@ import { NewPasswordRequestDto } from './dtos/new-password.request.dto';
 import { RequestPasswordCreationLinkRequestDto } from './dtos/request-password-creation-link.request.dto';
 import { UpdateLoggedInUserPasswordRequestDto } from './dtos/update-logged-in-user-password.request.dto';
 
+const TEST_TOKEN =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6MTcwNzA3MzUyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0In0.LaW-Z0DkU5ZheRtst0mvZ3WtMgMmMeawJVke9qtCVyE';
+const TEST_REFRESH_TOKEN =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6NDI5ODk4NzEyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0IiwianRpIjoiMTI4In0.bJTClITMvD5NCDt5DjTmxn3DIjFOabEvsCvnK795VXU';
+
 let mockAuthResponse: AuthResponseDto = {
   status: 'success',
   data: {
@@ -27,10 +32,8 @@ let mockAuthResponse: AuthResponseDto = {
     },
     payload: {
       type: 'bearer',
-      token:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6MTcwNzA3MzUyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0In0.LaW-Z0DkU5ZheRtst0mvZ3WtMgMmMeawJVke9qtCVyE',
-      refreshToken:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6NDI5ODk4NzEyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0IiwianRpIjoiMTI4In0.bJTClITMvD5NCDt5DjTmxn3DIjFOabEvsCvnK795VXU',
+      token: TEST_TOKEN,
+      refreshToken: TEST_REFRESH_TOKEN,
     },
   },
 };
@@ -309,6 +312,9 @@ describe('AuthService', () => {
 
       mockedHttpService.post.and.returnValue(of(mockAuthResponse));
       mockedTokenService.setToken.and.returnValue(null);
+      mockedTokenService.getToken.and.returnValue(
+        mockAuthResponse.data.payload.token
+      );
       mockedTokenService.setRefreshToken.and.returnValue(null);
 
       authService
