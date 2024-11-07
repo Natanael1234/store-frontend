@@ -4,6 +4,7 @@ import { LoginComponent } from '../../../pages/login/login.component';
 import { NewPasswordComponent } from '../../../pages/new-password/new-password.component';
 import { HomeComponent } from '../../../pages/home/home.component';
 import { UpdateLoggedInUserPasswordComponent } from '../../../pages/update-logged-in-user-password/update-logged-in-user-password.component';
+import { RequestPasswordChangeLinkComponent } from '../../../pages/request-password-change-link/request-password-change-link.component';
 
 const routeConfig: Routes = [
   { path: '', component: HomeComponent, title: 'Home Page' },
@@ -26,6 +27,11 @@ const routeConfig: Routes = [
     path: 'update-password',
     component: UpdateLoggedInUserPasswordComponent,
     title: 'Update Password Page',
+  },
+  {
+    path: 'request-password-change-link',
+    component: RequestPasswordChangeLinkComponent,
+    title: 'Request Password Change Link Page',
   },
 ];
 
