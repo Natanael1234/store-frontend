@@ -6,7 +6,7 @@ export class TextMessage {
   MAX_LEN?: string;
 
   constructor(options?: { minLength?: number; maxLength?: number }) {
-    this.NULL = `Nulo.`;
+    this.NULL = `Nulo.`; // TODO: não deveria exibir a mensagem desta forma para o usuário. Ao invés disso deveria usar "Obrigatório" ou algo similar
     this.REQUIRED = `Obrigatório.`;
     this.INVALID = `Inválido.`;
     if (options?.minLength == undefined) {

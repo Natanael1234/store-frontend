@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
 import { RegisterRequestDto } from './dtos/register.request.dto';
 import { LoginRequestDto } from './dtos/login.request.dto';
 import { NewPasswordRequestDto } from './dtos/new-password.request.dto';
-import { RequestPasswordCreationLinkRequestDto } from './dtos/request-password-creation-link.request.dto';
+import { RequestPasswordChangeLinkRequestDto } from './dtos/request-password-creation-link.request.dto';
 import { UpdateLoggedInUserPasswordRequestDto } from './dtos/update-logged-in-user-password.request.dto';
 
 const TEST_TOKEN =
@@ -253,15 +253,15 @@ describe('AuthService', () => {
     });
   });
 
-  describe('requestPasswordCreationLink', () => {
-    it('should call requestPasswordCreationLink method', async () => {
-      const requestPasswordCreationLinkRequestDto: RequestPasswordCreationLinkRequestDto =
+  describe('requestPasswordChangeLink', () => {
+    it('should call requestPasswordChangeLink method', async () => {
+      const requestPasswordChangeLinkRequestDto: RequestPasswordChangeLinkRequestDto =
         { email: 'user1@email.com' };
 
       mockedHttpService.post.and.returnValue(of(true));
 
       authService
-        .requestPasswordCreationLink(requestPasswordCreationLinkRequestDto)
+        .requestPasswordChangeLink(requestPasswordChangeLinkRequestDto)
         .subscribe({
           next: (registerResponse: boolean) => {
             expect(mockedHttpService.post)
@@ -270,7 +270,7 @@ describe('AuthService', () => {
               )
               .toHaveBeenCalledOnceWith(
                 'authentication/request-password-creation',
-                requestPasswordCreationLinkRequestDto
+                requestPasswordChangeLinkRequestDto
               );
 
             expect(registerResponse)
@@ -285,15 +285,15 @@ describe('AuthService', () => {
         });
     });
 
-    it('should fail calling requestPasswordCreationLink method', async () => {
+    it('should fail calling requestPasswordChangeLink method', async () => {
       mockedHttpService.post = () =>
         throwError(() => new Error('Simulated error'));
 
-      const requestPasswordCreationLinkDto: RequestPasswordCreationLinkRequestDto =
+      const requestPasswordChangeLinkDto: RequestPasswordChangeLinkRequestDto =
         { email: 'usuario@teste.com' };
 
       authService
-        .requestPasswordCreationLink(requestPasswordCreationLinkDto)
+        .requestPasswordChangeLink(requestPasswordChangeLinkDto)
         .subscribe({
           error: (err) => {
             expect(err).toEqual('Simulated error');

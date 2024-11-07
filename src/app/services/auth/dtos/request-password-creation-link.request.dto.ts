@@ -1,3 +1,3 @@
-export interface RequestPasswordCreationLinkRequestDto {
+export interface RequestPasswordChangeLinkRequestDto {
   email: string;
 }
