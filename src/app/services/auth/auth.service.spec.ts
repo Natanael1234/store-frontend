@@ -11,6 +11,7 @@ import { LoginRequestDto } from './dtos/login.request.dto';
 import { NewPasswordRequestDto } from './dtos/new-password.request.dto';
 import { RequestPasswordChangeLinkRequestDto } from './dtos/request-password-creation-link.request.dto';
 import { UpdateLoggedInUserPasswordRequestDto } from './dtos/update-logged-in-user-password.request.dto';
+import { EditOwnProfileRequestDto } from './dtos/edit-own-profile.request.dto';
 
 const TEST_TOKEN =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6MTcwNzA3MzUyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0In0.LaW-Z0DkU5ZheRtst0mvZ3WtMgMmMeawJVke9qtCVyE';
@@ -180,6 +181,58 @@ describe('AuthService', () => {
 
       authService.login(loginDto).subscribe({
         error: (err) => {
+          expect(err).toEqual('Simulated error');
+        },
+        complete: () => {
+          expect(true).withContext('not reachable code').toBeFalsy();
+        },
+      });
+    });
+  });
+
+  describe('editOwnProfile', () => {
+    it('should call editOwnProfile method', () => {
+      const profileData: EditOwnProfileRequestDto = {
+        name: 'User 1',
+      };
+
+      mockedHttpService.post.and.returnValue(of(null));
+      mockedTokenService.setToken.and.returnValue(null);
+      mockedTokenService.setRefreshToken.and.returnValue(null);
+
+      authService.editOwnProfile(profileData).subscribe({
+        next: (authesponse: true) => {
+          expect(mockedHttpService.post)
+            .withContext(
+              'httpService.post "authentication/edit-own-profile" call'
+            )
+            .toHaveBeenCalledOnceWith(
+              'authentication/edit-own-profile',
+              profileData
+            );
+
+          expect(authesponse)
+            .withContext(
+              'httpService.post "authentication/edit-own-profile" response'
+            )
+            .toEqual(true);
+        },
+        error: (error: HttpErrorResponse) => {
+          expect(true).withContext('Error not expected.').toBeFalsy();
+        },
+      });
+    });
+
+    it('should fail calling editOwnProfile method', () => {
+      mockedHttpService.post = () =>
+        throwError(() => new Error('Simulated error'));
+
+      const profileDto: EditOwnProfileRequestDto = {
+        name: 'User 1',
+      };
+
+      authService.editOwnProfile(profileDto).subscribe({
+        error: (err: any) => {
           expect(err).toEqual('Simulated error');
         },
         complete: () => {

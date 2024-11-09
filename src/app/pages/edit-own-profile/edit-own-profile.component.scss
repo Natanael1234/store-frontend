@@ -1,0 +1,7 @@
+.invalid ::ng-deep .mdc-checkbox__background {
+  border-color: var(--mdc-filled-text-field-error-label-text-color) !important;
+}
+
+.invalid ::ng-deep label {
+  color: var(--mdc-filled-text-field-error-label-text-color);
+}

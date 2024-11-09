@@ -9,6 +9,7 @@ import { LoginRequestDto } from './dtos/login.request.dto';
 import { NewPasswordRequestDto } from './dtos/new-password.request.dto';
 import { RequestPasswordChangeLinkRequestDto } from './dtos/request-password-creation-link.request.dto';
 import { UpdateLoggedInUserPasswordRequestDto } from './dtos/update-logged-in-user-password.request.dto';
+import { EditOwnProfileRequestDto } from './dtos/edit-own-profile.request.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -145,6 +146,31 @@ export class AuthService {
     );
 
     return requestPasswordChangeLinkObservable;
+  }
+
+  editOwnProfile(data: EditOwnProfileRequestDto): Observable<true> {
+    const editOwnProfileObservable = new Observable(
+      (observer: Subscriber<true>) => {
+        const postObservable = this.httpService.post(
+          'authentication/edit-own-profile',
+          data
+        );
+
+        postObservable.subscribe({
+          next: (response: true) => {
+            observer.next(true);
+          },
+          error: (error: any) => {
+            this.processError(observer, error);
+          },
+          complete: () => {
+            observer.complete();
+          },
+        });
+      }
+    );
+
+    return editOwnProfileObservable;
   }
 
   private processAuthResponse(

@@ -1,0 +1,38 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <!-- main error -->
+  @if (loading) {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+
+  } @if (mainError) {
+  <app-alert
+    [showCloseButton]="true"
+    type="danger"
+    icon="warning"
+    (onClose)="mainError = undefined"
+  >
+    {{ mainError }}
+  </app-alert>
+
+  }
+  <!-- name -->
+  <mat-form-field id="name-field" appearance="outline">
+    <mat-label>Nome</mat-label>
+    <input
+      id="name-input"
+      formControlName="name"
+      matInput
+      type="text"
+      autoComplete="off"
+      [maxlength]="maxUsernameLength"
+      autofocus
+      autocomplete="off"
+    />
+    <mat-error id="name-error"> {{ getNameErrorMessage() }}</mat-error>
+  </mat-form-field>
+
+  <!-- login -->
+  <button mat-flat-button id="save" type="submit" [disabled]="loading">
+    Salvar
+  </button>
+</form>
+''
