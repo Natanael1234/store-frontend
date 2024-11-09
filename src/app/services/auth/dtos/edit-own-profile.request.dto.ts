@@ -1,3 +1,3 @@
 export interface EditOwnProfileRequestDto {
-  email: string;
+  name: string;
 }

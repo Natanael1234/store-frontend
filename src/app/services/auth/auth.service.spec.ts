@@ -193,7 +193,7 @@ describe('AuthService', () => {
   describe('editOwnProfile', () => {
     it('should call editOwnProfile method', () => {
       const profileData: EditOwnProfileRequestDto = {
-        email: 'User 1',
+        name: 'User 1',
       };
 
       mockedHttpService.post.and.returnValue(of(null));
@@ -228,7 +228,7 @@ describe('AuthService', () => {
         throwError(() => new Error('Simulated error'));
 
       const profileDto: EditOwnProfileRequestDto = {
-        email: 'usuario@teste.com',
+        name: 'User 1',
       };
 
       authService.editOwnProfile(profileDto).subscribe({
