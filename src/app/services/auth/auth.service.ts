@@ -1,10 +1,10 @@
 import { Injectable, OnInit, inject } from '@angular/core';
-import { Observable, Subscriber } from 'rxjs';
+import { Observable, of, Subscriber, throwError } from 'rxjs';
 import { RegisterRequestDto } from './dtos/register.request.dto';
 import { HttpService } from '../http/http.service';
 import { AuthResponseDto } from './dtos/auth.response.dto';
 import { TokenService } from '../token/token.service';
-import { HttpStatusCode } from '@angular/common/http';
+import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { LoginRequestDto } from './dtos/login.request.dto';
 import { NewPasswordRequestDto } from './dtos/new-password.request.dto';
 import { RequestPasswordChangeLinkRequestDto } from './dtos/request-password-creation-link.request.dto';
@@ -23,16 +23,12 @@ export class AuthService {
   register(data: RegisterRequestDto): Observable<AuthResponseDto> {
     const registerObservable = new Observable(
       (observer: Subscriber<AuthResponseDto>) => {
-        const postObservable = this.httpService.post(
-          'authentication/register',
-          data
-        );
-        postObservable.subscribe({
+        this.httpService.post('authentication/register', data).subscribe({
           next: (response: AuthResponseDto) => {
             this.processAuthResponse(observer, response);
           },
-          error: (error: any) => {
-            this.processError(observer, error);
+          error: (error: HttpErrorResponse | Error) => {
+            observer.error(this.normalizeException(error));
           },
           complete: () => {
             observer.complete();
@@ -57,7 +53,7 @@ export class AuthService {
             this.processAuthResponse(observer, response);
           },
           error: (error: any) => {
-            this.processError(observer, error);
+            observer.error(this.normalizeException(error));
           },
           complete: () => {
             observer.complete();
@@ -82,7 +78,7 @@ export class AuthService {
             this.processAuthResponse(observer, response);
           },
           error: (error: any) => {
-            this.processError(observer, error);
+            observer.error(this.normalizeException(error));
           },
           complete: () => {
             observer.complete();
@@ -109,7 +105,7 @@ export class AuthService {
             this.processAuthResponse(observer, response);
           },
           error: (error: any) => {
-            this.processError(observer, error);
+            observer.error(this.normalizeException(error));
           },
           complete: () => {
             observer.complete();
@@ -136,7 +132,7 @@ export class AuthService {
             observer.next(response);
           },
           error: (error: any) => {
-            this.processError(observer, error);
+            observer.error(this.normalizeException(error));
           },
           complete: () => {
             observer.complete();
@@ -161,7 +157,7 @@ export class AuthService {
             observer.next(true);
           },
           error: (error: any) => {
-            this.processError(observer, error);
+            observer.error(this.normalizeException(error));
           },
           complete: () => {
             observer.complete();
@@ -173,24 +169,90 @@ export class AuthService {
     return editOwnProfileObservable;
   }
 
+  isAuthenticated(): boolean {
+    const accessToken = this.tokenService.getAccessToken();
+    return !!accessToken;
+  }
+
+  /**
+   * Refreshes JWT using the refresh token.
+   * @returns access token if successfully refreshed token, null if unauthorized or if refresh token is not defined.
+   * @throws http exception in case of backend error.
+   */
+  refreshToken(): Observable<string | null> {
+    const refreshToken = this.tokenService.getRefreshToken();
+
+    if (!refreshToken) {
+      this.tokenService.clearTokens();
+      return of(null);
+    }
+
+    const refreshTokenObservable = new Observable(
+      (observer: Subscriber<string | null>) => {
+        this.httpService
+          .post('authentication/refresh', {
+            refreshToken,
+          })
+          .subscribe({
+            next: (response: AuthResponseDto) => {
+              const accessToken = response.data?.payload?.token!;
+              // don't received access token
+              if (!accessToken) {
+                this.tokenService.clearTokens();
+              }
+              // received acess token
+              else {
+                this.tokenService.setAccessToken(accessToken);
+              }
+              // return access token
+              observer.next(accessToken);
+            },
+            error: (error: any) => {
+              // unauthorized
+              if (
+                error instanceof HttpErrorResponse &&
+                error.status === HttpStatusCode.Unauthorized
+              ) {
+                this.tokenService.clearTokens();
+                observer.next(null);
+              }
+              // other errors
+              else {
+                observer.error(this.normalizeException(error));
+              }
+            },
+            complete: () => {
+              observer.complete();
+            },
+          });
+      }
+    );
+
+    return refreshTokenObservable;
+  }
+
   private processAuthResponse(
     observer: Subscriber<any>,
     response: AuthResponseDto
   ) {
-    this.tokenService.setToken(response.data?.payload?.token);
+    this.tokenService.setAccessToken(response.data?.payload?.token!);
     this.tokenService.setRefreshToken(response.data?.payload?.refreshToken!);
     observer.next(response);
   }
 
-  private processError(observer: Subscriber<any>, error: any) {
+  private normalizeException(error: any) {
     if (error.status == 0) {
-      observer.error('Falha na requisição.'); // TODO: extrair texto
+      return 'Falha na requisição.'; // TODO: extrair texto
     } else if (error.error?.statusCode == HttpStatusCode.UnprocessableEntity) {
-      observer.error(error);
+      return error;
+    } else if (error.cause == HttpStatusCode.Unauthorized) {
+      return error;
     } else if (error.error?.statusCode && error.error.message) {
-      observer.error(error);
+      return error;
+    } else if (error.status && typeof error.error == 'string') {
+      return error;
     } else {
-      observer.error(error.message);
+      return error.message;
     }
   }
 }

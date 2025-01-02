@@ -5,6 +5,7 @@ import { NewPasswordComponent } from '../../../pages/new-password/new-password.c
 import { HomeComponent } from '../../../pages/home/home.component';
 import { UpdateLoggedInUserPasswordComponent } from '../../../pages/update-logged-in-user-password/update-logged-in-user-password.component';
 import { RequestPasswordChangeLinkComponent } from '../../../pages/request-password-change-link/request-password-change-link.component';
+import { AuthGuard } from '../../../guards/auth.guard';
 
 const routeConfig: Routes = [
   { path: '', component: HomeComponent, title: 'Home Page' },
@@ -27,6 +28,7 @@ const routeConfig: Routes = [
     path: 'update-password',
     component: UpdateLoggedInUserPasswordComponent,
     title: 'Update Password Page',
+    canActivate: [AuthGuard],
   },
   {
     path: 'request-password-change-link',

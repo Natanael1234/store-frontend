@@ -7,6 +7,7 @@ import {
 } from '@angular/common/http/testing';
 import {
   HTTP_INTERCEPTORS,
+  HttpStatusCode,
   provideHttpClient,
   withInterceptorsFromDi,
 } from '@angular/common/http';
@@ -48,8 +49,8 @@ describe('HttpService', () => {
     }).toThrowError('Missing request path');
   });
 
-  it('should make a POST request without token and return data', () => {
-    spyOn(tokenService, 'getToken').and.returnValue(null);
+  it('should make a POST request without access token and return data', () => {
+    spyOn(tokenService, 'getAccessToken').and.returnValue(null);
 
     const testData = { id: 1, name: 'Test' };
     const testPath = 'test';
@@ -63,11 +64,16 @@ describe('HttpService', () => {
     expect(httpRequest.request.method).toEqual('POST');
     expect(httpRequest.request.headers.has('Authorization')).toBeFalse();
     expect(httpRequest.request.headers.get('Authorization')).toBe(null);
-    httpRequest.flush(testData, { status: 200, statusText: 'OK' });
+    httpRequest.flush(testData, {
+      status: HttpStatusCode.Ok,
+      statusText: 'OK',
+    });
   });
 
-  it('should make a POST request using a token', () => {
-    spyOn(tokenService, 'getToken').and.returnValue('mocked-token');
+  it('should make a POST request using a access token', () => {
+    spyOn(tokenService, 'getAccessToken').and.returnValue(
+      'mocked-access-token'
+    );
 
     const testData = { id: 1, name: 'Test' };
     const testPath = 'test';
@@ -81,19 +87,22 @@ describe('HttpService', () => {
 
     expect(httpRequest.request.headers.has('Authorization')).toBeTrue();
     expect(httpRequest.request.headers.get('Authorization')).toBe(
-      'Token mocked-token'
+      'Token mocked-access-token'
     );
 
-    httpRequest.flush(testData, { status: 200, statusText: 'OK' });
+    httpRequest.flush(testData, {
+      status: HttpStatusCode.Ok,
+      statusText: 'OK',
+    });
   });
 
   it('should handle error', () => {
     const testPath = 'test';
     httpService.post(testPath, {}).subscribe({
       error: (err) => {
-        expect(err.status).toEqual(400);
+        expect(err.status).toEqual(HttpStatusCode.BadRequest);
         expect(err.message).toEqual(
-          `Http failure response for http://localhost:3000/api/${testPath}: 400 Falha na requisição`
+          `Http failure response for http://localhost:3000/api/${testPath}: ${HttpStatusCode.BadRequest} Falha na requisição`
         );
       },
     });
@@ -103,7 +112,7 @@ describe('HttpService', () => {
     );
     expect(httpRequest.request.method).toEqual('POST');
     httpRequest.flush('Internal Server Error', {
-      status: 400,
+      status: HttpStatusCode.BadRequest,
       statusText: 'Falha na requisição',
     });
   });
