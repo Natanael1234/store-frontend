@@ -5,6 +5,8 @@ import { RegisterComponent } from '../../../pages/register/register.component';
 import { LoginComponent } from '../../../pages/login/login.component';
 import { NewPasswordComponent } from '../../../pages/new-password/new-password.component';
 import { UpdateLoggedInUserPasswordComponent } from '../../../pages/update-logged-in-user-password/update-logged-in-user-password.component';
+import { RequestPasswordChangeLinkComponent } from '../../../pages/request-password-change-link/request-password-change-link.component';
+import { AuthGuard } from '../../../guards/auth.guard';
 
 describe('routeConfig', () => {
   it('should be defined', () => {
@@ -33,6 +35,12 @@ describe('routeConfig', () => {
         path: 'update-password',
         component: UpdateLoggedInUserPasswordComponent,
         title: 'Update Password Page',
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'request-password-change-link',
+        component: RequestPasswordChangeLinkComponent,
+        title: 'Request Password Change Link Page',
       },
     ]);
   });
