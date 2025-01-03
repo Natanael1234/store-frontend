@@ -12,7 +12,6 @@ import { NewPasswordRequestDto } from './dtos/new-password.request.dto';
 import { RequestPasswordChangeLinkRequestDto } from './dtos/request-password-creation-link.request.dto';
 import { UpdateLoggedInUserPasswordRequestDto } from './dtos/update-logged-in-user-password.request.dto';
 import { EditOwnProfileRequestDto } from './dtos/edit-own-profile.request.dto';
-import { RefreshTokenRequestDTO } from './dtos/refresh-token.request.dto';
 import {
   testCreateMockedTokenService,
   testTokenServiceCalls,
