@@ -16,6 +16,7 @@ import {
   testCreateMockedTokenService,
   testTokenServiceCalls,
 } from '../token/test-token-service.utils';
+import { AuthRequestRoutes } from './request-routes/auth.request-routes';
 
 /** mocks JWT token */
 const SECRET_KEY = 'SECRET_KEY';
@@ -117,11 +118,15 @@ describe('AuthService', () => {
       authService.register(authesponse).subscribe({
         next: (registerResponse: AuthResponseDto) => {
           expect(mockedHttpService.post)
-            .withContext('httpService.post "authentication/register" call')
-            .toHaveBeenCalledOnceWith('authentication/register', authesponse);
+            .withContext(
+              `httpService.post "${AuthRequestRoutes.REGISTER}" call`
+            )
+            .toHaveBeenCalledOnceWith(AuthRequestRoutes.REGISTER, authesponse);
 
           expect(registerResponse)
-            .withContext('httpService.post "authentication/register" response')
+            .withContext(
+              `httpService.post "${AuthRequestRoutes.REGISTER}" response`
+            )
             .toEqual(mockAuthResponse);
 
           testTokenServiceCalls(
@@ -189,11 +194,13 @@ describe('AuthService', () => {
       authService.login(loginData).subscribe({
         next: (authesponse: AuthResponseDto) => {
           expect(mockedHttpService.post)
-            .withContext('httpService.post "authentication/login" call')
-            .toHaveBeenCalledOnceWith('authentication/login', loginData);
+            .withContext(`httpService.post "${AuthRequestRoutes.LOGIN}" call`)
+            .toHaveBeenCalledOnceWith(AuthRequestRoutes.LOGIN, loginData);
 
           expect(authesponse)
-            .withContext('httpService.post "authentication/login" response')
+            .withContext(
+              `httpService.post "${AuthRequestRoutes.LOGIN}" response`
+            )
             .toEqual(mockAuthResponse);
 
           testTokenServiceCalls(
@@ -258,16 +265,16 @@ describe('AuthService', () => {
         next: (authesponse: true) => {
           expect(mockedHttpService.post)
             .withContext(
-              'httpService.post "authentication/edit-own-profile" call'
+              `httpService.post "${AuthRequestRoutes.EDIT_OWN_PROFILE}" call`
             )
             .toHaveBeenCalledOnceWith(
-              'authentication/edit-own-profile',
+              AuthRequestRoutes.EDIT_OWN_PROFILE,
               profileData
             );
 
           expect(authesponse)
             .withContext(
-              'httpService.post "authentication/edit-own-profile" response'
+              `httpService.post "${AuthRequestRoutes.EDIT_OWN_PROFILE}" response`
             )
             .toEqual(true);
 
@@ -327,15 +334,17 @@ describe('AuthService', () => {
       authService.createNewPassword(createNewPasswordData).subscribe({
         next: (authesponse: AuthResponseDto) => {
           expect(mockedHttpService.post)
-            .withContext('httpService.post "authentication/new-password" call')
+            .withContext(
+              `httpService.post "${AuthRequestRoutes.NEW_PASSWORD}" call`
+            )
             .toHaveBeenCalledOnceWith(
-              'authentication/new-password',
+              AuthRequestRoutes.NEW_PASSWORD,
               createNewPasswordData
             );
 
           expect(authesponse)
             .withContext(
-              'httpService.post "authentication/new-password" response'
+              `httpService.post "${AuthRequestRoutes.NEW_PASSWORD}" response`
             )
             .toEqual(mockAuthResponse);
 
@@ -401,16 +410,16 @@ describe('AuthService', () => {
           next: (registerResponse: boolean) => {
             expect(mockedHttpService.post)
               .withContext(
-                'httpService.post "authentication/request-password-creation" call'
+                `httpService.post "${AuthRequestRoutes.REQUEST_PASSWORD_CREATION}" call`
               )
               .toHaveBeenCalledOnceWith(
-                'authentication/request-password-creation',
+                AuthRequestRoutes.REQUEST_PASSWORD_CREATION,
                 requestPasswordChangeLinkRequestDto
               );
 
             expect(registerResponse)
               .withContext(
-                'httpService.post "authentication/request-password-creationr" response'
+                `httpService.post "${AuthRequestRoutes.REQUEST_PASSWORD_CREATION}" response`
               )
               .toBeTrue();
 
@@ -474,16 +483,16 @@ describe('AuthService', () => {
           next: (authesponse: AuthResponseDto) => {
             expect(mockedHttpService.post)
               .withContext(
-                'httpService.post "authentication/update-logged-in-user-password" call'
+                `httpService.post "${AuthRequestRoutes.UPDATE_LOGGED_IN_USER_PASSWORD}" call`
               )
               .toHaveBeenCalledOnceWith(
-                'authentication/update-logged-in-user-password',
+                AuthRequestRoutes.UPDATE_LOGGED_IN_USER_PASSWORD,
                 updateLogedInUserPasswordData
               );
 
             expect(authesponse)
               .withContext(
-                'httpService.post "authentication/update-logged-in-user-password" response'
+                `httpService.post "${AuthRequestRoutes.UPDATE_LOGGED_IN_USER_PASSWORD}" response`
               )
               .toEqual(mockAuthResponse);
 
@@ -581,13 +590,15 @@ describe('AuthService', () => {
       authService.refreshToken().subscribe({
         next: (authesponse: string | null) => {
           expect(mockedHttpService.post)
-            .withContext('httpService.post "authentication/refresh" call')
-            .toHaveBeenCalledOnceWith('authentication/refresh', {
+            .withContext(`httpService.post "${AuthRequestRoutes.REFRESH}" call`)
+            .toHaveBeenCalledOnceWith(AuthRequestRoutes.REFRESH, {
               refreshToken: mockAuthResponse.data.payload.refreshToken,
             });
 
           expect(authesponse)
-            .withContext('httpService.post "authentication/refresh" response')
+            .withContext(
+              `httpService.post "${AuthRequestRoutes.REFRESH}" response`
+            )
             .toEqual(accessToken);
 
           expect(mockedTokenService.getAccessToken)
@@ -666,7 +677,7 @@ describe('AuthService', () => {
       authService.refreshToken().subscribe({
         next: (authesponse: string | null) => {
           expect(mockedHttpService.post)
-            .withContext('httpService.post "authentication/refresh" call')
+            .withContext(`httpService.post "${AuthRequestRoutes.REFRESH}" call`)
             .not.toHaveBeenCalled();
 
           expect(mockedTokenService.getAccessToken)
@@ -791,9 +802,9 @@ describe('AuthService', () => {
           expect(err.cause).not.toBeDefined();
 
           expect(mockedHttpService.post)
-            .withContext('httpService.post "authentication/refresh" call')
-            .toHaveBeenCalledOnceWith('authentication/refresh', {
-              refreshToken: refreshToken,
+            .withContext(`httpService.post "${AuthRequestRoutes.REFRESH}" call`)
+            .toHaveBeenCalledOnceWith(AuthRequestRoutes.REFRESH, {
+              refreshToken,
             });
 
           expect(mockedTokenService.getAccessToken)

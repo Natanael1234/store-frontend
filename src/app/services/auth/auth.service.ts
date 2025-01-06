@@ -10,6 +10,7 @@ import { NewPasswordRequestDto } from './dtos/new-password.request.dto';
 import { RequestPasswordChangeLinkRequestDto } from './dtos/request-password-creation-link.request.dto';
 import { UpdateLoggedInUserPasswordRequestDto } from './dtos/update-logged-in-user-password.request.dto';
 import { EditOwnProfileRequestDto } from './dtos/edit-own-profile.request.dto';
+import { AuthRequestRoutes } from './request-routes/auth.request-routes';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +24,7 @@ export class AuthService {
   register(data: RegisterRequestDto): Observable<AuthResponseDto> {
     const registerObservable = new Observable(
       (observer: Subscriber<AuthResponseDto>) => {
-        this.httpService.post('authentication/register', data).subscribe({
+        this.httpService.post(AuthRequestRoutes.REGISTER, data).subscribe({
           next: (response: AuthResponseDto) => {
             this.processAuthResponse(observer, response);
           },
@@ -44,7 +45,7 @@ export class AuthService {
     const loginObservable = new Observable(
       (observer: Subscriber<AuthResponseDto>) => {
         const postObservable = this.httpService.post(
-          'authentication/login',
+          AuthRequestRoutes.LOGIN,
           data
         );
 
@@ -69,7 +70,7 @@ export class AuthService {
     const newPasswordObservable = new Observable(
       (observer: Subscriber<AuthResponseDto>) => {
         const postObservable = this.httpService.post(
-          'authentication/new-password',
+          AuthRequestRoutes.NEW_PASSWORD,
           data
         );
 
@@ -96,7 +97,7 @@ export class AuthService {
     const newPasswordObservable = new Observable(
       (observer: Subscriber<AuthResponseDto>) => {
         const postObservable = this.httpService.post(
-          'authentication/update-logged-in-user-password',
+          AuthRequestRoutes.UPDATE_LOGGED_IN_USER_PASSWORD,
           data
         );
 
@@ -123,7 +124,7 @@ export class AuthService {
     const requestPasswordChangeLinkObservable = new Observable(
       (observer: Subscriber<boolean>) => {
         const postObservable = this.httpService.post(
-          'authentication/request-password-creation',
+          AuthRequestRoutes.REQUEST_PASSWORD_CREATION,
           data
         );
 
@@ -148,7 +149,7 @@ export class AuthService {
     const editOwnProfileObservable = new Observable(
       (observer: Subscriber<true>) => {
         const postObservable = this.httpService.post(
-          'authentication/edit-own-profile',
+          AuthRequestRoutes.EDIT_OWN_PROFILE,
           data
         );
 
@@ -190,9 +191,7 @@ export class AuthService {
     const refreshTokenObservable = new Observable(
       (observer: Subscriber<string | null>) => {
         this.httpService
-          .post('authentication/refresh', {
-            refreshToken,
-          })
+          .post(AuthRequestRoutes.REFRESH, { refreshToken })
           .subscribe({
             next: (response: AuthResponseDto) => {
               const accessToken = response.data?.payload?.token!;

@@ -37,6 +37,19 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
+    const urlsToExclude = [
+      '/authentication/register',
+      'authentication/login',
+      'authentication/new-password',
+      'authentication/request-password-creation',
+      '/authentication/refresh',
+    ];
+
+    // Verifique se a URL da requisição está na lista de exclusão
+    if (urlsToExclude.some((url) => req.url.includes(url))) {
+      return next.handle(req); // Passa a requisição sem modificá-la
+    }
+
     const accessToken = this.tokenService.getAccessToken();
     let clonedReq = req; // TODO: it is not really cloning
     // if access token not found
