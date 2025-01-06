@@ -19,7 +19,7 @@ import {
 } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
-import { AuthResponseDto } from '../../services/auth/dtos/auth.response.dto';
+import { AuthRequestRoutes } from '../../services/auth/request-routes/auth.request-routes';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -37,17 +37,8 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const urlsToExclude = [
-      '/authentication/register',
-      'authentication/login',
-      'authentication/new-password',
-      'authentication/request-password-creation',
-      '/authentication/refresh',
-    ];
-
-    // Verifique se a URL da requisição está na lista de exclusão
-    if (urlsToExclude.some((url) => req.url.includes(url))) {
-      return next.handle(req); // Passa a requisição sem modificá-la
+    if (!this.shouldAddToken(req.method, req.url)) {
+      return next.handle(req);
     }
 
     const accessToken = this.tokenService.getAccessToken();
@@ -81,6 +72,20 @@ export class AuthInterceptor implements HttpInterceptor {
         })
       );
     }
+  }
+
+  private shouldAddToken(method: string, url: string) {
+    // TODO: isolar
+    const filters = [
+      { method: 'post', url: AuthRequestRoutes.REGISTER },
+      { method: 'post', url: AuthRequestRoutes.LOGIN },
+      { method: 'post', url: AuthRequestRoutes.NEW_PASSWORD },
+      { method: 'post', url: AuthRequestRoutes.REQUEST_PASSWORD_CREATION },
+      { method: 'post', url: AuthRequestRoutes.REFRESH },
+    ];
+    return !filters.some(
+      (filter) => filter.method == method && url.includes(filter.url)
+    );
   }
 
   private refreshToken(
