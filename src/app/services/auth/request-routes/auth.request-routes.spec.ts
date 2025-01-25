@@ -8,14 +8,48 @@ describe('AuthRequestRoutes', () => {
   it('should have valid keys and values', () => {
     const fields: any = { ...AuthRequestRoutes };
     expect(fields).toEqual({
-      REGISTER: 'authentication/register',
-      LOGIN: 'authentication/login',
-      NEW_PASSWORD: 'authentication/new-password',
-      UPDATE_LOGGED_IN_USER_PASSWORD:
-        'authentication/update-logged-in-user-password',
-      REQUEST_PASSWORD_CREATION: 'authentication/request-password-creation',
-      EDIT_OWN_PROFILE: 'authentication/edit-own-profile',
-      REFRESH: 'authentication/refresh',
+      /** authentication/register */
+      REGISTER: {
+        url: 'authentication/register',
+        method: 'post',
+        authenticationRequired: false,
+      },
+      /** authentication/login */
+      LOGIN: {
+        url: 'authentication/login',
+        method: 'post',
+        authenticationRequired: false,
+      },
+      /** authentication/new-password */
+      NEW_PASSWORD: {
+        url: 'authentication/new-password',
+        method: 'post',
+        authenticationRequired: false,
+      },
+      /** authentication/update-logged-in-user-password */
+      UPDATE_LOGGED_IN_USER_PASSWORD: {
+        url: 'authentication/update-logged-in-user-password',
+        method: 'post',
+        authenticationRequired: true,
+      },
+      /** authentication/request-password-creation */
+      REQUEST_PASSWORD_CREATION: {
+        url: 'authentication/request-password-creation',
+        method: 'post',
+        authenticationRequired: false,
+      },
+      /** authentication/edit-own-profile */
+      EDIT_OWN_PROFILE: {
+        url: 'authentication/edit-own-profile',
+        method: 'post',
+        authenticationRequired: true,
+      },
+      /** authentication/refresh */
+      REFRESH: {
+        url: 'authentication/refresh',
+        method: 'post',
+        authenticationRequired: false,
+      },
     });
   });
 });

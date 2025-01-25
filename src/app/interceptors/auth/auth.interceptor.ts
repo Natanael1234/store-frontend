@@ -37,7 +37,7 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if (!this.shouldAddToken(req.method, req.url)) {
+    if (this.shouldSkipAddAccessToken(req.method, req.url)) {
       return next.handle(req);
     }
 
@@ -74,18 +74,19 @@ export class AuthInterceptor implements HttpInterceptor {
     }
   }
 
-  private shouldAddToken(method: string, url: string) {
+  private shouldSkipAddAccessToken(method: string, url: string) {
     // TODO: isolar
-    const filters = [
-      { method: 'post', url: AuthRequestRoutes.REGISTER },
-      { method: 'post', url: AuthRequestRoutes.LOGIN },
-      { method: 'post', url: AuthRequestRoutes.NEW_PASSWORD },
-      { method: 'post', url: AuthRequestRoutes.REQUEST_PASSWORD_CREATION },
-      { method: 'post', url: AuthRequestRoutes.REFRESH },
-    ];
-    return !filters.some(
-      (filter) => filter.method == method && url.includes(filter.url)
-    );
+    const routes = Object.values(AuthRequestRoutes);
+
+    const authenticationRequired = routes.some((route) => {
+      const sameMethod = route.method?.toUpperCase() == method?.toUpperCase();
+      const sameUrl = url
+        ?.toLocaleLowerCase()
+        ?.includes(route.url?.toLowerCase());
+      const requiresAuthentication = route.authenticationRequired;
+      return sameMethod && sameUrl && requiresAuthentication;
+    });
+    return !authenticationRequired;
   }
 
   private refreshToken(

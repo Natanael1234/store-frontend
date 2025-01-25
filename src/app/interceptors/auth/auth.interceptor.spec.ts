@@ -20,6 +20,7 @@ import {
   testTokenServiceCalls,
 } from '../../services/token/test-token-service.utils';
 import { Router } from '@angular/router';
+import { AuthRequestRoutes } from '../../services/auth/request-routes/auth.request-routes';
 
 describe('AuthInterceptor', () => {
   let httpMock: HttpTestingController;
@@ -88,9 +89,11 @@ describe('AuthInterceptor', () => {
       of(mockAuthResponse.data.payload.token)
     );
 
-    httpClient.get('/data').subscribe();
+    const { url: URL, method: METHOD } = AuthRequestRoutes.EDIT_OWN_PROFILE;
 
-    const httpRequest = httpMock.expectOne('/data');
+    (httpClient as unknown as any)[METHOD](URL).subscribe();
+
+    const httpRequest = httpMock.expectOne(URL);
     expect(httpRequest.request.headers.has('Authorization')).toBeTrue();
     expect(httpRequest.request.headers.get('Authorization')).toBe(
       'Bearer mocked-access-token'
@@ -116,8 +119,11 @@ describe('AuthInterceptor', () => {
       of(mockAuthResponse.data.payload.token)
     );
 
-    httpClient.get('/test').subscribe(() => {});
-    httpMock.expectOne('/test');
+    const { url: URL, method: METHOD } = AuthRequestRoutes.EDIT_OWN_PROFILE;
+
+    (httpClient as unknown as any)[METHOD](URL).subscribe();
+
+    const httpRequest = httpMock.expectOne(URL);
 
     testTokenServiceCalls({ getAccessToken: 1 }, mockedTokenService);
 
@@ -129,6 +135,7 @@ describe('AuthInterceptor', () => {
   });
 
   it('should refresh token and make a new successful request when the first request failed with unauthorized status', () => {
+    const newAccessToken = 'A_NEW_ACCESS_TOKEN';
     mockedTokenService.getAccessToken.and.returnValue(
       EXPIRED_TEST_ACCESS_TOKEN
     );
@@ -137,29 +144,38 @@ describe('AuthInterceptor', () => {
     mockedTokenService.setRefreshToken.and.returnValue(null);
     mockedTokenService.clearTokens.and.returnValue(null);
 
-    authService.refreshToken.and.returnValue(
-      of(mockAuthResponse.data.payload.token)
-    );
+    authService.refreshToken.and.returnValue(of(newAccessToken));
 
-    httpClient.get('/test').subscribe((response) => {
+    const client = httpClient as unknown as any;
+    const { method: METHOD, url: URL } = AuthRequestRoutes.EDIT_OWN_PROFILE;
+
+    client[METHOD](URL).subscribe((response: any) => {
       expect(response).toBeTruthy();
     });
 
     // primeira requisição falha
-    const req1 = httpMock.expectOne('/test');
-    expect(req1.request.headers.has('Authorization')).toBeTrue();
-    req1.flush(null, {
+
+    let requests = httpMock.match(URL);
+    expect(requests.length).toEqual(1);
+    expect(requests[0].request.headers.has('Authorization')).toBeTrue();
+    expect(requests[0].request.headers.get('Authorization')).toBe(
+      `Bearer ${EXPIRED_TEST_ACCESS_TOKEN}`
+    );
+    requests[0].flush(null, {
       status: HttpStatusCode.Unauthorized,
       statusText: 'Unauthorized',
     });
+    testTokenServiceCalls({ getAccessToken: 1 }, mockedTokenService);
+    expect(routerSpy.navigate).not.toHaveBeenCalled();
 
     // segunda requisição bem sucedida
-    const req2 = httpMock.expectOne('/test');
-    expect(req2.request.headers.get('Authorization')).toBe(
-      `Bearer ${mockAuthResponse.data.payload.token}`
-    );
-    req2.flush({ success: true });
 
+    requests = httpMock.match(URL);
+    expect(requests.length).toEqual(1);
+    expect(requests[0].request.headers.get('Authorization')).toBe(
+      `Bearer ${newAccessToken}`
+    );
+    requests[0].flush({ success: true });
     testTokenServiceCalls({ getAccessToken: 1 }, mockedTokenService);
 
     expect(routerSpy.navigate).not.toHaveBeenCalled();
@@ -174,11 +190,11 @@ describe('AuthInterceptor', () => {
     mockedTokenService.setRefreshToken.and.returnValue(null);
     mockedTokenService.clearTokens.and.returnValue(null);
 
-    httpClient.get('/data').subscribe();
+    const { method: METHOD, url: URL } = AuthRequestRoutes.EDIT_OWN_PROFILE;
 
-    httpMock.expectOne('/data');
+    (httpClient as unknown as any)[METHOD](URL).subscribe();
 
-    httpMock.expectNone('/data');
+    const httpRequest = httpMock.expectOne(URL);
 
     expect(spy).toHaveBeenCalledOnceWith();
 
@@ -204,7 +220,9 @@ describe('AuthInterceptor', () => {
     });
     authService.refreshToken.and.returnValue(throwError(() => simulatedError));
 
-    httpClient.get('/data').subscribe({
+    const { method: METHOD, url: URL } = AuthRequestRoutes.EDIT_OWN_PROFILE;
+
+    (httpClient as unknown as any)[METHOD](URL).subscribe({
       next: () => {
         expect(true).withContext('not reachable code (next)').toBeFalsy();
       },
@@ -218,5 +236,37 @@ describe('AuthInterceptor', () => {
         expect(true).withContext('not reachable code (complete)').toBeFalsy();
       },
     });
+  });
+
+  it('should add token only in some routes', () => {
+    const routes = [...Object.values(AuthRequestRoutes)];
+    for (const route of routes) {
+      mockedTokenService.getAccessToken.and.returnValue('mocked-access-token');
+      mockedTokenService.getRefreshToken.and.returnValue(null);
+      mockedTokenService.setAccessToken.and.returnValue(null);
+      mockedTokenService.setRefreshToken.and.returnValue(null);
+      mockedTokenService.clearTokens.and.returnValue(null);
+
+      authService.refreshToken.and.returnValue(
+        of(mockAuthResponse.data.payload.token)
+      );
+
+      const { method: METHOD, url: URL } = route;
+
+      (httpClient as unknown as any)[METHOD](URL).subscribe();
+
+      const httpRequest = httpMock.expectOne(URL);
+      if (route.authenticationRequired) {
+        expect(httpRequest.request.headers.has('Authorization')).toBeTrue();
+        expect(httpRequest.request.headers.get('Authorization'))
+          .withContext(`${METHOD} ${URL} access token`)
+          .toEqual('Bearer mocked-access-token');
+      } else {
+        expect(httpRequest.request.headers.has('Authorization')).toBeFalse();
+        expect(httpRequest.request.headers.get('Authorization'))
+          .withContext(`${METHOD} ${URL} access token`)
+          .toEqual(null);
+      }
+    }
   });
 });
