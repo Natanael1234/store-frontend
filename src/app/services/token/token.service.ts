@@ -4,17 +4,17 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class TokenService {
-  private readonly TOKEN_KEY = 'auth_token';
+  private readonly ACCESS_TOKEN_KEY = 'access_token';
   private readonly REFRESH_TOKEN_KEY = 'refresh_token';
 
   constructor() {}
 
-  getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY) || null;
+  getAccessToken(): string | null {
+    return localStorage.getItem(this.ACCESS_TOKEN_KEY) || null;
   }
 
-  setToken(token: string): void {
-    localStorage.setItem(this.TOKEN_KEY, token);
+  setAccessToken(accessToken: string): void {
+    localStorage.setItem(this.ACCESS_TOKEN_KEY, accessToken);
   }
 
   getRefreshToken(): string | null {
@@ -26,7 +26,7 @@ export class TokenService {
   }
 
   clearTokens(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem(this.ACCESS_TOKEN_KEY);
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
   }
 }

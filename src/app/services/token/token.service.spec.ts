@@ -52,9 +52,9 @@ describe('TokenService', () => {
 
   it('should set and get token', () => {
     const token = 'example_token';
-    service.setToken(token);
-    expect(service.getToken()).toEqual(token);
-    expect(store['auth_token']).toEqual(token);
+    service.setAccessToken(token);
+    expect(service.getAccessToken()).toEqual(token);
+    expect(store['access_token']).toEqual(token);
   });
 
   it('should set and get refresh token', () => {
@@ -65,11 +65,11 @@ describe('TokenService', () => {
   });
 
   it('should clear tokens', () => {
-    service.setToken('example_token');
+    service.setAccessToken('example_token');
     service.setRefreshToken('example_refresh_token');
     service.clearTokens();
-    expect(service.getToken()).toBeNull();
-    expect(store['auth_token']).toBeUndefined();
+    expect(service.getAccessToken()).toBeNull();
+    expect(store['access_token']).toBeUndefined();
     expect(service.getRefreshToken()).toBeNull();
     expect(store['refresh_token']).toBeUndefined();
     expect(store).toEqual({});
