@@ -13,6 +13,7 @@ import {
 } from '@angular/common/http';
 import { AuthInterceptor } from '../../interceptors/auth/auth.interceptor';
 import { TokenService } from '../token/token.service';
+import { AuthRequestRoutes } from '../auth/request-routes/auth.request-routes';
 
 describe('HttpService', () => {
   let httpService: HttpService;
@@ -52,8 +53,8 @@ describe('HttpService', () => {
   it('should make a POST request without access token and return data', () => {
     spyOn(tokenService, 'getAccessToken').and.returnValue(null);
 
-    const testData = { id: 1, name: 'Test' };
-    const testPath = 'test';
+    const testData = { email: 'user@email.com', password: 'Password123#' };
+    const testPath = AuthRequestRoutes.LOGIN.url;
     httpService.post(testPath, testData).subscribe((response) => {
       expect(response).toEqual(testData);
     });
@@ -75,8 +76,11 @@ describe('HttpService', () => {
       'mocked-access-token'
     );
 
-    const testData = { id: 1, name: 'Test' };
-    const testPath = 'test';
+    const testData = {
+      password: 'Password123#',
+      repeatPassword: 'Password124#',
+    };
+    const testPath = AuthRequestRoutes.UPDATE_LOGGED_IN_USER_PASSWORD.url;
     httpService.post(testPath, testData).subscribe((response) => {
       expect(response).toEqual(testData);
     });
@@ -87,7 +91,7 @@ describe('HttpService', () => {
 
     expect(httpRequest.request.headers.has('Authorization')).toBeTrue();
     expect(httpRequest.request.headers.get('Authorization')).toBe(
-      'Token mocked-access-token'
+      'Bearer mocked-access-token'
     );
 
     httpRequest.flush(testData, {
