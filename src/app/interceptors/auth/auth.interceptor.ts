@@ -19,7 +19,8 @@ import {
 } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
-import { AuthRequestRoutes } from '../../services/auth/request-routes/auth.request-routes';
+
+const AUTHORIZATION = 'Authorization'; // TODO: isolar
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -37,9 +38,11 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if (this.shouldSkipAddAccessToken(req.method, req.url)) {
+    if (req.headers.get(AUTHORIZATION) !== 'true') {
+      this.removeToken(req);
       return next.handle(req);
     }
+    this.removeToken(req);
 
     const accessToken = this.tokenService.getAccessToken();
     let clonedReq = req; // TODO: it is not really cloning
@@ -72,21 +75,6 @@ export class AuthInterceptor implements HttpInterceptor {
         })
       );
     }
-  }
-
-  private shouldSkipAddAccessToken(method: string, url: string) {
-    // TODO: isolar
-    const routes = Object.values(AuthRequestRoutes);
-
-    const authenticationRequired = routes.some((route) => {
-      const sameMethod = route.method?.toUpperCase() == method?.toUpperCase();
-      const sameUrl = url
-        ?.toLocaleLowerCase()
-        ?.includes(route.url?.toLowerCase());
-      const requiresAuthentication = route.authenticationRequired;
-      return sameMethod && sameUrl && requiresAuthentication;
-    });
-    return !authenticationRequired;
   }
 
   private refreshToken(
@@ -136,5 +124,9 @@ export class AuthInterceptor implements HttpInterceptor {
     return req.clone({
       setHeaders: { Authorization: `Bearer ${accessToken || ''}` },
     });
+  }
+
+  private removeToken(req: HttpRequest<any>) {
+    req.headers.delete(AUTHORIZATION); // TODO: move to a variable
   }
 }

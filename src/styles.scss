@@ -3,31 +3,8 @@
 //@use "@angular/material" as mat;
 //@include mat.core();
 
+@import "./styles/main.scss";
+@import "./styles/error.scss";
+@import "./styles/skeleton.scss";
 @import "./styles/form.scss";
-
-html,
-body {
-  height: 100%;
-}
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-
-html,
-body {
-  height: 100%;
-}
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-
-html,
-body {
-  height: 100%;
-}
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-}
+@import "./styles/table.scss";

@@ -21,10 +21,10 @@ import {
 } from '../../../test-utils/test-form-utils';
 import { UserConfigs } from '../../configs/user/user.configs';
 import { PasswordMessage } from '../../messages/password/password.messages';
-import { Role } from '../../services/user/role/role.enum';
 import { ActivatedRoute, Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { ExceptionName } from '../../utils/exception-names/exception-text.enum';
+import { Role } from '../../services/user/dtos/role/role.enum';
 
 const SOMETHING_WENT_WRONG_MESSAGE = 'Algo deu errado!';
 

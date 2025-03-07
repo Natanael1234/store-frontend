@@ -24,10 +24,10 @@ import { UserConfigs } from '../../configs/user/user.configs';
 import { EmailConstants } from '../../constants/email/email.constants';
 import { TextMessage } from '../../messages/text/text.messages';
 import { PasswordMessage } from '../../messages/password/password.messages';
-import { Role } from '../../services/user/role/role.enum';
 import { Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { ExceptionName } from '../../utils/exception-names/exception-text.enum';
+import { Role } from '../../services/user/dtos/role/role.enum';
 
 type FormData = {
   name: string;

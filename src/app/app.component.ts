@@ -7,7 +7,7 @@ import { NewPasswordComponent } from './pages/new-password/new-password.componen
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, NewPasswordComponent, HomeComponent],
+  imports: [CommonModule, RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

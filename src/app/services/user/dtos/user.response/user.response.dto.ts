@@ -1,7 +1,7 @@
-import { Role } from './role/role.enum';
+import { Role } from '../role/role.enum';
 
-export type User = {
-  id?: string;
+export type UserResponseDto = {
+  id: string;
   name: string;
   email: string;
   roles?: Role[];

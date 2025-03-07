@@ -11,10 +11,9 @@ import { RequestPasswordChangeLinkRequestDto } from './dtos/request-password-cre
 import { UpdateLoggedInUserPasswordRequestDto } from './dtos/update-logged-in-user-password.request.dto';
 import { EditOwnProfileRequestDto } from './dtos/edit-own-profile.request.dto';
 import { AuthRequestRoutes } from './request-routes/auth.request-routes';
+import { normalizeException } from '../../utils/exception-normalizer/exception-normalizer';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
   httpService: HttpService = inject(HttpService);
   tokenService: TokenService = inject(TokenService);
@@ -24,17 +23,19 @@ export class AuthService {
   register(data: RegisterRequestDto): Observable<AuthResponseDto> {
     const registerObservable = new Observable(
       (observer: Subscriber<AuthResponseDto>) => {
-        this.httpService.post(AuthRequestRoutes.REGISTER.url, data).subscribe({
-          next: (response: AuthResponseDto) => {
-            this.processAuthResponse(observer, response);
-          },
-          error: (error: HttpErrorResponse | Error) => {
-            observer.error(this.normalizeException(error));
-          },
-          complete: () => {
-            observer.complete();
-          },
-        });
+        this.httpService
+          .post({ path: AuthRequestRoutes.REGISTER.url, data })
+          .subscribe({
+            next: (response: AuthResponseDto) => {
+              this.processAuthResponse(observer, response);
+            },
+            error: (error: HttpErrorResponse | Error) => {
+              observer.error(normalizeException(error));
+            },
+            complete: () => {
+              observer.complete();
+            },
+          });
       }
     );
 
@@ -44,17 +45,17 @@ export class AuthService {
   login(data: LoginRequestDto): Observable<AuthResponseDto> {
     const loginObservable = new Observable(
       (observer: Subscriber<AuthResponseDto>) => {
-        const postObservable = this.httpService.post(
-          AuthRequestRoutes.LOGIN.url,
-          data
-        );
+        const postObservable = this.httpService.post({
+          path: AuthRequestRoutes.LOGIN.url,
+          data,
+        });
 
         postObservable.subscribe({
           next: (response: AuthResponseDto) => {
             this.processAuthResponse(observer, response);
           },
           error: (error: any) => {
-            observer.error(this.normalizeException(error));
+            observer.error(normalizeException(error));
           },
           complete: () => {
             observer.complete();
@@ -69,17 +70,17 @@ export class AuthService {
   createNewPassword(data: NewPasswordRequestDto): Observable<AuthResponseDto> {
     const newPasswordObservable = new Observable(
       (observer: Subscriber<AuthResponseDto>) => {
-        const postObservable = this.httpService.post(
-          AuthRequestRoutes.NEW_PASSWORD.url,
-          data
-        );
+        const postObservable = this.httpService.post({
+          path: AuthRequestRoutes.NEW_PASSWORD.url,
+          data,
+        });
 
         postObservable.subscribe({
           next: (response: AuthResponseDto) => {
             this.processAuthResponse(observer, response);
           },
           error: (error: any) => {
-            observer.error(this.normalizeException(error));
+            observer.error(normalizeException(error));
           },
           complete: () => {
             observer.complete();
@@ -96,17 +97,17 @@ export class AuthService {
   ): Observable<AuthResponseDto> {
     const newPasswordObservable = new Observable(
       (observer: Subscriber<AuthResponseDto>) => {
-        const postObservable = this.httpService.post(
-          AuthRequestRoutes.UPDATE_LOGGED_IN_USER_PASSWORD.url,
-          data
-        );
+        const postObservable = this.httpService.post({
+          path: AuthRequestRoutes.UPDATE_LOGGED_IN_USER_PASSWORD.url,
+          data,
+        });
 
         postObservable.subscribe({
           next: (response: AuthResponseDto) => {
             this.processAuthResponse(observer, response);
           },
           error: (error: any) => {
-            observer.error(this.normalizeException(error));
+            observer.error(normalizeException(error));
           },
           complete: () => {
             observer.complete();
@@ -123,17 +124,17 @@ export class AuthService {
   ): Observable<boolean> {
     const requestPasswordChangeLinkObservable = new Observable(
       (observer: Subscriber<boolean>) => {
-        const postObservable = this.httpService.post(
-          AuthRequestRoutes.REQUEST_PASSWORD_CREATION.url,
-          data
-        );
+        const postObservable = this.httpService.post({
+          path: AuthRequestRoutes.REQUEST_PASSWORD_CREATION.url,
+          data,
+        });
 
         postObservable.subscribe({
           next: (response: boolean) => {
             observer.next(response);
           },
           error: (error: any) => {
-            observer.error(this.normalizeException(error));
+            observer.error(normalizeException(error));
           },
           complete: () => {
             observer.complete();
@@ -148,17 +149,17 @@ export class AuthService {
   editOwnProfile(data: EditOwnProfileRequestDto): Observable<true> {
     const editOwnProfileObservable = new Observable(
       (observer: Subscriber<true>) => {
-        const postObservable = this.httpService.post(
-          AuthRequestRoutes.EDIT_OWN_PROFILE.url,
-          data
-        );
+        const postObservable = this.httpService.post({
+          path: AuthRequestRoutes.EDIT_OWN_PROFILE.url,
+          data,
+        });
 
         postObservable.subscribe({
           next: (response: true) => {
             observer.next(true);
           },
           error: (error: any) => {
-            observer.error(this.normalizeException(error));
+            observer.error(normalizeException(error));
           },
           complete: () => {
             observer.complete();
@@ -191,7 +192,7 @@ export class AuthService {
     const refreshTokenObservable = new Observable(
       (observer: Subscriber<string | null>) => {
         this.httpService
-          .post(AuthRequestRoutes.REFRESH.url, { refreshToken })
+          .post({ path: AuthRequestRoutes.REFRESH.url, data: { refreshToken } })
           .subscribe({
             next: (response: AuthResponseDto) => {
               const accessToken = response.data?.payload?.token!;
@@ -217,7 +218,7 @@ export class AuthService {
               }
               // other errors
               else {
-                observer.error(this.normalizeException(error));
+                observer.error(normalizeException(error));
               }
             },
             complete: () => {
@@ -237,21 +238,5 @@ export class AuthService {
     this.tokenService.setAccessToken(response.data?.payload?.token!);
     this.tokenService.setRefreshToken(response.data?.payload?.refreshToken!);
     observer.next(response);
-  }
-
-  private normalizeException(error: any) {
-    if (error.status == 0) {
-      return 'Falha na requisição.'; // TODO: extrair texto
-    } else if (error.error?.statusCode == HttpStatusCode.UnprocessableEntity) {
-      return error;
-    } else if (error.cause == HttpStatusCode.Unauthorized) {
-      return error;
-    } else if (error.error?.statusCode && error.error.message) {
-      return error;
-    } else if (error.status && typeof error.error == 'string') {
-      return error;
-    } else {
-      return error.message;
-    }
   }
 }

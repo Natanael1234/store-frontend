@@ -21,13 +21,13 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
-import { Role } from '../../services/user/role/role.enum';
 import { By } from '@angular/platform-browser';
 import { UserConfigs } from '../../configs/user/user.configs';
 import { EmailConstants } from '../../constants/email/email.constants';
 import { PasswordMessage } from '../../messages/password/password.messages';
 import { TextMessage } from '../../messages/text/text.messages';
 import { ExceptionName } from '../../utils/exception-names/exception-text.enum';
+import { Role } from '../../services/user/dtos/role/role.enum';
 
 type LoginFormData = { email: string; password: string };
 

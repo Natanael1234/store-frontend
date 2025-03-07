@@ -1,7 +1,6 @@
 import { of, throwError } from 'rxjs';
 import { HttpService } from '../http/http.service';
 import { TokenService } from '../token/token.service';
-import { Role } from '../user/role/role.enum';
 import { AuthResponseDto } from './dtos/auth.response.dto';
 import { TestBed } from '@angular/core/testing';
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
@@ -17,6 +16,7 @@ import {
   testTokenServiceCalls,
 } from '../token/test-token-service.utils';
 import { AuthRequestRoutes } from './request-routes/auth.request-routes';
+import { Role } from '../user/dtos/role/role.enum';
 
 /** mocks JWT token */
 const SECRET_KEY = 'SECRET_KEY';

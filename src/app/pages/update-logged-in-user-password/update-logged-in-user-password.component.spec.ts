@@ -20,10 +20,10 @@ import {
 } from '../../../test-utils/test-form-utils';
 import { UserConfigs } from '../../configs/user/user.configs';
 import { PasswordMessage } from '../../messages/password/password.messages';
-import { Role } from '../../services/user/role/role.enum';
 import { By } from '@angular/platform-browser';
 import { ExceptionName } from '../../utils/exception-names/exception-text.enum';
 import { UpdateLoggedInUserPasswordComponent } from './update-logged-in-user-password.component';
+import { Role } from '../../services/user/dtos/role/role.enum';
 
 const SOMETHING_WENT_WRONG_MESSAGE = 'Algo deu errado!';
 
@@ -278,12 +278,12 @@ describe('UpdateLoggedInUserPasswordComponent', () => {
     testErrorMessages(remoteFormErrorData.expectedErrors);
   }
 
-  xit('should create', async () => {
+  it('should create', async () => {
     expect(component).toBeTruthy();
   });
 
   describe('registration request', () => {
-    xit("should call service's updateLoggedInUserPassword method on submit", () => {
+    it("should call service's updateLoggedInUserPassword method on submit", () => {
       testLocalValidationOnSubmit({
         formData: {
           password: 'Password123$',
