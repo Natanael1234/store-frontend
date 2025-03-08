@@ -64,7 +64,7 @@ let mockAuthResponse: AuthResponseDto = {
   },
 };
 
-describe('AuthService', () => {
+describe('UserService', () => {
   let authService: UserService;
   let mockedHttpService: any;
   let mockedTokenService: any;

@@ -21,129 +21,109 @@ export class AuthService {
   constructor() {}
 
   register(data: RegisterRequestDto): Observable<AuthResponseDto> {
-    const registerObservable = new Observable(
-      (observer: Subscriber<AuthResponseDto>) => {
-        this.httpService
-          .post({ path: AuthRequestRoutes.REGISTER.url, data })
-          .subscribe({
-            next: (response: AuthResponseDto) => {
-              this.processAuthResponse(observer, response);
-            },
-            error: (error: HttpErrorResponse | Error) => {
-              observer.error(normalizeException(error));
-            },
-            complete: () => {
-              observer.complete();
-            },
-          });
-      }
-    );
-
-    return registerObservable;
+    return new Observable((observer: Subscriber<AuthResponseDto>) => {
+      this.httpService
+        .post({ path: AuthRequestRoutes.REGISTER.url, data })
+        .subscribe({
+          next: (response: AuthResponseDto) => {
+            this.processAuthResponse(observer, response);
+          },
+          error: (error: HttpErrorResponse | Error) => {
+            observer.error(normalizeException(error));
+          },
+          complete: () => {
+            observer.complete();
+          },
+        });
+    });
   }
 
   login(data: LoginRequestDto): Observable<AuthResponseDto> {
-    const loginObservable = new Observable(
-      (observer: Subscriber<AuthResponseDto>) => {
-        const postObservable = this.httpService.post({
-          path: AuthRequestRoutes.LOGIN.url,
-          data,
-        });
+    return new Observable((observer: Subscriber<AuthResponseDto>) => {
+      const observable = this.httpService.post({
+        path: AuthRequestRoutes.LOGIN.url,
+        data,
+      });
 
-        postObservable.subscribe({
-          next: (response: AuthResponseDto) => {
-            this.processAuthResponse(observer, response);
-          },
-          error: (error: any) => {
-            observer.error(normalizeException(error));
-          },
-          complete: () => {
-            observer.complete();
-          },
-        });
-      }
-    );
-
-    return loginObservable;
+      observable.subscribe({
+        next: (response: AuthResponseDto) => {
+          this.processAuthResponse(observer, response);
+        },
+        error: (error: any) => {
+          observer.error(normalizeException(error));
+        },
+        complete: () => {
+          observer.complete();
+        },
+      });
+    });
   }
 
   createNewPassword(data: NewPasswordRequestDto): Observable<AuthResponseDto> {
-    const newPasswordObservable = new Observable(
-      (observer: Subscriber<AuthResponseDto>) => {
-        const postObservable = this.httpService.post({
-          path: AuthRequestRoutes.NEW_PASSWORD.url,
-          data,
-        });
+    return new Observable((observer: Subscriber<AuthResponseDto>) => {
+      const observable = this.httpService.post({
+        path: AuthRequestRoutes.NEW_PASSWORD.url,
+        data,
+      });
 
-        postObservable.subscribe({
-          next: (response: AuthResponseDto) => {
-            this.processAuthResponse(observer, response);
-          },
-          error: (error: any) => {
-            observer.error(normalizeException(error));
-          },
-          complete: () => {
-            observer.complete();
-          },
-        });
-      }
-    );
-
-    return newPasswordObservable;
+      observable.subscribe({
+        next: (response: AuthResponseDto) => {
+          this.processAuthResponse(observer, response);
+        },
+        error: (error: any) => {
+          observer.error(normalizeException(error));
+        },
+        complete: () => {
+          observer.complete();
+        },
+      });
+    });
   }
 
   updateLoggedInUserPassword(
     data: UpdateLoggedInUserPasswordRequestDto
   ): Observable<AuthResponseDto> {
-    const newPasswordObservable = new Observable(
-      (observer: Subscriber<AuthResponseDto>) => {
-        const postObservable = this.httpService.post({
-          path: AuthRequestRoutes.UPDATE_LOGGED_IN_USER_PASSWORD.url,
-          data,
-        });
+    return new Observable((observer: Subscriber<AuthResponseDto>) => {
+      const observable = this.httpService.post({
+        path: AuthRequestRoutes.UPDATE_LOGGED_IN_USER_PASSWORD.url,
+        data,
+      });
 
-        postObservable.subscribe({
-          next: (response: AuthResponseDto) => {
-            this.processAuthResponse(observer, response);
-          },
-          error: (error: any) => {
-            observer.error(normalizeException(error));
-          },
-          complete: () => {
-            observer.complete();
-          },
-        });
-      }
-    );
-
-    return newPasswordObservable;
+      observable.subscribe({
+        next: (response: AuthResponseDto) => {
+          this.processAuthResponse(observer, response);
+        },
+        error: (error: any) => {
+          observer.error(normalizeException(error));
+        },
+        complete: () => {
+          observer.complete();
+        },
+      });
+    });
   }
 
   requestPasswordChangeLink(
     data: RequestPasswordChangeLinkRequestDto
   ): Observable<boolean> {
-    const requestPasswordChangeLinkObservable = new Observable(
-      (observer: Subscriber<boolean>) => {
-        const postObservable = this.httpService.post({
-          path: AuthRequestRoutes.REQUEST_PASSWORD_CREATION.url,
-          data,
-        });
+    return new Observable((observer: Subscriber<boolean>) => {
+      const observable = this.httpService.post({
+        path: AuthRequestRoutes.REQUEST_PASSWORD_CREATION.url,
+        data,
+      });
 
-        postObservable.subscribe({
-          next: (response: boolean) => {
-            observer.next(response);
-          },
-          error: (error: any) => {
-            observer.error(normalizeException(error));
-          },
-          complete: () => {
-            observer.complete();
-          },
-        });
-      }
-    );
-
-    return requestPasswordChangeLinkObservable;
+      observable.subscribe({
+        next: (response: boolean) => {
+          observer.next(response);
+        },
+        error: (error: any) => {
+          observer.error(normalizeException(error));
+        },
+        complete: () => {
+          observer.complete();
+        },
+      });
+    });
   }
 
   editOwnProfile(data: EditOwnProfileRequestDto): Observable<true> {

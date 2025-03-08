@@ -42,6 +42,20 @@ describe('AuthRequestRoutes', () => {
       REFRESH: {
         url: 'authentication/refresh',
         method: 'post',
+      } /** GET users */,
+      GET_USERS: {
+        url: 'users',
+        method: 'post',
+      },
+      /** POST users/:identifier */
+      POST_USER: {
+        url: 'users',
+        method: 'post',
+      },
+      /** PATCH users/:identifier */
+      PATCH_USER: {
+        url: 'users',
+        method: 'patch',
       },
     });
   });

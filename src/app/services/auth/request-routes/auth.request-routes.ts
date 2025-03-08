@@ -41,7 +41,7 @@ export class AuthRequestRoutes {
     method: 'post',
   };
   /** GET users */
-  static USERS: RequestRoute = {
+  static GET_USERS: RequestRoute = {
     url: 'users',
     method: 'post',
   };

@@ -19,7 +19,7 @@ export class UserService {
   getUsers(
     queryParams: FindUserRequestDTO
   ): Observable<PaginatedResponseDTO<UserResponseDto, UserOrder>> {
-    const path = AuthRequestRoutes.USERS.url;
+    const path = AuthRequestRoutes.GET_USERS.url;
     const observable = new Observable(
       (
         observer: Subscriber<PaginatedResponseDTO<UserResponseDto, UserOrder>>

@@ -7,6 +7,8 @@ import { NewPasswordComponent } from '../../../pages/new-password/new-password.c
 import { UpdateLoggedInUserPasswordComponent } from '../../../pages/update-logged-in-user-password/update-logged-in-user-password.component';
 import { RequestPasswordChangeLinkComponent } from '../../../pages/request-password-change-link/request-password-change-link.component';
 import { AuthGuard } from '../../../guards/auth.guard';
+import { UsersComponent } from '../../../pages/users/users.component';
+import { UserComponent } from '../../../pages/user/user.component';
 
 describe('routeConfig', () => {
   it('should be defined', () => {
@@ -41,6 +43,18 @@ describe('routeConfig', () => {
         path: 'request-password-change-link',
         component: RequestPasswordChangeLinkComponent,
         title: 'Request Password Change Link Page',
+      },
+      {
+        path: 'users',
+        component: UsersComponent,
+        title: 'Users',
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'user',
+        component: UserComponent,
+        title: 'User',
+        canActivate: [AuthGuard],
       },
     ]);
   });
