@@ -33,22 +33,21 @@ const _PasswordMessage = new PasswordMessage({
 });
 
 @Component({
-  selector: 'app-password',
-  standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatIconModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatCardModule,
-    AlertComponent,
-    MatProgressBarModule,
-  ],
-  templateUrl: './new-password.component.html',
-  styleUrl: './new-password.component.scss',
+    selector: 'app-password',
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatIconModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatCardModule,
+        AlertComponent,
+        MatProgressBarModule,
+    ],
+    templateUrl: './new-password.component.html',
+    styleUrl: './new-password.component.scss'
 })
 export class NewPasswordComponent {
   private authService: AuthService = inject(AuthService);

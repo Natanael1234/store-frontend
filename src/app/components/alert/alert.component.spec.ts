@@ -5,11 +5,10 @@ import { Component, DebugElement } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  standalone: true,
-  template: `<app-alert
+    template: `<app-alert
     ><div class="test" type="success">Hello World</div></app-alert
   >`,
-  imports: [AlertComponent, CommonModule],
+    imports: [AlertComponent, CommonModule]
 })
 class TestHostComponent {}
 

@@ -41,7 +41,6 @@ const PAGE_SIZES = [6, 12, 24];
 
 @Component({
   selector: 'app-users',
-  standalone: true,
   imports: [
     MatTableModule,
     MatPaginatorModule,

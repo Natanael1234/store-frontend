@@ -15,11 +15,10 @@ type AlertType =
   | 'dark';
 
 @Component({
-  selector: 'app-alert',
-  standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule],
-  templateUrl: './alert.component.html',
-  styleUrl: './alert.component.scss',
+    selector: 'app-alert',
+    imports: [CommonModule, MatIconModule, MatButtonModule],
+    templateUrl: './alert.component.html',
+    styleUrl: './alert.component.scss'
 })
 export class AlertComponent {
   @Input() showCloseButton?: boolean;

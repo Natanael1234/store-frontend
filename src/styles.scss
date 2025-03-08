@@ -3,8 +3,8 @@
 //@use "@angular/material" as mat;
 //@include mat.core();
 
-@import "./styles/main.scss";
-@import "./styles/error.scss";
-@import "./styles/skeleton.scss";
-@import "./styles/form.scss";
-@import "./styles/table.scss";
+@use "./styles/main.scss";
+@use "./styles/error.scss";
+@use "./styles/skeleton.scss";
+@use "./styles/form.scss";
+@use "./styles/table.scss";

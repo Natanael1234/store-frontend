@@ -34,25 +34,24 @@ const _PasswordMessage = new PasswordMessage({
 });
 
 @Component({
-  selector: 'app-password',
-  standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatIconModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatCardModule,
-    AlertComponent,
-    MatProgressBarModule,
-  ],
-  providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-  ],
-  templateUrl: './update-logged-in-user-password.component.html',
-  styleUrl: './update-logged-in-user-password.component.scss',
+    selector: 'app-password',
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatIconModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatCardModule,
+        AlertComponent,
+        MatProgressBarModule,
+    ],
+    providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    ],
+    templateUrl: './update-logged-in-user-password.component.html',
+    styleUrl: './update-logged-in-user-password.component.scss'
 })
 export class UpdateLoggedInUserPasswordComponent {
   private authService: AuthService = inject(AuthService);

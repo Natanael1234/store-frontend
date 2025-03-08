@@ -30,22 +30,21 @@ const _EmailMessage = new EmailMessage({
 });
 
 @Component({
-  selector: 'app-request-password-change',
-  standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatIconModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatCardModule,
-    AlertComponent,
-    MatProgressBarModule,
-    // RouterModule,
-  ],
-  templateUrl: './request-password-change-link.component.html',
-  styleUrl: './request-password-change-link.component.scss',
+    selector: 'app-request-password-change',
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatIconModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatButtonModule,
+        MatCardModule,
+        AlertComponent,
+        MatProgressBarModule,
+        // RouterModule,
+    ],
+    templateUrl: './request-password-change-link.component.html',
+    styleUrl: './request-password-change-link.component.scss'
 })
 export class RequestPasswordChangeLinkComponent {
   private authService: AuthService = inject(AuthService);

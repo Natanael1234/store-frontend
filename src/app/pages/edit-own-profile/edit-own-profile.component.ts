@@ -48,22 +48,21 @@ const _PasswordMessage = new PasswordMessage({
 });
 
 @Component({
-  selector: 'app-edit-own-profile',
-  standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatIconModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatCardModule,
-    AlertComponent,
-    MatProgressBarModule,
-  ],
-  templateUrl: './edit-own-profile.component.html',
-  styleUrl: './edit-own-profile.component.scss',
+    selector: 'app-edit-own-profile',
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatIconModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatCardModule,
+        AlertComponent,
+        MatProgressBarModule,
+    ],
+    templateUrl: './edit-own-profile.component.html',
+    styleUrl: './edit-own-profile.component.scss'
 })
 export class EditOwnProfileComponent {
   private authService: AuthService = inject(AuthService);
