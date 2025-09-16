@@ -1,4 +1,4 @@
-<div [ngClass]="filtersClassList()">
+<div id="container" [ngClass]="filtersClassList()">
     <app-text-filter (textSearch)="onTextSearch($event)"></app-text-filter>
     @if (mobile()) {
         <button mat-button (click)="openFilterDialog()">
