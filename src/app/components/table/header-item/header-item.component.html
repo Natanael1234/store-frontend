@@ -1,0 +1,6 @@
+<div id="container" (click)="fireOnSelectEvent($event)">
+    <span id="label" [class]="labelClassList()">{{ label() }}</span>
+    @if (sortable() !== false && loading() !== true) {
+        <mat-icon id="arrow" [class]="iconClassList()">arrow_downward</mat-icon>
+    }
+</div>

@@ -9,7 +9,8 @@
   width: 1536px;
   padding-left: 50px;
   padding-right: 50px;
-  min-height: 100vh;
+  // min-height: 100vh;
+  height: 100%;
   margin: auto;
   justify-content: space-between;
 }
@@ -45,4 +46,72 @@
   .content {
     width: 380px;
   }
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+mat-sidenav-container {
+  height: calc(100vh - 64px);
+}
+
+.sidenav-container {
+  width: 100% !important;
+
+  .sidenav {
+    padding-top: 1em;
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    gap: 8px;
+    width: 200px;
+
+    .button {
+      width: 100%;
+      margin-bottom: 1em;
+      justify-content: flex-start;
+    }
+  }
+
+  .sidenav-header {
+    padding-top: 24px;
+    text-align: center;
+
+    > img {
+      border-radius: 100%;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    .header-text {
+      height: 3rem;
+
+      > h2 {
+        margin: 0;
+        font-size: 1rem;
+        line-height: 1.5rem;
+      }
+
+      > p {
+        margin: 0;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+
+.navlist {
+  width: 100%;
+}
+
+.mat-mdc-nav-list {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+//Active style - primary color css variable will be set in theming section
+.selected-menu-item {
+  border-left-color: var(--primary-color);
+  background: rgba(0, 0, 0, 0.05);
 }

@@ -1,122 +1,118 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <!-- main error -->
-  @if (loading) {
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <!-- main error -->
+    @if (loading) {
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    }
+    @if (mainError) {
+        <app-alert
+            [showCloseButton]="true"
+            type="danger"
+            icon="warning"
+            (onClose)="mainError = undefined">
+            {{ mainError }}
+        </app-alert>
+    }
+    <!-- name -->
+    <mat-form-field id="name-field" appearance="outline">
+        <mat-label>Nome</mat-label>
+        <input
+            id="name-input"
+            formControlName="name"
+            matInput
+            type="text"
+            autoComplete="off"
+            [maxlength]="maxUsernameLength"
+            autofocus
+            autocomplete="off" />
+        <mat-error id="name-error">{{ getNameErrorMessage() }}</mat-error>
+    </mat-form-field>
 
-  } @if (mainError) {
-  <app-alert
-    [showCloseButton]="true"
-    type="danger"
-    icon="warning"
-    (onClose)="mainError = undefined"
-  >
-    {{ mainError }}
-  </app-alert>
+    <!-- email -->
+    <mat-form-field id="email-field" appearance="outline">
+        <mat-label>Email</mat-label>
+        <input
+            id="email-input"
+            formControlName="email"
+            matInput
+            type="email"
+            autoComplete="off"
+            [maxlength]="maxEmailLength" />
+        <mat-error id="email-error">{{ getEmailErrorMessage() }}</mat-error>
+    </mat-form-field>
 
-  }
-  <!-- name -->
-  <mat-form-field id="name-field" appearance="outline">
-    <mat-label>Nome</mat-label>
-    <input
-      id="name-input"
-      formControlName="name"
-      matInput
-      type="text"
-      autoComplete="off"
-      [maxlength]="maxUsernameLength"
-      autofocus
-      autocomplete="off"
-    />
-    <mat-error id="name-error"> {{ getNameErrorMessage() }}</mat-error>
-  </mat-form-field>
+    <!-- password -->
+    <mat-form-field id="password-field" appearance="outline">
+        <mat-label>Senha</mat-label>
+        <input
+            id="password-input"
+            formControlName="password"
+            matInput
+            [type]="showPassword ? 'text' : 'password'"
+            autoComplete="off"
+            [maxlength]="maxPasswordLength"
+            class="material-icons-outlined"
+            autocomplete="new-password"
+            (blur)="onPasswordBlur($event)" />
+        <mat-icon
+            id="show-password-icon"
+            matSuffix
+            (click)="togglePasswordVisibility($event)">
+            {{ showPassword ? "visibility" : "visibility_off" }}
+        </mat-icon>
 
-  <!-- email -->
-  <mat-form-field id="email-field" appearance="outline">
-    <mat-label>Email</mat-label>
-    <input
-      id="email-input"
-      formControlName="email"
-      matInput
-      type="email"
-      autoComplete="off"
-      [maxlength]="maxEmailLength"
-    />
-    <mat-error id="email-error">{{ getEmailErrorMessage() }}</mat-error>
-  </mat-form-field>
+        <mat-error id="password-error">
+            {{ getPasswordErrorMessage() }}
+        </mat-error>
+    </mat-form-field>
 
-  <!-- password -->
-  <mat-form-field id="password-field" appearance="outline">
-    <mat-label>Senha</mat-label>
-    <input
-      id="password-input"
-      formControlName="password"
-      matInput
-      [type]="showPassword ? 'text' : 'password'"
-      autoComplete="off"
-      [maxlength]="maxPasswordLength"
-      class="material-icons-outlined"
-      autocomplete="new-password"
-      (blur)="onPasswordBlur($event)"
-    />
-    <mat-icon
-      id="show-password-icon"
-      matSuffix
-      (click)="togglePasswordVisibility($event)"
-      >{{ showPassword ? "visibility" : "visibility_off" }}</mat-icon
-    >
+    <!-- repeat password -->
+    <mat-form-field id="repeat-password-field" appearance="outline">
+        <mat-label>Repita a Senha</mat-label>
+        <input
+            id="repeat-password-input"
+            formControlName="repeatPassword"
+            matInput
+            [type]="showRepeatPassword ? 'text' : 'password'"
+            [maxlength]="maxPasswordLength"
+            class="material-icons-outlined"
+            autocomplete="off"
+            autoComplete="new-password" />
+        <mat-icon
+            matSuffix
+            id="show-repeat-password-icon"
+            (click)="toggleRepeatPasswordVisibility($event)">
+            {{ showRepeatPassword ? "visibility" : "visibility_off" }}
+        </mat-icon>
 
-    <mat-error id="password-error">{{ getPasswordErrorMessage() }}</mat-error>
-  </mat-form-field>
+        <mat-error id="repeat-password-error">
+            {{ getRepeatPasswordErrorMessage() }}
+        </mat-error>
+    </mat-form-field>
 
-  <!-- repeat password -->
-  <mat-form-field id="repeat-password-field" appearance="outline">
-    <mat-label>Repita a Senha</mat-label>
-    <input
-      id="repeat-password-input"
-      formControlName="repeatPassword"
-      matInput
-      [type]="showRepeatPassword ? 'text' : 'password'"
-      [maxlength]="maxPasswordLength"
-      class="material-icons-outlined"
-      autocomplete="off"
-      autoComplete="new-password"
-    />
-    <mat-icon
-      matSuffix
-      id="show-repeat-password-icon"
-      (click)="toggleRepeatPasswordVisibility($event)"
-      >{{ showRepeatPassword ? "visibility" : "visibility_off" }}</mat-icon
-    >
+    <!-- accept terms -->
+    <mat-checkbox
+        id="accept-terms-checkbox"
+        color="basic"
+        [classList]="[acceptTermsHasError ? 'invalid' : '']"
+        formControlName="acceptTerms"
+        (focus)="acceptTermsBlurred = false"
+        (blur)="acceptTermsBlurred = true">
+        Aceito os Termos de Serviço *
+    </mat-checkbox>
 
-    <mat-error id="repeat-password-error">{{
-      getRepeatPasswordErrorMessage()
-    }}</mat-error>
-  </mat-form-field>
+    <!-- login -->
+    <button mat-flat-button id="register" type="submit" [disabled]="loading">
+        Registrar
+    </button>
 
-  <!-- accept terms -->
-  <mat-checkbox
-    id="accept-terms-checkbox"
-    color="basic"
-    [classList]="[acceptTermsHasError ? 'invalid' : '']"
-    formControlName="acceptTerms"
-    (focus)="acceptTermsBlurred = false"
-    (blur)="acceptTermsBlurred = true"
-    >Aceito os Termos de Serviço *
-  </mat-checkbox>
-
-  <!-- login -->
-  <button mat-flat-button id="register" type="submit" [disabled]="loading">
-    Registrar
-  </button>
-
-  <!-- register -->
-  <button
-    mat-stroked-button
-    id="login"
-    type="button"
-    [disabled]="loading"
-    routerLink="/login"
-  >
-    Já tem uma conta? <b>Login</b>
-  </button>
+    <!-- register -->
+    <button
+        mat-stroked-button
+        id="login"
+        type="button"
+        [disabled]="loading"
+        routerLink="/login">
+        Já tem uma conta?
+        <b>Login</b>
+    </button>
 </form>

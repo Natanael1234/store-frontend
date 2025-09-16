@@ -150,7 +150,7 @@ describe('Strong Name Validator', () => {
       expect(result).toEqual({ maxlength: true });
     });
 
-    it('should accept string with maximum lenght ignoring extra spaces', () => {
+    it('should accept string with maximum length ignoring extra spaces', () => {
       const name = '  x  xxx ';
       const control = new FormControl(name);
       const result = nameValidator({ maxlength: 4 })(control);

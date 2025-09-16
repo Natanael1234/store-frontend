@@ -1,0 +1,47 @@
+<div
+    id="filters-container"
+    (click)="preventClose($event)"
+    [classList]="[vertical() ? 'vertical' : 'horizontal']">
+    <!-- sort -->
+    @if (showSort()) {
+        <app-select
+            id="sort-select"
+            label="Ordenação"
+            [(value)]="innerOrder"
+            [options]="orderOptions()"></app-select>
+    }
+
+    <!-- active filter options -->
+    <app-select
+        id="active-select"
+        label="Ativos"
+        [(value)]="innerActive"
+        [options]="activeOptions()"></app-select>
+
+    <!-- deleted filter options -->
+
+    <app-select
+        id="deleted-select"
+        label="Deletados"
+        [(value)]="innerDeleted"
+        [options]="deletedOptions()"></app-select>
+
+    <div id="form-controls-container" class="buttons">
+        <button
+            id="filter-button"
+            type="button"
+            mat-flat-button
+            (click)="submit()">
+            Filtrar
+        </button>
+        @if (showCancelButton()) {
+            <button
+                id="cancel-button"
+                type="button"
+                mat-button
+                (click)="cancel()">
+                Cancelar
+            </button>
+        }
+    </div>
+</div>

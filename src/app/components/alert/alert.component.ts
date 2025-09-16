@@ -4,26 +4,26 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { CommonModule } from '@angular/common';
 
-type AlertType =
-  | 'success'
-  | 'info'
-  | 'warning'
-  | 'danger'
-  | 'primary'
-  | 'secondary'
-  | 'light'
-  | 'dark';
+export type AlertType =
+    | 'success'
+    | 'info'
+    | 'warning'
+    | 'danger'
+    | 'primary'
+    | 'secondary'
+    | 'light'
+    | 'dark';
 
 @Component({
     selector: 'app-alert',
     imports: [CommonModule, MatIconModule, MatButtonModule],
     templateUrl: './alert.component.html',
-    styleUrl: './alert.component.scss'
+    styleUrl: './alert.component.scss',
 })
 export class AlertComponent {
-  @Input() showCloseButton?: boolean;
-  @Input() type?: AlertType = 'success';
-  @Input() icon?: string;
+    @Input() public showCloseButton?: boolean;
+    @Input() public type?: AlertType = 'success';
+    @Input() public icon?: string;
 
-  @Output() onClose: EventEmitter<void> = new EventEmitter();
+    @Output() public onClose: EventEmitter<void> = new EventEmitter();
 }

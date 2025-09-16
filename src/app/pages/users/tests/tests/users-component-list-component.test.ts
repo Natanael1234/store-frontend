@@ -1,0 +1,35 @@
+import { DebugElement } from '@angular/core';
+import { ComponentFixture } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { ActiveFilter } from '../../../../enums/active-filter/active-filter.enum';
+import { DeletedFilter } from '../../../../enums/deleted-filter/deleted-filter.enum';
+import { ResponsiveUserListComponent } from '../../responsive-user-list/responsive-user-list.component';
+import { UserTableRow } from '../../responsive-user-list/user-table/interfaces/user-table-row.interface';
+import { UsersComponent } from '../../users.component';
+
+export function _testUsersComponentListComponent(
+    fixture: ComponentFixture<UsersComponent>,
+    expectedValues: {
+        mobile: boolean;
+        pageIndex: number;
+        pageSize: number;
+        loading: boolean;
+        rows: UserTableRow[];
+        active: ActiveFilter;
+        deleted: DeletedFilter;
+    },
+) {
+    const { mobile, loading, rows, active, deleted } = expectedValues;
+    const responsiveLists: DebugElement[] = fixture.debugElement.queryAll(
+        By.directive(ResponsiveUserListComponent),
+    );
+    expect(responsiveLists.length).toEqual(1);
+    const list = responsiveLists[0]
+        .componentInstance as ResponsiveUserListComponent;
+    expect(list.mobile()).toEqual(mobile);
+    expect(list.loading()).toEqual(loading);
+
+    expect(list.users()).toEqual(rows);
+    expect(list.active()).toEqual(active);
+    expect(list.deleted()).toEqual(deleted);
+}

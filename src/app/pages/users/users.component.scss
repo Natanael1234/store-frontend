@@ -1,24 +1,6 @@
-table {
-  table-layout: fixed;
-}
-
-thead,
-tbody {
-  width: 100%;
-}
-
-th,
-td {
-  width: auto !important;
-  white-space: nowrap;
-}
-
-.shrink {
-  // background-color: yellow;
-  width: 77px !important;
-  justify-content: center;
-  align-content: center;
-  justify-items: center;
-  align-items: center;
-  text-align: center;
+.container {
+    padding: 1em;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1em;
 }

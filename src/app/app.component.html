@@ -1,5 +1,59 @@
-<main class="container">
-  <section class="content">
-    <router-outlet></router-outlet>
-  </section>
-</main>
+<!-- toolbar -->
+<mat-toolbar>
+    <!-- theme button -->
+    <button
+        mat-icon-button
+        class="example-icon"
+        aria-label="Botão menu"
+        color="primary"
+        (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+    </button>
+
+    <!-- title -->
+    <span>Meus Produtos</span>
+
+    <!-- spacer -->
+    <span class="spacer"></span>
+
+    <!-- theme button -->
+    <button
+        mat-icon-button
+        aria-label="Botão alternar tema"
+        (click)="this.themeService.toggleTheme()">
+        <mat-icon>
+            {{ this.themeService.darkMode ? "light_mode" : "dark_mode" }}
+        </mat-icon>
+    </button>
+
+    <!-- user button -->
+    <button mat-icon-button aria-label="Botão usuário" [routerLink]="'login'">
+        <mat-icon>person</mat-icon>
+    </button>
+</mat-toolbar>
+
+<mat-sidenav-container
+    class="sidenav-container mat-elevation-z3"
+    hasBackdrop="false"
+    [style.width]="sidenavWidth()">
+    <mat-sidenav #sidenav mode="over" class="sidenav">
+        <button
+            mat-button
+            *ngFor="let item of menuItems()"
+            [routerLink]="item.route"
+            class="button">
+            <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+        </button>
+    </mat-sidenav>
+
+    <mat-sidenav-content
+        class="sidenav-content"
+        [style.margin-left]="sidenavWidth()">
+        <main class="container">
+            <section class="content">
+                <router-outlet></router-outlet>
+            </section>
+        </main>
+    </mat-sidenav-content>
+</mat-sidenav-container>

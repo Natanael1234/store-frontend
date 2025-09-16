@@ -5,9 +5,12 @@ form {
   gap: 24px;
 }
 
-mat-form-field {
-}
-
 button:not([mat-icon-button]) {
   padding: 18px !important;
+}
+
+// removes white background from inputs
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  transition: background-color 0s 600000s, color 0s 600000s !important;
 }
