@@ -1,0 +1,16 @@
+<!-- TODO: [attr.aria-label]="ariaLabel()" -->
+<div id="container" [ngClass]="containerClasses()" [matTooltip]="toolTip()">
+    <!-- icon -->
+    @if (showIcon()) {
+        <mat-icon id="icon" [ngClass]="iconClasses()">
+            {{ innerIcon() }}
+        </mat-icon>
+    }
+
+    <!-- label -->
+    @if (showLabel()) {
+        <span id="label" [ngClass]="labelClasses()">
+            {{ innerLabel() }}
+        </span>
+    }
+</div>

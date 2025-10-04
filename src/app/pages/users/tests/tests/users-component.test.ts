@@ -1,8 +1,8 @@
 import { ComponentFixture } from '@angular/core/testing';
+import { UserTableRow } from '../../../../components/table/table/interfaces/user-table-row.interface';
 import { ActiveFilter } from '../../../../enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '../../../../enums/deleted-filter/deleted-filter.enum';
 import { UserOrder } from '../../../../services/user/enums/user-order/user-order.enum';
-import { UserTableRow } from '../../responsive-user-list/user-table/interfaces/user-table-row.interface';
 import { UsersComponent } from '../../users.component';
 import { _testUsersComponentAlertComponent as testAlert } from './users-component-alert-component.test';
 import { _testUsersComponentFilterComponent as testFilter } from './users-component-filter-component.test';

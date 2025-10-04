@@ -1,0 +1,24 @@
+<div id="container" [ngClass]="{ loading: !!loading() }">
+    <div id="left-column">
+        @for (label of labels(); track $index) {
+            <div
+                [ngClass]="{ 'skeleton-loader': !!loading() }"
+                [matTooltip]="label.tooltip">
+                {{ loading() ? "" : label.text }}
+            </div>
+        }
+    </div>
+
+    <div id="right-column">
+        @for (icon of icons(); track $index) {
+            <mat-icon
+                [ngClass]="{
+                    'skeleton-loader': !!loading(),
+                    disabled: icon.disabled,
+                }"
+                [matTooltip]="icon.tooltip">
+                {{ loading() ? "" : icon?.icon }}
+            </mat-icon>
+        }
+    </div>
+</div>

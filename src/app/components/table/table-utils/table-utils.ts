@@ -2,46 +2,38 @@ import { SortDirection } from '../../../enums/direction/direction.enum';
 import { Sort } from '../../../interfaces/sort.interface';
 
 /**
- * Converts an Sort object into an Order object.
- * @param sort Sort object. Ex.: UserColumnId.name.
- * @returns Order object. Ex.: UserOrder.name_asc.
+ * Converts an sort object into an order string.
+ * @param sort Sort object. Ex.: {columnId:'name, direction: SortDirection.asc }
+ * @returns Order string. Ex.: 'name_asc'.
  */
-export function sortToOrder<
-    ColumnIdType extends string,
-    OrderType extends string,
->(sort: Sort<ColumnIdType>): OrderType {
-    return `${sort.columnId}_${sort.direction}` as unknown as OrderType;
+export function sortToOrder(sort: Sort): string {
+    return `${sort.columnId}_${sort.direction}`;
 }
 
 /**
- * Converts an Order object into an Sort object.
- * @param order Order object.  Ex.: UserColumnId.name.
- * @returns Sort object. Ex.: { columnId: UserColumnId.name, direction: SortDirection.asc, }
+ * Converts an order string into an sort object.
+ * @param order Order string. Ex.: 'name_asc'.
+ * @returns Sort object. Ex.: { columnId: 'name', direction: SortDirection.asc, }
  */
-export function orderToSort<
-    OrderType extends string,
-    ColumnIdType extends string,
->(order: OrderType): Sort<ColumnIdType> {
+export function orderToSort(order: string): Sort {
     const [_columnId, _direction] = order.split('_');
-    const columnId = _columnId as unknown as ColumnIdType;
+    const columnId = _columnId;
     const direction = _direction as unknown as SortDirection;
-    const sort: Sort<ColumnIdType> = { columnId, direction };
+    const sort: Sort = { columnId, direction };
     return sort;
 }
 
+// TODO: unir ao orderToSort. mesmo métoto
 /**
  * Split an order value into an structured object.
- * @param order Order object. Example: UserOrder.name_asc.
- * @returns structured object. Example { column: UserColumnId.name, direction: SortDirection.asc }.
+ * @param order order string. Ex.: 'name_asc'.
+ * @returns structured object. Ex.: { column: UserColumnId.name, direction: SortDirection.asc }.
  */
-export function splitOrderData<
-    OrderType extends string,
-    ColumnIdType extends string,
->(order: OrderType): Sort<ColumnIdType> {
+export function splitOrderData(order: string): Sort {
     const [_columnId, _direction] = order.split('_');
-    const columnId = _columnId as unknown as ColumnIdType;
+    const columnId = _columnId;
     const direction = _direction as unknown as SortDirection;
-    const sort: Sort<ColumnIdType> = { columnId, direction };
+    const sort: Sort = { columnId, direction };
     return sort;
 }
 

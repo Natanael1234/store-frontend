@@ -3,14 +3,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
+import { MockTextFilterComponent } from '../../../components/alert/text-filter/test/mock/text-filter.component.mock';
 import { TextFilterComponent } from '../../../components/alert/text-filter/text-filter.component';
 import { ActiveFilter } from '../../../enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '../../../enums/deleted-filter/deleted-filter.enum';
 import { UserOrder } from '../../../services/user/enums/user-order/user-order.enum';
 import { ResponsiveUserFiltersComponent } from './responsive-user-filters.component';
-import { MockTextFilterComponent } from './test/mock/text-filter.component.mock';
-import { MockUserFilterToolbarComponent } from './test/mock/user-filter.component.mock';
 import { UserFilterDialogComponent } from './user-filter-dialog/user-filter-dialog.component';
+import { MockUserFilterToolbarComponent } from './user-filter-toollbar/test/mock/user-filter-toolbar.component.mock';
 import { UserFilterToolbarComponent } from './user-filter-toollbar/user-filter-toolbar.component';
 
 describe('ResponsiveUserFiltersComponent', () => {

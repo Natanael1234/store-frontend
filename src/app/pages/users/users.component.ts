@@ -1,7 +1,14 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { Component, computed, inject, model } from '@angular/core';
+import {
+    AfterViewInit,
+    Component,
+    computed,
+    inject,
+    model,
+    ViewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -19,6 +26,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { Subscription } from 'rxjs';
 import { AlertComponent } from '../../components/alert/alert.component';
+import { UserTableRow } from '../../components/table/table/interfaces/user-table-row.interface';
 import { ActiveFilter } from '../../enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '../../enums/deleted-filter/deleted-filter.enum';
 import { MyCustomPaginatorIntl } from '../../i18n/paginator.intl';
@@ -34,8 +42,6 @@ import { ResponsiveUserFiltersComponent } from './responsive-user-filters/respon
 import { UserFilterDialogComponent } from './responsive-user-filters/user-filter-dialog/user-filter-dialog.component';
 import { OnUserFilterEvent } from './responsive-user-filters/user-filter-toollbar/types/on-user-filter-menu-list-close-event.type';
 import { ResponsiveUserListComponent } from './responsive-user-list/responsive-user-list.component';
-import { UserTableRow } from './responsive-user-list/user-table/interfaces/user-table-row.interface';
-import { UserSortParam } from './responsive-user-list/user-table/types/user-sort-param.type';
 import { userResponseToUserTableRow } from './utils/user-response-to-user-table/user-response-to-user-table';
 
 // TODO: isolate
@@ -71,7 +77,7 @@ const PAGE_SIZES = [6, 12, 24];
     templateUrl: './users.component.html',
     styleUrl: './users.component.scss',
 })
-export class UsersComponent {
+export class UsersComponent implements AfterViewInit {
     /* Data */
 
     private userService: UserService = inject(UserService);
@@ -92,15 +98,7 @@ export class UsersComponent {
     protected deleted = model<DeletedFilter>(DeletedFilter.not_deleted);
 
     /* ORDERING */
-
-    protected orderBy = model<UserOrder[]>([
-        UserOrder.name_asc,
-        UserOrder.email_asc,
-        UserOrder.active_asc,
-        UserOrder.deleted_desc,
-    ]);
-
-    protected sort = model<UserSortParam>([
+    public orderBy = model<UserOrder[]>([
         UserOrder.name_asc,
         UserOrder.email_asc,
         UserOrder.active_asc,
@@ -138,8 +136,11 @@ export class UsersComponent {
 
     protected loading = model<boolean>(false);
 
+    @ViewChild(ResponsiveUserListComponent)
+    private list!: ResponsiveUserListComponent;
+
     protected get payload() {
-        const orderBy = this.orderBy();
+        const orderBy = this.list.getOrderBy();
         const deleted = this.deleted();
         const active = this.active();
         const page = this.page();
@@ -159,13 +160,13 @@ export class UsersComponent {
     protected set response(
         response: PaginatedResponseDTO<UserResponseDto, UserOrder>,
     ) {
-        // this.textQuery = paginatedResponse.textQuery;
+        this.textQuery.set(response.textQuery);
         this.count.set(response.count);
         this.pageIndex.set(response.page - 1);
         this.pageSize.set(response.pageSize);
-        this.orderBy.set(response.orderBy);
         this.users.set(response.results || []);
         this.length.set(response.count || 0);
+        this.list.updateSort(response.orderBy);
     }
 
     protected set responseError(error: Error) {
@@ -189,16 +190,16 @@ export class UsersComponent {
                 const isMobile = result.matches;
                 this.mobile.set(isMobile);
                 this.dialogRef?.close();
-                // this.getUsers(); // duplicate call?
             });
+    }
+
+    public ngAfterViewInit(): void {
+        this.orderBy.set(this.list.getOrderBy());
+        this.getUsers(); // duplicate call?
     }
 
     public ngOnDestroy() {
         this.breakpointSubscription?.unsubscribe();
-    }
-
-    protected onSubmit(e: Event) {
-        this.getUsers();
     }
 
     protected refreshFilters(filters: OnUserFilterEvent) {
@@ -206,22 +207,14 @@ export class UsersComponent {
             this.textQuery.set(filters.textQuery || '');
             this.active.set(filters.active);
             this.deleted.set(filters.deleted);
-            this.sort.set(filters.sort);
-        }
-    }
-
-    protected fireHeaderClickEvent(order: UserOrder[]) {
-        if (order) {
-            this.orderBy.set(order);
+            this.list.updateSort(filters.sort);
             this.getUsers();
         }
     }
 
-    protected fireUpdateSortEvent(order: UserOrder[]) {
-        if (order) {
-            this.orderBy.set(order);
-            this.getUsers();
-        }
+    protected fireHeaderClickEvent() {
+        this.orderBy.set(this.list.getOrderBy());
+        this.getUsers();
     }
 
     protected async getUsers() {

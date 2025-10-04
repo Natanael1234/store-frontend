@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, model, Output } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,21 +21,9 @@ import { SelectComponent } from '../../../../components/select/select.component'
 import { ActiveFilter } from '../../../../enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '../../../../enums/deleted-filter/deleted-filter.enum';
 import { UserOrder } from '../../../../services/user/enums/user-order/user-order.enum';
-import { OnUserFilterMenuListCloseEvent } from '../user-filter-toollbar/types/on-user-filter-menu-list-close-event.type';
+import { MockUserFilterToolbarComponent } from '../user-filter-toollbar/test/mock/user-filter-toolbar.component.mock';
 import { UserFilterToolbarComponent } from '../user-filter-toollbar/user-filter-toolbar.component';
 import { UserFilterDialogComponent } from './user-filter-dialog.component';
-
-@Component({ selector: 'app-user-filter-toolbar', template: '' })
-class MockUserFilterToolbarComponent {
-    public vertical = model<boolean>(true);
-    public showSort = model<boolean>(false);
-    public showCancelButton = model<boolean>(false);
-    public order = model<UserOrder>(UserOrder.name_asc);
-    public active = model<ActiveFilter>(ActiveFilter.active);
-    public deleted = model<DeletedFilter>(DeletedFilter.not_deleted);
-    @Output() public onClose =
-        new EventEmitter<OnUserFilterMenuListCloseEvent>();
-}
 
 describe('UserFilterDialogComponent', () => {
     let component: UserFilterDialogComponent;
@@ -47,7 +34,7 @@ describe('UserFilterDialogComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 UserFilterDialogComponent,
-                MockUserFilterToolbarComponent, // UserFilterToolbarComponent,
+                MockUserFilterToolbarComponent,
                 MatDialogModule,
                 MatButtonModule,
                 CommonModule,

@@ -1,10 +1,10 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { UserTableRow } from '../../../../components/table/table/interfaces/user-table-row.interface';
 import { ActiveFilter } from '../../../../enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '../../../../enums/deleted-filter/deleted-filter.enum';
 import { ResponsiveUserListComponent } from '../../responsive-user-list/responsive-user-list.component';
-import { UserTableRow } from '../../responsive-user-list/user-table/interfaces/user-table-row.interface';
 import { UsersComponent } from '../../users.component';
 
 export function _testUsersComponentListComponent(

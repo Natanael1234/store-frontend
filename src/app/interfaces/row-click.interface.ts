@@ -1,3 +1,5 @@
+// TODO: remover?
+
 /** Row click event. */
 export interface RowClickEvent<RowType> {
     /** Mouse event. */

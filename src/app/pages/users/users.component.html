@@ -15,9 +15,9 @@
         [textQuery]="textQuery()"
         [active]="active()"
         [deleted]="deleted()"
-        [orderBy]="orderBy()"
         [loading]="loading()"
         [mobile]="mobile()"
+        [orderBy]="orderBy()"
         (refresh)="refreshFilters($event)"></app-responsive-user-filters>
 
     <!-- list/table -->
@@ -25,11 +25,9 @@
         [users]="userRows()"
         [loading]="loading()"
         [mobile]="mobile()"
-        [sort]="sort()"
         [active]="active()"
         [deleted]="deleted()"
-        (updateSort)="fireUpdateSortEvent($event)"
-        (headerClick)="fireHeaderClickEvent($event)"
+        (headerClick)="fireHeaderClickEvent()"
         (itemClick)="onItemClick($event)"></app-responsive-user-list>
 
     <!-- paginator -->

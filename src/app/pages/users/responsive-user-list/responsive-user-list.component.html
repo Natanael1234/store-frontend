@@ -1,24 +1,13 @@
-<!-- mobile -->
 @if (mobile()) {
-    <!-- list -->
-    <app-user-list
-        id="user-list"
-        [users]="users()"
+    <app-list
+        [data]="listData()"
+        [loading]="!!loading()"
+        (itemClick)="fireRowClickEvent($event)"></app-list>
+} @else {
+    <app-table
+        [columns]="columns()"
+        [data]="tableData()"
         [loading]="loading()"
-        (itemClick)="onItemClick($event)"></app-user-list>
-}
-
-<!-- desktop -->
-@else {
-    <!-- table -->
-    <app-user-table
-        id="user-table"
-        [loading]="loading()"
-        [users]="users()"
-        [sort]="sort()"
-        [activeSortEnabled]="activeSortEnabled()"
-        [deletedSortEnabled]="deleteSortEnabled()"
-        (updateSort)="fireUpdateSortEvent($event)"
         (headerClick)="fireHeaderClickEvent($event)"
-        (rowClick)="fireRowClickEvent($event)"></app-user-table>
+        (rowClick)="fireRowClickEvent($event)"></app-table>
 }

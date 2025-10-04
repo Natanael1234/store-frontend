@@ -1,4 +1,4 @@
-import { UserTableRow } from '../../user-table/interfaces/user-table-row.interface';
+import { UserTableRow } from '../../../../../components/table/table/interfaces/user-table-row.interface';
 import { _usersResponseDtos } from './users-response-dtos.data.test';
 
 export const _usersItems: UserTableRow[] = _usersResponseDtos.map((userDto) => {

@@ -15,6 +15,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import _ from 'lodash';
 import { of, Subject, throwError } from 'rxjs';
 import { AlertComponent } from '../../components/alert/alert.component';
+import { MockAlertComponent } from '../../components/alert/test/mock/alert.component.mock';
+import { UserTableRow } from '../../components/table/table/interfaces/user-table-row.interface';
 import { ActiveFilter } from '../../enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '../../enums/deleted-filter/deleted-filter.enum';
 import { FindUserRequestDTO } from '../../services/user/dtos/find-user.request/find-user.request.dto';
@@ -23,17 +25,15 @@ import { UserResponseDto } from '../../services/user/dtos/user.response/user.res
 import { UserOrder } from '../../services/user/enums/user-order/user-order.enum';
 import { UserService } from '../../services/user/user.service';
 import { ResponsiveUserFiltersComponent } from './responsive-user-filters/responsive-user-filters.component';
+import { MockResponsiveUserFiltersComponent } from './responsive-user-filters/test/mock/responsive-users-filter.component.mock';
 import { ResponsiveUserListComponent } from './responsive-user-list/responsive-user-list.component';
-import { UserTableRow } from './responsive-user-list/user-table/interfaces/user-table-row.interface';
-import { MockAlertComponent } from './tests/mock/alert.component.mock';
-import { MockResponsiveUserFiltersComponent } from './tests/mock/responsive-users-filter.component.mock';
-import { MockUserResponsiveListComponent } from './tests/mock/user-responsice-list.component.mock';
-import { _testUserscomponentGetUsersCalls as testGetUsersCalls } from './tests/tests/get-users-calls.test';
-import { _testUsersComponentHeaderClickEvent as testHeaderClickEvent } from './tests/tests/users-component-header-click.test';
-import { _testUsersComponentItemClickEvent as testItemClickEvent } from './tests/tests/users-component-item-click-event.test';
-import { _testUsersComponentRefreshFilter as testeRefreshFilter } from './tests/tests/users-component-item-refresh-filter.test';
-import { _testUsersComponentUpdateSortCalls as testSortCalls } from './tests/tests/users-component-update-sort-calls.test';
-import { _testUsersComponent as testUsersComponent } from './tests/tests/users-component.test';
+import { MockUserResponsiveListComponent } from './responsive-user-list/test/mocks/user-responsive-list.component.mock';
+import { _testUserscomponentGetUsersCalls } from './tests/tests/get-users-calls.test';
+import { _testUsersComponentHeaderClickEvent } from './tests/tests/users-component-header-click.test';
+import { _testUsersComponentItemClickEvent } from './tests/tests/users-component-item-click-event.test';
+import { _testUsersComponentRefreshFilter } from './tests/tests/users-component-item-refresh-filter.test';
+import { _testUsersComponentUpdateSortCalls } from './tests/tests/users-component-update-sort-calls.test';
+import { _testUsersComponent } from './tests/tests/users-component.test';
 import { UsersComponent } from './users.component';
 
 const users: UserResponseDto[] = [
@@ -243,7 +243,6 @@ describe('UsersComponent', () => {
         list = fixture.debugElement.query(
             By.directive(ResponsiveUserListComponent),
         ).componentInstance as ResponsiveUserListComponent;
-        spyOn(list.updateSort, 'emit').and.callThrough();
         spyOn(list.headerClick, 'emit').and.callThrough();
         spyOn(list.itemClick, 'emit').and.callThrough();
 
@@ -262,10 +261,9 @@ describe('UsersComponent', () => {
             const paginatedResponse = of(responses[0]);
             userServiceSpy.getUsers.and.returnValue(paginatedResponse);
             breakpointSubject.next({ matches: true, breakpoints: {} });
-            list.updateSort.emit(responses[0].orderBy);
+            list.updateSort(responses[0].orderBy);
             fixture.detectChanges();
-
-            testUsersComponent(fixture, {
+            _testUsersComponent(fixture, {
                 error: undefined,
                 mobile: true,
                 loading: false,
@@ -292,10 +290,9 @@ describe('UsersComponent', () => {
                 ),
             );
             breakpointSubject.next({ matches: true, breakpoints: {} });
-            list.updateSort.emit(responses[0].orderBy);
+            list.updateSort(responses[0].orderBy);
             fixture.detectChanges();
-
-            testUsersComponent(fixture, {
+            _testUsersComponent(fixture, {
                 error: 'Erro ao buscar usuários close',
                 mobile: true,
                 loading: false,
@@ -316,10 +313,9 @@ describe('UsersComponent', () => {
             const paginatedResponse = of(responses[0]);
             userServiceSpy.getUsers.and.returnValue(paginatedResponse);
             breakpointSubject.next({ matches: false, breakpoints: {} });
-            list.updateSort.emit(responses[0].orderBy);
+            list.updateSort(responses[0].orderBy);
             fixture.detectChanges();
-
-            testUsersComponent(fixture, {
+            _testUsersComponent(fixture, {
                 error: undefined,
                 mobile: false,
                 loading: false,
@@ -351,10 +347,9 @@ describe('UsersComponent', () => {
                 ),
             );
             breakpointSubject.next({ matches: false, breakpoints: {} });
-            list.updateSort.emit(responses[0].orderBy);
+            list.updateSort(responses[0].orderBy);
             fixture.detectChanges();
-
-            testUsersComponent(fixture, {
+            _testUsersComponent(fixture, {
                 error: 'Erro ao buscar usuários close',
                 mobile: false,
                 loading: false,
@@ -389,7 +384,7 @@ describe('UsersComponent', () => {
                     ),
                 );
                 breakpointSubject.next({ matches: false, breakpoints: {} });
-                list.updateSort.emit(responses[0].orderBy);
+                list.updateSort(responses[0].orderBy);
                 fixture.detectChanges();
 
                 const alert = fixture.debugElement.query(
@@ -398,7 +393,7 @@ describe('UsersComponent', () => {
                 alert.onClose.emit();
                 fixture.detectChanges();
 
-                testUsersComponent(fixture, {
+                _testUsersComponent(fixture, {
                     error: undefined,
                     mobile: false,
                     loading: false,
@@ -433,7 +428,7 @@ describe('UsersComponent', () => {
                 });
                 fixture.detectChanges();
 
-                testeRefreshFilter(fixture, {
+                _testUsersComponentRefreshFilter(fixture, {
                     textQuery: responses[1].textQuery,
                     orderBy: responses[1].orderBy,
                     sort: responses[1].orderBy[0],
@@ -444,7 +439,7 @@ describe('UsersComponent', () => {
                 const payload = _.cloneDeep(payloads[1]);
                 payload.page = payloads[0].page;
                 payload.pageSize = payloads[0].pageSize;
-                testGetUsersCalls(userServiceSpy, [payload]);
+                _testUserscomponentGetUsersCalls(userServiceSpy, [payload]);
             });
 
             it('should not update refresh filters when refresh event param is false', () => {
@@ -454,9 +449,9 @@ describe('UsersComponent', () => {
                 fixture.detectChanges();
 
                 const payload = _.cloneDeep(payloads[0]);
-                testGetUsersCalls(userServiceSpy, [payload]);
+                _testUserscomponentGetUsersCalls(userServiceSpy, [payload]);
                 // default values
-                testeRefreshFilter(fixture, {
+                _testUsersComponentRefreshFilter(fixture, {
                     textQuery: '',
                     orderBy: payloads[0].orderBy!,
                     sort: payloads[0].orderBy!,
@@ -467,10 +462,17 @@ describe('UsersComponent', () => {
                 const lastResponse = responses[0];
                 const lastOrderBy = lastResponse.orderBy;
                 const expectedUpdateSortCalls = [responses[0].orderBy];
-                testSortCalls(fixture, lastOrderBy, expectedUpdateSortCalls);
+                _testUsersComponentUpdateSortCalls(
+                    fixture,
+                    lastOrderBy,
+                    expectedUpdateSortCalls,
+                );
 
                 const expectedGetUsersCalls = [payloads[0]];
-                testGetUsersCalls(userServiceSpy, expectedGetUsersCalls);
+                _testUserscomponentGetUsersCalls(
+                    userServiceSpy,
+                    expectedGetUsersCalls,
+                );
             });
         });
 
@@ -481,7 +483,7 @@ describe('UsersComponent', () => {
                     .and.returnValue(of(responses[1]));
                 breakpointSubject.next({ matches: false, breakpoints: {} });
                 fixture.detectChanges();
-                list.updateSort.emit(responses[1].orderBy);
+                list.updateSort(responses[1].orderBy);
                 fixture.detectChanges();
                 const lastResponse = responses[1];
                 const lastOrderBy = lastResponse.orderBy;
@@ -490,7 +492,11 @@ describe('UsersComponent', () => {
                     responses[0].orderBy,
                     responses[1].orderBy,
                 ];
-                testSortCalls(fixture, lastOrderBy, expectedUpdateSortCalls);
+                _testUsersComponentUpdateSortCalls(
+                    fixture,
+                    lastOrderBy,
+                    expectedUpdateSortCalls,
+                );
 
                 const expectedGetUsersCalls = [
                     { ...payloads[0] },
@@ -501,7 +507,10 @@ describe('UsersComponent', () => {
                         deleted: DeletedFilter.not_deleted,
                     },
                 ];
-                testGetUsersCalls(userServiceSpy, expectedGetUsersCalls);
+                _testUserscomponentGetUsersCalls(
+                    userServiceSpy,
+                    expectedGetUsersCalls,
+                );
             });
         });
 
@@ -514,7 +523,7 @@ describe('UsersComponent', () => {
                 list.headerClick.emit(responses[1].orderBy);
                 fixture.detectChanges();
 
-                testHeaderClickEvent(
+                _testUsersComponentHeaderClickEvent(
                     fixture,
                     [responses[1].orderBy],
                     responses[1].orderBy,
@@ -533,7 +542,7 @@ describe('UsersComponent', () => {
 
                 fixture.detectChanges();
 
-                testItemClickEvent(fixture, [{ userId }]);
+                _testUsersComponentItemClickEvent(fixture, [{ userId }]);
             });
         });
 
@@ -553,7 +562,7 @@ describe('UsersComponent', () => {
                 payload2.orderBy = payload1.orderBy;
                 payload2.page = 2;
 
-                testGetUsersCalls(userServiceSpy, [payload1]);
+                _testUserscomponentGetUsersCalls(userServiceSpy, [payload1]);
             });
         });
     });

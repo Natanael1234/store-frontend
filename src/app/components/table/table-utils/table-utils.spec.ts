@@ -28,7 +28,7 @@ enum ProductOrder {
 describe('Sort Utility Functions', () => {
     describe('sortToOrder', () => {
         it('should convert Sort object to Order string', () => {
-            const order = sortToOrder<ProductColumnId, ProductOrder>({
+            const order = sortToOrder({
                 columnId: ProductColumnId.name,
                 direction: SortDirection.asc,
             });
@@ -38,9 +38,7 @@ describe('Sort Utility Functions', () => {
 
     describe('orderToSort', () => {
         it('should convert Order string to Sort object', () => {
-            const sort = orderToSort<ProductOrder, ProductColumnId>(
-                ProductOrder.name_asc,
-            );
+            const sort = orderToSort(ProductOrder.name_asc);
             expect(sort).toEqual({
                 columnId: ProductColumnId.name,
                 direction: SortDirection.asc,
@@ -50,9 +48,7 @@ describe('Sort Utility Functions', () => {
 
     describe('splitOrderData', () => {
         it('should split Order string into structured object', () => {
-            const result = splitOrderData<ProductOrder, ProductColumnId>(
-                ProductOrder.date_asc,
-            );
+            const result = splitOrderData(ProductOrder.date_asc);
             expect(result).toEqual({
                 columnId: ProductColumnId.date,
                 direction: SortDirection.asc,
@@ -60,9 +56,7 @@ describe('Sort Utility Functions', () => {
         });
 
         it('should handle empty direction', () => {
-            const result = splitOrderData<ProductOrder, ProductColumnId>(
-                'category_' as ProductOrder,
-            );
+            const result = splitOrderData('category_' as ProductOrder);
             expect(result).toEqual({
                 columnId: ProductColumnId.category,
                 direction: SortDirection.none,
