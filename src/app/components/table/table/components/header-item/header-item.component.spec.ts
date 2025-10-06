@@ -34,6 +34,7 @@ describe('HeaderItemComponent', () => {
             component.direction.set(SortDirection.asc);
             component.sortable.set(true);
             component.disabled.set(false);
+            // component.loading.set(false);
 
             fixture.detectChanges();
             const containterElement = fixture.debugElement.query(
@@ -116,7 +117,7 @@ describe('HeaderItemComponent', () => {
             fixture.detectChanges();
 
             const iconElement = fixture.debugElement.query(By.css('mat-icon'));
-            expect(iconElement.nativeElement.textContent).toEqual(
+            expect(iconElement.nativeElement.textContent.trim()).toEqual(
                 'arrow_downward',
             );
 
@@ -125,7 +126,7 @@ describe('HeaderItemComponent', () => {
             expect(
                 iconElement.nativeElement.classList.contains(SortDirection.asc),
             ).toBeTrue();
-            expect(iconElement.nativeElement.textContent).toEqual(
+            expect(iconElement.nativeElement.textContent.trim()).toEqual(
                 'arrow_downward',
             );
 
@@ -136,7 +137,7 @@ describe('HeaderItemComponent', () => {
                     SortDirection.desc,
                 ),
             ).toBeTrue();
-            expect(iconElement.nativeElement.textContent).toEqual(
+            expect(iconElement.nativeElement.textContent.trim()).toEqual(
                 'arrow_downward',
             );
 
@@ -145,7 +146,7 @@ describe('HeaderItemComponent', () => {
             expect(
                 iconElement.nativeElement.classList.contains('hidden'),
             ).toBeTrue();
-            expect(iconElement.nativeElement.textContent).toEqual(
+            expect(iconElement.nativeElement.textContent.trim()).toEqual(
                 'arrow_downward',
             );
             expect(component.onSelect.emit).not.toHaveBeenCalled();

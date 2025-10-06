@@ -18,13 +18,25 @@ export function _testUsersComponentPaginatorComponent(
     const paginators: DebugElement[] = fixture.debugElement.queryAll(
         By.directive(MatPaginator),
     );
-    expect(paginators.length).toEqual(1);
+    expect(paginators.length).withContext('number of paginators').toEqual(1);
     const paginator: MatPaginator = paginators[0].componentInstance;
-    expect(paginator.pageIndex).toEqual(pageIndex);
-    expect(paginator.pageSize).toEqual(pageSize);
-    expect(paginator.disabled).toEqual(loading);
-    expect(paginator.hidePageSize).toEqual(!!mobile);
-    expect(paginator.pageSizeOptions).toEqual([6, 12, 24]);
-    expect(paginator.showFirstLastButtons).toEqual(true);
-    expect(paginator.length).toEqual(length);
+    expect(paginator.pageIndex)
+        .withContext("paginator's pageIndex")
+        .toEqual(pageIndex);
+    expect(paginator.pageSize)
+        .withContext("paginator's pageSize")
+        .toEqual(pageSize);
+    expect(paginator.disabled)
+        .withContext("paginator's disabled")
+        .toEqual(loading);
+    expect(paginator.hidePageSize)
+        .withContext("paginator's hidePageSize")
+        .toEqual(!!mobile);
+    expect(paginator.pageSizeOptions)
+        .withContext("paginator's pageSizeOptions")
+        .toEqual([6, 12, 24]);
+    expect(paginator.showFirstLastButtons)
+        .withContext("paginator's showFirstLastButtons")
+        .toEqual(true);
+    expect(paginator.length).withContext("paginator's length").toEqual(length);
 }

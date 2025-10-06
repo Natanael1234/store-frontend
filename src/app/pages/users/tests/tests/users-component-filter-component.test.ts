@@ -21,13 +21,25 @@ export function _testUsersComponentFilterComponent(
     const filtersArr: DebugElement[] = fixture.debugElement.queryAll(
         By.directive(ResponsiveUserFiltersComponent),
     );
-    expect(filtersArr.length).toEqual(1);
+    expect(filtersArr.length)
+        .withContext('number of responsive filters')
+        .toEqual(1);
     const filters = filtersArr[0]
         .componentInstance as ResponsiveUserFiltersComponent;
 
-    expect(filters.textQuery()).toEqual(textQuery);
-    expect(filters.active()).toEqual(active);
-    expect(filters.deleted()).toEqual(deleted);
-    expect(filters.orderBy()).toEqual(orderBy);
-    expect(filters.mobile()).toEqual(mobile);
+    expect(filters.textQuery())
+        .withContext("responsive filter's textQuery")
+        .toEqual(textQuery);
+    expect(filters.active())
+        .withContext("responsive filter's active")
+        .toEqual(active);
+    expect(filters.deleted())
+        .withContext("responsive filter's deleted")
+        .toEqual(deleted);
+    expect(filters.orderBy())
+        .withContext("responsive filter's orderBy")
+        .toEqual(orderBy);
+    expect(filters.mobile())
+        .withContext("responsive filter's mobile")
+        .toEqual(mobile);
 }

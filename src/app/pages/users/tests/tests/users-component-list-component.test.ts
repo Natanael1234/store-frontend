@@ -23,13 +23,23 @@ export function _testUsersComponentListComponent(
     const responsiveLists: DebugElement[] = fixture.debugElement.queryAll(
         By.directive(ResponsiveUserListComponent),
     );
-    expect(responsiveLists.length).toEqual(1);
+    expect(responsiveLists.length)
+        .withContext('number of responsive lists')
+        .toEqual(1);
     const list = responsiveLists[0]
         .componentInstance as ResponsiveUserListComponent;
-    expect(list.mobile()).toEqual(mobile);
-    expect(list.loading()).toEqual(loading);
+    expect(list.mobile())
+        .withContext("responsive list's mobile")
+        .toEqual(mobile);
+    expect(list.loading())
+        .withContext("responsive list's loading")
+        .toEqual(loading);
 
-    expect(list.users()).toEqual(rows);
-    expect(list.active()).toEqual(active);
-    expect(list.deleted()).toEqual(deleted);
+    expect(list.users()).withContext("responsive list's users").toEqual(rows);
+    expect(list.active())
+        .withContext("responsive list's active")
+        .toEqual(active);
+    expect(list.deleted())
+        .withContext("responsive list's deleted")
+        .toEqual(deleted);
 }

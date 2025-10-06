@@ -8,148 +8,32 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { By } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import _ from 'lodash';
 import { of, Subject, throwError } from 'rxjs';
 import { AlertComponent } from '../../components/alert/alert.component';
 import { MockAlertComponent } from '../../components/alert/test/mock/alert.component.mock';
-import { UserTableRow } from '../../components/table/table/interfaces/user-table-row.interface';
 import { ActiveFilter } from '../../enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '../../enums/deleted-filter/deleted-filter.enum';
-import { FindUserRequestDTO } from '../../services/user/dtos/find-user.request/find-user.request.dto';
 import { Role } from '../../services/user/dtos/role/role.enum';
-import { UserResponseDto } from '../../services/user/dtos/user.response/user.response.dto';
 import { UserOrder } from '../../services/user/enums/user-order/user-order.enum';
 import { UserService } from '../../services/user/user.service';
 import { ResponsiveUserFiltersComponent } from './responsive-user-filters/responsive-user-filters.component';
 import { MockResponsiveUserFiltersComponent } from './responsive-user-filters/test/mock/responsive-users-filter.component.mock';
 import { ResponsiveUserListComponent } from './responsive-user-list/responsive-user-list.component';
 import { MockUserResponsiveListComponent } from './responsive-user-list/test/mocks/user-responsive-list.component.mock';
+import { _usersComponentPayloadsData } from './tests/data/payloads.data';
+import { _usersComponentResponsesData } from './tests/data/responses.data';
+import { _usersComponentRowsData } from './tests/data/rows.data';
+import { _usersComponentUsersData } from './tests/data/users.data';
 import { _testUserscomponentGetUsersCalls } from './tests/tests/get-users-calls.test';
 import { _testUsersComponentHeaderClickEvent } from './tests/tests/users-component-header-click.test';
 import { _testUsersComponentItemClickEvent } from './tests/tests/users-component-item-click-event.test';
 import { _testUsersComponentRefreshFilter } from './tests/tests/users-component-item-refresh-filter.test';
-import { _testUsersComponentUpdateSortCalls } from './tests/tests/users-component-update-sort-calls.test';
 import { _testUsersComponent } from './tests/tests/users-component.test';
 import { UsersComponent } from './users.component';
-
-const users: UserResponseDto[] = [
-    {
-        id: '891db31e-dfb5-42ed-b912-48b98463b004',
-        name: 'User 1',
-        email: 'user1@email.com',
-        roles: [Role.admin],
-        active: true,
-        created: '2025-04-08T12:30:00.000Z',
-        updated: '2025-04-08T13:30:00.000Z',
-        deletedAt: null,
-    },
-    {
-        id: '891db31e-dfb5-42ed-b912-48b98463b005',
-        name: 'User 2',
-        email: 'user2@email.com',
-        roles: [Role.admin],
-        active: true,
-        created: '2025-04-08T12:30:00.000Z',
-        updated: '2025-04-08T13:30:00.000Z',
-        deletedAt: '2025-04-08T15:30:00.000Z',
-    },
-    {
-        id: '891db31e-dfb5-42ed-b912-48b98463b006',
-        name: 'User 3',
-        email: 'user3@email.com',
-        roles: [Role.admin],
-        active: false,
-        created: '2025-04-08T12:30:00.000Z',
-        updated: '2025-04-08T13:30:00.000Z',
-        deletedAt: null,
-    },
-];
-
-const rows: UserTableRow[] = [
-    {
-        id: '891db31e-dfb5-42ed-b912-48b98463b004',
-        name: 'User 1',
-        email: 'user1@email.com',
-        active: true,
-        deleted: false,
-    },
-    {
-        id: '891db31e-dfb5-42ed-b912-48b98463b005',
-        name: 'User 2',
-        email: 'user2@email.com',
-        active: true,
-        deleted: true,
-    },
-    {
-        id: '891db31e-dfb5-42ed-b912-48b98463b006',
-        name: 'User 3',
-        email: 'user3@email.com',
-        active: false,
-        deleted: false,
-    },
-];
-
-const payloads: FindUserRequestDTO[] = [
-    {
-        textQuery: '',
-        active: ActiveFilter.active,
-        deleted: DeletedFilter.not_deleted,
-        orderBy: [
-            UserOrder.name_asc,
-            UserOrder.email_asc,
-            UserOrder.active_asc,
-            UserOrder.deleted_desc,
-        ],
-        page: 1,
-        pageSize: 12,
-    },
-    {
-        textQuery: 'test',
-        active: ActiveFilter.all,
-        deleted: DeletedFilter.all,
-        orderBy: [
-            UserOrder.active_desc,
-            UserOrder.name_asc,
-            UserOrder.email_asc,
-            UserOrder.deleted_desc,
-        ],
-        page: 2,
-        pageSize: 2,
-    },
-];
-
-const responses = [
-    {
-        textQuery: '',
-        orderBy: [
-            UserOrder.name_asc,
-            UserOrder.email_asc,
-            UserOrder.active_asc,
-            UserOrder.deleted_desc,
-        ],
-        results: users,
-        count: users.length,
-        page: 1,
-        pageSize: 12,
-    },
-    {
-        textQuery: 'test',
-        orderBy: [
-            UserOrder.active_desc,
-            UserOrder.name_asc,
-            UserOrder.email_asc,
-            UserOrder.deleted_desc,
-        ],
-        results: [users[2]],
-        count: users.length,
-        page: 2,
-        pageSize: 2,
-    },
-];
 
 describe('UsersComponent', () => {
     let fixture: ComponentFixture<UsersComponent>;
@@ -159,8 +43,8 @@ describe('UsersComponent', () => {
     let mockBreakpointObserver: jasmine.SpyObj<BreakpointObserver>;
     let breakpointSubject: Subject<BreakpointState>;
 
-    let list: ResponsiveUserListComponent;
-    let filters: ResponsiveUserFiltersComponent;
+    let listMock: ResponsiveUserListComponent;
+    let filtersMock: ResponsiveUserFiltersComponent;
     let paginator: MatPaginator;
 
     beforeEach(async () => {
@@ -225,26 +109,25 @@ describe('UsersComponent', () => {
 
         // users component
         fixture = TestBed.createComponent(UsersComponent);
+
         userServiceSpy = TestBed.inject(
             UserService,
         ) as jasmine.SpyObj<UserService>;
 
         component = fixture.componentInstance;
 
-        fixture.detectChanges();
-
         // responsive filters component
-        filters = fixture.debugElement.query(
+        filtersMock = fixture.debugElement.query(
             By.directive(ResponsiveUserFiltersComponent),
         ).componentInstance as ResponsiveUserFiltersComponent;
-        spyOn(filters.refresh, 'emit').and.callThrough();
+        spyOn(filtersMock.refresh, 'emit').and.callThrough();
 
         // responsive list component
-        list = fixture.debugElement.query(
+        listMock = fixture.debugElement.query(
             By.directive(ResponsiveUserListComponent),
         ).componentInstance as ResponsiveUserListComponent;
-        spyOn(list.headerClick, 'emit').and.callThrough();
-        spyOn(list.itemClick, 'emit').and.callThrough();
+        spyOn(listMock.headerClick, 'emit').and.callThrough();
+        spyOn(listMock.itemClick, 'emit').and.callThrough();
 
         // paginator component
         paginator = fixture.debugElement.query(By.directive(MatPaginator))
@@ -257,25 +140,29 @@ describe('UsersComponent', () => {
     });
 
     describe('mobile', () => {
-        it('should render user list component', () => {
-            const paginatedResponse = of(responses[0]);
-            userServiceSpy.getUsers.and.returnValue(paginatedResponse);
+        it('should render user list component', async () => {
+            const paginatedResponse = of(_usersComponentResponsesData[0]);
             breakpointSubject.next({ matches: true, breakpoints: {} });
-            list.updateSort(responses[0].orderBy);
+            userServiceSpy.getUsers.and
+                .returnValue(paginatedResponse)
+                .and.returnValue(paginatedResponse);
+
             fixture.detectChanges();
             _testUsersComponent(fixture, {
                 error: undefined,
                 mobile: true,
                 loading: false,
-                pageIndex: payloads[0].page! - 1,
-                pageSize: payloads[0].pageSize!,
-                rows,
-                textQuery: payloads[0].textQuery!,
-                orderBy: payloads[0].orderBy!,
-                active: payloads[0].active!,
-                deleted: payloads[0].deleted!,
-                length: users.length,
+                pageIndex: _usersComponentPayloadsData[0].page! - 1,
+                pageSize: _usersComponentPayloadsData[0].pageSize!,
+                rows: _usersComponentRowsData,
+                textQuery: _usersComponentPayloadsData[0].textQuery!,
+                orderBy: _usersComponentPayloadsData[0].orderBy!,
+                active: _usersComponentPayloadsData[0].active!,
+                deleted: _usersComponentPayloadsData[0].deleted!,
+                length: _usersComponentUsersData.length,
             });
+
+            expect();
         });
 
         it('should render alert when mobile', () => {
@@ -290,19 +177,19 @@ describe('UsersComponent', () => {
                 ),
             );
             breakpointSubject.next({ matches: true, breakpoints: {} });
-            list.updateSort(responses[0].orderBy);
             fixture.detectChanges();
+
             _testUsersComponent(fixture, {
                 error: 'Erro ao buscar usuários close',
                 mobile: true,
                 loading: false,
-                pageIndex: payloads[0].page! - 1,
-                pageSize: payloads[0].pageSize!,
+                pageIndex: _usersComponentPayloadsData[0].page! - 1,
+                pageSize: _usersComponentPayloadsData[0].pageSize!,
                 rows: [],
-                textQuery: payloads[0].textQuery!,
-                orderBy: payloads[0].orderBy!,
-                active: payloads[0].active!,
-                deleted: payloads[0].deleted!,
+                textQuery: _usersComponentPayloadsData[0].textQuery!,
+                orderBy: _usersComponentPayloadsData[0].orderBy!,
+                active: _usersComponentPayloadsData[0].active!,
+                deleted: _usersComponentPayloadsData[0].deleted!,
                 length: 0,
             });
         });
@@ -310,18 +197,19 @@ describe('UsersComponent', () => {
 
     describe('desktop', () => {
         it('should render user list component', () => {
-            const paginatedResponse = of(responses[0]);
+            const paginatedResponse = of(_usersComponentResponsesData[0]);
             userServiceSpy.getUsers.and.returnValue(paginatedResponse);
-            breakpointSubject.next({ matches: false, breakpoints: {} });
-            list.updateSort(responses[0].orderBy);
             fixture.detectChanges();
+            breakpointSubject.next({ matches: false, breakpoints: {} });
+            fixture.detectChanges();
+
             _testUsersComponent(fixture, {
                 error: undefined,
                 mobile: false,
                 loading: false,
                 pageIndex: 0,
                 pageSize: 12,
-                rows,
+                rows: _usersComponentRowsData,
                 textQuery: '',
                 orderBy: [
                     UserOrder.name_asc,
@@ -331,7 +219,7 @@ describe('UsersComponent', () => {
                 ],
                 active: ActiveFilter.active,
                 deleted: DeletedFilter.not_deleted,
-                length: users.length,
+                length: _usersComponentUsersData.length,
             });
         });
 
@@ -346,9 +234,10 @@ describe('UsersComponent', () => {
                         }),
                 ),
             );
-            breakpointSubject.next({ matches: false, breakpoints: {} });
-            list.updateSort(responses[0].orderBy);
             fixture.detectChanges();
+            breakpointSubject.next({ matches: false, breakpoints: {} });
+            fixture.detectChanges();
+
             _testUsersComponent(fixture, {
                 error: 'Erro ao buscar usuários close',
                 mobile: false,
@@ -383,8 +272,14 @@ describe('UsersComponent', () => {
                             }),
                     ),
                 );
+                fixture.detectChanges();
                 breakpointSubject.next({ matches: false, breakpoints: {} });
-                list.updateSort(responses[0].orderBy);
+                listMock.updateSort([
+                    UserOrder.name_asc,
+                    UserOrder.email_asc,
+                    UserOrder.active_asc,
+                    UserOrder.deleted_desc,
+                ]);
                 fixture.detectChanges();
 
                 const alert = fixture.debugElement.query(
@@ -417,152 +312,470 @@ describe('UsersComponent', () => {
         describe("filter's refresh", () => {
             it('should handle refresh filters event', () => {
                 userServiceSpy.getUsers.and
-                    .returnValue(of(responses[0]))
-                    .and.returnValue(of(responses[1]));
+                    .returnValue(
+                        of({
+                            textQuery: '',
+                            orderBy: [
+                                UserOrder.name_asc,
+                                UserOrder.email_asc,
+                                UserOrder.active_asc,
+                                UserOrder.deleted_desc,
+                            ],
+                            results: [
+                                {
+                                    id: '891db31e-dfb5-42ed-b912-48b98463b004',
+                                    name: 'User 1',
+                                    email: 'user1@email.com',
+                                    roles: [Role.admin],
+                                    active: true,
+                                    created: '2025-04-08T12:30:00.000Z',
+                                    updated: '2025-04-08T13:30:00.000Z',
+                                    deletedAt: null,
+                                },
+                                {
+                                    id: '891db31e-dfb5-42ed-b912-48b98463b005',
+                                    name: 'User 2',
+                                    email: 'user2@email.com',
+                                    roles: [Role.admin],
+                                    active: true,
+                                    created: '2025-04-08T12:30:00.000Z',
+                                    updated: '2025-04-08T13:30:00.000Z',
+                                    deletedAt: '2025-04-08T15:30:00.000Z',
+                                },
+                                {
+                                    id: '891db31e-dfb5-42ed-b912-48b98463b006',
+                                    name: 'User 3',
+                                    email: 'user3@email.com',
+                                    roles: [Role.admin],
+                                    active: false,
+                                    created: '2025-04-08T12:30:00.000Z',
+                                    updated: '2025-04-08T13:30:00.000Z',
+                                    deletedAt: null,
+                                },
+                            ],
+                            count: 3,
+                            page: 1,
+                            pageSize: 12,
+                        }),
+                    )
+                    .and.returnValue(
+                        of({
+                            textQuery: 'test',
+                            orderBy: [
+                                UserOrder.active_desc,
+                                UserOrder.name_asc,
+                                UserOrder.email_asc,
+                                UserOrder.deleted_desc,
+                            ],
+                            results: [
+                                {
+                                    id: '891db31e-dfb5-42ed-b912-48b98463b005',
+                                    name: 'User 2',
+                                    email: 'user2@email.com',
+                                    roles: [Role.admin],
+                                    active: true,
+                                    created: '2025-04-08T12:30:00.000Z',
+                                    updated: '2025-04-08T13:30:00.000Z',
+                                    deletedAt: '2025-04-08T15:30:00.000Z',
+                                },
+                            ],
+                            count: 1,
+                            page: 2,
+                            pageSize: 2,
+                        }),
+                    );
                 breakpointSubject.next({ matches: false, breakpoints: {} });
-                filters.refresh.emit({
-                    textQuery: payloads[1].textQuery!,
-                    sort: payloads[1].orderBy![0],
-                    active: payloads[1].active!,
-                    deleted: payloads[1].deleted!,
+                fixture.detectChanges();
+                filtersMock.refresh.emit({
+                    textQuery: 'test',
+                    sort: UserOrder.active_desc,
+                    active: ActiveFilter.all,
+                    deleted: DeletedFilter.all,
                 });
                 fixture.detectChanges();
 
                 _testUsersComponentRefreshFilter(fixture, {
-                    textQuery: responses[1].textQuery,
-                    orderBy: responses[1].orderBy,
-                    sort: responses[1].orderBy[0],
-                    active: payloads[1].active!,
-                    deleted: payloads[1].deleted!,
+                    textQuery: 'test',
+                    orderBy: [
+                        UserOrder.active_desc,
+                        UserOrder.name_asc,
+                        UserOrder.email_asc,
+                        UserOrder.deleted_desc,
+                    ],
+                    active: ActiveFilter.all,
+                    deleted: DeletedFilter.all,
                 });
 
-                const payload = _.cloneDeep(payloads[1]);
-                payload.page = payloads[0].page;
-                payload.pageSize = payloads[0].pageSize;
-                _testUserscomponentGetUsersCalls(userServiceSpy, [payload]);
-            });
-
-            it('should not update refresh filters when refresh event param is false', () => {
-                userServiceSpy.getUsers.and.returnValue(of(responses[0]));
-                breakpointSubject.next({ matches: false, breakpoints: {} });
-                // filters.refresh.emit(false);
-                fixture.detectChanges();
-
-                const payload = _.cloneDeep(payloads[0]);
-                _testUserscomponentGetUsersCalls(userServiceSpy, [payload]);
-                // default values
-                _testUsersComponentRefreshFilter(fixture, {
-                    textQuery: '',
-                    orderBy: payloads[0].orderBy!,
-                    sort: payloads[0].orderBy!,
-                    active: payloads[0].active!,
-                    deleted: payloads[0].deleted!,
-                });
-
-                const lastResponse = responses[0];
-                const lastOrderBy = lastResponse.orderBy;
-                const expectedUpdateSortCalls = [responses[0].orderBy];
-                _testUsersComponentUpdateSortCalls(
-                    fixture,
-                    lastOrderBy,
-                    expectedUpdateSortCalls,
-                );
-
-                const expectedGetUsersCalls = [payloads[0]];
-                _testUserscomponentGetUsersCalls(
-                    userServiceSpy,
-                    expectedGetUsersCalls,
-                );
-            });
-        });
-
-        describe('update sort', () => {
-            it('should handle update sort event', () => {
-                userServiceSpy.getUsers.and
-                    .returnValue(of(responses[0]))
-                    .and.returnValue(of(responses[1]));
-                breakpointSubject.next({ matches: false, breakpoints: {} });
-                fixture.detectChanges();
-                list.updateSort(responses[1].orderBy);
-                fixture.detectChanges();
-                const lastResponse = responses[1];
-                const lastOrderBy = lastResponse.orderBy;
-
-                const expectedUpdateSortCalls = [
-                    responses[0].orderBy,
-                    responses[1].orderBy,
-                ];
-                _testUsersComponentUpdateSortCalls(
-                    fixture,
-                    lastOrderBy,
-                    expectedUpdateSortCalls,
-                );
-
-                const expectedGetUsersCalls = [
-                    { ...payloads[0] },
+                _testUserscomponentGetUsersCalls(userServiceSpy, [
                     {
-                        ...payloads[1],
                         textQuery: '',
                         active: ActiveFilter.active,
                         deleted: DeletedFilter.not_deleted,
+                        orderBy: [
+                            UserOrder.name_asc,
+                            UserOrder.email_asc,
+                            UserOrder.active_asc,
+                            UserOrder.deleted_desc,
+                        ],
+                        page: 1,
+                        pageSize: 12,
                     },
-                ];
-                _testUserscomponentGetUsersCalls(
-                    userServiceSpy,
-                    expectedGetUsersCalls,
+                    {
+                        textQuery: 'test',
+                        active: ActiveFilter.all,
+                        deleted: DeletedFilter.all,
+                        orderBy: [
+                            UserOrder.active_desc,
+                            UserOrder.name_asc,
+                            UserOrder.email_asc,
+                            UserOrder.deleted_desc,
+                        ],
+                        page: 2,
+                        pageSize: 2,
+                    },
+                ]);
+            });
+
+            it('should not update refresh filters when refresh event param is false', () => {
+                userServiceSpy.getUsers.and.returnValue(
+                    of({
+                        textQuery: '',
+                        orderBy: [
+                            UserOrder.name_asc,
+                            UserOrder.email_asc,
+                            UserOrder.active_asc,
+                            UserOrder.deleted_desc,
+                        ],
+                        results: [
+                            {
+                                id: '891db31e-dfb5-42ed-b912-48b98463b004',
+                                name: 'User 1',
+                                email: 'user1@email.com',
+                                roles: [Role.admin],
+                                active: true,
+                                created: '2025-04-08T12:30:00.000Z',
+                                updated: '2025-04-08T13:30:00.000Z',
+                                deletedAt: null,
+                            },
+                            {
+                                id: '891db31e-dfb5-42ed-b912-48b98463b005',
+                                name: 'User 2',
+                                email: 'user2@email.com',
+                                roles: [Role.admin],
+                                active: true,
+                                created: '2025-04-08T12:30:00.000Z',
+                                updated: '2025-04-08T13:30:00.000Z',
+                                deletedAt: '2025-04-08T15:30:00.000Z',
+                            },
+                            {
+                                id: '891db31e-dfb5-42ed-b912-48b98463b006',
+                                name: 'User 3',
+                                email: 'user3@email.com',
+                                roles: [Role.admin],
+                                active: false,
+                                created: '2025-04-08T12:30:00.000Z',
+                                updated: '2025-04-08T13:30:00.000Z',
+                                deletedAt: null,
+                            },
+                        ],
+                        count: 3,
+                        page: 1,
+                        pageSize: 12,
+                    }),
                 );
+                breakpointSubject.next({ matches: false, breakpoints: {} });
+                // filters.refresh.emit(false);
+                fixture.detectChanges();
+                filtersMock.refresh.emit(false);
+                fixture.detectChanges();
+
+                _testUserscomponentGetUsersCalls(userServiceSpy, [
+                    {
+                        textQuery: '',
+                        active: ActiveFilter.active,
+                        deleted: DeletedFilter.not_deleted,
+                        orderBy: [
+                            UserOrder.name_asc,
+                            UserOrder.email_asc,
+                            UserOrder.active_asc,
+                            UserOrder.deleted_desc,
+                        ],
+                        page: 1,
+                        pageSize: 12,
+                    },
+                ]);
+
+                // default values
+                _testUsersComponentRefreshFilter(fixture, {
+                    textQuery: '',
+                    active: ActiveFilter.active,
+                    deleted: DeletedFilter.not_deleted,
+                    orderBy: [
+                        UserOrder.name_asc,
+                        UserOrder.email_asc,
+                        UserOrder.active_asc,
+                        UserOrder.deleted_desc,
+                    ],
+                });
             });
         });
 
         describe('header click', () => {
             it('should handle header click event', () => {
                 userServiceSpy.getUsers.and
-                    .returnValue(of(responses[0]))
-                    .and.returnValue(of(responses[1]));
+                    .returnValue(
+                        of({
+                            textQuery: '',
+                            orderBy: [
+                                UserOrder.name_asc,
+                                UserOrder.email_asc,
+                                UserOrder.active_asc,
+                                UserOrder.deleted_desc,
+                            ],
+                            results: [
+                                {
+                                    id: '891db31e-dfb5-42ed-b912-48b98463b004',
+                                    name: 'User 1',
+                                    email: 'user1@email.com',
+                                    roles: [Role.admin],
+                                    active: true,
+                                    created: '2025-04-08T12:30:00.000Z',
+                                    updated: '2025-04-08T13:30:00.000Z',
+                                    deletedAt: null,
+                                },
+                                {
+                                    id: '891db31e-dfb5-42ed-b912-48b98463b005',
+                                    name: 'User 2',
+                                    email: 'user2@email.com',
+                                    roles: [Role.admin],
+                                    active: true,
+                                    created: '2025-04-08T12:30:00.000Z',
+                                    updated: '2025-04-08T13:30:00.000Z',
+                                    deletedAt: '2025-04-08T15:30:00.000Z',
+                                },
+                                {
+                                    id: '891db31e-dfb5-42ed-b912-48b98463b006',
+                                    name: 'User 3',
+                                    email: 'user3@email.com',
+                                    roles: [Role.admin],
+                                    active: false,
+                                    created: '2025-04-08T12:30:00.000Z',
+                                    updated: '2025-04-08T13:30:00.000Z',
+                                    deletedAt: null,
+                                },
+                            ],
+                            count: 3,
+                            page: 1,
+                            pageSize: 12,
+                        }),
+                    )
+                    .and.returnValue(
+                        of({
+                            textQuery: 'test',
+                            orderBy: [
+                                UserOrder.active_desc,
+                                UserOrder.name_asc,
+                                UserOrder.email_asc,
+                                UserOrder.deleted_desc,
+                            ],
+                            results: [
+                                {
+                                    id: '891db31e-dfb5-42ed-b912-48b98463b005',
+                                    name: 'User 2',
+                                    email: 'user2@email.com',
+                                    roles: [Role.admin],
+                                    active: true,
+                                    created: '2025-04-08T12:30:00.000Z',
+                                    updated: '2025-04-08T13:30:00.000Z',
+                                    deletedAt: '2025-04-08T15:30:00.000Z',
+                                },
+                            ],
+                            count: 1,
+                            page: 2,
+                            pageSize: 2,
+                        }),
+                    );
                 breakpointSubject.next({ matches: false, breakpoints: {} });
-                list.headerClick.emit(responses[1].orderBy);
+                fixture.detectChanges();
+                listMock.headerClick.emit([
+                    UserOrder.active_desc,
+                    UserOrder.name_asc,
+                    UserOrder.email_asc,
+                    UserOrder.deleted_desc,
+                ]);
                 fixture.detectChanges();
 
                 _testUsersComponentHeaderClickEvent(
                     fixture,
-                    [responses[1].orderBy],
-                    responses[1].orderBy,
+                    [
+                        [
+                            UserOrder.active_desc,
+                            UserOrder.name_asc,
+                            UserOrder.email_asc,
+                            UserOrder.deleted_desc,
+                        ],
+                    ],
+                    [
+                        UserOrder.active_desc,
+                        UserOrder.name_asc,
+                        UserOrder.email_asc,
+                        UserOrder.deleted_desc,
+                    ],
                 );
             });
         });
 
         describe('row click', () => {
             it('should handle row click event', () => {
-                userServiceSpy.getUsers.and
-                    .returnValue(of(responses[0]))
-                    .and.returnValue(of(responses[1]));
+                userServiceSpy.getUsers.and.returnValue(
+                    of({
+                        textQuery: '',
+                        orderBy: [
+                            UserOrder.name_asc,
+                            UserOrder.email_asc,
+                            UserOrder.active_asc,
+                            UserOrder.deleted_desc,
+                        ],
+                        results: [
+                            {
+                                id: '891db31e-dfb5-42ed-b912-48b98463b004',
+                                name: 'User 1',
+                                email: 'user1@email.com',
+                                roles: [Role.admin],
+                                active: true,
+                                created: '2025-04-08T12:30:00.000Z',
+                                updated: '2025-04-08T13:30:00.000Z',
+                                deletedAt: null,
+                            },
+                            {
+                                id: '891db31e-dfb5-42ed-b912-48b98463b005',
+                                name: 'User 2',
+                                email: 'user2@email.com',
+                                roles: [Role.admin],
+                                active: true,
+                                created: '2025-04-08T12:30:00.000Z',
+                                updated: '2025-04-08T13:30:00.000Z',
+                                deletedAt: '2025-04-08T15:30:00.000Z',
+                            },
+                        ],
+                        count: 3,
+                        page: 1,
+                        pageSize: 2,
+                    }),
+                );
                 breakpointSubject.next({ matches: false, breakpoints: {} });
-                const userId = '891db31e-dfb5-42ed-b912-48b98463b004';
-                list.itemClick.emit(userId);
-
+                listMock.itemClick.emit('891db31e-dfb5-42ed-b912-48b98463b004');
                 fixture.detectChanges();
 
-                _testUsersComponentItemClickEvent(fixture, [{ userId }]);
+                _testUsersComponentItemClickEvent(fixture, [
+                    { userId: '891db31e-dfb5-42ed-b912-48b98463b004' },
+                ]);
             });
         });
 
         describe('pagination', () => {
             it('should paginate', () => {
-                userServiceSpy.getUsers.and.returnValue(of(responses[0]));
-                breakpointSubject.next({ matches: false, breakpoints: {} });
+                userServiceSpy.getUsers.and
+                    .returnValue(
+                        of({
+                            textQuery: '',
+                            orderBy: [
+                                UserOrder.name_asc,
+                                UserOrder.email_asc,
+                                UserOrder.active_asc,
+                                UserOrder.deleted_desc,
+                            ],
+                            results: [
+                                {
+                                    id: '891db31e-dfb5-42ed-b912-48b98463b004',
+                                    name: 'User 1',
+                                    email: 'user1@email.com',
+                                    roles: [Role.admin],
+                                    active: true,
+                                    created: '2025-04-08T12:30:00.000Z',
+                                    updated: '2025-04-08T13:30:00.000Z',
+                                    deletedAt: null,
+                                },
+                                {
+                                    id: '891db31e-dfb5-42ed-b912-48b98463b005',
+                                    name: 'User 2',
+                                    email: 'user2@email.com',
+                                    roles: [Role.admin],
+                                    active: true,
+                                    created: '2025-04-08T12:30:00.000Z',
+                                    updated: '2025-04-08T13:30:00.000Z',
+                                    deletedAt: '2025-04-08T15:30:00.000Z',
+                                },
+                            ],
+                            count: 3,
+                            page: 1,
+                            pageSize: 12,
+                        }),
+                    )
+                    .and.returnValue(
+                        of({
+                            textQuery: '',
+                            orderBy: [
+                                UserOrder.name_asc,
+                                UserOrder.email_asc,
+                                UserOrder.active_asc,
+                                UserOrder.deleted_desc,
+                            ],
+                            results: [
+                                {
+                                    id: '891db31e-dfb5-42ed-b912-48b98463b006',
+                                    name: 'User 3',
+                                    email: 'user3@email.com',
+                                    roles: [Role.admin],
+                                    active: false,
+                                    created: '2025-04-08T12:30:00.000Z',
+                                    updated: '2025-04-08T13:30:00.000Z',
+                                    deletedAt: null,
+                                },
+                            ],
+                            count: 3,
+                            page: 2,
+                            pageSize: 12,
+                        }),
+                    );
                 fixture.detectChanges();
 
-                const payload1 = _.cloneDeep(payloads[0]);
-                const payload2 = _.cloneDeep(payloads[1]);
+                const pageEvent = new PageEvent();
+                pageEvent.pageIndex = 1;
+                pageEvent.length = 3;
+                pageEvent.pageSize = 12;
+                pageEvent.previousPageIndex = 0;
+                paginator.page.emit(pageEvent);
+                fixture.detectChanges();
 
-                payload2.textQuery = payload1.textQuery;
-                payload2.active = payload1.active;
-                payload2.deleted = payload1.deleted;
-                payload2.pageSize = 2;
-                payload2.orderBy = payload1.orderBy;
-                payload2.page = 2;
-
-                _testUserscomponentGetUsersCalls(userServiceSpy, [payload1]);
+                _testUserscomponentGetUsersCalls(userServiceSpy, [
+                    {
+                        textQuery: '',
+                        active: ActiveFilter.active,
+                        deleted: DeletedFilter.not_deleted,
+                        orderBy: [
+                            UserOrder.name_asc,
+                            UserOrder.email_asc,
+                            UserOrder.active_asc,
+                            UserOrder.deleted_desc,
+                        ],
+                        page: 1,
+                        pageSize: 12,
+                    },
+                    {
+                        textQuery: '',
+                        active: ActiveFilter.active,
+                        deleted: DeletedFilter.not_deleted,
+                        orderBy: [
+                            UserOrder.name_asc,
+                            UserOrder.email_asc,
+                            UserOrder.active_asc,
+                            UserOrder.deleted_desc,
+                        ],
+                        page: 2,
+                        pageSize: 12,
+                    },
+                ]);
             });
         });
     });

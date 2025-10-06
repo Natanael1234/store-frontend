@@ -11,8 +11,7 @@ import { MatInput, MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { By } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import {
     testButton,
@@ -27,6 +26,7 @@ import { PasswordMessage } from '../../messages/password/password.messages';
 import { TextMessage } from '../../messages/text/text.messages';
 import { AuthService } from '../../services/auth/auth.service';
 import { Role } from '../../services/user/dtos/role/role.enum';
+import { RegisterComponent } from '../register/register.component';
 import { LoginComponent } from './login.component';
 
 type LoginFormData = { email: string; password: string };
@@ -84,7 +84,6 @@ describe('LoginComponent', () => {
                 MatFormFieldModule,
                 MatButtonModule,
                 MatCheckboxModule,
-
                 MatCardModule,
                 AlertComponent,
                 MatProgressBarModule,
@@ -94,8 +93,14 @@ describe('LoginComponent', () => {
                 {
                     provide: AuthService,
                     useValue: spy,
-                    RouterTestingModule,
                 },
+                provideRouter([
+                    {
+                        path: 'register',
+                        component: RegisterComponent,
+                        title: 'Register Page',
+                    },
+                ]),
             ],
         }).compileComponents();
 

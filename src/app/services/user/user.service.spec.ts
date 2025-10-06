@@ -89,5 +89,7 @@ describe('UserService', () => {
         expect(authService).toBeTruthy();
     });
 
-    describe('getUsers', () => {});
+    xdescribe('getUsers', () => {
+        it('should delegate get users request', () => {});
+    });
 });

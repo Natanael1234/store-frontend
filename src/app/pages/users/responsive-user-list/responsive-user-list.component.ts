@@ -39,6 +39,9 @@ export class ResponsiveUserListComponent implements AfterViewInit {
     public active = model<ActiveFilter>(ActiveFilter.active);
     public deleted = model<DeletedFilter>(DeletedFilter.not_deleted);
     public users = model<UserTableRow[]>([]);
+    @Output() public headerClick = new EventEmitter();
+    @Output() public itemClick = new EventEmitter<string>();
+
     protected activeSortEnabled = computed<boolean>(
         () => this.active() == ActiveFilter.all,
     );
@@ -148,9 +151,6 @@ export class ResponsiveUserListComponent implements AfterViewInit {
             });
         });
     });
-
-    @Output() public headerClick = new EventEmitter();
-    @Output() public itemClick = new EventEmitter<string>();
 
     constructor() {
         effect(() => {

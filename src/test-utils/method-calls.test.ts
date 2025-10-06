@@ -3,7 +3,7 @@ export function _testMethodCalls(
     expectedCalls: { args: any[] }[],
 ) {
     expect(calls.length)
-        .withContext(`is the expected number of calls?`)
+        .withContext(`Call count`)
         .toEqual(expectedCalls.length);
 
     // for each call
@@ -12,18 +12,15 @@ export function _testMethodCalls(
         const args = calls[i].args;
         const expectedArgs = expectedCalls[i].args;
         expect(args.length)
-            .withContext(
-                `do call #${i + 1} has the expected number of arguments?`,
-            )
+            .withContext(`Call #${i + 1} argument count`)
             .toEqual(expectedArgs.length);
         // for each argument in the call
         for (let j = 0; j < args.length; j++) {
             const arg = args[j];
             const expectedArg = expectedArgs[j];
+            // console.log(JSON.stringify({ arg, expectedArg }, null, 4));
             expect(arg)
-                .withContext(
-                    `Iscal call #${i + 1}'s argument #${j + 1} the expected one?`,
-                )
+                .withContext(`Call #${i + 1} argument #${j + 1}`)
                 .toEqual(expectedArg);
         }
     }

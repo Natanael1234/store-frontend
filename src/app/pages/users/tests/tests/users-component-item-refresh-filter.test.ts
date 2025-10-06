@@ -12,7 +12,6 @@ export function _testUsersComponentRefreshFilter(
     options: {
         textQuery: string;
         orderBy: UserOrder[];
-        sort: UserOrder | UserOrder[];
         active: ActiveFilter;
         deleted: DeletedFilter;
     },
@@ -22,13 +21,24 @@ export function _testUsersComponentRefreshFilter(
     ).componentInstance;
     const list = fixture.debugElement.query(
         By.directive(ResponsiveUserListComponent),
-    ).componentInstance;
-    const { textQuery, orderBy, sort, active, deleted } = options;
-    expect(filters.textQuery()).toEqual(textQuery);
-    expect(filters.orderBy()).toEqual(orderBy);
-    expect(filters.active()).toEqual(active);
-    expect(filters.deleted()).toEqual(deleted);
-    expect(list.sort()).toEqual(sort);
-    expect(list.active()).toEqual(active);
-    expect(list.deleted()).toEqual(deleted);
+    ).componentInstance as ResponsiveUserListComponent;
+    const { textQuery, orderBy, active, deleted } = options;
+    expect(filters.textQuery())
+        .withContext("users component filter's textQuery")
+        .toEqual(textQuery);
+    expect(filters.orderBy())
+        .withContext("users component filter's orderBy")
+        .toEqual(orderBy);
+    expect(filters.active())
+        .withContext("users component filter's active")
+        .toEqual(active);
+    expect(filters.deleted())
+        .withContext("users component filter's deleted")
+        .toEqual(deleted);
+    expect(list.active())
+        .withContext("users component filter's active")
+        .toEqual(active);
+    expect(list.deleted())
+        .withContext("users component filter's deleted")
+        .toEqual(deleted);
 }

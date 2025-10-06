@@ -10,8 +10,7 @@ import { MatInput, MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { By } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import {
     testButton,
@@ -27,6 +26,7 @@ import { PasswordMessage } from '../../messages/password/password.messages';
 import { TextMessage } from '../../messages/text/text.messages';
 import { AuthService } from '../../services/auth/auth.service';
 import { Role } from '../../services/user/dtos/role/role.enum';
+import { LoginComponent } from '../login/login.component';
 import { RegisterComponent } from './register.component';
 
 type FormData = {
@@ -101,7 +101,6 @@ describe('RegisterComponent', () => {
                 MatFormFieldModule,
                 MatButtonModule,
                 MatCheckboxModule,
-
                 MatCardModule,
                 AlertComponent,
                 MatProgressBarModule,
@@ -111,8 +110,14 @@ describe('RegisterComponent', () => {
                 {
                     provide: AuthService,
                     useValue: spy,
-                    RouterTestingModule,
                 },
+                provideRouter([
+                    {
+                        path: 'login',
+                        component: LoginComponent,
+                        title: 'Login Page',
+                    },
+                ]),
             ],
         }).compileComponents();
 
@@ -1235,7 +1240,7 @@ describe('RegisterComponent', () => {
 
             const acceptTermsField = form.children[4] as Element;
             testCheckbox(acceptTermsField, {
-                label: 'Aceito os Termos de Serviço * ',
+                label: ' Aceito os Termos de Serviço * ',
                 checked: false,
                 error: false,
             });

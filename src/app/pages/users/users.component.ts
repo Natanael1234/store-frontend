@@ -37,19 +37,13 @@ import { UserResponseDto } from '../../services/user/dtos/user.response/user.res
 import { UserOrder } from '../../services/user/enums/user-order/user-order.enum';
 import { UserService } from '../../services/user/user.service';
 import { leftMouseClickFilter } from '../../utils/mouse-events/mouse-click-filter';
+import { PaginatorConfigs } from './configs/paginator/paginator.configs';
 import { UserDialogComponent } from './dialogs/user-dialog/user-dialog.component';
 import { ResponsiveUserFiltersComponent } from './responsive-user-filters/responsive-user-filters.component';
 import { UserFilterDialogComponent } from './responsive-user-filters/user-filter-dialog/user-filter-dialog.component';
 import { OnUserFilterEvent } from './responsive-user-filters/user-filter-toollbar/types/on-user-filter-menu-list-close-event.type';
 import { ResponsiveUserListComponent } from './responsive-user-list/responsive-user-list.component';
 import { userResponseToUserTableRow } from './utils/user-response-to-user-table/user-response-to-user-table';
-
-// TODO: isolate
-const DEFAULT_LENGTH = 0;
-const DEFAULT_COUNT = 0;
-const DEFAULT_PAGE_INDEX = 0;
-const DEFAULT_PAGE_SIZE = 12;
-const PAGE_SIZES = [6, 12, 24];
 
 @Component({
     selector: 'app-users',
@@ -107,12 +101,12 @@ export class UsersComponent implements AfterViewInit {
 
     /* PAGINATION */
 
-    protected length = model<number>(DEFAULT_LENGTH);
-    protected count = model<number>(DEFAULT_COUNT);
-    protected pageIndex = model<number>(DEFAULT_PAGE_INDEX);
+    protected length = model<number>(PaginatorConfigs.DEFAULT_LENGTH);
+    protected count = model<number>(PaginatorConfigs.DEFAULT_COUNT);
+    protected pageIndex = model<number>(PaginatorConfigs.DEFAULT_PAGE_INDEX);
     protected page = computed<number>(() => this.pageIndex() + 1);
-    protected pageSize = model<number>(DEFAULT_PAGE_SIZE);
-    protected pageSizeOptions = model<number[]>(PAGE_SIZES);
+    protected pageSize = model<number>(PaginatorConfigs.DEFAULT_PAGE_SIZE);
+    protected pageSizeOptions = model<number[]>(PaginatorConfigs.PAGE_SIZES);
 
     /* RESPONSIVITY */
 
@@ -161,6 +155,7 @@ export class UsersComponent implements AfterViewInit {
         response: PaginatedResponseDTO<UserResponseDto, UserOrder>,
     ) {
         this.textQuery.set(response.textQuery);
+        this.orderBy.set(response.orderBy);
         this.count.set(response.count);
         this.pageIndex.set(response.page - 1);
         this.pageSize.set(response.pageSize);
@@ -171,10 +166,11 @@ export class UsersComponent implements AfterViewInit {
 
     protected set responseError(error: Error) {
         this.users.set([]);
-        this.count.set(DEFAULT_COUNT);
-        this.length.set(DEFAULT_LENGTH);
-        this.pageIndex.set(DEFAULT_PAGE_INDEX);
-        this.pageSize.set(DEFAULT_PAGE_SIZE);
+        // TODO: orderBy?
+        this.count.set(PaginatorConfigs.DEFAULT_COUNT);
+        this.length.set(PaginatorConfigs.DEFAULT_LENGTH);
+        this.pageIndex.set(PaginatorConfigs.DEFAULT_PAGE_INDEX);
+        this.pageSize.set(PaginatorConfigs.DEFAULT_PAGE_SIZE);
         this.error.set('Erro ao buscar usuários'); // TODO: pegar mensagem do erro
     }
 
@@ -217,7 +213,10 @@ export class UsersComponent implements AfterViewInit {
         this.getUsers();
     }
 
+    counter = 1;
+
     protected async getUsers() {
+        const counter = this.counter++;
         this.loading.set(true);
         this.error.set(undefined);
         const payload = this.payload;
