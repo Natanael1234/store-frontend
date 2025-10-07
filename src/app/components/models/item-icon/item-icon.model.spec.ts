@@ -18,10 +18,17 @@ describe('ItemLabel model', () => {
     });
 
     it('should allow undefined tooltip', () => {
-        const item = new ItemIcon({ icon: 'user', disabled: false });
-
-        expect(item.icon).toBeUndefined();
+        const item = new ItemIcon({ icon: 'user', disabled: true });
         expect(item.tooltip).toBeUndefined();
-        expect(item.disabled).toBe(false);
+    });
+
+    it('should allow false disabled', () => {
+        const item = new ItemIcon({ icon: 'user', disabled: false });
+        expect(item.disabled).toBeFalse();
+    });
+
+    it('disabled should be false by default', () => {
+        const item = new ItemIcon({ icon: 'user' });
+        expect(item.disabled).toBeFalse();
     });
 });

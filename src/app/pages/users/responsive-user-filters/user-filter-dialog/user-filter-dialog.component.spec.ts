@@ -60,7 +60,7 @@ describe('UserFilterDialogComponent', () => {
                 {
                     provide: MAT_DIALOG_DATA,
                     useValue: {
-                        order: UserOrder.email_asc,
+                        sort: UserOrder.email_asc,
                         active: ActiveFilter.inactive,
                         deleted: DeletedFilter.deleted,
                     },
@@ -104,8 +104,9 @@ describe('UserFilterDialogComponent', () => {
     it('should initialize toolbar inputs', () => {
         const toolbar = fixture.debugElement.query(
             By.directive(UserFilterToolbarComponent),
-        ).componentInstance;
-        expect(toolbar.order()).toEqual(UserOrder.email_asc);
+        ).componentInstance as UserFilterToolbarComponent;
+
+        expect(toolbar.sort()).toEqual(UserOrder.email_asc);
         expect(toolbar.active()).toEqual(ActiveFilter.inactive);
         expect(toolbar.deleted()).toEqual(DeletedFilter.deleted);
     });
@@ -119,8 +120,9 @@ describe('UserFilterDialogComponent', () => {
 
         const toolbar = fixture.debugElement.query(
             By.directive(UserFilterToolbarComponent),
-        ).componentInstance;
-        expect(toolbar.order()).toEqual(UserOrder.email_desc);
+        ).componentInstance as UserFilterToolbarComponent;
+
+        expect(toolbar.sort()).toEqual(UserOrder.email_desc);
         expect(toolbar.active()).toEqual(ActiveFilter.all);
         expect(toolbar.deleted()).toEqual(DeletedFilter.all);
     });
@@ -140,10 +142,10 @@ describe('UserFilterDialogComponent', () => {
 
         const toolbarMock = fixture.debugElement.query(
             By.directive(UserFilterToolbarComponent),
-        );
+        ).componentInstance as UserFilterToolbarComponent;
 
-        toolbarMock.componentInstance.onClose.emit({
-            order: UserOrder.email_desc,
+        toolbarMock.onClose.emit({
+            sort: UserOrder.email_desc,
             active: ActiveFilter.all,
             deleted: DeletedFilter.all,
         });
@@ -152,7 +154,7 @@ describe('UserFilterDialogComponent', () => {
 
         expect(closeSpy).toHaveBeenCalled();
         expect(closeSpy).toHaveBeenCalledWith({
-            order: UserOrder.email_desc,
+            sort: UserOrder.email_desc,
             active: ActiveFilter.all,
             deleted: DeletedFilter.all,
         });
@@ -173,9 +175,9 @@ describe('UserFilterDialogComponent', () => {
 
         const toolbarMock = fixture.debugElement.query(
             By.directive(UserFilterToolbarComponent),
-        );
+        ).componentInstance as UserFilterToolbarComponent;
 
-        toolbarMock.componentInstance.onClose.emit(false);
+        toolbarMock.onClose.emit(false);
 
         fixture.detectChanges();
 

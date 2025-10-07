@@ -240,7 +240,7 @@ describe('UserFilterToolbarComponent', () => {
                     .withContext('ToolbarComponent.onClose submit event')
                     .toHaveBeenCalledWith(
                         jasmine.objectContaining({
-                            order: UserOrder.email_desc,
+                            sort: UserOrder.email_desc,
                             active: ActiveFilter.inactive,
                             deleted: DeletedFilter.deleted,
                         }),

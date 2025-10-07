@@ -1,15 +1,15 @@
 import { ActiveFilter } from './active-filter.enum';
 
 describe('ActiveFilter', () => {
-  it('should be defined', () => {
-    expect(ActiveFilter).toBeDefined();
-  });
-
-  it('should have valid keys and values', () => {
-    expect({ ...ActiveFilter } as unknown as any).toEqual({
-      ACTIVE: 'active',
-      INACTIVE: 'inactive',
-      ALL: 'all',
+    it('should be defined', () => {
+        expect(ActiveFilter).toBeDefined();
     });
-  });
+
+    it('should have valid keys and values', () => {
+        expect({ ...ActiveFilter } as unknown as any).toEqual({
+            active: 'active',
+            inactive: 'inactive',
+            all: 'all',
+        });
+    });
 });

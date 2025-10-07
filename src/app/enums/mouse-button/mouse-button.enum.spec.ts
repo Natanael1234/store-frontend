@@ -11,6 +11,9 @@ describe('MouseButton', () => {
             left: 0,
             middle: 1,
             right: 2,
+            0: 'left',
+            1: 'middle',
+            2: 'right',
         });
     });
 });

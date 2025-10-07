@@ -4,7 +4,7 @@ import { PointerType } from '../../enums/pointer-type/pointer-type.enum';
 export function leftMouseClickFilter(event: any) {
     if (event.pointerType == PointerType.pen) {
         return true;
-    } else if (event.pointerType == PointerType.mouch) {
+    } else if (event.pointerType == PointerType.touch) {
         return true;
     } else if (
         event.pointerType == PointerType.mouse &&

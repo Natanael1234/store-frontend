@@ -29,7 +29,7 @@ describe('leftMouseClickFilter', () => {
 
     it('should return true for touch events (not mouse)', () => {
         const event = {
-            pointerType: PointerType.mouch,
+            pointerType: PointerType.touch,
             button: MouseButton.left,
         };
         expect(leftMouseClickFilter(event)).toBe(true);

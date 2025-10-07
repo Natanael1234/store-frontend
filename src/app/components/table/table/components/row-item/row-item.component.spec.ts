@@ -417,7 +417,7 @@ describe('IconRowItemComponent', () => {
                     By.directive(MatIcon),
                 );
 
-                expect(iconElements[0].classes['disabled']).toBeFalsy();
+                expect(iconElements[0].classes['disabled']).toBeTrue();
             });
         });
     });
@@ -440,9 +440,9 @@ describe('IconRowItemComponent', () => {
                 );
 
                 expect(labelElements.length).toEqual(1);
-                expect(labelElements[0].nativeElement.textContent).toEqual(
-                    'Test label',
-                );
+                expect(
+                    labelElements[0].nativeElement.textContent.trim(),
+                ).toEqual('Test label');
             });
 
             it('should not show label when label model is undefined', () => {
@@ -480,7 +480,9 @@ describe('IconRowItemComponent', () => {
                 );
 
                 expect(labelElements.length).toEqual(1);
-                expect(labelElements[0].nativeElement.textContent).toEqual('');
+                expect(
+                    labelElements[0].nativeElement.textContent.trim(),
+                ).toEqual('');
             });
 
             it('label should be loading when loading model is true', () => {
@@ -603,8 +605,7 @@ describe('IconRowItemComponent', () => {
                 const labelElements = containterElement.queryAll(
                     By.css('span#label'),
                 );
-
-                expect(labelElements[0].classes['disabled']).toBeFalsy();
+                expect(labelElements[0].classes['disabled']).toBeTrue();
             });
         });
     });

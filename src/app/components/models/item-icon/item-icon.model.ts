@@ -2,12 +2,12 @@
 export class ItemIcon {
     public icon: string;
     public tooltip?: string;
-    public disabled?: boolean;
+    public disabled: boolean;
 
     constructor(options: {
         icon: string;
         tooltip?: string;
-        disabled: boolean;
+        disabled?: boolean;
     }) {
         this.icon = options.icon;
         this.tooltip = options.tooltip;

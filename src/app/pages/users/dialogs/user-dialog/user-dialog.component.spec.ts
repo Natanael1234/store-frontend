@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UserDialogComponent } from './user-dialog.component';
 
 describe('UserDialogComponent', () => {
@@ -9,6 +10,14 @@ describe('UserDialogComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [UserDialogComponent],
+
+            providers: [
+                {
+                    provide: MatDialogRef,
+                    useValue: { close: jasmine.createSpy('close') },
+                },
+                { provide: MAT_DIALOG_DATA, useValue: {} }, // dados simulados
+            ],
         }).compileComponents();
 
         fixture = TestBed.createComponent(UserDialogComponent);

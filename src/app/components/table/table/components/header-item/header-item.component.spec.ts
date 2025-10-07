@@ -44,7 +44,7 @@ describe('HeaderItemComponent', () => {
                 By.css('span#label'),
             );
             expect(labelElements.length).toEqual(1);
-            expect(labelElements[0].nativeElement.textContent).toEqual(
+            expect(labelElements[0].nativeElement.textContent.trim()).toEqual(
                 'Column 1',
             );
         });
@@ -255,7 +255,7 @@ describe('HeaderItemComponent', () => {
             expect(component.direction()).toBe(SortDirection.asc);
             containterElement.triggerEventHandler(
                 'click',
-                new PointerEvent('click', { pointerType: PointerType.mouch }),
+                new PointerEvent('click', { pointerType: PointerType.touch }),
             );
             fixture.detectChanges();
             expect(component.direction()).toBe(SortDirection.desc);
