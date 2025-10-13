@@ -5,6 +5,7 @@ import { LoginComponent } from '../../../pages/login/login.component';
 import { NewPasswordComponent } from '../../../pages/new-password/new-password.component';
 import { RegisterComponent } from '../../../pages/register/register.component';
 import { RequestPasswordChangeLinkComponent } from '../../../pages/request-password-change-link/request-password-change-link.component';
+import { TestComponent } from '../../../pages/test/test.component';
 import { UpdateLoggedInUserPasswordComponent } from '../../../pages/update-logged-in-user-password/update-logged-in-user-password.component';
 import { UserComponent } from '../../../pages/user/user.component';
 import { UsersComponent } from '../../../pages/users/users.component';
@@ -48,6 +49,11 @@ const routeConfig: Routes = [
         component: UserComponent,
         title: 'User',
         canActivate: [AuthGuard],
+    },
+    {
+        path: 'test',
+        component: TestComponent,
+        title: 'Test',
     },
 ];
 

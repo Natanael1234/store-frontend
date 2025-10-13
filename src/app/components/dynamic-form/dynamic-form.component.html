@@ -1,0 +1,110 @@
+<form class="example-form">
+    @for (e of formElements(); track $index) {
+        @if (e.hasFormfield) {
+            <mat-form-field>
+                @let label = getTextLabel(e);
+                @if (label != null && label != undefined) {
+                    <mat-label>{{ label }}</mat-label>
+                }
+                @if (e.isInput) {
+                    @let input = castToInput(e);
+                    @let format = getFormat(e);
+                    @let alignRight = format == "integer" || format == "float";
+
+                    <input
+                        matInput
+                        [id]="input.id || ''"
+                        [name]="input.name || ''"
+                        [type]="input.type"
+                        [placeholder]="input.placeholder || ''"
+                        [tabindex]="getTabIndex(input)"
+                        [attr.min]="getMin(input)"
+                        [attr.max]="getMax(input)"
+                        [attr.step]="getStep(input)"
+                        [minlength]="getMinLength(input)"
+                        [maxlength]="getMaxLength(input)"
+                        [mask]="getMask(input)"
+                        [thousandSeparator]="getThousandSeparator(input)"
+                        [allowNegativeNumbers]="getAllowNegativeNumbers(input)"
+                        [decimalMarker]="getDecimalMarker(input)"
+                        [class.align-right]="alignRight"
+                        [formControl]="input.control" />
+
+                    <!-- [prefix]="getPrefix(e)" -->
+                } @else if (e.isTextArea) {
+                    @let textArea = castToInput(e);
+                    <textarea
+                        matInput
+                        cdkTextareaAutosize
+                        #autosize="cdkTextareaAutosize"
+                        cdkAutosizeMinRows="2"
+                        cdkAutosizeMaxRows="6"
+                        [id]="textArea.id || ''"
+                        [name]="textArea.name || ''"
+                        [type]="textArea.type"
+                        [placeholder]="textArea.placeholder || ''"
+                        [tabindex]="getTabIndex(textArea)"
+                        [minlength]="getMinLength(textArea)"
+                        [maxlength]="getMaxLength(textArea)"
+                        [formControl]="textArea.control"></textarea>
+                } @else if (e.isSelect) {
+                    @let select = castToSelect(e);
+                    <!-- [name]="select.name || ''" -->
+                    <mat-select
+                        [id]="select.id || ''"
+                        [formControl]="select.control">
+                        @for (option of select.options; track $index) {
+                            <mat-option [value]="option.value">
+                                {{ option.label }}
+                            </mat-option>
+                        }
+                    </mat-select>
+                }
+
+                @let prefix = getPrefix(e);
+                @if (prefix) {
+                    <span matTextPrefix>{{ prefix }}</span>
+                }
+                @let suffix = getSuffix(e);
+                @if (suffix) {
+                    <span matTextSuffix>{{ suffix }}</span>
+                }
+            </mat-form-field>
+        } @else if (e.isRadios) {
+            @let label = getTextLabel(e);
+            @let radios = castToRadios(e);
+            <mat-label>{{ label }}</mat-label>
+
+            <mat-radio-group
+                [id]="radios.id || ''"
+                [name]="radios.name || ''"
+                [formControl]="radios.control">
+                @for (option of radios.options || []; track $index) {
+                    <mat-radio-button [value]="option.value">
+                        {{ option.label }}
+                    </mat-radio-button>
+                }
+            </mat-radio-group>
+        } @else if (e.isCheckbox) {
+            @let checkbox = castToCheckbox(e);
+            <mat-checkbox
+                [id]="checkbox.id || ''"
+                [formControl]="checkbox.control">
+                {{ checkbox.label }}
+            </mat-checkbox>
+        } @else if (e.isLabel) {
+            @let label = castToLabel(e);
+            <mat-label>{{ label.value }}</mat-label>
+        } @else if (e.isDivider) {
+            <mat-divider></mat-divider>
+        } @else if (e.isButton) {
+            @let button = castToButton(e);
+            <button matButton="filled" [disabled]="button.disabled">
+                @if (button.icon) {
+                    <mat-icon>{{ button.icon }}</mat-icon>
+                }
+                {{ button.label }}
+            </button>
+        }
+    }
+</form>
