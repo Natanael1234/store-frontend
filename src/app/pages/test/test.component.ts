@@ -51,6 +51,41 @@ export class TestComponent {
 
     constructor() {
         this.formElements = [
+            new ButtonFormElement({
+                id: 'flat-button',
+                icon: 'checked',
+                label: 'Botão plano',
+                disabled: false,
+                style: ButtonStyle.flat,
+            }),
+            new ButtonFormElement({
+                id: 'elevated-button',
+                icon: 'checked',
+                label: 'Botão elevado',
+                disabled: false,
+                style: ButtonStyle.elevated,
+            }),
+            new ButtonFormElement({
+                id: 'filled-button',
+                icon: 'checked',
+                label: 'Botão preenchido',
+                disabled: false,
+                style: ButtonStyle.filled,
+            }),
+            new ButtonFormElement({
+                id: 'outlined-button',
+                icon: 'checked',
+                label: 'Botão contornado',
+                disabled: false,
+                style: ButtonStyle.outlined,
+            }),
+            new ButtonFormElement({
+                id: 'tonal-button',
+                icon: 'checked',
+                label: 'Botão tonal',
+                disabled: false,
+                style: ButtonStyle.tonal,
+            }),
             new LabelFormElement({ id: 'test-label', value: 'Test label' }),
             new TextInput({
                 id: 'name',
@@ -238,42 +273,6 @@ export class TestComponent {
                 required: false,
                 disabled: false,
                 control: this.form.controls.gender,
-            }),
-
-            new ButtonFormElement({
-                id: 'flat-button',
-                icon: 'checked',
-                label: 'Botão plano',
-                disabled: false,
-                style: ButtonStyle.flat,
-            }),
-            new ButtonFormElement({
-                id: 'elevated-button',
-                icon: 'checked',
-                label: 'Botão elevado',
-                disabled: false,
-                style: ButtonStyle.elevated,
-            }),
-            new ButtonFormElement({
-                id: 'filled-button',
-                icon: 'checked',
-                label: 'Botão preenchido',
-                disabled: false,
-                style: ButtonStyle.filled,
-            }),
-            new ButtonFormElement({
-                id: 'outlined-button',
-                icon: 'checked',
-                label: 'Botão contornado',
-                disabled: false,
-                style: ButtonStyle.outlined,
-            }),
-            new ButtonFormElement({
-                id: 'tonal-button',
-                icon: 'checked',
-                label: 'Botão tonal',
-                disabled: false,
-                style: ButtonStyle.tonal,
             }),
         ];
     }
