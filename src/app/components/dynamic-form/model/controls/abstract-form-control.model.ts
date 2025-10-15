@@ -19,7 +19,7 @@ export abstract class AbstractFormControl extends AbstractFormElement {
     public focusable?: boolean;
     public readonly?: boolean;
     public readonly control: FormControl;
-    public error?: () => string | undefined;
+    public errorMessageFn?: () => string | undefined;
 
     constructor(options: AbstractFormControlOptions) {
         super(options);
@@ -28,6 +28,6 @@ export abstract class AbstractFormControl extends AbstractFormElement {
         this.focusable = options.focusable || true;
         this.readonly = options.readonly || false;
         this.control = options.control;
-        this.error = options.errorMessageFn;
+        this.errorMessageFn = options.errorMessageFn;
     }
 }
