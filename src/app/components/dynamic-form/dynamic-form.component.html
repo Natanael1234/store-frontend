@@ -1,15 +1,16 @@
 <form class="example-form">
     @for (e of formElements(); track $index) {
         @if (e.isInput) {
-            <!-- FORM FIELD -->
+            <!-- TEXT INPUT -->
             <mat-form-field appearance="outline">
-                <!-- LABEL -->
                 @let label = getTextLabel(e);
                 @if (label != null && label != undefined) {
                     <mat-label>{{ label }}</mat-label>
                 }
-
-                <!-- INPUT -->
+                @let prefix = getPrefix(e);
+                @if (prefix) {
+                    <span matTextPrefix>{{ prefix }}</span>
+                }
                 @let input = castToInput(e);
                 @let format = getFormat(e);
                 @let alignRight = format == "integer" || format == "float";
@@ -32,33 +33,21 @@
                     [class.align-right]="alignRight"
                     [formControl]="input.control" />
 
-                <!-- PREFIX -->
-                @let prefix = getPrefix(e);
-                @if (prefix) {
-                    <span matTextPrefix>{{ prefix }}</span>
-                }
-
-                <!-- SUFFIX -->
                 @let suffix = getSuffix(e);
                 @if (suffix) {
                     <span matTextSuffix>{{ suffix }}</span>
                 }
-
-                <!-- ERROR -->
                 <mat-error>{{ getErrorMessage(e) }}</mat-error>
             </mat-form-field>
+        }
 
-        } @else if (e.isTextArea) {
-            <!-- FORM FIELD -->
+        <!-- TEXT AREA -->
+        @else if (e.isTextArea) {
             <mat-form-field appearance="outline">
-                <!-- LABEL -->
                 @let label = getTextLabel(e);
                 @if (label != null && label != undefined) {
                     <mat-label>{{ label }}</mat-label>
                 }
-
-                <!-- TEXT AREA -->
-
                 @let textArea = castToInput(e);
                 <textarea
                     matInput
@@ -74,23 +63,18 @@
                     [minlength]="getMinLength(textArea)"
                     [maxlength]="getMaxLength(textArea)"
                     [formControl]="textArea.control"></textarea>
-
-                <!-- ERROR -->
                 <mat-error>{{ getErrorMessage(e) }}</mat-error>
             </mat-form-field>
+        }
 
-        } @else if (e.isSelect) {
-            <!-- FORM FIELD -->
+        <!-- SELECT -->
+        @else if (e.isSelect) {
             <mat-form-field appearance="outline">
-                <!-- LABEL -->
                 @let label = getTextLabel(e);
                 @if (label != null && label != undefined) {
                     <mat-label>{{ label }}</mat-label>
                 }
-
-                <!-- SELECT -->
                 @let select = castToSelect(e);
-                <!-- [name]="select.name || ''" -->
                 <mat-select
                     [id]="select.id || ''"
                     [formControl]="select.control">
