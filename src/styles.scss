@@ -8,21 +8,30 @@
 @use "./styles/main.scss";
 @use "./styles/error.scss";
 @use "./styles/skeleton.scss";
-@use "./styles/form.scss";
+@use "./styles/form/form.scss";
 @use "./styles/table.scss";
 @use "./styles/search-input.scss";
 @use "./styles/scrollbars.scss";
 @use "./styles/themes.scss" as themes;
 
 :root {
-  body.dark-theme {
-    background-color: rgb(
-      19,
-      19,
-      22
-    ); //#333; // Default to dark theme background
+    body.dark-theme {
+        background-color: rgb(
+            19,
+            19,
+            22
+        ); //#333; // Default to dark theme background
 
-    @include mat.core();
-    @include mat.all-component-themes(themes.$dark-theme);
-  }
+        @include mat.core();
+        @include mat.all-component-themes(themes.$dark-theme);
+    }
+}
+
+html,
+body {
+    height: 100%;
+}
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
 }

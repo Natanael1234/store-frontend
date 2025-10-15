@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, model, Output } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
@@ -8,7 +8,7 @@ import { ListItem } from './types/list-item.model';
 
 @Component({
     selector: 'app-list',
-    imports: [CommonModule, MatListModule, MatDividerModule, ListItemComponent],
+    imports: [MatListModule, MatDividerModule, ListItemComponent],
     templateUrl: './list.component.html',
     styleUrl: './list.component.scss',
 })

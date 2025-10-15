@@ -1,16 +1,19 @@
 <form class="example-form">
     @for (e of formElements(); track $index) {
         @if (e.hasFormfield) {
-            <mat-form-field>
+            <!-- FORM FIELD -->
+            <mat-form-field appearance="outline">
+                <!-- LABEL -->
                 @let label = getTextLabel(e);
                 @if (label != null && label != undefined) {
                     <mat-label>{{ label }}</mat-label>
                 }
+
+                <!-- INPUT -->
                 @if (e.isInput) {
                     @let input = castToInput(e);
                     @let format = getFormat(e);
                     @let alignRight = format == "integer" || format == "float";
-
                     <input
                         matInput
                         [id]="input.id || ''"
@@ -29,9 +32,10 @@
                         [decimalMarker]="getDecimalMarker(input)"
                         [class.align-right]="alignRight"
                         [formControl]="input.control" />
+                }
 
-                    <!-- [prefix]="getPrefix(e)" -->
-                } @else if (e.isTextArea) {
+                <!-- TEXT AREA -->
+                @else if (e.isTextArea) {
                     @let textArea = castToInput(e);
                     <textarea
                         matInput
@@ -47,7 +51,10 @@
                         [minlength]="getMinLength(textArea)"
                         [maxlength]="getMaxLength(textArea)"
                         [formControl]="textArea.control"></textarea>
-                } @else if (e.isSelect) {
+                }
+
+                <!-- SELECT -->
+                @else if (e.isSelect) {
                     @let select = castToSelect(e);
                     <!-- [name]="select.name || ''" -->
                     <mat-select
@@ -61,50 +68,104 @@
                     </mat-select>
                 }
 
+                <!-- PREFIX -->
                 @let prefix = getPrefix(e);
                 @if (prefix) {
                     <span matTextPrefix>{{ prefix }}</span>
                 }
+
+                <!-- SUFFIX -->
                 @let suffix = getSuffix(e);
                 @if (suffix) {
                     <span matTextSuffix>{{ suffix }}</span>
                 }
+
+                <!-- ERROR -->
+                <mat-error>{{ getErrorMessage(e) }}</mat-error>
             </mat-form-field>
-        } @else if (e.isRadios) {
+        }
+
+        <!-- RADIO BUTTONS -->
+        @else if (e.isRadios) {
             @let label = getTextLabel(e);
             @let radios = castToRadios(e);
-            <mat-label>{{ label }}</mat-label>
-
             <mat-radio-group
                 [id]="radios.id || ''"
                 [name]="radios.name || ''"
                 [formControl]="radios.control">
+                <mat-label>
+                    {{ label }} {{ isRequired(e) ? "*" : "x" }}
+                </mat-label>
+                <br />
                 @for (option of radios.options || []; track $index) {
                     <mat-radio-button [value]="option.value">
                         {{ option.label }}
                     </mat-radio-button>
                 }
             </mat-radio-group>
-        } @else if (e.isCheckbox) {
+            <mat-error>{{ getErrorMessage(e) }}</mat-error>
+        }
+
+        <!-- CHECKBOX -->
+        @else if (e.isCheckbox) {
             @let checkbox = castToCheckbox(e);
             <mat-checkbox
                 [id]="checkbox.id || ''"
                 [formControl]="checkbox.control">
-                {{ checkbox.label }}
+                {{ checkbox.label }} {{ isRequired(e) ? "*" : "x" }}
             </mat-checkbox>
-        } @else if (e.isLabel) {
+        }
+
+        <!-- LABEL -->
+        @else if (e.isLabel) {
             @let label = castToLabel(e);
             <mat-label>{{ label.value }}</mat-label>
-        } @else if (e.isDivider) {
+        }
+
+        <!-- DIVIDER -->
+        @else if (e.isDivider) {
             <mat-divider></mat-divider>
-        } @else if (e.isButton) {
+        }
+
+        <!-- BUTTON -->
+        @else if (e.isButton) {
             @let button = castToButton(e);
-            <button matButton="filled" [disabled]="button.disabled">
-                @if (button.icon) {
-                    <mat-icon>{{ button.icon }}</mat-icon>
-                }
-                {{ button.label }}
-            </button>
+            @if (button.style == "elevated") {
+                <button matButton="elevated" [disabled]="button.disabled">
+                    @if (button.icon) {
+                        <mat-icon>{{ button.icon }}</mat-icon>
+                    }
+                    {{ button.label }}
+                </button>
+            } @else if (button.style == "outlined") {
+                <button matButton="outlined" [disabled]="button.disabled">
+                    @if (button.icon) {
+                        <mat-icon>{{ button.icon }}</mat-icon>
+                    }
+                    {{ button.label }}
+                </button>
+            } @else if (button.style == "filled") {
+                <button matButton="filled" [disabled]="button.disabled">
+                    @if (button.icon) {
+                        <mat-icon>{{ button.icon }}</mat-icon>
+                    }
+                    {{ button.label }}
+                </button>
+            } @else if (button.style == "tonal") {
+                <button matButton="tonal" [disabled]="button.disabled">
+                    @if (button.icon) {
+                        <mat-icon>{{ button.icon }}</mat-icon>
+                    }
+                    {{ button.label }}
+                </button>
+            } @else {
+                <button matButton [disabled]="button.disabled">
+                    @if (button.icon) {
+                        <mat-icon>{{ button.icon }}</mat-icon>
+                    }
+                    {{ button.label }}
+                </button>
+            }
         }
     }
 </form>

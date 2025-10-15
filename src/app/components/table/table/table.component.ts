@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
     Component,
     computed,
@@ -22,14 +22,13 @@ import { Row } from './model/row/row.model';
 @Component({
     selector: 'app-table',
     imports: [
-        MatIconModule,
-        MatTableModule,
-        MatSortModule,
-        MatTooltipModule,
-        CommonModule,
-        HeaderItemComponent,
-        RowItemComponent,
-    ],
+    MatIconModule,
+    MatTableModule,
+    MatSortModule,
+    MatTooltipModule,
+    HeaderItemComponent,
+    RowItemComponent
+],
     templateUrl: './table.component.html',
     styleUrl: './table.component.scss',
 })

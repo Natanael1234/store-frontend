@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CommonModule } from '@angular/common';
+
 import { Component, DebugElement } from '@angular/core';
 import { AlertComponent } from './alert.component';
 
@@ -8,7 +8,7 @@ import { AlertComponent } from './alert.component';
     template: `<app-alert
         ><div class="test" type="success">Hello World</div></app-alert
     >`,
-    imports: [AlertComponent, CommonModule],
+    imports: [AlertComponent],
 })
 class TestHostComponent {}
 

@@ -1,4 +1,4 @@
-import { FormElementType } from '../../enums/dinamic-form-element-type/dinamic-form-element-type.enum';
+import { FormElementType } from '../../enums/form-element-type/form-element-type.enum';
 import { TextInputFormat as TextFormat } from '../../enums/input-mask-type/text-input-format.enum';
 import { TextMask } from '../../enums/text-mask/text-mask';
 import { InputMode } from '../input-mode.enum';
@@ -97,7 +97,6 @@ export class TextInput extends InputFormControl {
                 this.mask = options.mask ?? null;
                 break;
         }
-        console.log(this.mask);
     }
 
     private getNumericMask(options: NumberInputOptions) {

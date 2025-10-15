@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
     AfterViewInit,
     Component,
@@ -23,15 +23,14 @@ type MenuItem = { icon: string; label: string; route: string };
 @Component({
     selector: 'app-root',
     imports: [
-        CommonModule,
-        RouterOutlet,
-        MatButtonModule,
-        MatIconModule,
-        MatToolbarModule,
-        MatSidenavModule,
-        RouterModule,
-        MatButtonModule,
-    ],
+    RouterOutlet,
+    MatButtonModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    RouterModule,
+    MatButtonModule
+],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
 })

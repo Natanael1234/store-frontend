@@ -1,5 +1,5 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { CommonModule } from '@angular/common';
+
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import {
     AfterViewInit,
@@ -48,22 +48,21 @@ import { userResponseToUserTableRow } from './utils/user-response-to-user-table/
 @Component({
     selector: 'app-users',
     imports: [
-        CommonModule,
-        MatPaginatorModule,
-        MatProgressBarModule,
-        MatIconModule,
-        MatButtonModule,
-        MatCheckboxModule,
-        MatInputModule,
-        MatFormFieldModule,
-        FormsModule,
-        MatMenuModule,
-        MatRadioModule,
-        MatSidenavModule,
-        AlertComponent,
-        ResponsiveUserFiltersComponent,
-        ResponsiveUserListComponent,
-    ],
+    MatPaginatorModule,
+    MatProgressBarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatInputModule,
+    MatFormFieldModule,
+    FormsModule,
+    MatMenuModule,
+    MatRadioModule,
+    MatSidenavModule,
+    AlertComponent,
+    ResponsiveUserFiltersComponent,
+    ResponsiveUserListComponent
+],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
         { provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl },

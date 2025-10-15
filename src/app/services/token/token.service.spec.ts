@@ -38,7 +38,7 @@ describe('TokenService', () => {
     TestBed.configureTestingModule({
       providers: [TokenService],
     });
-    service = TestBed.get(TokenService);
+    service = TestBed.inject(TokenService);
     localStorageMock = new LocalStorageMock();
     spyOn(localStorage, 'getItem').and.callFake(localStorageMock.getItem);
     spyOn(localStorage, 'setItem').and.callFake(localStorageMock.setItem);

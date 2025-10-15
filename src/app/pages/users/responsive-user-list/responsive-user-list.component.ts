@@ -1,5 +1,5 @@
 import { A11yModule } from '@angular/cdk/a11y';
-import { CommonModule } from '@angular/common';
+
 import {
     AfterViewInit,
     Component,
@@ -29,7 +29,7 @@ import { UserSortParam } from '../types/user-sort-param.type';
 
 @Component({
     selector: 'app-responsive-user-list',
-    imports: [CommonModule, TableComponent, ListComponent, A11yModule],
+    imports: [TableComponent, ListComponent, A11yModule],
     templateUrl: './responsive-user-list.component.html',
     styleUrl: './responsive-user-list.component.scss',
 })

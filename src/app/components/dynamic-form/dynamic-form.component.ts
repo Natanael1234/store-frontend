@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
-import { FormElementType } from './enums/dinamic-form-element-type/dinamic-form-element-type.enum';
+import { FormElementType } from './enums/form-element-type/form-element-type.enum';
 import { AbstractFormElement } from './model/controls/abstract-form-element.model';
 import { CheckboxElement } from './model/controls/checkbox.model';
 import { InputFormControl } from './model/controls/input.model';
@@ -51,6 +51,16 @@ export class DynamicFormComponent {
 
     protected getTextLabel(e: AbstractFormElement) {
         return (e as any)['label'];
+    }
+
+    protected isRequired(e: AbstractFormElement): boolean {
+        if (!e) return false;
+        const control = (e as any)['control'] as FormControl;
+        if (!control) return false;
+        if (!control.validator) return false;
+        const validator = control.validator({} as any);
+        if (!validator) return false;
+        return validator && validator['required'] === true;
     }
 
     protected getTabIndex(e: AbstractFormElement) {
@@ -96,6 +106,18 @@ export class DynamicFormComponent {
 
     protected getSuffix(e: AbstractFormElement) {
         return (e as any)['suffix'] ?? ' ';
+    }
+
+    protected getErrorMessage(e: AbstractFormElement) {
+        const error = this.getError(e);
+        if (error) {
+            const message = error();
+            return message;
+        }
+    }
+
+    protected getError(e: AbstractFormElement) {
+        return (e as any)['error'] ?? '';
     }
 
     protected castToFormControl(e: AbstractFormElement) {

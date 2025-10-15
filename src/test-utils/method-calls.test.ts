@@ -18,7 +18,6 @@ export function _testMethodCalls(
         for (let j = 0; j < args.length; j++) {
             const arg = args[j];
             const expectedArg = expectedArgs[j];
-            // console.log(JSON.stringify({ arg, expectedArg }, null, 4));
             expect(arg)
                 .withContext(`Call #${i + 1} argument #${j + 1}`)
                 .toEqual(expectedArg);

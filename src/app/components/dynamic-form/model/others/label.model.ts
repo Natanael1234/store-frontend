@@ -1,4 +1,4 @@
-import { FormElementType } from '../../enums/dinamic-form-element-type/dinamic-form-element-type.enum';
+import { FormElementType } from '../../enums/form-element-type/form-element-type.enum';
 import {
     AbstractFormElement,
     AbstractFormElementOptions,

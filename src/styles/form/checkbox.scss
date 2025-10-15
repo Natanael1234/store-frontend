@@ -1,0 +1,11 @@
+$error-color: var(--mat-form-field-error-text-color, var(--mat-sys-error));
+
+mat-checkbox.ng-invalid.ng-touched,
+mat-checkbox.ng-invalid.ng-dirty {
+    .mdc-label {
+        color: $error-color;
+    }
+    .mdc-checkbox__background {
+        border-color: $error-color !important;
+    }
+}

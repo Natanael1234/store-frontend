@@ -1,4 +1,4 @@
-import { FormElementType } from '../../enums/dinamic-form-element-type/dinamic-form-element-type.enum';
+import { FormElementType } from '../../enums/form-element-type/form-element-type.enum';
 import {
     AbstractFormControl,
     AbstractFormControlOptions,
@@ -11,7 +11,6 @@ export type CheckBoxOptions = AbstractFormControlOptions & {
 export class CheckboxElement extends AbstractFormControl {
     public override readonly type = FormElementType.checkbox;
     public override readonly isCheckbox = true;
-
     constructor(options: CheckBoxOptions) {
         super(options);
     }

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, effect, EventEmitter, model, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,20 +22,19 @@ import { OnUserFilterMenuListCloseEvent } from './types/on-user-filter-menu-list
 @Component({
     selector: 'app-user-filter-toolbar',
     imports: [
-        CommonModule,
-        MatMenuModule,
-        FormsModule,
-        MatButtonModule,
-        MatIconModule,
-        MatFormFieldModule,
-        MatDividerModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatChipsModule,
-        MatTooltipModule,
-        MatDividerModule,
-        SelectComponent,
-    ],
+    MatMenuModule,
+    FormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatDividerModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatChipsModule,
+    MatTooltipModule,
+    MatDividerModule,
+    SelectComponent
+],
     templateUrl: './user-filter-toolbar.component.html',
     styleUrl: './user-filter-toolbar.component.scss',
 })
