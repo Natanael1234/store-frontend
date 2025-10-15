@@ -1,7 +1,7 @@
 <form class="example-form">
     @for (e of formElements(); track $index) {
+        <!-- TEXT INPUT -->
         @if (e.isInput) {
-            <!-- TEXT INPUT -->
             <mat-form-field appearance="outline">
                 @let label = getTextLabel(e);
                 @if (label != null && label != undefined) {
