@@ -17,9 +17,6 @@ export abstract class InputFormControl extends AbstractFormControl {
     public minLength?: number;
     public placeholder?: string | null;
     public readonly inputMode?: InputMode | null;
-    public override readonly isTypeable: boolean = true;
-    public override readonly isInput: boolean = true;
-    public override readonly hasFormfield: boolean = true;
 
     // TODO: debounceTime
 

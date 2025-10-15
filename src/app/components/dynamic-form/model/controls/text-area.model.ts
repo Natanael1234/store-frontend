@@ -11,8 +11,6 @@ export class TextArea extends InputFormControl {
     public override readonly type = FormElementType.textArea;
     public override readonly format = null;
     public override readonly mask? = null;
-    public override readonly isInput = false;
-    public override readonly isTextArea = true;
 
     constructor(options: _TextInputOptions) {
         super(options);

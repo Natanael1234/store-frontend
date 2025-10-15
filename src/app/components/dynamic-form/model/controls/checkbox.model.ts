@@ -10,7 +10,6 @@ export type CheckBoxOptions = AbstractFormControlOptions & {
 
 export class CheckboxElement extends AbstractFormControl {
     public override readonly type = FormElementType.checkbox;
-    public override readonly isCheckbox = true;
     constructor(options: CheckBoxOptions) {
         super(options);
     }

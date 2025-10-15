@@ -42,8 +42,7 @@ import { LabelFormElement } from './model/others/label.model';
 export class DynamicFormComponent {
     public formElements = model<AbstractFormElement[]>([]);
     @ViewChild('autosize') autosize!: CdkTextareaAutosize;
-
-    protected type = FormElementType;
+    FormElementType = FormElementType;
 
     protected getFormat(e: AbstractFormElement) {
         return (e as any)['format'];

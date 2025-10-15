@@ -3,5 +3,4 @@ import { OptativeFormControl } from './optative-element.model';
 
 export class Radios extends OptativeFormControl {
     public override readonly type = FormElementType.radioButtons;
-    public override readonly isRadios = true;
 }

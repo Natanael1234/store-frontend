@@ -10,7 +10,6 @@ export type LabelFormElementOptions = AbstractFormElementOptions & {
 
 export class LabelFormElement extends AbstractFormElement {
     public override readonly type = FormElementType.label;
-    public override readonly isLabel = true;
 
     value: string;
 

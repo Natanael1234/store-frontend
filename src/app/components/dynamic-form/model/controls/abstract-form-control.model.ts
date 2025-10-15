@@ -18,7 +18,6 @@ export abstract class AbstractFormControl extends AbstractFormElement {
     public name?: string;
     public focusable?: boolean;
     public readonly?: boolean;
-    public override readonly isFormControl: boolean = true;
     public readonly control: FormControl;
     public error?: () => string | undefined;
 

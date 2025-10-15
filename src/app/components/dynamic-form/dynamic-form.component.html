@@ -1,7 +1,7 @@
 <form>
     @for (e of formElements(); track $index) {
         <!-- TEXT INPUT -->
-        @if (e.isInput) {
+        @if (e.type == FormElementType.text) {
             <mat-form-field appearance="outline">
                 @let label = getTextLabel(e);
                 @if (label != null && label != undefined) {
@@ -42,7 +42,7 @@
         }
 
         <!-- TEXT AREA -->
-        @else if (e.isTextArea) {
+        @else if (e.type == FormElementType.textArea) {
             <mat-form-field appearance="outline">
                 @let label = getTextLabel(e);
                 @if (label != null && label != undefined) {
@@ -68,7 +68,7 @@
         }
 
         <!-- SELECT -->
-        @else if (e.isSelect) {
+        @else if (e.type == FormElementType.select) {
             <mat-form-field appearance="outline">
                 @let label = getTextLabel(e);
                 @if (label != null && label != undefined) {
@@ -88,7 +88,7 @@
         }
 
         <!-- RADIO BUTTONS -->
-        @else if (e.isRadios) {
+        @else if (e.type == FormElementType.radioButtons) {
             @let label = getTextLabel(e);
             @let radios = castToRadios(e);
             <mat-radio-group
@@ -108,7 +108,7 @@
         }
 
         <!-- CHECKBOX -->
-        @else if (e.isCheckbox) {
+        @else if (e.type == FormElementType.checkbox) {
             @let checkbox = castToCheckbox(e);
             <mat-checkbox
                 [id]="checkbox.id || ''"
@@ -118,18 +118,18 @@
         }
 
         <!-- LABEL -->
-        @else if (e.isLabel) {
+        @else if (e.type == FormElementType.label) {
             @let label = castToLabel(e);
             <mat-label>{{ label.value }}</mat-label>
         }
 
         <!-- DIVIDER -->
-        @else if (e.isDivider) {
+        @else if (e.type == FormElementType.divider) {
             <mat-divider></mat-divider>
         }
 
         <!-- BUTTON -->
-        @else if (e.isButton) {
+        @else if (e.type == FormElementType.button) {
             @let button = castToButton(e);
             @if (button.style == "elevated") {
                 <button matButton="elevated" [disabled]="button.disabled">

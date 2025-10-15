@@ -22,7 +22,6 @@ export type ButtonFormElementOptions = AbstractFormElementOptions & {
 
 export class ButtonFormElement extends AbstractFormElement {
     public override readonly type = FormElementType.button;
-    public override readonly isButton = true;
 
     public icon: string;
     public label: string;
