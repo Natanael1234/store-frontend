@@ -1,105 +1,118 @@
-
 import {
     AfterViewInit,
+    ChangeDetectorRef,
     Component,
     computed,
     inject,
-    signal,
+    model,
     ViewChild,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterModule, RouterOutlet, Routes } from '@angular/router';
+import { RouterModule, RouterOutlet } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { HomeComponent } from './pages/home/home.component';
-import { UsersComponent } from './pages/users/users.component';
+import { SidenavMenuComponent } from './components/navigation-rail/navigation-rail.component';
+import { ToolbarComponent } from './components/toolbar/toolbar.component';
+import { DrawerMode } from './enums/drawer-mode/drawer-mode';
 import { ResponsityService } from './services/responsivity/responsivity.service';
-import { SidenavService } from './services/sidenav.service';
 import { ThemeService } from './services/theme/theme.service';
-type MenuItem = { icon: string; label: string; route: string };
 
 @Component({
     selector: 'app-root',
     imports: [
-    RouterOutlet,
-    MatButtonModule,
-    MatIconModule,
-    MatToolbarModule,
-    MatSidenavModule,
-    RouterModule,
-    MatButtonModule
-],
+        RouterOutlet,
+        MatButtonModule,
+        MatIconModule,
+        MatToolbarModule,
+        MatSidenavModule,
+        RouterModule,
+        MatButtonModule,
+        MatListModule,
+        SidenavMenuComponent,
+        ToolbarComponent,
+    ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
+    animations: [],
 })
 export class AppComponent implements AfterViewInit {
-    title = 'store-frontend';
-
-    protected themeService: ThemeService = inject(ThemeService);
-    protected sidenavService: SidenavService = inject(SidenavService);
-
-    collapsed = signal(false);
-    sidenavWidth = computed(() => (this.collapsed() ? '65px' : '250px'));
-
-    menuItems = signal<MenuItem[]>([
-        {
-            icon: 'dashboard',
-            label: 'Dashboard',
-            route: '',
-        },
-        {
-            icon: 'groups',
-            label: 'Usuários',
-            route: '/users',
-        },
-        {
-            icon: 'groups',
-            label: 'Produtos',
-            route: '/products',
-        },
-    ]);
-
-    routes: Routes = [
-        {
-            path: '',
-            pathMatch: 'full',
-            redirectTo: 'home',
-        },
-        {
-            path: 'home',
-            component: HomeComponent,
-        },
-        {
-            path: 'ursers',
-            component: UsersComponent,
-        },
-    ];
-
-    /** Responsivity service. */
-    protected responsivityService: ResponsityService =
-        inject(ResponsityService);
-    /** Subscription of window resize events used for responsiveness. */
+    protected mobile = model<boolean>(false);
+    protected hasBackdrop = computed(() => this.mobile());
+    protected responsivity: ResponsityService = inject(ResponsityService);
     private resizeSubscription!: Subscription;
-    /** When true enter in mobile responsive mode. */
-    protected mobile: boolean = true;
+    protected themeService: ThemeService = inject(ThemeService);
+    public railCollapsed = model<boolean>(false);
+    public railTransition = model<boolean>(false);
 
     @ViewChild(MatDrawer) drawer!: MatDrawer;
 
+    constructor(private cdr: ChangeDetectorRef) {}
+
     public ngAfterViewInit() {
-        // Subscribes window mobile mode detection.
-        this.resizeSubscription = this.responsivityService.mobile.subscribe(
+        let transition = false;
+        this.resizeSubscription = this.responsivity.mobile.subscribe(
             (mobile) => {
-                // set mobile mode
-                this.mobile = !!mobile;
-                if (this.mobile) {
-                    this.drawer.close();
+                if (mobile) {
+                    this.expandRail({ transition: true });
+                    this.setMobile({ mobile: true, transition });
                 } else {
-                    this.drawer.open();
+                    this.collapseRail({ transition: false });
+                    this.setMobile({ mobile: false, transition });
                 }
+                transition = true;
             },
         );
+        this.cdr.detectChanges();
+    }
+
+    protected toggleMenu() {
+        if (this.mobile()) {
+            if (this.drawer.opened) {
+                this.drawer.close();
+            } else {
+                this.drawer.open();
+            }
+        } else {
+            if (this.railCollapsed()) {
+                this.expandRail();
+            } else {
+                this.collapseRail();
+            }
+        }
+    }
+
+    protected closeMenu() {
+        if (this.mobile()) {
+            if (this.drawer.opened) {
+                this.drawer.close();
+            }
+        }
+    }
+
+    private setMobile(options: { mobile: boolean; transition?: boolean }) {
+        options.transition = options.transition ?? true;
+        if (options.mobile) {
+            this.mobile.set(true);
+            this.drawer.mode = DrawerMode.over;
+            this.drawer.close();
+        } else {
+            this.mobile.set(false);
+            this.drawer.mode = DrawerMode.side;
+            this.drawer.open();
+        }
+    }
+
+    private expandRail(options?: { transition: boolean }) {
+        this.railCollapsed.set(false);
+        this.railTransition.set(options?.transition ?? true);
+    }
+
+    private collapseRail(options?: { transition: boolean }) {
+        this.railCollapsed.set(true);
+        this.railTransition.set(options?.transition ?? true);
     }
 
     public ngOnDestroy() {

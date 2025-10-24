@@ -1,0 +1,14 @@
+<mat-radio-group
+    [id]="radioButtons?.id || ''"
+    [name]="radioButtons?.name || ''"
+    [formControl]="radioButtons?.control!">
+    <mat-label>
+        {{ radioButtons?.label }} {{ isRequired(radioButtons) ? "*" : "" }}
+    </mat-label>
+    <br />
+    @for (option of radioButtons?.options || []; track $index) {
+        <mat-radio-button [value]="option.value">
+            {{ option.label }}
+        </mat-radio-button>
+    }
+</mat-radio-group>

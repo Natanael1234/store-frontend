@@ -1,4 +1,5 @@
 import { CdkTextareaAutosize, TextFieldModule } from '@angular/cdk/text-field';
+import { CommonModule } from '@angular/common';
 import { Component, model, ViewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,17 +9,25 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { provideNgxMask } from 'ngx-mask';
+import { AlignItems } from '../../enums/align-items/align-items.enum';
+import { JustifyContent } from '../../enums/justify-content/justify-content.enum';
+import { DynamicButtonComponent } from './components/dynamic-button/dynamic-button.component';
+import { DynamicSelectCheckbox } from './components/dynamic-checkbox/dynamic-checkbox.component';
+import { DynamicRadioButtonsComponent } from './components/dynamic-radio-buttons/dynamic-radio-buttons.component';
+import { DynamicSelectFieldComponent } from './components/dynamic-select/dynamic-select-field.component';
+import { DynamicTextAreaFieldComponent } from './components/dynamic-text-area-field/dynamic-text-area-field.component';
+import { DynamicTextFieldComponent } from './components/dynamic-text-field/dynamic-text-field.component';
 import { FormElementType } from './enums/form-element-type/form-element-type.enum';
-import { AbstractFormElement } from './model/controls/abstract-form-element.model';
-import { CheckboxElement } from './model/controls/checkbox.model';
-import { InputFormControl } from './model/controls/input.model';
-import { Radios } from './model/controls/radio-buttons-element.model';
-import { Select } from './model/controls/select-element.model';
-import { TextArea } from './model/controls/text-area.model';
-import { ButtonFormElement } from './model/others/button.model';
-import { DividerFormElement } from './model/others/divider.model';
-import { LabelFormElement } from './model/others/label.model';
+import { AbstractFormElement } from './model/abstract-form-element.model';
+import { InputFormControl } from './model/controls/input/input.model';
+import { TextArea } from './model/controls/input/text-area/text-area.model';
+import { TextInput } from './model/controls/input/text-input/text-input.model';
+import { RadioButtons } from './model/controls/optative/radio-buttons/radio-buttons-element.model';
+import { Select } from './model/controls/optative/select/select-element.model';
+import { CheckboxElement } from './model/controls/other/checkbox/checkbox.model';
+import { ButtonFormElement } from './model/others/button/button.model';
+import { LabelFormElement } from './model/others/label/label.model';
 
 @Component({
     selector: 'app-dynamic-form',
@@ -31,9 +40,15 @@ import { LabelFormElement } from './model/others/label.model';
         MatRadioModule,
         MatDividerModule,
         MatCheckboxModule,
-        NgxMaskDirective,
         MatIconModule,
         MatButtonModule,
+        CommonModule,
+        DynamicTextFieldComponent,
+        DynamicButtonComponent,
+        DynamicSelectFieldComponent,
+        DynamicTextAreaFieldComponent,
+        DynamicSelectCheckbox,
+        DynamicRadioButtonsComponent,
     ],
     providers: [provideNgxMask()],
     templateUrl: './dynamic-form.component.html',
@@ -41,82 +56,15 @@ import { LabelFormElement } from './model/others/label.model';
 })
 export class DynamicFormComponent {
     public formElements = model<AbstractFormElement[]>([]);
+
+    public justifyContent = model<JustifyContent>(JustifyContent.initial);
+    public alignItems = model<AlignItems>(AlignItems.initial);
+
     @ViewChild('autosize') autosize!: CdkTextareaAutosize;
     FormElementType = FormElementType;
 
     protected getFormat(e: AbstractFormElement) {
         return (e as any)['format'];
-    }
-
-    protected getTextLabel(e: AbstractFormElement) {
-        return (e as any)['label'];
-    }
-
-    protected isRequired(e: AbstractFormElement): boolean {
-        if (!e) return false;
-        const control = (e as any)['control'] as FormControl;
-        if (!control) return false;
-        if (!control.validator) return false;
-        const validator = control.validator({} as any);
-        if (!validator) return false;
-        return validator && validator['required'] === true;
-    }
-
-    protected getTabIndex(e: AbstractFormElement) {
-        return (e as any)['focusable'] ? 0 : -1;
-    }
-
-    protected getMin(e: AbstractFormElement) {
-        return (e as any)['min'] ?? null;
-    }
-
-    protected getMax(e: AbstractFormElement) {
-        return (e as any)['max'] ?? null;
-    }
-
-    protected getStep(e: AbstractFormElement) {
-        return (e as any)['step'] ?? null;
-    }
-
-    protected getMask(e: AbstractFormElement) {
-        return (e as any)['mask'] ?? null;
-    }
-
-    protected getMinLength(e: AbstractFormElement) {
-        return (e as any)['maxLength'] ?? null;
-    }
-
-    protected getMaxLength(e: AbstractFormElement) {
-        return (e as any)['maxLength'] ?? null;
-    }
-
-    protected getThousandSeparator(e: AbstractFormElement) {
-        return (e as any)['thousandSeparator'];
-    }
-    protected getDecimalMarker(e: AbstractFormElement) {
-        return (e as any)['decimalMarker'];
-    }
-    protected getAllowNegativeNumbers(e: AbstractFormElement) {
-        return (e as any)['allowNegativeNumbers'];
-    }
-    protected getPrefix(e: AbstractFormElement) {
-        return (e as any)['prefix'] ?? '';
-    }
-
-    protected getSuffix(e: AbstractFormElement) {
-        return (e as any)['suffix'] ?? ' ';
-    }
-
-    protected getErrorMessage(e: AbstractFormElement) {
-        const error = this.getError(e);
-        if (error) {
-            const message = error();
-            return message;
-        }
-    }
-
-    protected getError(e: AbstractFormElement) {
-        return (e as any)['error'] ?? '';
     }
 
     protected castToFormControl(e: AbstractFormElement) {
@@ -127,12 +75,20 @@ export class DynamicFormComponent {
         return e as unknown as InputFormControl;
     }
 
+    protected castToTextInput(e: AbstractFormElement) {
+        return e as unknown as TextInput;
+    }
+
+    protected castToTextArea(e: AbstractFormElement) {
+        return e as unknown as TextArea;
+    }
+
     protected castToSelect(e: AbstractFormElement) {
         return e as unknown as Select;
     }
 
-    protected castToRadios(e: AbstractFormElement) {
-        return e as unknown as Radios;
+    protected castToRadioButtons(e: AbstractFormElement) {
+        return e as unknown as RadioButtons;
     }
 
     protected castToCheckbox(e: AbstractFormElement) {
@@ -146,36 +102,4 @@ export class DynamicFormComponent {
     protected castToButton(e: AbstractFormElement) {
         return e as unknown as ButtonFormElement;
     }
-
-    protected isDivider(e: AbstractFormElement) {
-        return e instanceof DividerFormElement;
-    }
-
-    protected isLabel(e: AbstractFormElement) {
-        return e instanceof LabelFormElement;
-    }
-
-    protected isRadioButtons(e: AbstractFormElement) {
-        return e instanceof Radios;
-    }
-
-    protected isSelect(e: AbstractFormElement) {
-        return e instanceof Select;
-    }
-
-    protected isTextArea(e: AbstractFormElement) {
-        return e instanceof TextArea;
-    }
-
-    // protected isRangeable(e: AbstractFormElement) {
-    //     return (
-    //         e instanceof FormElementType.date ||
-    //         e instanceof FormElementType.month ||
-    //         e instanceof FormElementType.week ||
-    //         e instanceof FormElementType.time ||
-    //         e instanceof FormElementType.dateTimeLocal ||
-    //         e instanceof FormElementType.number ||
-    //         e instanceof FormElementType.range
-    //     );
-    // }
 }

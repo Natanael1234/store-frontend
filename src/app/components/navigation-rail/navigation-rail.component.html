@@ -1,0 +1,25 @@
+<div id="container" (click)="fireOnCloseEvent($event)" [ngClass]="cssClasses()">
+    @for (item of menuItems(); track item) {
+        <button
+            id="item"
+            mat-button
+            [routerLink]="item.route"
+            [ngClass]="cssClasses()">
+            <div id="button-content-wrapper" [ngClass]="cssClasses()">
+                <div id="icon-wrapper">
+                    <mat-icon id="icon" [ngClass]="cssClasses()">
+                        {{ item.icon }}
+                    </mat-icon>
+                </div>
+
+                <div
+                    id="label-wrapper"
+                    [ngClass]="cssClasses()"
+                    animate.enter="fade-in"
+                    animate.leave="fade-out">
+                    {{ item.label }}
+                </div>
+            </div>
+        </button>
+    }
+</div>

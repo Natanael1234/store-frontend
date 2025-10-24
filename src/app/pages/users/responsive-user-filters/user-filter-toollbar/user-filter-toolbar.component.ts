@@ -1,6 +1,5 @@
-
 import { Component, effect, EventEmitter, model, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatOptionModule } from '@angular/material/core';
@@ -10,11 +9,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { SelectComponent } from '../../../../components/select/select.component';
+import { DynamicFormComponent } from '../../../../components/dynamic-form/dynamic-form.component';
+import { ButtonStyle } from '../../../../components/dynamic-form/enums/button-style/button-style.enum';
+import { AbstractFormElement } from '../../../../components/dynamic-form/model/abstract-form-element.model';
+import { Select } from '../../../../components/dynamic-form/model/controls/optative/select/select-element.model';
+import { ButtonFormElement } from '../../../../components/dynamic-form/model/others/button/button.model';
 import { ActiveFilterOptions } from '../../../../constants/active-filter-options/active-filter-options';
 import { DeletedFilterOptions } from '../../../../constants/deleted-filter-options/deleted-filter-options';
 import { ActiveFilter } from '../../../../enums/active-filter/active-filter.enum';
+import { AlignItems } from '../../../../enums/align-items/align-items.enum';
 import { DeletedFilter } from '../../../../enums/deleted-filter/deleted-filter.enum';
+import { JustifyContent } from '../../../../enums/justify-content/justify-content.enum';
 import { UserOrder } from '../../../../services/user/enums/user-order/user-order.enum';
 import { UserOrderOptions } from './sort-options/user-sort.options';
 import { OnUserFilterMenuListCloseEvent } from './types/on-user-filter-menu-list-close-event.type';
@@ -22,19 +27,19 @@ import { OnUserFilterMenuListCloseEvent } from './types/on-user-filter-menu-list
 @Component({
     selector: 'app-user-filter-toolbar',
     imports: [
-    MatMenuModule,
-    FormsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatDividerModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatChipsModule,
-    MatTooltipModule,
-    MatDividerModule,
-    SelectComponent
-],
+        MatMenuModule,
+        FormsModule,
+        MatButtonModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatDividerModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatChipsModule,
+        MatTooltipModule,
+        MatDividerModule,
+        DynamicFormComponent,
+    ],
     templateUrl: './user-filter-toolbar.component.html',
     styleUrl: './user-filter-toolbar.component.scss',
 })
@@ -45,18 +50,23 @@ export class UserFilterToolbarComponent {
      * Vertical by default.
      */
     public vertical = model<boolean>(true);
+    private previousVertical: boolean = true;
+    protected justifyContent: JustifyContent = JustifyContent.initial;
+    protected alignItems: AlignItems = AlignItems.initial;
 
     /**
      * When true shows sort widget.
      * Hide sort widget by default.
      */
     public showSort = model<boolean>(false);
+    private previousShowSort: boolean = false;
 
     /**
      * When true shows cancel button.
      * Shows cancel button by default.
      */
     public showCancelButton = model<boolean>(false);
+    private previousShowCancelButton: boolean = false;
 
     /** Column sort. */
     public sort = model<UserOrder>(UserOrder.name_asc);
@@ -76,12 +86,76 @@ export class UserFilterToolbarComponent {
     protected innerDeleted = model<DeletedFilter>(DeletedFilter.not_deleted);
     protected deletedOptions = model(DeletedFilterOptions);
 
+    form = new FormGroup({
+        order: new FormControl({
+            value: UserOrder.name_asc,
+            disabled: false,
+        }),
+        active: new FormControl({
+            value: ActiveFilter.active,
+            disabled: false,
+        }),
+        deleted: new FormControl({
+            value: DeletedFilter.not_deleted,
+            disabled: false,
+        }),
+    });
+
+    protected orderControl = new Select({
+        id: 'order-select',
+        label: 'Ordem',
+        options: UserOrderOptions,
+        control: this.form.controls.order,
+        colSize: 3,
+    });
+
+    protected activeControl = new Select({
+        id: 'active-select',
+        label: 'Ativos',
+        options: ActiveFilterOptions,
+        control: this.form.controls.active,
+        colSize: 3,
+    });
+
+    protected deletedControl = new Select({
+        id: 'deleted-select',
+        label: 'Deletados',
+        options: DeletedFilterOptions,
+        control: this.form.controls.deleted,
+        colSize: 3,
+    });
+
+    protected cancelButton = new ButtonFormElement({
+        id: 'cancel-button',
+        label: 'Cancelar',
+        colSize: 1,
+        clickCallback: (event: MouseEvent) => this.cancel(),
+    });
+
+    protected filterButton = new ButtonFormElement({
+        id: 'filter-button',
+        label: 'Filtrar',
+        colSize: 1,
+        style: ButtonStyle.filled,
+        clickCallback: (event: MouseEvent) => this.submit(),
+    });
+
+    protected formElements: AbstractFormElement[] = [
+        this.activeControl,
+        this.deletedControl,
+        this.filterButton,
+    ];
+
     /** On close event emitter. */
     @Output() public onClose =
         new EventEmitter<OnUserFilterMenuListCloseEvent>();
 
     constructor() {
         effect(() => {
+            if (this.showSort() != this.previousShowSort) {
+                this.previousShowSort = this.showSort();
+                this.updateOrderControlVisibility();
+            }
             if (this.sort() != this.previousSort) {
                 this.previousSort = this.sort();
                 this.innerSort.set(this.sort());
@@ -94,7 +168,63 @@ export class UserFilterToolbarComponent {
                 this.previousDeleted = this.deleted();
                 this.innerDeleted.set(this.deleted());
             }
+
+            if (this.showCancelButton() != this.previousShowCancelButton) {
+                this.previousShowCancelButton = this.showCancelButton();
+                this.updateCancelButtonVisibility();
+            }
+
+            if (this.vertical() != this.previousVertical) {
+                this.previousVertical = this.vertical();
+                this.updateTemplateDirection();
+            }
+            this.updateTemplateDirection();
         });
+    }
+
+    private updateOrderControlVisibility() {
+        if (this.showSort()) {
+            this.insertFormElement(this.orderControl, 0);
+        } else {
+            this.removeFormElement(this.orderControl.id!);
+        }
+    }
+
+    private updateCancelButtonVisibility() {
+        if (this.showCancelButton()) {
+            this.insertFormElement(this.cancelButton, this.formElements.length);
+        } else {
+            this.removeFormElement(this.cancelButton.id!);
+        }
+    }
+
+    private updateTemplateDirection() {
+        const vertical = this.vertical();
+        this.orderControl.colSize = vertical ? 12 : 2;
+        this.activeControl.colSize = vertical ? 12 : 2;
+        this.deletedControl.colSize = vertical ? 12 : 2;
+        this.filterButton.colSize = vertical ? 5 : 2;
+        this.cancelButton.colSize = vertical ? 5 : 2;
+        this.justifyContent = vertical
+            ? JustifyContent.center
+            : JustifyContent.initial;
+        this.alignItems = vertical ? AlignItems.initial : AlignItems.center;
+    }
+
+    private insertFormElement(element: AbstractFormElement, idx: number) {
+        this.removeFormElement(element.id!);
+        this.formElements.splice(idx, 0, element);
+    }
+
+    private removeFormElement(id: string) {
+        const idx = this.getElementIdx(id);
+        if (idx > -1) {
+            this.formElements.splice(idx, 1);
+        }
+    }
+
+    private getElementIdx(id: string) {
+        return this.formElements.findIndex((e) => e.id == id);
     }
 
     protected submit() {
@@ -111,23 +241,21 @@ export class UserFilterToolbarComponent {
         event.stopPropagation();
     }
 
-    protected get payload(): OnUserFilterMenuListCloseEvent {
-        return {
-            sort: this.innerSort(),
-            active: this.innerActive(),
-            deleted: this.innerDeleted(),
-        };
-    }
-
     protected update() {
-        this.sort.set(this.innerSort());
-        this.active.set(this.innerActive());
-        this.deleted.set(this.innerDeleted());
+        this.sort.set(this.form.controls.order.value as UserOrder);
+        this.active.set(this.form.controls.active.value as ActiveFilter);
+        this.deleted.set(this.form.controls.deleted.value as DeletedFilter);
     }
 
     protected reset() {
-        this.innerSort.set(this.sort());
-        this.innerActive.set(this.active());
-        this.innerDeleted.set(this.deleted());
+        this.form.setValue({
+            order: this.sort(),
+            active: this.active(),
+            deleted: this.deleted(),
+        });
+    }
+
+    protected get payload(): OnUserFilterMenuListCloseEvent {
+        return this.form.getRawValue() as unknown as OnUserFilterMenuListCloseEvent;
     }
 }

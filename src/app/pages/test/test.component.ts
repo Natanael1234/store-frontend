@@ -1,20 +1,17 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DynamicFormComponent } from '../../components/dynamic-form/dynamic-form.component';
-import { FormElementType } from '../../components/dynamic-form/enums/form-element-type/form-element-type.enum';
+import { ButtonStyle } from '../../components/dynamic-form/enums/button-style/button-style.enum';
 import { TextInputFormat } from '../../components/dynamic-form/enums/input-mask-type/text-input-format.enum';
-import { AbstractFormElement } from '../../components/dynamic-form/model/controls/abstract-form-element.model';
-import { CheckboxElement } from '../../components/dynamic-form/model/controls/checkbox.model';
-import { Radios } from '../../components/dynamic-form/model/controls/radio-buttons-element.model';
-import { Select } from '../../components/dynamic-form/model/controls/select-element.model';
-import { TextArea } from '../../components/dynamic-form/model/controls/text-area.model';
-import { TextInput } from '../../components/dynamic-form/model/controls/text-input.model';
-import {
-    ButtonFormElement,
-    ButtonStyle,
-} from '../../components/dynamic-form/model/others/button.model';
-import { DividerFormElement } from '../../components/dynamic-form/model/others/divider.model';
-import { LabelFormElement } from '../../components/dynamic-form/model/others/label.model';
+import { AbstractFormElement } from '../../components/dynamic-form/model/abstract-form-element.model';
+import { TextArea } from '../../components/dynamic-form/model/controls/input/text-area/text-area.model';
+import { TextInput } from '../../components/dynamic-form/model/controls/input/text-input/text-input.model';
+import { RadioButtons } from '../../components/dynamic-form/model/controls/optative/radio-buttons/radio-buttons-element.model';
+import { Select } from '../../components/dynamic-form/model/controls/optative/select/select-element.model';
+import { CheckboxElement } from '../../components/dynamic-form/model/controls/other/checkbox/checkbox.model';
+import { ButtonFormElement } from '../../components/dynamic-form/model/others/button/button.model';
+import { DividerFormElement } from '../../components/dynamic-form/model/others/divider/divider.model';
+import { LabelFormElement } from '../../components/dynamic-form/model/others/label/label.model';
 import { UserConfigs } from '../../configs/user/user.configs';
 import { EmailConstants } from '../../constants/email/email.constants';
 import { TextMessage } from '../../messages/text/text.messages';
@@ -154,36 +151,6 @@ export class TestComponent {
 
     constructor() {
         this.formElements = [
-            new Select({
-                id: 'gender',
-                label: 'Gênero',
-                name: 'gender',
-                options: [
-                    { label: 'Masculino', value: 'M' },
-                    { label: 'Feminino', value: 'F' },
-                ],
-                control: this.form.controls.gender,
-                errorMessageFn: () =>
-                    getMandatoryError(this.form.controls.level),
-            }),
-            new Radios({
-                id: 'level',
-                label: 'Nível',
-                name: 'level',
-                options: [
-                    { label: 'Begginer', value: 'B' },
-                    { label: 'Intermmediate', value: 'I' },
-                    { label: 'Advanced', value: 'A' },
-                ],
-                control: this.form.controls.level,
-            }),
-            new CheckboxElement({
-                id: 'accept-terms',
-                label: 'Aceito os termos',
-                name: 'accept-terms',
-                control: this.form.controls.acceptTerms,
-            }),
-            new LabelFormElement({ id: 'test-label', value: 'Test label' }),
             new TextInput({
                 id: 'name',
                 mask: null,
@@ -191,6 +158,9 @@ export class TestComponent {
                 label: 'Nome',
                 control: this.form.controls.name,
                 errorMessageFn: () => getNameError(this.form.controls.name),
+                onBlur: () => console.log('On text input blur'),
+
+                colSize: 6,
             }),
             new TextInput({
                 id: 'email',
@@ -200,15 +170,19 @@ export class TestComponent {
                 placeholder: 'Insira um email',
                 maxLength: 200,
                 control: this.form.controls.email,
+
+                colSize: 12,
                 errorMessageFn: () => getEmailError(this.form.controls.email),
             }),
             new TextInput({
                 id: 'password',
-                type: FormElementType.password,
+                format: TextInputFormat.password,
                 name: 'password',
                 label: 'Senha',
                 placeholder: 'Insira a senha',
                 maxLength: 12,
+
+                colSize: 12,
                 control: this.form.controls.password,
             }),
             new TextInput({
@@ -220,6 +194,8 @@ export class TestComponent {
                 maxLength: 14,
                 focusable: false,
                 control: this.form.controls.phone,
+
+                colSize: 4,
             }),
             new TextInput({
                 id: 'zip-code',
@@ -227,6 +203,9 @@ export class TestComponent {
                 name: 'zip-code',
                 label: 'CEP',
                 control: this.form.controls.zipCode,
+
+                colSize: 4,
+                breakLine: true,
             }),
             new TextInput({
                 id: 'date',
@@ -234,6 +213,8 @@ export class TestComponent {
                 name: 'date',
                 label: 'Data',
                 control: this.form.controls.date,
+
+                colSize: 3,
             }),
             new TextInput({
                 id: 'time',
@@ -241,6 +222,7 @@ export class TestComponent {
                 name: 'time',
                 label: 'Horário',
                 control: this.form.controls.time,
+                colSize: 3,
             }),
             new TextInput({
                 id: 'cnpj',
@@ -248,6 +230,8 @@ export class TestComponent {
                 name: 'cnpj',
                 label: 'CNPJ',
                 control: this.form.controls.cnpj,
+
+                colSize: 4,
             }),
             new TextInput({
                 id: 'cpf',
@@ -255,6 +239,8 @@ export class TestComponent {
                 name: 'cpf',
                 label: 'CPF',
                 control: this.form.controls.cpf,
+
+                colSize: 7,
             }),
             new TextInput({
                 id: 'amount',
@@ -264,6 +250,8 @@ export class TestComponent {
                 label: 'Quantidade',
                 allowNegativeNumbers: true,
                 control: this.form.controls.amount,
+
+                colSize: 12,
             }),
             new TextInput({
                 id: 'price',
@@ -274,6 +262,8 @@ export class TestComponent {
                 decimalPlaces: 2,
                 allowNegativeNumbers: false,
                 control: this.form.controls.price,
+
+                colSize: 12,
             }),
             new TextArea({
                 id: 'description',
@@ -282,6 +272,9 @@ export class TestComponent {
                 name: 'text',
                 maxLength: 200,
                 control: this.form.controls.description,
+
+                colSize: 12,
+                onBlur: () => console.log('On text area blur'),
             }),
             new TextArea({
                 id: 'disabled-description',
@@ -289,12 +282,62 @@ export class TestComponent {
                 placeholder: 'Placeholder',
                 name: 'text-disabled',
                 maxLength: 200,
+
+                colSize: 12,
                 control: this.form.controls.disabledDescription,
             }),
-            new DividerFormElement({ id: 'test-divider' }),
+            new DividerFormElement({
+                id: 'test-divider',
+
+                colSize: 12,
+            }),
             new LabelFormElement({
                 id: 'test-label',
                 value: 'Outro label',
+
+                colSize: 12,
+            }),
+
+            new Select({
+                id: 'gender',
+                label: 'Gênero',
+                name: 'gender',
+                options: [
+                    { label: 'Masculino', value: 'M' },
+                    { label: 'Feminino', value: 'F' },
+                ],
+                control: this.form.controls.gender,
+
+                colSize: 7,
+                errorMessageFn: () =>
+                    getMandatoryError(this.form.controls.level),
+            }),
+            new RadioButtons({
+                id: 'level',
+                label: 'Nível',
+                name: 'level',
+                options: [
+                    { label: 'Begginer', value: 'B' },
+                    { label: 'Intermmediate', value: 'I' },
+                    { label: 'Advanced', value: 'A' },
+                ],
+                control: this.form.controls.level,
+
+                colSize: 12,
+            }),
+            new CheckboxElement({
+                id: 'accept-terms',
+                label: 'Aceito os termos',
+                name: 'accept-terms',
+                control: this.form.controls.acceptTerms,
+
+                colSize: 4,
+            }),
+            new LabelFormElement({
+                id: 'test-label',
+                value: 'Test label',
+
+                colSize: 12,
             }),
 
             new ButtonFormElement({
@@ -302,30 +345,41 @@ export class TestComponent {
                 icon: 'checked',
                 label: 'Botão plano',
                 style: ButtonStyle.flat,
+
+                colSize: 2,
+                colOffset: 1,
             }),
             new ButtonFormElement({
                 id: 'elevated-button',
                 icon: 'checked',
                 label: 'Botão elevado',
                 style: ButtonStyle.elevated,
+
+                colSize: 2,
             }),
             new ButtonFormElement({
                 id: 'filled-button',
                 icon: 'checked',
                 label: 'Botão preenchido',
                 style: ButtonStyle.filled,
+
+                colSize: 2,
             }),
             new ButtonFormElement({
                 id: 'outlined-button',
                 icon: 'checked',
                 label: 'Botão contornado',
                 style: ButtonStyle.outlined,
+
+                colSize: 2,
             }),
             new ButtonFormElement({
                 id: 'tonal-button',
                 icon: 'checked',
                 label: 'Botão tonal',
                 style: ButtonStyle.tonal,
+
+                colSize: 2,
             }),
         ];
 

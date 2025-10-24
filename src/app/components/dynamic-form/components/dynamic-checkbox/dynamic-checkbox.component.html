@@ -1,0 +1,3 @@
+<mat-checkbox [id]="checkbox?.id || ''" [formControl]="checkbox?.control!">
+    {{ checkbox?.label }} {{ isRequired(checkbox) ? "*" : "" }}
+</mat-checkbox>

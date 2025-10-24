@@ -26,9 +26,30 @@ export enum FormElementType {
 
     label = 'label',
     divider = 'divider',
-
-    // ------------------------------
-
-    cpf = 'cpf',
-    cnpj = 'cnpj',
 }
+
+// TODO:
+// <input type="button"> OK
+// <input type="checkbox"> OK
+// <input type="color">
+// <input type="date"> OK
+// <input type="datetime-local">
+// <input type="file">
+// <input type="month">
+// <input type="radio"> OK
+// <input type="range">
+
+// <input type="email"> OK
+// <input type="hidden">
+// <input type="image">
+// <input type="number"> OK
+// <input type="password"> OK
+
+// <input type="reset">
+// <input type="search">
+// <input type="submit">
+// <input type="tel"> OK
+// <input type="text"> OK
+// <input type="time"> OK
+// <input type="url">
+// <input type="week">

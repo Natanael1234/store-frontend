@@ -1,0 +1,9 @@
+:host {
+    display: block;
+    width: 100%;
+}
+
+:host ::ng-deep > * {
+    box-sizing: border-box;
+    width: 100%;
+}
