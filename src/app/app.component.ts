@@ -59,7 +59,7 @@ export class AppComponent implements AfterViewInit {
                     this.expandRail({ transition: true });
                     this.setMobile({ mobile: true, transition });
                 } else {
-                    this.collapseRail({ transition: false });
+                    this.expandRail({ transition: false });
                     this.setMobile({ mobile: false, transition });
                 }
                 transition = true;

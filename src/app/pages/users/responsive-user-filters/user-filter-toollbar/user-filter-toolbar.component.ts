@@ -87,7 +87,7 @@ export class UserFilterToolbarComponent {
     protected deletedOptions = model(DeletedFilterOptions);
 
     form = new FormGroup({
-        order: new FormControl({
+        sort: new FormControl({
             value: UserOrder.name_asc,
             disabled: false,
         }),
@@ -105,7 +105,7 @@ export class UserFilterToolbarComponent {
         id: 'order-select',
         label: 'Ordem',
         options: UserOrderOptions,
-        control: this.form.controls.order,
+        control: this.form.controls.sort,
         colSize: 3,
     });
 
@@ -242,14 +242,14 @@ export class UserFilterToolbarComponent {
     }
 
     protected update() {
-        this.sort.set(this.form.controls.order.value as UserOrder);
+        this.sort.set(this.form.controls.sort.value as UserOrder);
         this.active.set(this.form.controls.active.value as ActiveFilter);
         this.deleted.set(this.form.controls.deleted.value as DeletedFilter);
     }
 
     protected reset() {
         this.form.setValue({
-            order: this.sort(),
+            sort: this.sort(),
             active: this.active(),
             deleted: this.deleted(),
         });

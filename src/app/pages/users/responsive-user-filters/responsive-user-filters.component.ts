@@ -62,6 +62,7 @@ export class ResponsiveUserFiltersComponent {
     /* RESPONSIVITY */
 
     public mobile = model<boolean>(true);
+    public previousMobile = model<boolean>(true);
 
     /* DIALOG */
 
@@ -80,6 +81,10 @@ export class ResponsiveUserFiltersComponent {
             const prevMobileSort = this.mobileSort();
             if (prevMobileSort != mobileSort) {
                 this.mobileSort.set(mobileSort);
+            }
+            if (this.previousMobile() != this.mobile()) {
+                this.dialogRef?.close();
+                this.previousMobile.set(this.mobile());
             }
         });
     }
