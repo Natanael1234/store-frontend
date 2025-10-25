@@ -119,11 +119,12 @@ export class ResponsiveUserFiltersComponent {
                 active: this.active(),
                 deleted: this.deleted(),
             },
-            // TODO:
-            height: 'calc(100% - 30px)',
-            width: 'calc(100% - 30px)',
-            maxWidth: '100%',
-            maxHeight: '100%',
+            width: '400px',
+            maxWidth: '90vh',
+            height: 'auto',
+            maxHeight: '90vh', // impede que estoure a tela
+
+            hasBackdrop: true,
         });
 
         this.dialogRef
