@@ -8,6 +8,7 @@
     [hasBackdrop]="hasBackdrop()">
     <mat-sidenav #sidenav [class.sidenav]="true" [class.mobile]="mobile()">
         <app-navigation-rail
+            [items]="railItems()"
             [collapsed]="railCollapsed()"
             [transition]="railTransition()"
             (onClose)="closeMenu()" />

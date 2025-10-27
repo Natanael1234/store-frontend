@@ -14,7 +14,8 @@ import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { SidenavMenuComponent } from './components/navigation-rail/navigation-rail.component';
+import { NavigationRailComponent } from './components/navigation-rail/navigation-rail.component';
+import { NavigationRailItem } from './components/navigation-rail/types/navigation-rail-item/navigation-rail-item.type';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { DrawerMode } from './enums/drawer-mode/drawer-mode';
 import { ResponsityService } from './services/responsivity/responsivity.service';
@@ -31,7 +32,7 @@ import { ThemeService } from './services/theme/theme.service';
         RouterModule,
         MatButtonModule,
         MatListModule,
-        SidenavMenuComponent,
+        NavigationRailComponent,
         ToolbarComponent,
     ],
     templateUrl: './app.component.html',
@@ -46,6 +47,27 @@ export class AppComponent implements AfterViewInit {
     protected themeService: ThemeService = inject(ThemeService);
     public railCollapsed = model<boolean>(false);
     public railTransition = model<boolean>(false);
+
+    public railItems = model<NavigationRailItem[]>([
+        {
+            id: 'dashboard',
+            icon: 'dashboard',
+            label: 'Dashboard sdfghgfhghg',
+            route: '',
+        },
+        {
+            id: 'users',
+            icon: 'groups',
+            label: 'Usuários',
+            route: '/users',
+        },
+        {
+            id: 'product',
+            icon: 'groups',
+            label: 'Produtos',
+            route: '/products',
+        },
+    ]);
 
     @ViewChild(MatDrawer) drawer!: MatDrawer;
 

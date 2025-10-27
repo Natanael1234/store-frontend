@@ -8,26 +8,18 @@ import {
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 import { leftMouseClickFilter } from '../../utils/mouse-events/mouse-click-filter';
+import { NavigationRailItem } from './types/navigation-rail-item/navigation-rail-item.type';
 
-export enum NavigationRailStateTransition {
-    none = 'none',
-    collapse = 'collapse',
-    open = 'open',
-}
-export enum RailClasses {
+enum RailClasses {
     collapsed = 'collapsed',
     opened = 'opened',
     transition = 'transition',
 }
 
-type NavigationRailItem = {
-    icon: string;
-    label: string;
-    route: string;
-};
-
+const paramsSubject = new BehaviorSubject({});
 @Component({
     selector: 'app-navigation-rail',
     imports: [
@@ -37,39 +29,32 @@ type NavigationRailItem = {
         MatButtonModule,
         MatIconModule,
     ],
+    providers: [
+        {
+            provide: ActivatedRoute,
+            useValue: {
+                params: paramsSubject,
+            },
+        },
+    ],
     templateUrl: './navigation-rail.component.html',
     styleUrl: './navigation-rail.component.scss',
 })
-export class SidenavMenuComponent {
+export class NavigationRailComponent {
     public collapsed = model<boolean>(true);
     public transition = model<boolean>(false);
 
     protected cssClasses = computed(() => {
-        const classes = [
-            this.collapsed() ? RailClasses.collapsed : RailClasses.opened,
-            this.transition() ? RailClasses.transition : '',
-        ];
+        const classes = {
+            [RailClasses.collapsed]: !!this.collapsed(),
+            [RailClasses.opened]: !this.collapsed(),
+            [RailClasses.transition]: !!this.transition(),
+        };
         return classes;
     });
 
-    protected menuItems = model<NavigationRailItem[]>([
-        {
-            icon: 'dashboard',
-            label: 'Dashboard sdfghgfhghg',
-            route: '',
-        },
-        {
-            icon: 'groups',
-            label: 'Usuários',
-            route: '/users',
-        },
-        {
-            icon: 'groups',
-            label: 'Produtos',
-            route: '/products',
-        },
-    ]);
-    @Output() public onClose = new EventEmitter<boolean>();
+    public items = model<NavigationRailItem[]>([]);
+    @Output() public onClose = new EventEmitter();
 
     constructor() {}
 
