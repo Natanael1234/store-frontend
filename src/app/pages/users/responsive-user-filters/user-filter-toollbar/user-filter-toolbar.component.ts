@@ -13,7 +13,7 @@ import { DynamicFormComponent } from '../../../../components/dynamic-form/dynami
 import { ButtonStyle } from '../../../../components/dynamic-form/enums/button-style/button-style.enum';
 import { AbstractFormElement } from '../../../../components/dynamic-form/model/abstract-form-element.model';
 import { Select } from '../../../../components/dynamic-form/model/controls/optative/select/select-element.model';
-import { ButtonFormElement } from '../../../../components/dynamic-form/model/others/button/button.model';
+import { ButtonFormElement } from '../../../../components/dynamic-form/model/others/button/button-form-element.model';
 import { ActiveFilterOptions } from '../../../../constants/active-filter-options/active-filter-options';
 import { DeletedFilterOptions } from '../../../../constants/deleted-filter-options/deleted-filter-options';
 import { ActiveFilter } from '../../../../enums/active-filter/active-filter.enum';

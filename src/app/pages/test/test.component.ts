@@ -9,9 +9,9 @@ import { TextInput } from '../../components/dynamic-form/model/controls/input/te
 import { RadioButtons } from '../../components/dynamic-form/model/controls/optative/radio-buttons/radio-buttons-element.model';
 import { Select } from '../../components/dynamic-form/model/controls/optative/select/select-element.model';
 import { CheckboxElement } from '../../components/dynamic-form/model/controls/other/checkbox/checkbox.model';
-import { ButtonFormElement } from '../../components/dynamic-form/model/others/button/button.model';
-import { DividerFormElement } from '../../components/dynamic-form/model/others/divider/divider.model';
-import { LabelFormElement } from '../../components/dynamic-form/model/others/label/label.model';
+import { ButtonFormElement } from '../../components/dynamic-form/model/others/button/button-form-element.model';
+import { DividerFormElement } from '../../components/dynamic-form/model/others/divider/divider.-form-elementmodel';
+import { LabelFormElement } from '../../components/dynamic-form/model/others/label/label-form-element.model';
 import { UserConfigs } from '../../configs/user/user.configs';
 import { EmailConstants } from '../../constants/email/email.constants';
 import { TextMessage } from '../../messages/text/text.messages';
@@ -344,7 +344,7 @@ export class TestComponent {
                 id: 'flat-button',
                 icon: 'checked',
                 label: 'Botão plano',
-                style: ButtonStyle.flat,
+                style: ButtonStyle.text,
 
                 colSize: 2,
                 colOffset: 1,

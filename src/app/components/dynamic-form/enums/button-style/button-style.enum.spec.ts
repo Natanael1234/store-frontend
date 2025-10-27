@@ -8,7 +8,7 @@ describe('ButtonStyle enum', () => {
     it('should have valid keys and values', () => {
         const options = { ...ButtonStyle } as any;
         expect(options).toEqual({
-            flat: 'flat',
+            text: 'text',
             elevated: 'elevated',
             outlined: 'outlined',
             filled: 'filled',

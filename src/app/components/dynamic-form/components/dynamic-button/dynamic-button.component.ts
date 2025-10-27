@@ -1,12 +1,13 @@
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, model } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { leftMouseClickFilter } from '../../../../utils/mouse-events/mouse-click-filter';
-import { ButtonFormElement } from '../../model/others/button/button.model';
+import { ButtonStyle } from '../../enums/button-style/button-style.enum';
+import { ButtonFormElement } from '../../model/others/button/button-form-element.model';
 
 @Component({
     selector: 'app-dynamic-button',
@@ -23,17 +24,16 @@ import { ButtonFormElement } from '../../model/others/button/button.model';
     styleUrl: './dynamic-button.component.scss',
 })
 export class DynamicButtonComponent {
-    @Input() button?: ButtonFormElement;
+    protected ButtonStyle = ButtonStyle;
+    public button = model<ButtonFormElement>(new ButtonFormElement({}));
 
     // TODO: test
     protected fireClickButtonEvent(event: MouseEvent) {
-        if (
-            !this.button ||
-            !this.button.clickCallback ||
-            !leftMouseClickFilter(event)
-        ) {
+        const button = this.button();
+        const callback = button.clickCallback;
+        if (!callback || !leftMouseClickFilter(event)) {
             return;
         }
-        this.button.clickCallback(event);
+        callback(event);
     }
 }

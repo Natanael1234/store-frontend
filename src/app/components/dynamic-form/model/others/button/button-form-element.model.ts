@@ -14,7 +14,7 @@ type ButtonFormElementOptions = AbstractFormElementOptions & {
 export class ButtonFormElement extends AbstractFormElement {
     public override readonly type = FormElementType.button;
     public icon?: string;
-    public label?: string;
+    public label: string;
     public disabled: boolean;
     public readonly style: ButtonStyle;
     // TODO: test
@@ -23,9 +23,9 @@ export class ButtonFormElement extends AbstractFormElement {
     constructor(options: ButtonFormElementOptions) {
         super(options);
         this.icon = options.icon;
-        this.label = options.label;
+        this.label = options.label ?? '';
         this.disabled = options.disabled ?? false;
-        this.style = options.style ?? ButtonStyle.flat;
+        this.style = options.style ?? ButtonStyle.text;
         this.clickCallback = options.clickCallback;
     }
 }

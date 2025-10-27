@@ -1,51 +1,9 @@
-@if (button?.style == "elevated") {
-    <button
-        matButton="elevated"
-        [disabled]="button?.disabled"
-        (click)="fireClickButtonEvent($event)">
-        @if (button?.icon) {
-            <mat-icon>{{ button?.icon }}</mat-icon>
-        }
-        {{ button?.label }}
-    </button>
-} @else if (button?.style == "outlined") {
-    <button
-        matButton="outlined"
-        [disabled]="button?.disabled"
-        (click)="fireClickButtonEvent($event)">
-        @if (button?.icon) {
-            <mat-icon>{{ button?.icon }}</mat-icon>
-        }
-        {{ button?.label }}
-    </button>
-} @else if (button?.style == "filled") {
-    <button
-        matButton="filled"
-        [disabled]="button?.disabled"
-        (click)="fireClickButtonEvent($event)">
-        @if (button?.icon) {
-            <mat-icon>{{ button?.icon }}</mat-icon>
-        }
-        {{ button?.label }}
-    </button>
-} @else if (button?.style == "tonal") {
-    <button
-        matButton="tonal"
-        [disabled]="button?.disabled"
-        (click)="fireClickButtonEvent($event)">
-        @if (button?.icon) {
-            <mat-icon>{{ button?.icon }}</mat-icon>
-        }
-        {{ button?.label }}
-    </button>
-} @else {
-    <button
-        matButton
-        [disabled]="button?.disabled"
-        (click)="fireClickButtonEvent($event)">
-        @if (button?.icon) {
-            <mat-icon>{{ button?.icon }}</mat-icon>
-        }
-        {{ button?.label }}
-    </button>
-}
+<button
+    [matButton]="button().style"
+    [disabled]="button().disabled"
+    (click)="fireClickButtonEvent($event)">
+    @if (button().icon) {
+        <mat-icon>{{ button().icon }}</mat-icon>
+    }
+    {{ button().label }}
+</button>

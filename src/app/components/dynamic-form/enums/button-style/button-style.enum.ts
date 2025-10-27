@@ -1,5 +1,5 @@
 export enum ButtonStyle {
-    flat = 'flat',
+    text = 'text',
     elevated = 'elevated',
     outlined = 'outlined',
     filled = 'filled',

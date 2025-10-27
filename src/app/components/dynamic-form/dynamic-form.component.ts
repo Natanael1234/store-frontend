@@ -26,8 +26,8 @@ import { TextInput } from './model/controls/input/text-input/text-input.model';
 import { RadioButtons } from './model/controls/optative/radio-buttons/radio-buttons-element.model';
 import { Select } from './model/controls/optative/select/select-element.model';
 import { CheckboxElement } from './model/controls/other/checkbox/checkbox.model';
-import { ButtonFormElement } from './model/others/button/button.model';
-import { LabelFormElement } from './model/others/label/label.model';
+import { ButtonFormElement } from './model/others/button/button-form-element.model';
+import { LabelFormElement } from './model/others/label/label-form-element.model';
 
 @Component({
     selector: 'app-dynamic-form',
