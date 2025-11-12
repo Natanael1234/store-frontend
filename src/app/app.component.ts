@@ -52,7 +52,7 @@ export class AppComponent implements AfterViewInit {
         {
             id: 'dashboard',
             icon: 'dashboard',
-            label: 'Dashboard sdfghgfhghg',
+            label: 'Dashboard',
             route: '',
         },
         {
@@ -62,10 +62,10 @@ export class AppComponent implements AfterViewInit {
             route: '/users',
         },
         {
-            id: 'product',
+            id: 'test',
             icon: 'groups',
-            label: 'Produtos',
-            route: '/products',
+            label: 'Teste',
+            route: '/test',
         },
     ]);
 

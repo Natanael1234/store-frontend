@@ -1,0 +1,146 @@
+<!-- justify content class -->
+@let justifyContentClass =
+    justifyContent() ? "justify-content-" + justifyContent() : "";
+
+<!-- align item class -->
+@let alignItemsClass = alignItems() ? "align-items-" + alignItems() : "";
+
+<!-- form classess -->
+@let formClasses = [justifyContentClass, alignItemsClass];
+
+<form [class]="formClasses" [class.flex-grid]="true" [class.flex-grid]="true">
+    @for (e of formElements(); track $index) {
+        <!-- col size class -->
+        @let colSizeClass = e.colSize ? "col-" + e.colSize : "";
+
+        <!-- offset class -->
+        @let colOffsetClass = e.colOffset ? "offset-" + e.colOffset : "";
+
+        <!-- wraper classess -->
+        @let wrapperClasses = [colSizeClass, colOffsetClass];
+        <div [class]="wrapperClasses">
+            @switch (e.type) {
+                <!-- TEXT INPUT -->
+                @case (FormElementType.text) {
+                    @let input = castToTextInput(e);
+                    @if (input.format == TextFormat.number) {
+                        @let numberInput = castToNumberInput(input);
+                        <app-numeric-field
+                            [id]="numberInput.id"
+                            [label]="numberInput.label"
+                            [placeholder]="numberInput.placeholder"
+                            [control]="numberInput.control"
+                            [focusable]="numberInput.focusable"
+                            [minLength]="numberInput.minLength"
+                            [maxLength]="numberInput.maxLength"
+                            [min]="numberInput.min"
+                            [max]="numberInput.max"
+                            [step]="numberInput.step"
+                            [prefix]="numberInput.prefix"
+                            [suffix]="numberInput.suffix"
+                            [allowNegativeNumbers]="
+                                numberInput.allowNegativeNumbers
+                            "
+                            [decimalPlaces]="numberInput.decimalPlaces"
+                            (onBlur)="
+                                numberInput.onBlur
+                                    ? numberInput.onBlur()
+                                    : false
+                            " />
+                    } @else {
+                        <app-text-field
+                            [id]="input.id"
+                            [mask]="input.mask"
+                            [label]="input.label"
+                            [placeholder]="input.placeholder"
+                            [control]="input.control"
+                            [focusable]="input.focusable"
+                            [format]="input.format"
+                            [minLength]="input.minLength"
+                            [maxLength]="input.maxLength"
+                            [prefix]="input.prefix"
+                            [suffix]="input.suffix"
+                            (onBlur)="input.onBlur ? input.onBlur() : false" />
+                    }
+                }
+                <!-- TEXT AREA -->
+                @case (FormElementType.textArea) {
+                    @let textArea = castToTextArea(e);
+                    <app-text-area-field
+                        [id]="textArea.id"
+                        [label]="textArea.label"
+                        [placeholder]="textArea.placeholder"
+                        [control]="textArea.control"
+                        [focusable]="textArea.focusable"
+                        [minLength]="textArea.minLength"
+                        [maxLength]="textArea.maxLength"
+                        [errorMessageFn]="textArea.errorMessageFn"
+                        (onBlur)="
+                            textArea.onBlur ? textArea.onBlur() : false
+                        " />
+                }
+
+                <!-- SELECT -->
+                @case (FormElementType.select) {
+                    @let select = castToSelect(e);
+                    <app-select-field
+                        [id]="select.id"
+                        [label]="select.label"
+                        [control]="select.control"
+                        [options]="select.options"
+                        [focusable]="select.focusable"
+                        [errorMessageFn]="select.errorMessageFn" />
+                }
+                <!-- RADIO BUTTONS -->
+                @case (FormElementType.radioButtons) {
+                    @let radioButtons = castToRadioGroup(e);
+
+                    <app-radio-group
+                        [id]="radioButtons.id"
+                        [label]="radioButtons.label"
+                        [control]="radioButtons.control"
+                        [focusable]="radioButtons.focusable"
+                        [options]="radioButtons.options"
+                        [focusable]="radioButtons.focusable"
+                        [errorMessageFn]="radioButtons.errorMessageFn" />
+                }
+                <!-- CHECKBOX -->
+                @case (FormElementType.checkbox) {
+                    @let checkbox = castToCheckbox(e);
+                    <app-checkbox
+                        [id]="checkbox.id"
+                        [label]="checkbox.label"
+                        [control]="checkbox.control"
+                        [focusable]="checkbox.focusable"
+                        [errorMessageFn]="checkbox.errorMessageFn" />
+                }
+                <!-- LABEL -->
+                @case (FormElementType.label) {
+                    @let label = castToLabel(e);
+                    <mat-label>{{ label.value }}</mat-label>
+                }
+                <!-- DIVIDER -->
+                @case (FormElementType.divider) {
+                    <mat-divider />
+                }
+                <!-- BUTTON -->
+                @case (FormElementType.button) {
+                    @let button = castToButton(e);
+                    <app-button
+                        [icon]="button.icon"
+                        [label]="button.label"
+                        [style]="button.style"
+                        (onClick)="
+                            button.clickCallback
+                                ? button.clickCallback($event)
+                                : false
+                        " />
+                }
+            }
+        </div>
+
+        @if (e.breakLine) {
+            <div class="break"></div>
+        }
+    }
+</form>

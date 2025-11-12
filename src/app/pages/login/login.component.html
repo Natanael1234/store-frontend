@@ -23,7 +23,9 @@
             type="email"
             autoComplete="on"
             [maxlength]="maxEmailLength" />
-        <mat-error id="email-error">{{ getEmailErrorMessage() }}</mat-error>
+        <mat-error id="email-error">
+            {{ emailControl | firstErrorMessage }}
+        </mat-error>
     </mat-form-field>
 
     <!-- password -->
@@ -46,7 +48,7 @@
         </mat-icon>
 
         <mat-error id="password-error">
-            {{ getPasswordErrorMessage() }}
+            {{ passwordControl | firstErrorMessage }}
         </mat-error>
     </mat-form-field>
 

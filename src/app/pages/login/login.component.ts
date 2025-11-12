@@ -4,7 +4,6 @@ import {
     FormGroup,
     FormsModule,
     ReactiveFormsModule,
-    Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -18,14 +17,18 @@ import { UserConfigs } from '../../configs/user/user.configs';
 import { EmailConstants } from '../../constants/email/email.constants';
 import { EmailMessage } from '../../messages/email/email.messages';
 import { PasswordMessage } from '../../messages/password/password.messages';
+import { FirstErrorMessagePipe } from '../../pipes/first-error-message.pipe';
 import { AuthService } from '../../services/auth/auth.service';
 import { AuthResponseDto } from '../../services/auth/dtos/auth.response.dto';
 import { LoginRequestDto } from '../../services/auth/dtos/login.request.dto';
 import { emailValidator } from '../../validators/email/email.validator';
+import { maxLengthValidator } from '../../validators/max-length/max-length.validator';
+import { minLengthValidator } from '../../validators/min-length/min-length.validator';
 import {
     RemoteValidationContext,
     remoteValidator,
 } from '../../validators/remote/remote.validator';
+import { requiredValidator } from '../../validators/required/required.validator';
 import { strongPasswordValidator } from '../../validators/strong-password/strong-password.validator';
 
 const _EmailMessage = new EmailMessage({
@@ -50,6 +53,7 @@ const _PasswordMessage = new PasswordMessage({
         MatCardModule,
         AlertComponent,
         MatProgressBarModule,
+        FirstErrorMessagePipe,
     ],
     templateUrl: './login.component.html',
     styleUrl: './login.component.scss',
@@ -70,34 +74,33 @@ export class LoginComponent {
     protected emailRemoteValidationContext: RemoteValidationContext = {};
     protected passwordRemoteValidationContext: RemoteValidationContext = {};
 
-    form = new FormGroup({
-        email: new FormControl('', {
-            validators: this.emailValidators,
-            updateOn: 'blur',
-        }),
-        password: new FormControl('', {
-            validators: this.passwordValidators,
-            updateOn: 'blur',
-        }),
-    });
-
-    protected get emailValidators() {
-        return [
-            Validators.required, // mover para o validador
+    protected emailControl = new FormControl('', {
+        validators: [
+            // TODO: update tests
+            requiredValidator(),
+            // TODO: update tests
             emailValidator(),
             remoteValidator(this.emailRemoteValidationContext),
-        ];
-    }
-
-    protected get passwordValidators() {
-        return [
-            Validators.required,
-            Validators.minLength(UserConfigs.PASSWORD_MIN_LENGTH),
-            Validators.maxLength(UserConfigs.PASSWORD_MAX_LENGTH),
+        ],
+        updateOn: 'blur',
+    });
+    protected passwordControl = new FormControl('', {
+        validators: [
+            // TODO: update tests
+            requiredValidator(),
+            // TODO: update tests
+            minLengthValidator(UserConfigs.PASSWORD_MIN_LENGTH),
+            // TODO: update tests
+            maxLengthValidator(UserConfigs.PASSWORD_MAX_LENGTH),
             strongPasswordValidator(),
             remoteValidator(this.passwordRemoteValidationContext),
-        ];
-    }
+        ],
+        updateOn: 'blur',
+    });
+    form = new FormGroup({
+        email: this.emailControl,
+        password: this.passwordControl,
+    });
 
     protected onSubmit() {
         if (!this.form.valid) {
@@ -170,6 +173,7 @@ export class LoginComponent {
         } else if (emailFormControl.hasError('maxlength')) {
             emailErrorMessage = _EmailMessage.MAX_LEN;
         } else if (emailFormControl.hasError('remote')) {
+            // TODO:
             emailErrorMessage = this.emailRemoteValidationContext.remoteError;
         }
 
@@ -198,6 +202,7 @@ export class LoginComponent {
         if (passwordFormControl.hasError('invalidPassword')) {
             passwordErrorMessage = _PasswordMessage.INVALID;
         }
+        // TODO:
         if (passwordFormControl.hasError('remote')) {
             passwordErrorMessage = this.passwordRemoteValidationContext
                 .remoteError as string;

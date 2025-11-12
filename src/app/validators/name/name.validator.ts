@@ -1,50 +1,35 @@
-import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { UserConfigs } from '../../configs/user/user.configs';
+import { ValidatorFn, Validators } from '@angular/forms';
+import { maxLengthValidator } from '../max-length/max-length.validator';
+import { minLengthValidator } from '../min-length/min-length.validator';
+import { nameFormatValidator } from '../name-format/name-format.validator';
+import { requiredValidator } from '../required/required.validator';
 
 export function nameValidator(options?: {
-  required?: boolean;
-  minlength?: number;
-  maxlength?: number;
+    required?: boolean;
+    minlength?: number;
+    maxlength?: number;
 }): ValidatorFn {
-  options = options || {
-    required: false,
-    minlength: 0,
-    maxlength: Number.MAX_SAFE_INTEGER,
-  };
+    const required = options?.required ?? true;
+    const minlength = options?.minlength;
+    const maxlength = options?.maxlength;
 
-  return (control: AbstractControl): ValidationErrors | null => {
-    const name = control.value;
-
-    const normalizedName =
-      name === null ? name : name.replace(/\s\s+/g, ' ').trim();
-
-    if (options.required) {
-      if (!normalizedName) {
-        return { required: true };
-      }
-    } else {
-      if (normalizedName === null) {
-        return null;
-      }
+    const validators = [];
+    if (required) {
+        validators.push(
+            requiredValidator({
+                allowNull: false,
+                allowEmptyString: false,
+                allowSpaceFilledString: false,
+                allowFalse: false,
+            }),
+        );
     }
-
-    if (options.minlength !== null && options.minlength !== undefined) {
-      if (normalizedName.length < options.minlength) {
-        return { minlength: true };
-      }
+    validators.push(nameFormatValidator());
+    if (minlength ?? false) {
+        validators.push(minLengthValidator(minlength!));
     }
-
-    if (options.maxlength !== null && options.maxlength !== undefined) {
-      if (normalizedName.length > options.maxlength) {
-        return { maxlength: true };
-      }
+    if (maxlength ?? false) {
+        validators.push(maxLengthValidator(maxlength!));
     }
-
-    const nameRegex = /^(\s*[\p{L}\p{N}\p{P}]+(\s+[\p{L}\p{N}\p{P}]+)*\s*)?$/u;
-    if (!nameRegex.test(name)) {
-      return { name: true };
-    }
-
-    return null;
-  };
+    return Validators.compose(validators)!;
 }

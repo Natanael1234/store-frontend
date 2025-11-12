@@ -1,23 +1,34 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { DynamicFormComponent } from '../../components/dynamic-form/dynamic-form.component';
-import { ButtonStyle } from '../../components/dynamic-form/enums/button-style/button-style.enum';
-import { TextInputFormat } from '../../components/dynamic-form/enums/input-mask-type/text-input-format.enum';
-import { AbstractFormElement } from '../../components/dynamic-form/model/abstract-form-element.model';
-import { TextArea } from '../../components/dynamic-form/model/controls/input/text-area/text-area.model';
-import { TextInput } from '../../components/dynamic-form/model/controls/input/text-input/text-input.model';
-import { RadioButtons } from '../../components/dynamic-form/model/controls/optative/radio-buttons/radio-buttons-element.model';
-import { Select } from '../../components/dynamic-form/model/controls/optative/select/select-element.model';
-import { CheckboxElement } from '../../components/dynamic-form/model/controls/other/checkbox/checkbox.model';
-import { ButtonFormElement } from '../../components/dynamic-form/model/others/button/button-form-element.model';
-import { DividerFormElement } from '../../components/dynamic-form/model/others/divider/divider.-form-elementmodel';
-import { LabelFormElement } from '../../components/dynamic-form/model/others/label/label-form-element.model';
+import { FormControl, FormGroup } from '@angular/forms';
+import { ButtonStyle } from '../../components/form/enums/button-style/button-style.enum';
+import { TextFormat } from '../../components/form/enums/text-format/text-format.enum';
+import { FormComponent } from '../../components/form/form.component';
+import { AbstractFormElementModel } from '../../components/form/model/abstract-form-element.model';
+import { TextAreaModel } from '../../components/form/model/controls/input/text-area/text-area.model';
+import { TextInputModel } from '../../components/form/model/controls/input/text-input/text-input.model';
+import { RadioGroupModel } from '../../components/form/model/controls/optative/radio-group/radio-buttons-element.model';
+import { SelectModel } from '../../components/form/model/controls/optative/select/select-element.model';
+import { CheckboxModel } from '../../components/form/model/controls/other/checkbox/checkbox.model';
+import { ButtonModel } from '../../components/form/model/others/button/button-form-element.model';
+import { DividerModel } from '../../components/form/model/others/divider/divider.-form-elementmodel';
+import { LabelModel } from '../../components/form/model/others/label/label-form-element.model';
 import { UserConfigs } from '../../configs/user/user.configs';
 import { EmailConstants } from '../../constants/email/email.constants';
+import { Icon } from '../../enums/icons/icons.enum';
 import { TextMessage } from '../../messages/text/text.messages';
+import { cepValidator } from '../../validators/cep/cep.validator';
+import { cnpjValidator } from '../../validators/cnpj/cnpj.validator';
+import { cpfValidator } from '../../validators/cpf/cpf.validator';
+import { dateValidator } from '../../validators/date/date.validator';
 import { emailValidator } from '../../validators/email/email.validator';
+import { maxLengthValidator } from '../../validators/max-length/max-length.validator';
+import { maxValidator } from '../../validators/max/max.validator';
+import { minLengthValidator } from '../../validators/min-length/min-length.validator';
+import { minValidator } from '../../validators/min/min.validator';
 import { nameValidator } from '../../validators/name/name.validator';
+import { requiredValidator } from '../../validators/required/required.validator';
 import { strongPasswordValidator } from '../../validators/strong-password/strong-password.validator';
+import { timeValidator } from '../../validators/time/time.validator';
 
 const _NameMessage = new TextMessage({
     minLength: UserConfigs.NAME_MIN_LENGTH,
@@ -72,100 +83,129 @@ function getMandatoryError(control: FormControl) {
 
 @Component({
     selector: 'app-test',
-    imports: [DynamicFormComponent],
+    imports: [FormComponent],
     templateUrl: './test.component.html',
     styleUrl: './test.component.scss',
 })
 export class TestComponent {
-    public formElements: AbstractFormElement[];
+    public formElements: AbstractFormElementModel[];
 
-    form = new FormGroup({
-        name: new FormControl(
-            { value: '', disabled: false },
-            { validators: this.nameValidators },
-        ),
-        email: new FormControl(
-            { value: 'user@email.com', disabled: false },
-            { validators: this.emailValidators },
-        ),
-        password: new FormControl(
-            { value: 'Senha123$', disabled: false },
-            { validators: this.passwordValidators },
-        ),
-        phone: new FormControl(
-            { value: '91998689855', disabled: false },
-            { validators: [Validators.required] },
-        ),
-        zipCode: new FormControl(
-            { value: '31810050', disabled: false },
-            { validators: [] },
-        ),
-        date: new FormControl(
-            { value: '05/05/2025', disabled: false },
-            { validators: [] },
-        ),
-        time: new FormControl(
-            { value: '23:03', disabled: false },
-            { validators: [] },
-        ),
-        cnpj: new FormControl(
-            { value: '32599768000110', disabled: false },
-            { validators: [] },
-        ),
-        cpf: new FormControl(
-            { value: '31946183423', disabled: false },
-            { validators: [] },
-        ),
-        amount: new FormControl(
-            { value: '-3456', disabled: false },
-            { validators: [] },
-        ),
-        price: new FormControl(
-            { value: '1231,11', disabled: false },
-            { validators: [] },
-        ),
-        description: new FormControl(
-            { value: 'Blá\nblá\nblá', disabled: false },
-            { validators: [Validators.required] },
-        ),
-        disabledDescription: new FormControl(
-            {
-                value: 'Blá\nblá\nblá\nblá',
-                disabled: true,
-            },
-            { validators: [Validators.required] },
-        ),
-        level: new FormControl(
-            { value: undefined, disabled: false },
-            { validators: [Validators.required] },
-        ),
-        gender: new FormControl(
-            { value: undefined, disabled: false },
-            { validators: [Validators.required] },
-        ),
-        acceptTerms: new FormControl(
-            { value: false, disabled: false },
-            { validators: [Validators.requiredTrue] },
-        ),
-    });
+    form = new FormGroup(
+        {
+            name: new FormControl(
+                { value: 'x', disabled: false },
+                {
+                    validators: [
+                        nameValidator({
+                            required: true,
+                            minlength: UserConfigs.NAME_MIN_LENGTH,
+                            maxlength: UserConfigs.NAME_MAX_LENGTH,
+                        }),
+                    ],
+                },
+            ),
+            email: new FormControl(
+                { value: 'user@email.com', disabled: false },
+                { validators: [requiredValidator(), emailValidator()] },
+            ),
+            password: new FormControl(
+                { value: 'Senha123$', disabled: false },
+                {
+                    validators: [
+                        requiredValidator(),
+                        minLengthValidator(UserConfigs.PASSWORD_MIN_LENGTH),
+                        maxLengthValidator(UserConfigs.PASSWORD_MAX_LENGTH),
+                        strongPasswordValidator(),
+                    ],
+                },
+            ),
+            phone: new FormControl(
+                { value: '91998689855', disabled: false },
+                { validators: [requiredValidator()] },
+            ),
+            zipCode: new FormControl(
+                { value: '31810050', disabled: false },
+                { validators: [cepValidator()] },
+            ),
+            date: new FormControl(
+                { value: '05/05/2025', disabled: false },
+                { validators: [dateValidator()] },
+            ),
+            time: new FormControl(
+                { value: '23:03', disabled: false },
+                { validators: [timeValidator()] },
+            ),
+            cnpj: new FormControl(
+                { value: '32599768000110', disabled: false },
+                { validators: [cnpjValidator()] },
+            ),
+            cpf: new FormControl(
+                { value: '31946183423', disabled: false },
+                { validators: [cpfValidator()] },
+            ),
+            amount: new FormControl(
+                { value: '-3456.0', disabled: false },
+                {
+                    validators: [
+                        // TODO: não está validando no início
+                        requiredValidator(),
+                        minValidator(-5),
+                        maxValidator(100),
+                    ],
+                },
+            ),
+            price: new FormControl(
+                { value: '1231.11', disabled: false },
+                {
+                    validators: [
+                        // TODO: não está validando no início
+                        requiredValidator(),
+                        minValidator(-5),
+                        maxValidator(100),
+                    ],
+                },
+            ),
+            description: new FormControl(
+                { value: 'Blá\nblá\nblá', disabled: false },
+                { validators: [requiredValidator()] },
+            ),
+            disabledDescription: new FormControl(
+                { value: 'Blá\nblá\nblá\nblá', disabled: true },
+                { validators: [requiredValidator()] },
+            ),
+            level: new FormControl(
+                { value: undefined, disabled: false },
+                { validators: [requiredValidator()] },
+            ),
+            gender: new FormControl(
+                { value: undefined, disabled: false },
+                { validators: [requiredValidator()] },
+            ),
+            acceptTerms: new FormControl(
+                { value: false, disabled: false },
+                { validators: [requiredValidator()] },
+            ),
+        },
+        { updateOn: 'blur' },
+    );
 
     constructor() {
         this.formElements = [
-            new TextInput({
+            new TextInputModel({
                 id: 'name',
-                mask: null,
-                name: 'name',
+                mask: undefined,
                 label: 'Nome',
                 control: this.form.controls.name,
+                minLength: 3,
+                maxLength: 7,
                 errorMessageFn: () => getNameError(this.form.controls.name),
                 onBlur: () => console.log('On text input blur'),
 
                 colSize: 6,
             }),
-            new TextInput({
+            new TextInputModel({
                 id: 'email',
-                format: TextInputFormat.email,
-                name: 'email',
+                format: TextFormat.email,
                 label: 'Email',
                 placeholder: 'Insira um email',
                 maxLength: 200,
@@ -174,10 +214,9 @@ export class TestComponent {
                 colSize: 12,
                 errorMessageFn: () => getEmailError(this.form.controls.email),
             }),
-            new TextInput({
+            new TextInputModel({
                 id: 'password',
-                format: TextInputFormat.password,
-                name: 'password',
+                format: TextFormat.password,
                 label: 'Senha',
                 placeholder: 'Insira a senha',
                 maxLength: 12,
@@ -185,10 +224,9 @@ export class TestComponent {
                 colSize: 12,
                 control: this.form.controls.password,
             }),
-            new TextInput({
+            new TextInputModel({
                 id: 'phone',
-                format: TextInputFormat.phone,
-                name: 'phone',
+                format: TextFormat.phone,
                 label: 'Fone',
                 placeholder: 'Insira seu telefone',
                 maxLength: 14,
@@ -197,219 +235,175 @@ export class TestComponent {
 
                 colSize: 4,
             }),
-            new TextInput({
+            new TextInputModel({
                 id: 'zip-code',
-                format: TextInputFormat.zipCode,
-                name: 'zip-code',
+                format: TextFormat.zipCode,
                 label: 'CEP',
                 control: this.form.controls.zipCode,
 
                 colSize: 4,
                 breakLine: true,
             }),
-            new TextInput({
+            new TextInputModel({
                 id: 'date',
-                format: TextInputFormat.date,
-                name: 'date',
+                format: TextFormat.date,
                 label: 'Data',
                 control: this.form.controls.date,
 
                 colSize: 3,
             }),
-            new TextInput({
+            new TextInputModel({
                 id: 'time',
-                format: TextInputFormat.time,
-                name: 'time',
+                format: TextFormat.time,
                 label: 'Horário',
                 control: this.form.controls.time,
                 colSize: 3,
+                breakLine: true,
             }),
-            new TextInput({
+            new TextInputModel({
                 id: 'cnpj',
-                format: TextInputFormat.cnpj,
-                name: 'cnpj',
+                format: TextFormat.cnpj,
                 label: 'CNPJ',
                 control: this.form.controls.cnpj,
 
-                colSize: 4,
+                colSize: 5,
             }),
-            new TextInput({
+            new TextInputModel({
                 id: 'cpf',
-                format: TextInputFormat.cpf,
-                name: 'cpf',
+                format: TextFormat.cpf,
                 label: 'CPF',
                 control: this.form.controls.cpf,
-
-                colSize: 7,
+                colSize: 6,
             }),
-            new TextInput({
+            new TextInputModel({
                 id: 'amount',
-                format: TextInputFormat.integer,
+                format: TextFormat.number,
                 prefix: 'R$ ',
-                name: 'int',
                 label: 'Quantidade',
                 allowNegativeNumbers: true,
                 control: this.form.controls.amount,
-
+                // TODO: implement
+                min: 3,
+                max: 300,
+                step: 5,
                 colSize: 12,
             }),
-            new TextInput({
+            new TextInputModel({
                 id: 'price',
-                format: TextInputFormat.float,
-                name: 'price',
+                format: TextFormat.number,
                 suffix: ' %',
                 label: 'Preço',
                 decimalPlaces: 2,
                 allowNegativeNumbers: false,
+                // TODO: implement
                 control: this.form.controls.price,
 
                 colSize: 12,
             }),
-            new TextArea({
+            new TextAreaModel({
                 id: 'description',
                 label: 'Descrição',
                 placeholder: 'Insira uma descrição',
-                name: 'text',
                 maxLength: 200,
                 control: this.form.controls.description,
 
                 colSize: 12,
                 onBlur: () => console.log('On text area blur'),
             }),
-            new TextArea({
+            new TextAreaModel({
                 id: 'disabled-description',
                 label: 'Área de texto desabilitada',
                 placeholder: 'Placeholder',
-                name: 'text-disabled',
                 maxLength: 200,
-
                 colSize: 12,
                 control: this.form.controls.disabledDescription,
             }),
-            new DividerFormElement({
+            new DividerModel({
                 id: 'test-divider',
-
                 colSize: 12,
             }),
-            new LabelFormElement({
+            new LabelModel({
                 id: 'test-label',
                 value: 'Outro label',
-
                 colSize: 12,
             }),
 
-            new Select({
+            new SelectModel({
                 id: 'gender',
                 label: 'Gênero',
-                name: 'gender',
                 options: [
                     { label: 'Masculino', value: 'M' },
                     { label: 'Feminino', value: 'F' },
                 ],
                 control: this.form.controls.gender,
-
                 colSize: 7,
                 errorMessageFn: () =>
                     getMandatoryError(this.form.controls.level),
             }),
-            new RadioButtons({
+            new RadioGroupModel({
                 id: 'level',
                 label: 'Nível',
-                name: 'level',
                 options: [
                     { label: 'Begginer', value: 'B' },
                     { label: 'Intermmediate', value: 'I' },
                     { label: 'Advanced', value: 'A' },
                 ],
                 control: this.form.controls.level,
-
                 colSize: 12,
             }),
-            new CheckboxElement({
+            new CheckboxModel({
                 id: 'accept-terms',
                 label: 'Aceito os termos',
-                name: 'accept-terms',
                 control: this.form.controls.acceptTerms,
 
                 colSize: 4,
             }),
-            new LabelFormElement({
+            new LabelModel({
                 id: 'test-label',
                 value: 'Test label',
-
                 colSize: 12,
             }),
 
-            new ButtonFormElement({
+            new ButtonModel({
                 id: 'flat-button',
-                icon: 'checked',
+                icon: Icon.checked,
                 label: 'Botão plano',
                 style: ButtonStyle.text,
-
                 colSize: 2,
                 colOffset: 1,
             }),
-            new ButtonFormElement({
+            new ButtonModel({
                 id: 'elevated-button',
-                icon: 'checked',
+                icon: Icon.checked,
                 label: 'Botão elevado',
                 style: ButtonStyle.elevated,
-
                 colSize: 2,
             }),
-            new ButtonFormElement({
+            new ButtonModel({
                 id: 'filled-button',
-                icon: 'checked',
+                icon: Icon.checked,
                 label: 'Botão preenchido',
                 style: ButtonStyle.filled,
-
                 colSize: 2,
             }),
-            new ButtonFormElement({
+            new ButtonModel({
                 id: 'outlined-button',
-                icon: 'checked',
+                icon: Icon.checked,
                 label: 'Botão contornado',
                 style: ButtonStyle.outlined,
-
                 colSize: 2,
             }),
-            new ButtonFormElement({
+            new ButtonModel({
                 id: 'tonal-button',
-                icon: 'checked',
+                icon: Icon.checked,
                 label: 'Botão tonal',
                 style: ButtonStyle.tonal,
-
                 colSize: 2,
             }),
         ];
 
         this.form.markAllAsTouched();
+        this.form.markAllAsDirty();
         this.form.updateValueAndValidity();
-    }
-
-    protected get nameValidators() {
-        return [
-            nameValidator({
-                required: true,
-                minlength: UserConfigs.NAME_MIN_LENGTH,
-                maxlength: UserConfigs.NAME_MAX_LENGTH,
-            }),
-        ];
-    }
-
-    protected get emailValidators() {
-        return [
-            Validators.required, // mover para o validador
-            emailValidator(),
-        ];
-    }
-
-    protected get passwordValidators() {
-        return [
-            Validators.required,
-            Validators.minLength(UserConfigs.PASSWORD_MIN_LENGTH),
-            Validators.maxLength(UserConfigs.PASSWORD_MAX_LENGTH),
-            strongPasswordValidator(),
-        ];
     }
 }

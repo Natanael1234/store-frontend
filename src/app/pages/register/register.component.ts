@@ -20,6 +20,7 @@ import { EmailConstants } from '../../constants/email/email.constants';
 import { EmailMessage } from '../../messages/email/email.messages';
 import { PasswordMessage } from '../../messages/password/password.messages';
 import { TextMessage } from '../../messages/text/text.messages';
+import { FirstErrorMessagePipe } from '../../pipes/first-error-message.pipe';
 import { AuthService } from '../../services/auth/auth.service';
 import { AuthResponseDto } from '../../services/auth/dtos/auth.response.dto';
 import { RegisterRequestDto } from '../../services/auth/dtos/register.request.dto';
@@ -60,6 +61,7 @@ const _PasswordMessage = new PasswordMessage({
         MatCardModule,
         AlertComponent,
         MatProgressBarModule,
+        FirstErrorMessagePipe,
     ],
     templateUrl: './register.component.html',
     styleUrl: './register.component.scss',
@@ -114,12 +116,13 @@ export class RegisterComponent {
     });
 
     protected get nameValidators() {
+        const _nameValidator = nameValidator({
+            required: true,
+            minlength: UserConfigs.NAME_MIN_LENGTH,
+            maxlength: UserConfigs.NAME_MAX_LENGTH,
+        });
         return [
-            nameValidator({
-                required: true,
-                minlength: UserConfigs.NAME_MIN_LENGTH,
-                maxlength: UserConfigs.NAME_MAX_LENGTH,
-            }),
+            _nameValidator,
             remoteValidator(this.nameRemoteValidationContext),
         ];
     }

@@ -9,11 +9,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { DynamicFormComponent } from '../../../../components/dynamic-form/dynamic-form.component';
-import { ButtonStyle } from '../../../../components/dynamic-form/enums/button-style/button-style.enum';
-import { AbstractFormElement } from '../../../../components/dynamic-form/model/abstract-form-element.model';
-import { Select } from '../../../../components/dynamic-form/model/controls/optative/select/select-element.model';
-import { ButtonFormElement } from '../../../../components/dynamic-form/model/others/button/button-form-element.model';
+import { ButtonStyle } from '../../../../components/form/enums/button-style/button-style.enum';
+import { FormComponent } from '../../../../components/form/form.component';
+import { AbstractFormElementModel } from '../../../../components/form/model/abstract-form-element.model';
+import { SelectModel } from '../../../../components/form/model/controls/optative/select/select-element.model';
+import { ButtonModel } from '../../../../components/form/model/others/button/button-form-element.model';
 import { ActiveFilterOptions } from '../../../../constants/active-filter-options/active-filter-options';
 import { DeletedFilterOptions } from '../../../../constants/deleted-filter-options/deleted-filter-options';
 import { ActiveFilter } from '../../../../enums/active-filter/active-filter.enum';
@@ -38,7 +38,7 @@ import { OnUserFilterMenuListCloseEvent } from './types/on-user-filter-menu-list
         MatChipsModule,
         MatTooltipModule,
         MatDividerModule,
-        DynamicFormComponent,
+        FormComponent,
     ],
     templateUrl: './user-filter-toolbar.component.html',
     styleUrl: './user-filter-toolbar.component.scss',
@@ -101,7 +101,7 @@ export class UserFilterToolbarComponent {
         }),
     });
 
-    protected orderControl = new Select({
+    protected orderControl = new SelectModel({
         id: 'order-select',
         label: 'Ordem',
         options: UserOrderOptions,
@@ -109,7 +109,7 @@ export class UserFilterToolbarComponent {
         colSize: 3,
     });
 
-    protected activeControl = new Select({
+    protected activeControl = new SelectModel({
         id: 'active-select',
         label: 'Ativos',
         options: ActiveFilterOptions,
@@ -117,7 +117,7 @@ export class UserFilterToolbarComponent {
         colSize: 3,
     });
 
-    protected deletedControl = new Select({
+    protected deletedControl = new SelectModel({
         id: 'deleted-select',
         label: 'Deletados',
         options: DeletedFilterOptions,
@@ -125,14 +125,14 @@ export class UserFilterToolbarComponent {
         colSize: 3,
     });
 
-    protected cancelButton = new ButtonFormElement({
+    protected cancelButton = new ButtonModel({
         id: 'cancel-button',
         label: 'Cancelar',
         colSize: 1,
         clickCallback: (event: MouseEvent) => this.cancel(),
     });
 
-    protected filterButton = new ButtonFormElement({
+    protected filterButton = new ButtonModel({
         id: 'filter-button',
         label: 'Filtrar',
         colSize: 1,
@@ -140,7 +140,7 @@ export class UserFilterToolbarComponent {
         clickCallback: (event: MouseEvent) => this.submit(),
     });
 
-    protected formElements: AbstractFormElement[] = [
+    protected formElements: AbstractFormElementModel[] = [
         this.activeControl,
         this.deletedControl,
         this.filterButton,
@@ -211,7 +211,7 @@ export class UserFilterToolbarComponent {
         this.alignItems = vertical ? AlignItems.initial : AlignItems.center;
     }
 
-    private insertFormElement(element: AbstractFormElement, idx: number) {
+    private insertFormElement(element: AbstractFormElementModel, idx: number) {
         this.removeFormElement(element.id!);
         this.formElements.splice(idx, 0, element);
     }

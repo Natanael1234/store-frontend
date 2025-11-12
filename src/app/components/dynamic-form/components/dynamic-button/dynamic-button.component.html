@@ -1,9 +1,0 @@
-<button
-    [matButton]="button().style"
-    [disabled]="button().disabled"
-    (click)="fireClickButtonEvent($event)">
-    @if (button().icon) {
-        <mat-icon>{{ button().icon }}</mat-icon>
-    }
-    {{ button().label }}
-</button>
