@@ -316,6 +316,8 @@ export class TestComponent {
                 placeholder: 'Placeholder',
                 maxLength: 200,
                 colSize: 12,
+                autosizeMinRows: 2,
+                autosizeMaxRows: 2,
                 control: this.form.controls.disabledDescription,
             }),
             new DividerModel({

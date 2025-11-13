@@ -17,7 +17,8 @@ describe('TextAreaModel', () => {
         expect(textArea.placeholder).toBeNull();
         expect(textArea.minLength).toBeUndefined();
         expect(textArea.maxLength).toBeUndefined();
-        expect(textArea.inputMode).toBeNull();
+        expect(textArea.autosizeMinRows).toBeNull();
+        expect(textArea.autosizeMaxRows).toBeUndefined();
         expect(textArea.onBlur).toBeUndefined();
         expect(textArea.control).toBeInstanceOf(FormControl);
     });
@@ -31,6 +32,8 @@ describe('TextAreaModel', () => {
             placeholder: 'Digite seu texto',
             minLength: 10,
             maxLength: 100,
+            autosizeMinRows: 2,
+            autosizeMaxRows: 5,
             inputMode: InputMode.text,
             onBlur: onBlurFn,
             id: 'txt-1',
@@ -40,6 +43,8 @@ describe('TextAreaModel', () => {
         expect(textArea.placeholder).toBe('Digite seu texto');
         expect(textArea.minLength).toBe(10);
         expect(textArea.maxLength).toBe(100);
+        expect(textArea.autosizeMinRows).toBe(2);
+        expect(textArea.autosizeMaxRows).toBe(5);
         expect(textArea.inputMode).toBe(InputMode.text);
         expect(textArea.onBlur).toBe(onBlurFn);
         expect(textArea.id).toBe('txt-1');

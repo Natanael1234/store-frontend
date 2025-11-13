@@ -16,7 +16,7 @@ import { CheckboxComponent } from './components/checkbox/checkbox.component';
 import { NumericFieldComponent } from './components/numeric-field/numeric-field.component';
 import { RadioGroupComponent } from './components/radio-group/radio-group.component';
 import { SelectFieldComponent } from './components/select/select-field.component';
-import { TextAreaFieldComponent } from './components/text-area/text-area.component';
+import { TextAreaComponent } from './components/text-area/text-area.component';
 import { TextFieldComponent } from './components/text-field/text-field.component';
 import { FormElementType } from './enums/form-element-type/form-element-type.enum';
 import { TextFormat } from './enums/text-format/text-format.enum';
@@ -47,7 +47,7 @@ import { LabelModel } from './model/others/label/label-form-element.model';
         NumericFieldComponent,
         ButtonComponent,
         SelectFieldComponent,
-        TextAreaFieldComponent,
+        TextAreaComponent,
         CheckboxComponent,
         RadioGroupComponent,
     ],

@@ -11,6 +11,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { provideNgxMask } from 'ngx-mask';
+import { FirstErrorMessagePipe } from '../../../../pipes/first-error-message.pipe';
 
 @Component({
     selector: 'app-text-area-field',
@@ -21,6 +22,7 @@ import { provideNgxMask } from 'ngx-mask';
         TextFieldModule,
         CommonModule,
         MatIconModule,
+        FirstErrorMessagePipe,
     ],
     providers: [provideNgxMask()],
     styles: `
@@ -36,27 +38,25 @@ import { provideNgxMask } from 'ngx-mask';
     `,
     template: `
         <mat-form-field appearance="outline">
-            <mat-label>{{ label() ?? '' }}</mat-label>
+            <mat-label>{{ _label() }}</mat-label>
             <textarea
                 matInput
                 cdkTextareaAutosize
                 #autosize="cdkTextareaAutosize"
-                cdkAutosizeMinRows="2"
-                cdkAutosizeMaxRows="6"
-                [id]="id() ?? ''"
-                [placeholder]="placeholder() ?? ''"
-                [tabindex]="tabIndex()"
-                [minlength]="minLength() ?? null"
-                [maxlength]="maxLength() ?? null"
+                [attr.id]="_id()"
+                [attr.placeholder]="_placeHolder()"
+                [attr.tabindex]="_tabIndex()"
+                [attr.minlength]="_minLength()"
+                [attr.maxlength]="_maxLength()"
+                [attr.cdkAutosizeMinRows]="_autosizeMinRows()"
+                [attr.cdkAutosizeMaxRows]="autosizeMaxRows()"
                 [formControl]="control()!"
                 (blur)="fireOnBlurEvent()"></textarea>
-            <mat-error>
-                {{ errorMessage() }}
-            </mat-error>
+            <mat-error>{{ control() ?? null | firstErrorMessage }}</mat-error>
         </mat-form-field>
     `,
 })
-export class TextAreaFieldComponent {
+export class TextAreaComponent {
     public id = model<string>();
     public label = model<string>();
     public placeholder = model<string>();
@@ -64,13 +64,19 @@ export class TextAreaFieldComponent {
     public focusable = model<boolean | null | undefined>(true);
     public minLength = model<number>();
     public maxLength = model<number>();
+    public autosizeMinRows = model<number>();
+    public autosizeMaxRows = model<number>();
+    public breakLine = model<boolean>();
 
-    protected errorMessage = computed(() => {
-        const errorMessageFn = this.errorMessageFn();
-        return (errorMessageFn ? errorMessageFn() : '') ?? '';
-    });
-    public errorMessageFn = model<() => void>();
-    protected tabIndex = computed(() => (this.focusable() ? 0 : -1));
+    protected _id = computed(() => this.id() ?? '');
+    protected _label = computed(() => this.label() ?? '');
+    protected _placeHolder = computed(() => this.placeholder() ?? '');
+    protected _tabIndex = computed(() => (this.focusable() ? 0 : -1));
+    protected _minLength = computed(() => this.minLength() ?? null);
+    protected _maxLength = computed(() => this.maxLength() ?? null);
+    protected _autosizeMinRows = computed(() => this.autosizeMinRows() ?? 2);
+    protected _autosizeMaxRows = computed(() => this.autosizeMaxRows() ?? 6);
+
     @Output() onBlur = new EventEmitter();
 
     protected fireOnBlurEvent() {

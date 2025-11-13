@@ -74,7 +74,8 @@
                         [focusable]="textArea.focusable"
                         [minLength]="textArea.minLength"
                         [maxLength]="textArea.maxLength"
-                        [errorMessageFn]="textArea.errorMessageFn"
+                        [autosizeMinRows]="textArea.autosizeMinRows"
+                        [autosizeMaxRows]="textArea.autosizeMaxRows"
                         (onBlur)="
                             textArea.onBlur ? textArea.onBlur() : false
                         " />
