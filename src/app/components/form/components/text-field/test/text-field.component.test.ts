@@ -182,7 +182,7 @@ async function testField(options: {
 
     // appearance
 
-    expect(await harness.getFormAppearance())
+    expect(await harness.getFieldAppearance())
         .withContext('appearance')
         .toEqual('outline');
 }

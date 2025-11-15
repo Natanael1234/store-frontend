@@ -33,7 +33,6 @@ import { MatRadioModule } from '@angular/material/radio';
                 </mat-radio-button>
             }
         </mat-radio-group>
-        <!-- <mat-error>{{ errorMessage() }}</mat-error> -->
     `,
 })
 export class RadioGroupComponent {
@@ -42,11 +41,6 @@ export class RadioGroupComponent {
     public control = model<FormControl>();
     public focusable = model<boolean>();
     public options = model<{ value: string; label: string }[]>();
-    public errorMessageFn = model<() => void>();
-    protected errorMessage = computed(() => {
-        const errorMessageFn = this.errorMessageFn();
-        return (errorMessageFn ? errorMessageFn() : '') ?? '';
-    });
 
     protected tabIndex = computed(() => (this.focusable() ? 0 : -1));
 }

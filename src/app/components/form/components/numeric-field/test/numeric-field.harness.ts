@@ -101,7 +101,7 @@ export class NumericFieldHarness extends ComponentHarness {
         return errors;
     }
 
-    async getFormAppearance() {
+    async getFieldAppearance() {
         const field = await this.fieldHarness();
         const appearance = await field.getAppearance();
         return appearance;

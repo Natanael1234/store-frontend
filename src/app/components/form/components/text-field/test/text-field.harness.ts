@@ -111,7 +111,7 @@ export class TextFieldHarness extends ComponentHarness {
         return await field.getErrors();
     }
 
-    async getFormAppearance() {
+    async getFieldAppearance() {
         const field = await this.fieldHarness();
         return await field.getAppearance();
     }

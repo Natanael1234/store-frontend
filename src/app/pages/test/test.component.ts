@@ -1,17 +1,17 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ButtonStyle } from '../../components/form/enums/button-style/button-style.enum';
+import { AbstractFormElementModel } from '../../components/form/components/abstract/abstract-form-element.model';
+import { ButtonStyle } from '../../components/form/components/button/enum/button-style.enum';
+import { ButtonModel } from '../../components/form/components/button/model/button-form-element.model';
+import { CheckboxModel } from '../../components/form/components/checkbox/model/checkbox.model';
+import { DividerModel } from '../../components/form/components/divider/model/divider.-form-elementmodel';
+import { LabelModel } from '../../components/form/components/label/model/label-form-element.model';
+import { RadioGroupModel } from '../../components/form/components/radio-group/model/radio-buttons-element.model';
+import { SelectModel } from '../../components/form/components/select/model/select-element.model';
+import { TextAreaModel } from '../../components/form/components/text-area/model/text-area.model';
+import { TextInputModel } from '../../components/form/components/text-field/model/text-input.model';
 import { TextFormat } from '../../components/form/enums/text-format/text-format.enum';
 import { FormComponent } from '../../components/form/form.component';
-import { AbstractFormElementModel } from '../../components/form/model/abstract-form-element.model';
-import { TextAreaModel } from '../../components/form/model/controls/input/text-area/text-area.model';
-import { TextInputModel } from '../../components/form/model/controls/input/text-input/text-input.model';
-import { RadioGroupModel } from '../../components/form/model/controls/optative/radio-group/radio-buttons-element.model';
-import { SelectModel } from '../../components/form/model/controls/optative/select/select-element.model';
-import { CheckboxModel } from '../../components/form/model/controls/other/checkbox/checkbox.model';
-import { ButtonModel } from '../../components/form/model/others/button/button-form-element.model';
-import { DividerModel } from '../../components/form/model/others/divider/divider.-form-elementmodel';
-import { LabelModel } from '../../components/form/model/others/label/label-form-element.model';
 import { UserConfigs } from '../../configs/user/user.configs';
 import { EmailConstants } from '../../constants/email/email.constants';
 import { Icon } from '../../enums/icons/icons.enum';
@@ -198,9 +198,7 @@ export class TestComponent {
                 control: this.form.controls.name,
                 minLength: 3,
                 maxLength: 7,
-                errorMessageFn: () => getNameError(this.form.controls.name),
                 onBlur: () => console.log('On text input blur'),
-
                 colSize: 6,
             }),
             new TextInputModel({
@@ -210,9 +208,7 @@ export class TestComponent {
                 placeholder: 'Insira um email',
                 maxLength: 200,
                 control: this.form.controls.email,
-
                 colSize: 12,
-                errorMessageFn: () => getEmailError(this.form.controls.email),
             }),
             new TextInputModel({
                 id: 'password',
@@ -220,7 +216,6 @@ export class TestComponent {
                 label: 'Senha',
                 placeholder: 'Insira a senha',
                 maxLength: 12,
-
                 colSize: 12,
                 control: this.form.controls.password,
             }),
@@ -232,7 +227,6 @@ export class TestComponent {
                 maxLength: 14,
                 focusable: false,
                 control: this.form.controls.phone,
-
                 colSize: 4,
             }),
             new TextInputModel({
@@ -240,7 +234,6 @@ export class TestComponent {
                 format: TextFormat.zipCode,
                 label: 'CEP',
                 control: this.form.controls.zipCode,
-
                 colSize: 4,
                 breakLine: true,
             }),
@@ -249,7 +242,6 @@ export class TestComponent {
                 format: TextFormat.date,
                 label: 'Data',
                 control: this.form.controls.date,
-
                 colSize: 3,
             }),
             new TextInputModel({
@@ -265,7 +257,6 @@ export class TestComponent {
                 format: TextFormat.cnpj,
                 label: 'CNPJ',
                 control: this.form.controls.cnpj,
-
                 colSize: 5,
             }),
             new TextInputModel({
@@ -339,8 +330,6 @@ export class TestComponent {
                 ],
                 control: this.form.controls.gender,
                 colSize: 7,
-                errorMessageFn: () =>
-                    getMandatoryError(this.form.controls.level),
             }),
             new RadioGroupModel({
                 id: 'level',

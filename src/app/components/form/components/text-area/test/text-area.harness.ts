@@ -74,7 +74,7 @@ export class TextAreaHarness extends ComponentHarness {
         return await field.getErrors();
     }
 
-    async getFormAppearance() {
+    async getFieldppearance() {
         const field = await this.fieldHarness();
         return await field.getAppearance();
     }

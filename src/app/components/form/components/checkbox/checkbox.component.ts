@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, model } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatInputModule } from '@angular/material/input';
 import { isRequired } from '../utils/is-required/is-required';
 
 @Component({
@@ -10,6 +11,7 @@ import { isRequired } from '../utils/is-required/is-required';
         FormsModule,
         ReactiveFormsModule,
         CommonModule,
+        MatInputModule,
         MatCheckboxModule,
     ],
     styles: `
@@ -26,11 +28,9 @@ import { isRequired } from '../utils/is-required/is-required';
         <mat-checkbox
             [id]="id() ?? ''"
             [formControl]="control()!"
-            [tabindex]="tabIndex()">
-            {{ label() ?? '' }} {{ isRequired() ? '*' : '' }}
+            [tabindex]="_tabIndex()">
+            {{ label() ?? '' }} {{ _requiredSymbol() }}
         </mat-checkbox>
-
-        <!-- <mat-error>{{ errorMessage() }}</mat-error> -->
     `,
 })
 export class CheckboxComponent {
@@ -38,15 +38,10 @@ export class CheckboxComponent {
     public label = model<string>();
     public control = model<FormControl>();
     public focusable = model<boolean>();
-    public errorMessageFn = model<() => void>();
 
-    protected tabIndex = computed(() => ((this.focusable() ?? true) ? 0 : -1));
-    protected errorMessage = computed(() => {
-        const errorMessageFn = this.errorMessageFn();
-        return (errorMessageFn ? errorMessageFn() : '') ?? '';
-    });
-
-    protected isRequired(): boolean {
-        return isRequired(this.control());
-    }
+    protected _tabIndex = computed(() => ((this.focusable() ?? true) ? 0 : -1));
+    protected _isRequired = computed(() => isRequired(this.control()));
+    protected _requiredSymbol = computed(() =>
+        isRequired(this.control()) ? '*' : '',
+    );
 }

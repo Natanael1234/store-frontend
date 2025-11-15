@@ -13,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Icon } from '../../../../enums/icons/icons.enum';
 import { leftMouseClickFilter } from '../../../../utils/mouse-events/mouse-click-filter';
-import { ButtonStyle } from '../../enums/button-style/button-style.enum';
+import { ButtonStyle } from './enum/button-style.enum';
 
 @Component({
     selector: 'app-button',

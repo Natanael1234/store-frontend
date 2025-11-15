@@ -11,23 +11,23 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { AlignItems } from '../../enums/align-items/align-items.enum';
 import { JustifyContent } from '../../enums/justify-content/justify-content.enum';
+import { AbstractFormElementModel } from './components/abstract/abstract-form-element.model';
 import { ButtonComponent } from './components/button/button.component';
+import { ButtonModel } from './components/button/model/button-form-element.model';
 import { CheckboxComponent } from './components/checkbox/checkbox.component';
+import { CheckboxModel } from './components/checkbox/model/checkbox.model';
+import { LabelModel } from './components/label/model/label-form-element.model';
 import { NumericFieldComponent } from './components/numeric-field/numeric-field.component';
+import { RadioGroupModel } from './components/radio-group/model/radio-buttons-element.model';
 import { RadioGroupComponent } from './components/radio-group/radio-group.component';
+import { SelectModel } from './components/select/model/select-element.model';
 import { SelectFieldComponent } from './components/select/select-field.component';
+import { TextAreaModel } from './components/text-area/model/text-area.model';
 import { TextAreaComponent } from './components/text-area/text-area.component';
+import { TextInputModel } from './components/text-field/model/text-input.model';
 import { TextFieldComponent } from './components/text-field/text-field.component';
 import { FormElementType } from './enums/form-element-type/form-element-type.enum';
 import { TextFormat } from './enums/text-format/text-format.enum';
-import { AbstractFormElementModel } from './model/abstract-form-element.model';
-import { TextAreaModel } from './model/controls/input/text-area/text-area.model';
-import { TextInputModel } from './model/controls/input/text-input/text-input.model';
-import { RadioGroupModel } from './model/controls/optative/radio-group/radio-buttons-element.model';
-import { SelectModel } from './model/controls/optative/select/select-element.model';
-import { CheckboxModel } from './model/controls/other/checkbox/checkbox.model';
-import { ButtonModel } from './model/others/button/button-form-element.model';
-import { LabelModel } from './model/others/label/label-form-element.model';
 
 @Component({
     selector: 'app-form',

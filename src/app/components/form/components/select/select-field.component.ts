@@ -41,7 +41,6 @@ import { MatSelectModule } from '@angular/material/select';
                     </mat-option>
                 }
             </mat-select>
-            <mat-error>{{ errorMessage() }}</mat-error>
         </mat-form-field>
     `,
 })
@@ -49,13 +48,8 @@ export class SelectFieldComponent {
     public id = model<string>();
     public label = model<string>();
     public focusable = model<boolean | undefined>(true);
-    public control = model<FormControl>();
+    public control = model<FormControl<string | null>>();
     public options = model<{ value: string; label: string }[]>();
-    public errorMessageFn = model<() => void>();
 
     protected tabIndex = computed(() => (this.focusable() ? 0 : -1));
-    protected errorMessage = computed(() => {
-        const errorMessageFn = this.errorMessageFn();
-        return (errorMessageFn ? errorMessageFn() : '') ?? '';
-    });
 }

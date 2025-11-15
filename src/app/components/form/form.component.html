@@ -89,8 +89,7 @@
                         [label]="select.label"
                         [control]="select.control"
                         [options]="select.options"
-                        [focusable]="select.focusable"
-                        [errorMessageFn]="select.errorMessageFn" />
+                        [focusable]="select.focusable" />
                 }
                 <!-- RADIO BUTTONS -->
                 @case (FormElementType.radioButtons) {
@@ -102,8 +101,7 @@
                         [control]="radioButtons.control"
                         [focusable]="radioButtons.focusable"
                         [options]="radioButtons.options"
-                        [focusable]="radioButtons.focusable"
-                        [errorMessageFn]="radioButtons.errorMessageFn" />
+                        [focusable]="radioButtons.focusable" />
                 }
                 <!-- CHECKBOX -->
                 @case (FormElementType.checkbox) {
@@ -112,8 +110,7 @@
                         [id]="checkbox.id"
                         [label]="checkbox.label"
                         [control]="checkbox.control"
-                        [focusable]="checkbox.focusable"
-                        [errorMessageFn]="checkbox.errorMessageFn" />
+                        [focusable]="checkbox.focusable" />
                 }
                 <!-- LABEL -->
                 @case (FormElementType.label) {
