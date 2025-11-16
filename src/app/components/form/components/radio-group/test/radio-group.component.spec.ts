@@ -92,6 +92,7 @@ describe('RadioGroupComponent', () => {
 
         describe('diabled', () => {
             it('should set component disabled', async () => {
+                const control = new FormControl();
                 control.disable();
                 component.label.set('Radio Group');
 
