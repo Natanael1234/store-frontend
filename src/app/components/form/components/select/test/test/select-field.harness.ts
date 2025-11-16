@@ -12,8 +12,8 @@ export class SelectFieldHarness extends ComponentHarness {
     // Locators internos
 
     private readonly fieldHarness = this.locatorFor(MatFormFieldHarness);
-    private readonly hostChildren = this.locatorForAll(':scope > *');
-    private readonly formField = this.locatorFor('mat-form-field');
+    private readonly hostChildrenEl = this.locatorForAll(':scope > *');
+    private readonly formFieldEl = this.locatorFor('mat-form-field');
     private readonly label = this.locatorForOptional(
         'mat-form-field mat-label',
     );
@@ -28,7 +28,7 @@ export class SelectFieldHarness extends ComponentHarness {
     private readonly error = this.locatorForOptional('mat-error');
 
     async getHostChildTagNames(): Promise<string[]> {
-        const children = await this.hostChildren();
+        const children = await this.hostChildrenEl();
         const tagNames: string[] = [];
         for (const child of children) {
             const tag = (
@@ -130,7 +130,7 @@ export class SelectFieldHarness extends ComponentHarness {
 
     /** 🔹 Retorna todas as classes aplicadas ao mat-form-field */
     async getFormFieldClasses(): Promise<string[]> {
-        const field = await this.formField();
+        const field = await this.formFieldEl();
         const classAttr = (await field.getAttribute('class')) ?? '';
         return classAttr
             .split(/\s+/)
@@ -139,8 +139,15 @@ export class SelectFieldHarness extends ComponentHarness {
     }
 
     /** 🔹 Verifica se o campo possui uma mensagem de erro visível */
-    async hasError(): Promise<boolean> {
-        const error = await this.error();
-        return !!error;
+    async hasVisibleError(): Promise<boolean> {
+        const classes = await this.getFormFieldClasses();
+        if (
+            classes.includes('ng-touched') &&
+            classes.includes('ng-dirty') &&
+            classes.includes('ng-invalid')
+        ) {
+            return true;
+        }
+        return false;
     }
 }

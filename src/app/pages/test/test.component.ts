@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AbstractFormElementModel } from '../../components/form/components/abstract/abstract-form-element.model';
 import { ButtonStyle } from '../../components/form/components/button/enum/button-style.enum';
 import { ButtonModel } from '../../components/form/components/button/model/button-form-element.model';
@@ -175,10 +175,10 @@ export class TestComponent {
             ),
             level: new FormControl(
                 { value: undefined, disabled: false },
-                { validators: [requiredValidator()] },
+                { validators: [Validators.required] },
             ),
             gender: new FormControl(
-                { value: undefined, disabled: false },
+                { value: null, disabled: false },
                 { validators: [requiredValidator()] },
             ),
             acceptTerms: new FormControl(

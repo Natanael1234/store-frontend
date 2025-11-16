@@ -47,12 +47,12 @@ describe('SelectFieldComponent', () => {
             label: 'Gender',
             focusable: true,
             control: control,
-            required: false,
+            disabled: false,
+            error: false,
             options: [
                 { value: '1', label: 'Option 1' },
                 { value: '2', label: 'Option 2' },
             ],
-            error: true,
         });
     });
 
@@ -76,9 +76,9 @@ describe('SelectFieldComponent', () => {
                     label: '',
                     focusable: undefined,
                     control: control,
-                    required: false,
-                    options: [],
+                    disabled: false,
                     error: false,
+                    options: [],
                 });
             });
 
@@ -99,9 +99,9 @@ describe('SelectFieldComponent', () => {
                     label: '',
                     focusable: undefined,
                     control: control,
-                    required: false,
-                    options: [],
+                    disabled: false,
                     error: false,
+                    options: [],
                 });
             });
         });
@@ -125,9 +125,9 @@ describe('SelectFieldComponent', () => {
                     label: 'Select Label',
                     focusable: undefined,
                     control: control,
-                    required: false,
-                    options: [],
+                    disabled: false,
                     error: false,
+                    options: [],
                 });
             });
 
@@ -148,9 +148,9 @@ describe('SelectFieldComponent', () => {
                     label: '',
                     focusable: undefined,
                     control: control,
-                    required: false,
-                    options: [],
+                    disabled: false,
                     error: false,
+                    options: [],
                 });
             });
         });
@@ -178,12 +178,12 @@ describe('SelectFieldComponent', () => {
                     label: '',
                     focusable: undefined,
                     control: control,
-                    required: false,
+                    disabled: false,
+                    error: false,
                     options: [
                         { value: '1', label: 'Option 1' },
                         { value: '2', label: 'Option 2' },
                     ],
-                    error: false,
                 });
             });
 
@@ -208,12 +208,12 @@ describe('SelectFieldComponent', () => {
                     label: '',
                     focusable: undefined,
                     control: control,
-                    required: false,
+                    disabled: false,
+                    error: false,
                     options: [
                         { value: '1', label: 'Option 1' },
                         { value: '2', label: 'Option 2' },
                     ],
-                    error: false,
                 });
             });
         });
@@ -235,9 +235,9 @@ describe('SelectFieldComponent', () => {
                     label: '',
                     focusable: true,
                     control: control,
-                    required: false,
-                    options: [],
+                    disabled: false,
                     error: false,
+                    options: [],
                 });
             });
 
@@ -259,9 +259,9 @@ describe('SelectFieldComponent', () => {
                     label: '',
                     focusable: false,
                     control: control,
-                    required: false,
-                    options: [],
+                    disabled: false,
                     error: false,
+                    options: [],
                 });
             });
 
@@ -281,18 +281,17 @@ describe('SelectFieldComponent', () => {
                     label: '',
                     focusable: true,
                     control: control,
-                    required: false,
-                    options: [],
+                    disabled: false,
                     error: false,
+                    options: [],
                 });
             });
         });
 
-        describe('required', () => {
-            it('should show required error whrn form conytrol is marked as required', async () => {
-                const control = new FormControl<string | null>(null, {
-                    validators: [Validators.required],
-                });
+        describe('disabled', () => {
+            it('should set not disabled by default', async () => {
+                const control = new FormControl<string | null>(null);
+                control.enable();
                 component.control.set(control);
                 fixture.detectChanges();
                 harness = await TestbedHarnessEnvironment.harnessForFixture(
@@ -307,9 +306,81 @@ describe('SelectFieldComponent', () => {
                     label: '',
                     focusable: true,
                     control: control,
-                    required: true,
-                    options: [],
+                    disabled: false,
                     error: false,
+                    options: [],
+                });
+            });
+
+            it('should set not disabled', async () => {
+                const control = new FormControl<string | null>(null);
+                component.control.set(control);
+                control.enable();
+                fixture.detectChanges();
+                harness = await TestbedHarnessEnvironment.harnessForFixture(
+                    fixture,
+                    SelectFieldHarness,
+                );
+                component.focusable.set(false);
+                fixture.detectChanges();
+
+                await _testSelectField({
+                    component,
+                    harness,
+                    id: true,
+                    label: '',
+                    focusable: false,
+                    control: control,
+                    disabled: false,
+                    error: false,
+                    options: [],
+                });
+            });
+
+            it('should set disabled', async () => {
+                const control = new FormControl<string | null>(null);
+                control.disable();
+                component.control.set(control);
+                fixture.detectChanges();
+                harness = await TestbedHarnessEnvironment.harnessForFixture(
+                    fixture,
+                    SelectFieldHarness,
+                );
+
+                await _testSelectField({
+                    component,
+                    harness,
+                    id: true,
+                    label: '',
+                    focusable: true,
+                    control: control,
+                    disabled: true,
+                    error: false,
+                    options: [],
+                });
+            });
+        });
+
+        describe('focusable', () => {
+            it('should use tabIndex = 0 by default', async () => {
+                const control = new FormControl<string | null>(null);
+                component.control.set(control);
+                fixture.detectChanges();
+                harness = await TestbedHarnessEnvironment.harnessForFixture(
+                    fixture,
+                    SelectFieldHarness,
+                );
+
+                await _testSelectField({
+                    component,
+                    harness,
+                    id: true,
+                    label: '',
+                    focusable: true,
+                    control: control,
+                    disabled: false,
+                    error: false,
+                    options: [],
                 });
             });
 
@@ -331,9 +402,9 @@ describe('SelectFieldComponent', () => {
                     label: '',
                     focusable: false,
                     control: control,
-                    required: false,
-                    options: [],
+                    disabled: false,
                     error: false,
+                    options: [],
                 });
             });
 
@@ -353,9 +424,63 @@ describe('SelectFieldComponent', () => {
                     label: '',
                     focusable: true,
                     control: control,
-                    required: false,
-                    options: [],
+                    disabled: false,
                     error: false,
+                    options: [],
+                });
+            });
+        });
+
+        describe('error', () => {
+            it('should show error when form control is invalid', async () => {
+                const control = new FormControl<string | null>(null, {
+                    validators: [Validators.required],
+                });
+                component.control.set(control);
+                control.markAsDirty();
+                control.markAsTouched();
+                control.updateValueAndValidity();
+                fixture.detectChanges();
+                harness = await TestbedHarnessEnvironment.harnessForFixture(
+                    fixture,
+                    SelectFieldHarness,
+                );
+
+                await _testSelectField({
+                    component,
+                    harness,
+                    id: true,
+                    label: '',
+                    focusable: true,
+                    control: control,
+                    disabled: false,
+                    error: true,
+                    options: [],
+                });
+            });
+
+            it('should not show required error when form control is not invalid', async () => {
+                const control = new FormControl<string | null>(null, {});
+                component.control.set(control);
+                control.markAsDirty();
+                control.markAsTouched();
+                control.updateValueAndValidity();
+                fixture.detectChanges();
+                harness = await TestbedHarnessEnvironment.harnessForFixture(
+                    fixture,
+                    SelectFieldHarness,
+                );
+
+                await _testSelectField({
+                    component,
+                    harness,
+                    id: true,
+                    label: '',
+                    focusable: true,
+                    control: control,
+                    disabled: false,
+                    error: false,
+                    options: [],
                 });
             });
         });
@@ -382,12 +507,12 @@ describe('SelectFieldComponent', () => {
                     label: '',
                     focusable: undefined,
                     control: control,
-                    required: false,
+                    disabled: false,
+                    error: false,
                     options: [
                         { value: '1', label: 'Option 1' },
                         { value: '2', label: 'Option 2' },
                     ],
-                    error: false,
                 });
             }));
 
@@ -410,9 +535,9 @@ describe('SelectFieldComponent', () => {
                 label: '',
                 focusable: undefined,
                 control: control,
-                required: false,
-                options: [],
+                disabled: false,
                 error: false,
+                options: [],
             });
         });
 
@@ -434,9 +559,9 @@ describe('SelectFieldComponent', () => {
                 label: '',
                 focusable: undefined,
                 control: control,
-                required: false,
-                options: [],
+                disabled: false,
                 error: false,
+                options: [],
             });
         });
     });

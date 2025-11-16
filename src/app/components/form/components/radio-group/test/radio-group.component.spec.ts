@@ -1,9 +1,10 @@
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { RadioGroupComponent } from '../radio-group.component';
 import { RadioGroupHarness } from './radio-group.harness';
+import { _testRadioGroup } from './radio-group;component.test';
 
 describe('RadioGroupComponent', () => {
     let component: RadioGroupComponent;
@@ -32,60 +33,31 @@ describe('RadioGroupComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    async function testRadioGroup(expected: {
-        id: string;
-        label: string;
-        control: FormControl;
-        radioButtons: { label: any; value: any }[];
-    }) {
-        expect(fixture.debugElement.children.length).toEqual(1);
-
-        const groups = await harness.getGroups();
-        const group = await harness.getGroup();
-        const label = await harness.getGroupLabel();
-        const radioButtons = await harness.getRadioButtons();
-
-        expect(groups.length).toEqual(1);
-        expect(await group.getId()).toEqual(expected.id);
-        expect(label).toEqual(expected.label);
-        expect(radioButtons.length).toEqual(expected.radioButtons.length);
-        expect(control.value).toEqual(control.value);
-
-        for (let i = 0; i < radioButtons.length; i++) {
-            const radioButton = radioButtons[i];
-            expect(await radioButton.getLabelText()).toEqual(
-                expected.radioButtons[i].label,
-            );
-            expect(await radioButton.getValue()).toEqual(
-                expected.radioButtons[i].value,
-            );
-            if (expected.control.value == (await radioButton.getValue())) {
-                expect(await radioButton.isChecked()).toBeTrue();
-            } else {
-                expect(await radioButton.isChecked()).toBeFalse();
-            }
-        }
-    }
-
     describe('bidings', () => {
         describe('id', () => {
             it('should bind id', async () => {
                 component.id.set('radio-group-id');
 
-                await testRadioGroup({
+                await _testRadioGroup({
+                    harness,
                     id: 'radio-group-id',
                     label: '',
+                    disabled: false,
                     control: control,
                     radioButtons: [],
+                    error: false,
                 });
             });
 
             it('should user empty id by default', async () => {
-                await testRadioGroup({
+                await _testRadioGroup({
+                    harness,
                     id: '',
                     label: '',
+                    disabled: false,
                     control: control,
                     radioButtons: [],
+                    error: false,
                 });
             });
         });
@@ -94,31 +66,77 @@ describe('RadioGroupComponent', () => {
             it('should bind label', async () => {
                 component.label.set('Radio Group');
 
-                await testRadioGroup({
+                await _testRadioGroup({
+                    harness,
                     id: '',
                     label: 'Radio Group',
+                    disabled: false,
                     control: control,
                     radioButtons: [],
+                    error: false,
                 });
             });
 
             it('label should be empty by default', async () => {
-                await testRadioGroup({
+                await _testRadioGroup({
+                    harness,
                     id: '',
                     label: '',
+                    disabled: false,
                     control: control,
                     radioButtons: [],
+                    error: false,
                 });
             });
         });
 
-        // TODO:
+        describe('diabled', () => {
+            it('should set component disabled', async () => {
+                control.disable();
+                component.label.set('Radio Group');
+
+                await _testRadioGroup({
+                    harness,
+                    id: '',
+                    label: 'Radio Group',
+                    disabled: true,
+                    control: control,
+                    radioButtons: [],
+                    error: false,
+                });
+            });
+
+            it('label should set component not disabled', async () => {
+                await _testRadioGroup({
+                    harness,
+                    id: '',
+                    label: '',
+                    disabled: false,
+                    control: control,
+                    radioButtons: [],
+                    error: false,
+                });
+            });
+
+            it('label should be not disabled by default', async () => {
+                await _testRadioGroup({
+                    harness,
+                    id: '',
+                    label: '',
+                    disabled: false,
+                    control: control,
+                    radioButtons: [],
+                    error: false,
+                });
+            });
+        });
+
         xdescribe('focusable', () => {
-            it('should use tabIndex = 0 by default', () => {});
+            it('should use tabIndex = 0 by default', async () => {});
 
-            it('should use tabIndex = -1 when focusable = false', () => {});
+            xit('should use tabIndex = -1 when focusable = false', () => {});
 
-            it('should use tabIndex = 0 when focusable = true', () => {});
+            xit('should use tabIndex = 0 when focusable = true', () => {});
         });
 
         describe('options', () =>
@@ -130,14 +148,17 @@ describe('RadioGroupComponent', () => {
                 const radios = await harness.getRadioButtons();
                 await radios[0].check();
 
-                await testRadioGroup({
+                await _testRadioGroup({
+                    harness,
                     id: '',
                     label: '',
+                    disabled: false,
                     control: control,
                     radioButtons: [
                         { label: 'Option 1', value: '1' },
                         { label: 'Option 2', value: '2' },
                     ],
+                    error: false,
                 });
             }));
 
@@ -149,14 +170,17 @@ describe('RadioGroupComponent', () => {
                 ]);
                 control.setValue('2');
 
-                await testRadioGroup({
+                await _testRadioGroup({
+                    harness,
                     id: '',
                     label: '',
+                    disabled: false,
                     control: control,
                     radioButtons: [
                         { label: 'Option 1', value: '1' },
                         { label: 'Option 2', value: '2' },
                     ],
+                    error: false,
                 });
             });
 
@@ -168,14 +192,17 @@ describe('RadioGroupComponent', () => {
                 const radios = await harness.getRadioButtons();
                 await radios[0].check();
 
-                await testRadioGroup({
+                await _testRadioGroup({
+                    harness,
                     id: '',
                     label: '',
+                    disabled: false,
                     control: control,
                     radioButtons: [
                         { label: 'Option 1', value: '1' },
                         { label: 'Option 2', value: '2' },
                     ],
+                    error: false,
                 });
 
                 expect(control.value).toEqual('1');
@@ -186,11 +213,14 @@ describe('RadioGroupComponent', () => {
             component.options.set(undefined);
             fixture.detectChanges();
 
-            await testRadioGroup({
+            await _testRadioGroup({
+                harness,
                 id: '',
                 label: '',
+                disabled: false,
                 control: control,
                 radioButtons: [],
+                error: false,
             });
         });
 
@@ -198,19 +228,67 @@ describe('RadioGroupComponent', () => {
             component.options.set([]);
             fixture.detectChanges();
 
-            await testRadioGroup({
+            await _testRadioGroup({
+                harness,
                 id: '',
                 label: '',
+                disabled: false,
                 control: control,
                 radioButtons: [],
+                error: false,
             });
         });
 
-        // TODO:
-        xdescribe('error', () => {
-            xit('should display error message from error', () => {});
+        describe('error', () => {
+            it('should display', async () => {
+                component.options.set([
+                    { label: 'Option 1', value: '1' },
+                    { label: 'Option 2', value: '2' },
+                ]);
+                control.setValidators([Validators.required]);
+                control.markAsDirty();
+                control.markAsTouched();
+                control.updateValueAndValidity();
 
-            xit('should not display error message when error is not defined', () => {});
+                await _testRadioGroup({
+                    harness,
+                    id: '',
+                    label: '',
+                    disabled: false,
+                    control: control,
+                    radioButtons: [
+                        { label: 'Option 1', value: '1' },
+                        { label: 'Option 2', value: '2' },
+                    ],
+                    error: true,
+                });
+            });
+
+            it('should not display', async () => {
+                component.options.set([
+                    { label: 'Option 1', value: '1' },
+                    { label: 'Option 2', value: '2' },
+                ]);
+                control.setValidators([Validators.required]);
+                const radios = await harness.getRadioButtons();
+                await radios[0].check();
+                control.markAsDirty();
+                control.markAsTouched();
+                control.updateValueAndValidity();
+
+                await _testRadioGroup({
+                    harness,
+                    id: '',
+                    label: '',
+                    disabled: false,
+                    control: control,
+                    radioButtons: [
+                        { label: 'Option 1', value: '1' },
+                        { label: 'Option 2', value: '2' },
+                    ],
+                    error: false,
+                });
+            });
         });
     });
 });

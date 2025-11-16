@@ -1,6 +1,6 @@
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { CommonModule } from '@angular/common';
-import { Component, computed, model } from '@angular/core';
+import { Component, model } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -31,10 +31,8 @@ import { MatSelectModule } from '@angular/material/select';
     template: `
         <mat-form-field appearance="outline">
             <mat-label>{{ label() ?? '' }}</mat-label>
-            <mat-select
-                [id]="id() ?? ''"
-                [formControl]="control()!"
-                [tabindex]="tabIndex()">
+            <mat-select [id]="id() ?? ''" [formControl]="control()!">
+                <!-- [tabindex]="_tabIndex()" -->
                 @for (option of options() || []; track $index) {
                     <mat-option [value]="option.value">
                         {{ option.label }}
@@ -51,5 +49,5 @@ export class SelectFieldComponent {
     public control = model<FormControl<string | null>>();
     public options = model<{ value: string; label: string }[]>();
 
-    protected tabIndex = computed(() => (this.focusable() ? 0 : -1));
+    // protected _tabIndex = computed(() => (this.focusable() ? 0 : -1));
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, model } from '@angular/core';
+import { Component, model } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatRadioModule } from '@angular/material/radio';
@@ -41,6 +41,4 @@ export class RadioGroupComponent {
     public control = model<FormControl>();
     public focusable = model<boolean>();
     public options = model<{ value: string; label: string }[]>();
-
-    protected tabIndex = computed(() => (this.focusable() ? 0 : -1));
 }
