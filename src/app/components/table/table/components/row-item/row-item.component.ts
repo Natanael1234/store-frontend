@@ -6,8 +6,44 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
     selector: 'app-row-item',
     imports: [CommonModule, MatTooltipModule, MatIconModule, MatTooltipModule],
-    templateUrl: './row-item.component.html',
-    styleUrl: './row-item.component.scss',
+    styles: `
+        #container {
+            padding: 1em;
+            display: grid;
+            grid-template-columns: 1fr;
+            &.label.icon {
+                gap: 0.5em;
+                grid-template-columns: auto 1fr;
+            }
+            &:not(.label).icon {
+                justify-items: center;
+            }
+        }
+
+        #icon.disabled {
+            opacity: 0.05;
+        }
+    `,
+    template: `
+        <div
+            id="container"
+            [ngClass]="containerClasses()"
+            [matTooltip]="toolTip()">
+            <!-- icon -->
+            @if (showIcon()) {
+                <mat-icon id="icon" [ngClass]="iconClasses()">
+                    {{ innerIcon() }}
+                </mat-icon>
+            }
+
+            <!-- label -->
+            @if (showLabel()) {
+                <span id="label" [ngClass]="labelClasses()">
+                    {{ innerLabel() }}
+                </span>
+            }
+        </div>
+    `,
 })
 export class RowItemComponent {
     public loading = model<boolean | undefined>(false);
