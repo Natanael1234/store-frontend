@@ -8,7 +8,7 @@ describe('RadioGroupModel', () => {
             control: new FormControl(),
             options: [],
         });
-        expect(element.type).toBe(FormElementType.radioButtons);
+        expect(element.type).toBe(FormElementType.radioGroup);
     });
 
     it('should initialize options correctly', () => {

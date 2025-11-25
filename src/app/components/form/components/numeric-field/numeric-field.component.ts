@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { FirstErrorMessagePipe } from '../../../../pipes/first-error-message.pipe';
 import { FormElementType } from '../../enums/form-element-type/form-element-type.enum';
+import { InputMode } from '../../enums/input-mode/input-mode.enum';
 
 @Component({
     selector: 'app-numeric-field',
@@ -62,8 +63,10 @@ import { FormElementType } from '../../enums/form-element-type/form-element-type
                 matInput
                 type="text"
                 [attr.id]="_id()"
-                [attr.placeholder]="_placeHolder()"
+                [attr.inputMode]="_inputMode()"
+                [attr.placeholder]="_placeholder()"
                 [attr.tabindex]="_tabIndex()"
+                [attr.readonly]="_readOnly()"
                 [attr.minlength]="_minLength()"
                 [attr.maxlength]="_maxLength()"
                 [attr.min]="_min()"
@@ -77,7 +80,7 @@ import { FormElementType } from '../../enums/form-element-type/form-element-type
                 [class.align-right]="true"
                 [formControl]="control()!"
                 (blur)="fireOnBlurEvent()" />
-            <!-- [leadZero]="_leadZero()" TODO: causing exception -->
+            <!-- [leadZero]="_leadZero()"  -->
 
             <!-- suffix -->
             @if (suffix()) {
@@ -94,24 +97,29 @@ export class NumericFieldComponent {
     public id = model<string>();
     public label = model<string>();
     public placeholder = model<string>();
+    public readOnly = model<boolean>(false);
     public control = model<FormControl>();
-    public focusable = model<boolean | null | undefined>(true);
+    public focusable = model<boolean>(true);
     public minLength = model<number>();
     public maxLength = model<number>();
     public prefix = model<string>();
     public suffix = model<string>();
-    public breakLine = model<boolean>();
+
+    public breakLine = model<boolean>(); // TODO: test
+
     public min = model<number>();
     public max = model<number>();
     public step = model<number>();
+
+    public leadZero = model<boolean>(false);
     public allowNegativeNumbers = model<boolean>();
     public decimalPlaces = model<number>();
-    public leadZero = model<boolean>();
 
     protected _id = computed(() => this.id() ?? null);
     protected _type = computed(() => FormElementType.text);
     protected _label = computed(() => this.label() ?? '');
-    protected _placeHolder = computed(() => this.placeholder() ?? null);
+    protected _placeholder = computed(() => this.placeholder() ?? null);
+    protected _readOnly = computed(() => !!this.readOnly());
     protected _tabIndex = computed(() => (this.focusable() ? 0 : -1));
     protected _minLength = computed(() => this.minLength() ?? null);
     protected _maxLength = computed(() => this.maxLength() ?? null);
@@ -147,6 +155,14 @@ export class NumericFieldComponent {
     protected _allowNegativeNumbers = computed(
         () => this.allowNegativeNumbers() ?? true,
     );
+    protected _inputMode = computed(() => {
+        const decimalPlaces = this._decimalPlaces();
+        if (decimalPlaces) {
+            return InputMode.decimal;
+        } else {
+            return InputMode.numeric;
+        }
+    });
 
     @Output() onBlur = new EventEmitter();
 

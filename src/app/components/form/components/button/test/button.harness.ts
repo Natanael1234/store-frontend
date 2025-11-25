@@ -2,7 +2,7 @@ import { ComponentHarness } from '@angular/cdk/testing';
 import { MatIconHarness } from '@angular/material/icon/testing';
 
 export class ButtonHarness extends ComponentHarness {
-    static hostSelector = 'app-radio-group';
+    static hostSelector = 'app-button';
     private readonly hostChildren = this.locatorForAll(':scope > *');
     private button = this.locatorFor('button');
     private readonly buttonChildren = this.locatorForAll(':scope > button > *');
@@ -21,7 +21,11 @@ export class ButtonHarness extends ComponentHarness {
     );
 
     async getButton() {
-        return await this.button();
+        return this.button();
+    }
+
+    async getLabel() {
+        return this.label();
     }
 
     async getButtonClasses() {
@@ -32,7 +36,7 @@ export class ButtonHarness extends ComponentHarness {
 
     async isButtonDisabled() {
         const button = await this.button();
-        return await button.getProperty('disabled');
+        return button.getProperty('disabled');
     }
 
     async getIcon() {

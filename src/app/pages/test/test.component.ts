@@ -6,16 +6,15 @@ import { ButtonModel } from '../../components/form/components/button/model/butto
 import { CheckboxModel } from '../../components/form/components/checkbox/model/checkbox.model';
 import { DividerModel } from '../../components/form/components/divider/model/divider.-form-elementmodel';
 import { LabelModel } from '../../components/form/components/label/model/label-form-element.model';
+import { NumericFieldModel } from '../../components/form/components/numeric-field/model/numeric-field.model';
 import { RadioGroupModel } from '../../components/form/components/radio-group/model/radio-buttons-element.model';
 import { SelectModel } from '../../components/form/components/select/model/select-element.model';
 import { TextAreaModel } from '../../components/form/components/text-area/model/text-area.model';
-import { TextInputModel } from '../../components/form/components/text-field/model/text-input.model';
+import { TextFieldModel } from '../../components/form/components/text-field/model/text-field.model';
 import { TextFormat } from '../../components/form/enums/text-format/text-format.enum';
 import { FormComponent } from '../../components/form/form.component';
 import { UserConfigs } from '../../configs/user/user.configs';
-import { EmailConstants } from '../../constants/email/email.constants';
 import { Icon } from '../../enums/icons/icons.enum';
-import { TextMessage } from '../../messages/text/text.messages';
 import { cepValidator } from '../../validators/cep/cep.validator';
 import { cnpjValidator } from '../../validators/cnpj/cnpj.validator';
 import { cpfValidator } from '../../validators/cpf/cpf.validator';
@@ -26,60 +25,10 @@ import { maxValidator } from '../../validators/max/max.validator';
 import { minLengthValidator } from '../../validators/min-length/min-length.validator';
 import { minValidator } from '../../validators/min/min.validator';
 import { nameValidator } from '../../validators/name/name.validator';
+import { requiredTrueValidator } from '../../validators/required-true/required-true.validator';
 import { requiredValidator } from '../../validators/required/required.validator';
 import { strongPasswordValidator } from '../../validators/strong-password/strong-password.validator';
 import { timeValidator } from '../../validators/time/time.validator';
-
-const _NameMessage = new TextMessage({
-    minLength: UserConfigs.NAME_MIN_LENGTH,
-    maxLength: UserConfigs.NAME_MAX_LENGTH,
-});
-
-const _EmailMessage = new TextMessage({
-    maxLength: EmailConstants.MAX_LENGTH,
-});
-
-function getNameError(control: FormControl) {
-    if (control.hasError('null')) {
-        return _NameMessage.NULL;
-    } else if (control.hasError('required')) {
-        return _NameMessage.REQUIRED;
-    } else if (control.hasError('name')) {
-        return _NameMessage.INVALID;
-    } else if (control.hasError('minlength')) {
-        return _NameMessage.MIN_LEN;
-    } else if (control.hasError('maxlength')) {
-        return _NameMessage.MAX_LEN;
-    } else {
-        return undefined;
-    }
-}
-
-function getEmailError(control: FormControl) {
-    if (control.hasError('null')) {
-        return _EmailMessage.NULL;
-    } else if (control.hasError('required')) {
-        return _EmailMessage.REQUIRED;
-    } else if (control.hasError('email')) {
-        return _EmailMessage.INVALID;
-    } else if (control.hasError('minlength')) {
-        return _EmailMessage.MIN_LEN;
-    } else if (control.hasError('maxlength')) {
-        return _EmailMessage.MAX_LEN;
-    } else {
-        return undefined;
-    }
-}
-
-function getMandatoryError(control: FormControl) {
-    if (control.hasError('null')) {
-        return _EmailMessage.NULL;
-    } else if (control.hasError('required')) {
-        return _EmailMessage.REQUIRED;
-    } else {
-        return undefined;
-    }
-}
 
 @Component({
     selector: 'app-test',
@@ -183,7 +132,7 @@ export class TestComponent {
             ),
             acceptTerms: new FormControl(
                 { value: false, disabled: false },
-                { validators: [requiredValidator()] },
+                { validators: [requiredTrueValidator()] },
             ),
         },
         { updateOn: 'blur' },
@@ -191,7 +140,7 @@ export class TestComponent {
 
     constructor() {
         this.formElements = [
-            new TextInputModel({
+            new TextFieldModel({
                 id: 'name',
                 mask: undefined,
                 label: 'Nome',
@@ -201,7 +150,7 @@ export class TestComponent {
                 onBlur: () => console.log('On text input blur'),
                 colSize: 6,
             }),
-            new TextInputModel({
+            new TextFieldModel({
                 id: 'email',
                 format: TextFormat.email,
                 label: 'Email',
@@ -210,7 +159,7 @@ export class TestComponent {
                 control: this.form.controls.email,
                 colSize: 12,
             }),
-            new TextInputModel({
+            new TextFieldModel({
                 id: 'password',
                 format: TextFormat.password,
                 label: 'Senha',
@@ -219,7 +168,7 @@ export class TestComponent {
                 colSize: 12,
                 control: this.form.controls.password,
             }),
-            new TextInputModel({
+            new TextFieldModel({
                 id: 'phone',
                 format: TextFormat.phone,
                 label: 'Fone',
@@ -229,7 +178,7 @@ export class TestComponent {
                 control: this.form.controls.phone,
                 colSize: 4,
             }),
-            new TextInputModel({
+            new TextFieldModel({
                 id: 'zip-code',
                 format: TextFormat.zipCode,
                 label: 'CEP',
@@ -237,14 +186,14 @@ export class TestComponent {
                 colSize: 4,
                 breakLine: true,
             }),
-            new TextInputModel({
+            new TextFieldModel({
                 id: 'date',
                 format: TextFormat.date,
                 label: 'Data',
                 control: this.form.controls.date,
                 colSize: 3,
             }),
-            new TextInputModel({
+            new TextFieldModel({
                 id: 'time',
                 format: TextFormat.time,
                 label: 'Horário',
@@ -252,41 +201,37 @@ export class TestComponent {
                 colSize: 3,
                 breakLine: true,
             }),
-            new TextInputModel({
+            new TextFieldModel({
                 id: 'cnpj',
                 format: TextFormat.cnpj,
                 label: 'CNPJ',
                 control: this.form.controls.cnpj,
                 colSize: 5,
             }),
-            new TextInputModel({
+            new TextFieldModel({
                 id: 'cpf',
                 format: TextFormat.cpf,
                 label: 'CPF',
                 control: this.form.controls.cpf,
                 colSize: 6,
             }),
-            new TextInputModel({
+            new NumericFieldModel({
                 id: 'amount',
-                format: TextFormat.number,
                 prefix: 'R$ ',
                 label: 'Quantidade',
                 allowNegativeNumbers: true,
                 control: this.form.controls.amount,
-                // TODO: implement
                 min: 3,
                 max: 300,
                 step: 5,
                 colSize: 12,
             }),
-            new TextInputModel({
+            new NumericFieldModel({
                 id: 'price',
-                format: TextFormat.number,
                 suffix: ' %',
                 label: 'Preço',
                 decimalPlaces: 2,
                 allowNegativeNumbers: false,
-                // TODO: implement
                 control: this.form.controls.price,
 
                 colSize: 12,
@@ -297,7 +242,6 @@ export class TestComponent {
                 placeholder: 'Insira uma descrição',
                 maxLength: 200,
                 control: this.form.controls.description,
-
                 colSize: 12,
                 onBlur: () => console.log('On text area blur'),
             }),
@@ -346,7 +290,6 @@ export class TestComponent {
                 id: 'accept-terms',
                 label: 'Aceito os termos',
                 control: this.form.controls.acceptTerms,
-
                 colSize: 4,
             }),
             new LabelModel({

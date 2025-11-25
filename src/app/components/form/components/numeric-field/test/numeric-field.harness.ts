@@ -142,6 +142,11 @@ export class NumericFieldHarness extends ComponentHarness {
         return await host.getAttribute('tabindex');
     }
 
+    async isInputReadOnly() {
+        const input = await this.inputHarness();
+        return await input.isReadonly();
+    }
+
     async isInputDisabled(): Promise<boolean> {
         const input = await this.inputHarness();
         const isDisabled = input.isDisabled();

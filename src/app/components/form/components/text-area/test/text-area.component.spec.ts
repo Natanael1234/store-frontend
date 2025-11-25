@@ -10,7 +10,7 @@ import {
 import { FormElementType } from '../../../enums/form-element-type/form-element-type.enum';
 import { TextFormat } from '../../../enums/text-format/text-format.enum';
 import { TextAreaComponent } from '../text-area.component';
-import { TextAreaHarness } from './text-area.harness';
+import { TextAreaFieldHarness } from './text-area.harness';
 import { _testTextAreaComponent } from './text-field.component.test';
 
 const loremIpsum =
@@ -20,7 +20,7 @@ describe('TextAreaComponent', () => {
     let component: TextAreaComponent;
     let fixture: ComponentFixture<TextAreaComponent>;
     let control: FormControl;
-    let harness: TextAreaHarness;
+    let harness: TextAreaFieldHarness;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -35,7 +35,7 @@ describe('TextAreaComponent', () => {
 
         harness = await TestbedHarnessEnvironment.harnessForFixture(
             fixture,
-            TextAreaHarness,
+            TextAreaFieldHarness,
         );
     });
 

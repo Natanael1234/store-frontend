@@ -28,7 +28,7 @@ describe('FormElementType enum', () => {
 
             select: 'select',
             checkbox: 'checkbox',
-            radioButtons: 'radio-buttons',
+            radioGroup: 'radio-group',
 
             button: 'button',
             buttonGroup: 'button-group',

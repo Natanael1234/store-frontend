@@ -2,16 +2,14 @@
     id="text-query-field"
     class="search"
     [classList]="['text-query-field']"
-    appearance="outline"
->
+    appearance="outline">
     <input
         id="text-query-input"
         matInput
         type="text"
         [formControl]="searchControl"
-        placeHolder="Pesquisar"
-        (keypress)="onTextSearch($event)"
-    />
+        placeholder="Pesquisar"
+        (keypress)="onTextSearch($event)" />
     @if (textQuery) {
         <button
             id="clean-search-button"
@@ -19,8 +17,7 @@
             matSuffix
             mat-icon-button
             aria-label="Limpar busca de texto"
-            (click)="cleanTextSearch()"
-        >
+            (click)="cleanTextSearch()">
             <mat-icon class="clean-search-icon">close</mat-icon>
         </button>
     }

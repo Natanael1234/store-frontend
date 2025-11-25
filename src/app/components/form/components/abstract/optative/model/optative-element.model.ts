@@ -1,5 +1,7 @@
-import { AbstractFormControlModel } from '../../abstract-form-control.model';
-import { AbstractFormControlOptions } from '../../abstract-form-control.type';
+import {
+    AbstractFormControlModel,
+    AbstractFormControlOptions,
+} from '../../abstract-form-control.model';
 
 export type OptativeModel = AbstractFormControlOptions & {
     value?: string;

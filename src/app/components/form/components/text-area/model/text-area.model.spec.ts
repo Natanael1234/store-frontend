@@ -11,9 +11,12 @@ describe('TextAreaModel', () => {
 
         expect(textArea).toBeTruthy();
         expect(textArea instanceof TextAreaModel).toBeTrue();
-        expect(textArea.type).toBe(FormElementType.textArea);
-        expect(textArea.format).toBeNull();
-        expect(textArea.mask).toBeNull();
+        expect(textArea.type).toEqual(FormElementType.textArea);
+        expect(textArea.format).toBeUndefined();
+        expect(textArea.mask).toBeUndefined();
+        expect(textArea.focusable).toBeTrue();
+        expect(textArea.readOnly).toBeFalse();
+        expect(textArea.inputMode).toEqual(InputMode.text);
         expect(textArea.placeholder).toBeUndefined();
         expect(textArea.minLength).toBeUndefined();
         expect(textArea.maxLength).toBeUndefined();
@@ -30,24 +33,28 @@ describe('TextAreaModel', () => {
         const textArea = new TextAreaModel({
             control,
             placeholder: 'Digite seu texto',
+            focusable: false,
+            readOnly: true,
             minLength: 10,
             maxLength: 100,
             autosizeMinRows: 2,
             autosizeMaxRows: 5,
-            inputMode: InputMode.text,
+            inputMode: InputMode.email,
             onBlur: onBlurFn,
             id: 'txt-1',
             label: 'Descrição',
         } as any); // "as any" se maxLength não estiver definido no tipo
 
-        expect(textArea.placeholder).toBe('Digite seu texto');
-        expect(textArea.minLength).toBe(10);
-        expect(textArea.maxLength).toBe(100);
-        expect(textArea.autosizeMinRows).toBe(2);
-        expect(textArea.autosizeMaxRows).toBe(5);
-        expect(textArea.inputMode).toBe(InputMode.text);
-        expect(textArea.onBlur).toBe(onBlurFn);
-        expect(textArea.id).toBe('txt-1');
-        expect(textArea.label).toBe('Descrição');
+        expect(textArea.placeholder).toEqual('Digite seu texto');
+        expect(textArea.focusable).toEqual(false);
+        expect(textArea.readOnly).toEqual(true);
+        expect(textArea.inputMode).toEqual(InputMode.email);
+        expect(textArea.maxLength).toEqual(100);
+        expect(textArea.autosizeMinRows).toEqual(2);
+        expect(textArea.autosizeMaxRows).toEqual(5);
+        expect(textArea.inputMode).toEqual(InputMode.email);
+        expect(textArea.onBlur).toEqual(onBlurFn);
+        expect(textArea.id).toEqual('txt-1');
+        expect(textArea.label).toEqual('Descrição');
     });
 });

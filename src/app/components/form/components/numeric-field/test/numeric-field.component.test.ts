@@ -137,7 +137,9 @@ async function testError(options: {
     errors = await harness.getErrors();
     if (options.error ?? false != false) {
         expect(errors.length).withContext('field has one error').toEqual(1);
-        expect(await errors[0].getText()).toEqual(options.error);
+        expect(await errors[0].getText())
+            .withContext('error message')
+            .toEqual(options.error);
     } else {
         expect(errors.length).withContext('field has no error').toEqual(0);
     }
@@ -154,6 +156,7 @@ async function testInput(options: {
     placeholder: string | null;
     control: FormControl;
     focusable: boolean | null;
+    readOnly: boolean | null;
     minLength: number | null;
     maxLength: number | null;
     min: number | null;
@@ -182,9 +185,21 @@ async function testInput(options: {
 
     // tabIndex/focusable
 
-    expect(await harness.getInputTabIndex()).toEqual(
-        String(options.focusable ? 0 : -1),
-    );
+    expect(await harness.getInputTabIndex())
+        .withContext('tabIndex')
+        .toEqual(String(options.focusable ? 0 : -1));
+
+    // readonly
+
+    if (options.readOnly) {
+        expect(await harness.isInputReadOnly())
+            .withContext('readonly')
+            .toBeTrue();
+    } else {
+        expect(await harness.isInputReadOnly())
+            .withContext('readonly')
+            .toBeFalse();
+    }
 
     // placeholder
 
@@ -262,7 +277,7 @@ async function testInput(options: {
 
     const spy = spyOn(options.component.onBlur, 'emit');
     await harness.blurInput();
-    expect(spy).toHaveBeenCalledOnceWith();
+    expect(spy).withContext('onBlur event').toHaveBeenCalledOnceWith();
 
     // value
 
@@ -284,6 +299,7 @@ export async function _testNumericFieldComponent(options: {
     inputValue: string;
     label: string | null;
     placeholder: string | null;
+    readOnly: boolean; // TODO:test
     control: FormControl;
     focusable: boolean | null;
     minLength: number | null;
@@ -293,6 +309,7 @@ export async function _testNumericFieldComponent(options: {
     step: number | null;
     prefix: string | null;
     suffix: string | null;
+    leadZero: boolean; // TODO:test
     allowNegativeValues: boolean;
     error: string;
     breakLine: boolean;

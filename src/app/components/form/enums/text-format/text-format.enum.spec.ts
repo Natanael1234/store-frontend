@@ -10,10 +10,10 @@ describe('TextFormat enum', () => {
         expect(options).toEqual({
             cnpj: 'cnpj',
             cpf: 'cpf',
-            integer: 'integer',
-            float: 'float',
+            number: 'number',
             date: 'date',
             email: 'email',
+            url: 'url',
             percentage: 'percentage',
             phone: 'phone',
             time: 'time',

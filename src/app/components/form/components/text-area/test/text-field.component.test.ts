@@ -2,11 +2,11 @@ import { FormControl } from '@angular/forms';
 import { FormElementType } from '../../../enums/form-element-type/form-element-type.enum';
 import { TextFormat } from '../../../enums/text-format/text-format.enum';
 import { TextAreaComponent } from '../text-area.component';
-import { TextAreaHarness } from './text-area.harness';
+import { TextAreaFieldHarness } from './text-area.harness';
 
 async function testLabel(options: {
     component: TextAreaComponent;
-    harness: TextAreaHarness;
+    harness: TextAreaFieldHarness;
     label: string | null;
 }) {
     const harness = options.harness;
@@ -22,7 +22,7 @@ async function testLabel(options: {
 
 async function testField(options: {
     component: TextAreaComponent;
-    harness: TextAreaHarness;
+    harness: TextAreaFieldHarness;
     label: string | null;
 }) {
     const harness = options.harness;
@@ -48,7 +48,7 @@ async function testField(options: {
 
 async function testError(options: {
     component: TextAreaComponent;
-    harness: TextAreaHarness;
+    harness: TextAreaFieldHarness;
     control: FormControl;
     error: string;
 }) {
@@ -88,7 +88,7 @@ async function testError(options: {
 
 export async function testTextArea(options: {
     component: TextAreaComponent;
-    harness: TextAreaHarness;
+    harness: TextAreaFieldHarness;
     id: true | string;
     value: string;
     label: string | null;
@@ -194,7 +194,7 @@ export async function testTextArea(options: {
 
 async function testValue(options: {
     component: TextAreaComponent;
-    harness: TextAreaHarness;
+    harness: TextAreaFieldHarness;
     control: FormControl;
     value: string;
 }) {
@@ -212,7 +212,7 @@ async function testValue(options: {
 
 export async function _testTextAreaComponent(options: {
     component: TextAreaComponent;
-    harness: TextAreaHarness;
+    harness: TextAreaFieldHarness;
     id: true | string;
     type: FormElementType;
     value: string;

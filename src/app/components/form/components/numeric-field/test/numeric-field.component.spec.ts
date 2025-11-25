@@ -14,7 +14,7 @@ import { NumericFieldComponent } from '../numeric-field.component';
 import { _testNumericFieldComponent } from './numeric-field.component.test';
 import { NumericFieldHarness } from './numeric-field.harness';
 
-describe('TextFieldComponent', () => {
+describe('NumericFieldComponent.', () => {
     let component: NumericFieldComponent;
     let fixture: ComponentFixture<NumericFieldComponent>;
     let harness: NumericFieldHarness;
@@ -54,6 +54,7 @@ describe('TextFieldComponent', () => {
         component.id.set('quantity');
         component.label.set('Quantity');
         component.placeholder.set('Type the quantity');
+        component.readOnly.set(false);
         component.focusable.set(true);
         component.minLength.set(17);
         component.maxLength.set(20); // including formatting characters
@@ -62,6 +63,7 @@ describe('TextFieldComponent', () => {
         component.step.set(1);
         component.prefix.set('R$');
         component.suffix.set('reais');
+        component.leadZero.set(true);
         component.allowNegativeNumbers.set(true);
         component.decimalPlaces.set(2);
         component.breakLine.set(false);
@@ -79,6 +81,7 @@ describe('TextFieldComponent', () => {
             controlValue: '12345678.91',
             label: 'Quantity',
             placeholder: 'Type the quantity',
+            readOnly: false,
             control,
             focusable: true,
             minLength: 17,
@@ -88,6 +91,7 @@ describe('TextFieldComponent', () => {
             step: 1,
             prefix: 'R$',
             suffix: 'reais',
+            leadZero: true,
             allowNegativeValues: true,
             error: 'O comprimento máximo permitido é 5.',
             breakLine: false,
@@ -112,6 +116,7 @@ describe('TextFieldComponent', () => {
             controlValue: '9667',
             label: '',
             placeholder: '',
+            readOnly: false,
             control,
             focusable: true,
             minLength: null,
@@ -121,14 +126,15 @@ describe('TextFieldComponent', () => {
             step: null,
             prefix: null,
             suffix: null,
+            leadZero: false,
             allowNegativeValues: false,
             error: '',
             breakLine: false,
         });
     });
 
-    describe('parameters', () => {
-        describe('id', () => {
+    describe('parameters:', () => {
+        describe('id:', () => {
             it('should set id', async () => {
                 component.id.set('test-id');
                 fixture.detectChanges();
@@ -141,6 +147,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -151,6 +158,7 @@ describe('TextFieldComponent', () => {
                     prefix: null,
                     suffix: null,
                     error: '',
+                    leadZero: false,
                     allowNegativeValues: true,
                     breakLine: false,
                 });
@@ -166,6 +174,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -175,6 +184,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -182,7 +192,7 @@ describe('TextFieldComponent', () => {
             });
         });
 
-        describe('label', () => {
+        describe('label:', () => {
             it('should set label', async () => {
                 component.label.set('Test label');
                 fixture.detectChanges();
@@ -196,6 +206,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: 'Test label',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -205,6 +216,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -221,6 +233,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -230,6 +243,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -237,7 +251,7 @@ describe('TextFieldComponent', () => {
             });
         });
 
-        describe('placeholder', () => {
+        describe('placeholder:', () => {
             it('should set placeholder', async () => {
                 component.placeholder.set('Test placeholder');
                 fixture.detectChanges();
@@ -251,6 +265,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: 'Test placeholder',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -260,6 +275,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -276,6 +292,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -285,6 +302,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -292,8 +310,8 @@ describe('TextFieldComponent', () => {
             });
         });
 
-        describe('focusable', () => {
-            it('should set focusable by default', async () => {
+        describe('focusable:', () => {
+            it('should set focusable =true by default', async () => {
                 await _testNumericFieldComponent({
                     component,
                     harness,
@@ -303,6 +321,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -314,11 +333,12 @@ describe('TextFieldComponent', () => {
                     suffix: null,
                     error: '',
                     breakLine: false,
+                    leadZero: false,
                     allowNegativeValues: true,
                 });
             });
 
-            it('should set focusable', async () => {
+            it('should set focusable = true', async () => {
                 component.focusable.set(true);
                 fixture.detectChanges();
 
@@ -331,6 +351,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -340,13 +361,14 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
                 });
             });
 
-            it('should set not focusable', async () => {
+            it('should set focusable = false', async () => {
                 component.focusable.set(false);
                 fixture.detectChanges();
 
@@ -359,6 +381,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: false,
                     minLength: null,
@@ -368,6 +391,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -375,7 +399,96 @@ describe('TextFieldComponent', () => {
             });
         });
 
-        describe('minLength', () => {
+        describe('readOnly:', () => {
+            it('should set readOnly = false by default', async () => {
+                await _testNumericFieldComponent({
+                    component,
+                    harness,
+                    id: true,
+                    type: FormElementType.text,
+                    inputValue: '',
+                    controlValue: '',
+                    label: '',
+                    placeholder: '',
+                    readOnly: false,
+                    control,
+                    focusable: true,
+                    minLength: null,
+                    maxLength: null,
+                    min: null,
+                    max: null,
+                    step: null,
+                    prefix: null,
+                    suffix: null,
+                    error: '',
+                    breakLine: false,
+                    leadZero: false,
+                    allowNegativeValues: true,
+                });
+            });
+
+            it('should set readOnly = true', async () => {
+                component.readOnly.set(true);
+                fixture.detectChanges();
+
+                await _testNumericFieldComponent({
+                    component,
+                    harness,
+                    id: true,
+                    type: FormElementType.text,
+                    inputValue: '',
+                    controlValue: '',
+                    label: '',
+                    placeholder: '',
+                    readOnly: true,
+                    control,
+                    focusable: true,
+                    minLength: null,
+                    maxLength: null,
+                    min: null,
+                    max: null,
+                    step: null,
+                    prefix: null,
+                    suffix: null,
+                    leadZero: false,
+                    allowNegativeValues: true,
+                    error: '',
+                    breakLine: false,
+                });
+            });
+
+            it('should set readOnly = false', async () => {
+                component.readOnly.set(false);
+                fixture.detectChanges();
+
+                await _testNumericFieldComponent({
+                    component,
+                    harness,
+                    id: true,
+                    type: FormElementType.text,
+                    inputValue: '',
+                    controlValue: '',
+                    label: '',
+                    placeholder: '',
+                    readOnly: false,
+                    control,
+                    focusable: true,
+                    minLength: null,
+                    maxLength: null,
+                    min: null,
+                    max: null,
+                    step: null,
+                    prefix: null,
+                    suffix: null,
+                    leadZero: false,
+                    allowNegativeValues: true,
+                    error: '',
+                    breakLine: false,
+                });
+            });
+        });
+
+        describe('minLength:', () => {
             it('should not set minLength', async () => {
                 fixture.detectChanges();
 
@@ -388,6 +501,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -397,6 +511,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -416,6 +531,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: 5,
@@ -424,6 +540,7 @@ describe('TextFieldComponent', () => {
                     max: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     step: null,
                     error: '',
@@ -432,7 +549,7 @@ describe('TextFieldComponent', () => {
             });
         });
 
-        describe('maxLength', () => {
+        describe('maxLength:', () => {
             it('should not set maxLength', async () => {
                 fixture.detectChanges();
 
@@ -445,6 +562,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -454,6 +572,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -473,6 +592,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -482,6 +602,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -489,7 +610,7 @@ describe('TextFieldComponent', () => {
             });
         });
 
-        describe('min', () => {
+        describe('min:', () => {
             it('should not set min', async () => {
                 fixture.detectChanges();
 
@@ -502,6 +623,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -511,6 +633,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -530,6 +653,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -539,6 +663,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -546,7 +671,7 @@ describe('TextFieldComponent', () => {
             });
         });
 
-        describe('max', () => {
+        describe('max:', () => {
             it('should not set max', async () => {
                 fixture.detectChanges();
 
@@ -559,6 +684,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -568,6 +694,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -587,6 +714,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -596,6 +724,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -603,7 +732,7 @@ describe('TextFieldComponent', () => {
             });
         });
 
-        describe('step', () => {
+        describe('step:', () => {
             it('should not set step', async () => {
                 fixture.detectChanges();
 
@@ -616,6 +745,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -625,6 +755,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -644,6 +775,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -653,6 +785,7 @@ describe('TextFieldComponent', () => {
                     step: 5,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -660,7 +793,7 @@ describe('TextFieldComponent', () => {
             });
         });
 
-        describe('prefix', () => {
+        describe('prefix:', () => {
             it('should not set prefix', async () => {
                 fixture.detectChanges();
 
@@ -673,6 +806,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -682,6 +816,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -701,6 +836,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -710,6 +846,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: 'R$',
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -717,7 +854,7 @@ describe('TextFieldComponent', () => {
             });
         });
 
-        describe('suffix', () => {
+        describe('suffix:', () => {
             it('should not set prefix', async () => {
                 fixture.detectChanges();
 
@@ -730,6 +867,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -739,6 +877,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -758,6 +897,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -767,6 +907,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: 'reais',
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -774,7 +915,13 @@ describe('TextFieldComponent', () => {
             });
         });
 
-        describe('decimalPlaces', () => {
+        xdescribe('leadZero:', () => {
+            xit('should not set leadZero', async () => {});
+
+            xit('should set leadZero', async () => {});
+        });
+
+        describe('decimalPlaces:', () => {
             it('should not set decimalPlaces (unlimited by default)', async () => {
                 component.control.set(new FormControl('1567.54546'));
                 fixture.detectChanges();
@@ -788,6 +935,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '1567.54546',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -797,6 +945,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -818,6 +967,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '1567.5',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -827,6 +977,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -847,6 +998,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '-3567', // should remove "-" ?
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -856,6 +1008,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: false,
                     error: '',
                     breakLine: false,
@@ -863,7 +1016,7 @@ describe('TextFieldComponent', () => {
             });
         });
 
-        describe('allowNegativeNumbers', () => {
+        describe('allowNegativeNumbers:', () => {
             it('should not set allowNegativeNumbers (allow by default)', async () => {
                 component.control.set(new FormControl('-1567'));
                 fixture.detectChanges();
@@ -877,6 +1030,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '-1567',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -886,6 +1040,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -906,6 +1061,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '-2567',
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -915,6 +1071,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: true,
                     error: '',
                     breakLine: false,
@@ -935,6 +1092,7 @@ describe('TextFieldComponent', () => {
                     controlValue: '-3567', // should remove "-" ?
                     label: '',
                     placeholder: '',
+                    readOnly: false,
                     control,
                     focusable: true,
                     minLength: null,
@@ -944,6 +1102,7 @@ describe('TextFieldComponent', () => {
                     step: null,
                     prefix: null,
                     suffix: null,
+                    leadZero: false,
                     allowNegativeValues: false,
                     error: '',
                     breakLine: false,

@@ -44,7 +44,7 @@ import { FirstErrorMessagePipe } from '../../../../pipes/first-error-message.pip
                 cdkTextareaAutosize
                 #autosize="cdkTextareaAutosize"
                 [attr.id]="_id()"
-                [attr.placeholder]="_placeHolder()"
+                [attr.placeholder]="_placeholder()"
                 [attr.tabindex]="_tabIndex()"
                 [attr.minlength]="_minLength()"
                 [attr.maxlength]="_maxLength()"
@@ -61,7 +61,7 @@ export class TextAreaComponent {
     public label = model<string>();
     public placeholder = model<string>();
     public control = model<FormControl>();
-    public focusable = model<boolean | null | undefined>(true);
+    public focusable = model<boolean>(true);
     public minLength = model<number>();
     public maxLength = model<number>();
     public autosizeMinRows = model<number>();
@@ -70,7 +70,7 @@ export class TextAreaComponent {
 
     protected _id = computed(() => this.id() ?? '');
     protected _label = computed(() => this.label() ?? '');
-    protected _placeHolder = computed(() => this.placeholder() ?? '');
+    protected _placeholder = computed(() => this.placeholder() ?? '');
     protected _tabIndex = computed(() => (this.focusable() ? 0 : -1));
     protected _minLength = computed(() => this.minLength() ?? null);
     protected _maxLength = computed(() => this.maxLength() ?? null);

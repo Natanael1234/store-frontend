@@ -5,8 +5,8 @@ import {
 } from '@angular/material/form-field/testing';
 import { MatInputHarness } from '@angular/material/input/testing';
 
-export class TextAreaHarness extends ComponentHarness {
-    static hostSelector = 'app-text-field';
+export class TextAreaFieldHarness extends ComponentHarness {
+    static hostSelector = 'app-text-area-field';
 
     /** Harnesses filhos */
 
@@ -62,11 +62,6 @@ export class TextAreaHarness extends ComponentHarness {
         if (hostChildren.length < 1) return false;
         const tagName = await hostChildren[0].getProperty('tagName');
         return tagName == 'MAT-FORM-FIELD';
-    }
-
-    async getLabel() {
-        const field = await this.fieldHarness();
-        return await field.hasLabel();
     }
 
     async getErrors() {
@@ -157,5 +152,28 @@ export class TextAreaHarness extends ComponentHarness {
         const host = await textArea?.host();
         const autosizeMaxRows = host?.getAttribute('cdkAutosizeMaxRows');
         return autosizeMaxRows ?? null;
+    }
+
+    async getColSizesClasses() {
+        const classes = await this.getClasses();
+        const filteredClasses = classes.filter((clazz) =>
+            clazz.match(/^col\-(1|2|3|4|5|6|7|8|9|10|11|12)$/),
+        );
+        return filteredClasses;
+    }
+
+    async getColOffsetClasses() {
+        const classes = await this.getClasses();
+        const filteredClasses = classes.filter((clazz) =>
+            clazz.match(/^offset\-(1|2|3|4|5|6|7|8|9|10|11|12|13)$/),
+        );
+        return filteredClasses;
+    }
+
+    async getClasses(): Promise<string[]> {
+        const host = await this.host();
+        const clazzStr = await host.getAttribute('class');
+        const classes = clazzStr?.split(' ') ?? [];
+        return classes;
     }
 }

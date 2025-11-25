@@ -8,7 +8,7 @@
 <!-- form classess -->
 @let formClasses = [justifyContentClass, alignItemsClass];
 
-<form [class]="formClasses" [class.flex-grid]="true" [class.flex-grid]="true">
+<form [class]="formClasses" [class.flex-grid]="true">
     @for (e of formElements(); track $index) {
         <!-- col size class -->
         @let colSizeClass = e.colSize ? "col-" + e.colSize : "";
@@ -16,96 +16,102 @@
         <!-- offset class -->
         @let colOffsetClass = e.colOffset ? "offset-" + e.colOffset : "";
 
-        <!-- wraper classess -->
-        @let wrapperClasses = [colSizeClass, colOffsetClass];
+        <!-- wraper classes -->
+        @let wrapperClasses = ["field-wrapper", colSizeClass, colOffsetClass];
         <div [class]="wrapperClasses">
             @switch (e.type) {
                 <!-- TEXT INPUT -->
                 @case (FormElementType.text) {
-                    @let input = castToTextInput(e);
-                    @if (input.format == TextFormat.number) {
-                        @let numberInput = castToNumberInput(input);
+                    @let textField = castToTextFieldModel(e);
+                    @if (textField.format == TextFormat.number) {
+                        @let numericField = castToNumericFieldModel(textField);
                         <app-numeric-field
-                            [id]="numberInput.id"
-                            [label]="numberInput.label"
-                            [placeholder]="numberInput.placeholder"
-                            [control]="numberInput.control"
-                            [focusable]="numberInput.focusable"
-                            [minLength]="numberInput.minLength"
-                            [maxLength]="numberInput.maxLength"
-                            [min]="numberInput.min"
-                            [max]="numberInput.max"
-                            [step]="numberInput.step"
-                            [prefix]="numberInput.prefix"
-                            [suffix]="numberInput.suffix"
+                            [id]="numericField.id"
+                            [label]="numericField.label"
+                            [placeholder]="numericField.placeholder"
+                            [control]="numericField.control"
+                            [focusable]="numericField.focusable"
+                            [readOnly]="numericField.readOnly"
+                            [minLength]="numericField.minLength"
+                            [maxLength]="numericField.maxLength"
+                            [min]="numericField.min"
+                            [max]="numericField.max"
+                            [step]="numericField.step"
+                            [prefix]="numericField.prefix"
+                            [suffix]="numericField.suffix"
                             [allowNegativeNumbers]="
-                                numberInput.allowNegativeNumbers
+                                numericField.allowNegativeNumbers
                             "
-                            [decimalPlaces]="numberInput.decimalPlaces"
+                            [decimalPlaces]="numericField.decimalPlaces"
                             (onBlur)="
-                                numberInput.onBlur
-                                    ? numberInput.onBlur()
+                                numericField.onBlur
+                                    ? numericField.onBlur()
                                     : false
                             " />
                     } @else {
                         <app-text-field
-                            [id]="input.id"
-                            [mask]="input.mask"
-                            [label]="input.label"
-                            [placeholder]="input.placeholder"
-                            [control]="input.control"
-                            [focusable]="input.focusable"
-                            [format]="input.format"
-                            [minLength]="input.minLength"
-                            [maxLength]="input.maxLength"
-                            [prefix]="input.prefix"
-                            [suffix]="input.suffix"
-                            (onBlur)="input.onBlur ? input.onBlur() : false" />
+                            [id]="textField.id"
+                            [mask]="textField.mask"
+                            [label]="textField.label"
+                            [placeholder]="textField.placeholder"
+                            [control]="textField.control"
+                            [focusable]="textField.focusable"
+                            [readOnly]="textField.readOnly"
+                            [format]="textField.format"
+                            [minLength]="textField.minLength"
+                            [maxLength]="textField.maxLength"
+                            [prefix]="textField.prefix"
+                            [suffix]="textField.suffix"
+                            (onBlur)="
+                                textField.onBlur ? textField.onBlur() : false
+                            " />
                     }
                 }
                 <!-- TEXT AREA -->
                 @case (FormElementType.textArea) {
-                    @let textArea = castToTextArea(e);
+                    @let textAreaField = castToTextAreaFieldModel(e);
                     <app-text-area-field
-                        [id]="textArea.id"
-                        [label]="textArea.label"
-                        [placeholder]="textArea.placeholder"
-                        [control]="textArea.control"
-                        [focusable]="textArea.focusable"
-                        [minLength]="textArea.minLength"
-                        [maxLength]="textArea.maxLength"
-                        [autosizeMinRows]="textArea.autosizeMinRows"
-                        [autosizeMaxRows]="textArea.autosizeMaxRows"
+                        [id]="textAreaField.id"
+                        [label]="textAreaField.label"
+                        [placeholder]="textAreaField.placeholder"
+                        [control]="textAreaField.control"
+                        [focusable]="textAreaField.focusable"
+                        [minLength]="textAreaField.minLength"
+                        [maxLength]="textAreaField.maxLength"
+                        [autosizeMinRows]="textAreaField.autosizeMinRows"
+                        [autosizeMaxRows]="textAreaField.autosizeMaxRows"
                         (onBlur)="
-                            textArea.onBlur ? textArea.onBlur() : false
+                            textAreaField.onBlur
+                                ? textAreaField.onBlur()
+                                : false
                         " />
                 }
 
                 <!-- SELECT -->
                 @case (FormElementType.select) {
-                    @let select = castToSelect(e);
+                    @let selectField = castToSelectFieldModel(e);
                     <app-select-field
-                        [id]="select.id"
-                        [label]="select.label"
-                        [control]="select.control"
-                        [options]="select.options"
-                        [focusable]="select.focusable" />
+                        [id]="selectField.id"
+                        [label]="selectField.label"
+                        [control]="selectField.control"
+                        [options]="selectField.options"
+                        [focusable]="selectField.focusable" />
                 }
                 <!-- RADIO BUTTONS -->
-                @case (FormElementType.radioButtons) {
-                    @let radioButtons = castToRadioGroup(e);
+                @case (FormElementType.radioGroup) {
+                    @let radioGroup = castToRadioGroupModel(e);
 
                     <app-radio-group
-                        [id]="radioButtons.id"
-                        [label]="radioButtons.label"
-                        [control]="radioButtons.control"
-                        [focusable]="radioButtons.focusable"
-                        [options]="radioButtons.options"
-                        [focusable]="radioButtons.focusable" />
+                        [id]="radioGroup.id"
+                        [label]="radioGroup.label"
+                        [control]="radioGroup.control"
+                        [focusable]="radioGroup.focusable"
+                        [options]="radioGroup.options"
+                        [focusable]="radioGroup.focusable" />
                 }
                 <!-- CHECKBOX -->
                 @case (FormElementType.checkbox) {
-                    @let checkbox = castToCheckbox(e);
+                    @let checkbox = castToCheckboxModel(e);
                     <app-checkbox
                         [id]="checkbox.id"
                         [label]="checkbox.label"
@@ -114,16 +120,18 @@
                 }
                 <!-- LABEL -->
                 @case (FormElementType.label) {
-                    @let label = castToLabel(e);
-                    <mat-label>{{ label.value }}</mat-label>
+                    @let label = castToLabelModel(e);
+                    <mat-label class="app-form-label">
+                        {{ label.value }}
+                    </mat-label>
                 }
                 <!-- DIVIDER -->
                 @case (FormElementType.divider) {
-                    <mat-divider />
+                    <mat-divider class="app-divider" />
                 }
                 <!-- BUTTON -->
                 @case (FormElementType.button) {
-                    @let button = castToButton(e);
+                    @let button = castToButtonModel(e);
                     <app-button
                         [icon]="button.icon"
                         [label]="button.label"

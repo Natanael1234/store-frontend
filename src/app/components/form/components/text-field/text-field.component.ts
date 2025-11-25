@@ -66,8 +66,9 @@ import { TextMask } from '../../enums/text-mask/text-mask.enum';
                 matInput
                 [attr.id]="_id()"
                 [attr.type]="_type()"
-                [attr.placeholder]="_placeHolder()"
+                [attr.placeholder]="_placeholder()"
                 [attr.tabindex]="_tabIndex()"
+                [attr.readonly]="_readOnly()"
                 [attr.minlength]="_minLength()"
                 [attr.maxlength]="_maxLength()"
                 [mask]="_mask()"
@@ -102,7 +103,8 @@ export class TextFieldComponent {
     public label = model<string>();
     public placeholder = model<string>();
     public control = model<FormControl>();
-    public focusable = model<boolean | null | undefined>(true);
+    public focusable = model<boolean>(true);
+    public readOnly = model<boolean>(false);
     public format = model<TextFormat | undefined>();
     public minLength = model<number>();
     public maxLength = model<number>();
@@ -123,8 +125,9 @@ export class TextFieldComponent {
         () => this.format() == TextFormat.password,
     );
     protected _label = computed(() => this.label() ?? '');
-    protected _placeHolder = computed(() => this.placeholder() ?? '');
+    protected _placeholder = computed(() => this.placeholder() ?? '');
     protected _tabIndex = computed(() => (this.focusable() ? 0 : -1));
+    protected _readOnly = computed(() => !!this.readOnly());
     protected _minLength = computed(() => this.minLength() ?? null);
     protected _maxLength = computed(() => this.maxLength() ?? null);
     protected _mask = computed(() => this.mask() ?? null);

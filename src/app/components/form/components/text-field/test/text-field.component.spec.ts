@@ -15,7 +15,7 @@ import { TextFieldComponent } from '../text-field.component';
 import { _testTextFieldComponent } from './text-field.component.test';
 import { TextFieldHarness } from './text-field.harness';
 
-describe('TextFieldComponent', () => {
+describe('TextFieldComponent:', () => {
     let component: TextFieldComponent;
     let fixture: ComponentFixture<TextFieldComponent>;
     let harness: TextFieldHarness;
@@ -76,6 +76,7 @@ describe('TextFieldComponent', () => {
             placeholder: 'Type the quantity',
             control,
             focusable: true,
+            readOnly: false,
             format: TextFormat.cpf,
             minLength: 3,
             maxLength: 14,
@@ -103,6 +104,7 @@ describe('TextFieldComponent', () => {
             placeholder: '',
             control,
             focusable: true,
+            readOnly: false,
             format: TextFormat.cpf,
             minLength: null,
             maxLength: null,
@@ -113,8 +115,8 @@ describe('TextFieldComponent', () => {
         });
     });
 
-    describe('parameters', () => {
-        describe('id', () => {
+    describe('parameters:', () => {
+        describe('id:', () => {
             it('should set id', async () => {
                 component.id.set('test-id');
                 fixture.detectChanges();
@@ -128,6 +130,7 @@ describe('TextFieldComponent', () => {
                     placeholder: '',
                     control,
                     focusable: true,
+                    readOnly: false,
                     format: TextFormat.cpf,
                     minLength: null,
                     maxLength: null,
@@ -149,6 +152,7 @@ describe('TextFieldComponent', () => {
                     placeholder: '',
                     control,
                     focusable: true,
+                    readOnly: false,
                     format: TextFormat.cpf,
                     minLength: null,
                     maxLength: null,
@@ -160,7 +164,7 @@ describe('TextFieldComponent', () => {
             });
         });
 
-        describe('label', () => {
+        describe('label:', () => {
             it('should set label', async () => {
                 component.label.set('Test label');
                 fixture.detectChanges();
@@ -175,6 +179,7 @@ describe('TextFieldComponent', () => {
                     placeholder: '',
                     control,
                     focusable: true,
+                    readOnly: false,
                     format: TextFormat.cpf,
                     minLength: null,
                     maxLength: null,
@@ -196,6 +201,7 @@ describe('TextFieldComponent', () => {
                     placeholder: '',
                     control,
                     focusable: true,
+                    readOnly: false,
                     format: TextFormat.cpf,
                     minLength: null,
                     maxLength: null,
@@ -207,7 +213,7 @@ describe('TextFieldComponent', () => {
             });
         });
 
-        describe('format', () => {
+        describe('format:', () => {
             it('should set password format when format is password', async () => {
                 component.format.set(TextFormat.password);
                 fixture.detectChanges();
@@ -222,6 +228,7 @@ describe('TextFieldComponent', () => {
                     placeholder: '',
                     control,
                     focusable: true,
+                    readOnly: false,
                     format: TextFormat.password,
                     minLength: null,
                     maxLength: null,
@@ -246,6 +253,7 @@ describe('TextFieldComponent', () => {
                     placeholder: '',
                     control,
                     focusable: true,
+                    readOnly: false,
                     format: null,
                     minLength: null,
                     maxLength: null,
@@ -270,6 +278,7 @@ describe('TextFieldComponent', () => {
                     placeholder: '',
                     control,
                     focusable: true,
+                    readOnly: false,
                     format: TextFormat.password,
                     minLength: null,
                     maxLength: null,
@@ -294,6 +303,7 @@ describe('TextFieldComponent', () => {
                     placeholder: '',
                     control,
                     focusable: true,
+                    readOnly: false,
                     format: null,
                     minLength: null,
                     maxLength: null,
@@ -305,8 +315,8 @@ describe('TextFieldComponent', () => {
             });
         });
 
-        describe('focusable', () => {
-            it('should set focusable by default', async () => {
+        describe('focusable:', () => {
+            it('should set focusable = true by default', async () => {
                 await _testTextFieldComponent({
                     component,
                     harness,
@@ -317,6 +327,7 @@ describe('TextFieldComponent', () => {
                     placeholder: '',
                     control,
                     focusable: true,
+                    readOnly: false,
                     format: TextFormat.cpf,
                     minLength: null,
                     maxLength: null,
@@ -341,6 +352,7 @@ describe('TextFieldComponent', () => {
                     placeholder: '',
                     control,
                     focusable: true,
+                    readOnly: false,
                     format: TextFormat.cpf,
                     minLength: null,
                     maxLength: null,
@@ -365,6 +377,7 @@ describe('TextFieldComponent', () => {
                     placeholder: '',
                     control,
                     focusable: false,
+                    readOnly: false,
                     format: TextFormat.cpf,
                     minLength: null,
                     maxLength: null,
@@ -376,7 +389,81 @@ describe('TextFieldComponent', () => {
             });
         });
 
-        describe('minLength', () => {
+        describe('readOnly:', () => {
+            it('should set not readonly by default.', async () => {
+                await _testTextFieldComponent({
+                    component,
+                    harness,
+                    id: true,
+                    type: FormElementType.text,
+                    maskedValue: '',
+                    label: '',
+                    placeholder: '',
+                    control,
+                    focusable: true,
+                    readOnly: false,
+                    format: TextFormat.cpf,
+                    minLength: null,
+                    maxLength: null,
+                    prefix: null,
+                    suffix: null,
+                    error: '',
+                    breakLine: false,
+                });
+            });
+
+            it('should set readonly = true.', async () => {
+                component.readOnly.set(true);
+                fixture.detectChanges();
+
+                await _testTextFieldComponent({
+                    component,
+                    harness,
+                    id: true,
+                    type: FormElementType.text,
+                    maskedValue: '',
+                    label: '',
+                    placeholder: '',
+                    control,
+                    focusable: true,
+                    readOnly: true,
+                    format: TextFormat.cpf,
+                    minLength: null,
+                    maxLength: null,
+                    prefix: null,
+                    suffix: null,
+                    error: '',
+                    breakLine: false,
+                });
+            });
+
+            it('should set readonly = false.', async () => {
+                component.readOnly.set(false);
+                fixture.detectChanges();
+
+                await _testTextFieldComponent({
+                    component,
+                    harness,
+                    id: true,
+                    type: FormElementType.text,
+                    maskedValue: '',
+                    label: '',
+                    placeholder: '',
+                    control,
+                    focusable: true,
+                    readOnly: false,
+                    format: TextFormat.cpf,
+                    minLength: null,
+                    maxLength: null,
+                    prefix: null,
+                    suffix: null,
+                    error: '',
+                    breakLine: false,
+                });
+            });
+        });
+
+        describe('minLength:', () => {
             it('should not set minLength', async () => {
                 fixture.detectChanges();
 
@@ -390,6 +477,7 @@ describe('TextFieldComponent', () => {
                     placeholder: '',
                     control,
                     focusable: true,
+                    readOnly: false,
                     format: TextFormat.cpf,
                     minLength: null,
                     maxLength: null,
@@ -414,6 +502,7 @@ describe('TextFieldComponent', () => {
                     placeholder: '',
                     control,
                     focusable: true,
+                    readOnly: false,
                     format: TextFormat.cpf,
                     minLength: 5,
                     maxLength: null,
@@ -425,7 +514,7 @@ describe('TextFieldComponent', () => {
             });
         });
 
-        describe('maxLength', () => {
+        describe('maxLength:', () => {
             it('should not set maxLength', async () => {
                 fixture.detectChanges();
 
@@ -439,6 +528,7 @@ describe('TextFieldComponent', () => {
                     placeholder: '',
                     control,
                     focusable: true,
+                    readOnly: false,
                     format: TextFormat.cpf,
                     minLength: null,
                     maxLength: null,
@@ -463,6 +553,7 @@ describe('TextFieldComponent', () => {
                     placeholder: '',
                     control,
                     focusable: true,
+                    readOnly: false,
                     format: TextFormat.cpf,
                     minLength: null,
                     maxLength: 5,
@@ -474,7 +565,7 @@ describe('TextFieldComponent', () => {
             });
         });
 
-        describe('prefix', () => {
+        describe('prefix:', () => {
             it('should not set prefix', async () => {
                 fixture.detectChanges();
 
@@ -488,6 +579,7 @@ describe('TextFieldComponent', () => {
                     placeholder: '',
                     control,
                     focusable: true,
+                    readOnly: false,
                     format: TextFormat.cpf,
                     minLength: null,
                     maxLength: null,
@@ -512,6 +604,7 @@ describe('TextFieldComponent', () => {
                     placeholder: '',
                     control,
                     focusable: true,
+                    readOnly: false,
                     format: TextFormat.cpf,
                     minLength: null,
                     maxLength: null,
@@ -523,7 +616,7 @@ describe('TextFieldComponent', () => {
             });
         });
 
-        describe('suffix', () => {
+        describe('suffix:', () => {
             it('should not set prefix', async () => {
                 fixture.detectChanges();
 
@@ -537,6 +630,7 @@ describe('TextFieldComponent', () => {
                     placeholder: '',
                     control,
                     focusable: true,
+                    readOnly: false,
                     format: TextFormat.cpf,
                     minLength: null,
                     maxLength: null,
@@ -561,6 +655,7 @@ describe('TextFieldComponent', () => {
                     placeholder: '',
                     control,
                     focusable: true,
+                    readOnly: false,
                     format: TextFormat.cpf,
                     minLength: null,
                     maxLength: null,

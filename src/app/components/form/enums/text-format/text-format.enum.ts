@@ -4,6 +4,7 @@ export enum TextFormat {
     number = 'number',
     date = 'date',
     email = 'email',
+    url = 'url',
     percentage = 'percentage',
     phone = 'phone',
     time = 'time',

@@ -1,9 +1,15 @@
 import { FormElementType } from '../../enums/form-element-type/form-element-type.enum';
-import {
-    AbstractFormElementOptions,
-    ColOffset,
-    ColSize,
-} from './abstract-form-element-options.interface';
+
+export type ColSize = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+export type ColOffset = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
+
+export interface AbstractFormElementOptions {
+    id?: string;
+    colSize?: ColSize;
+    colOffset?: ColOffset;
+    breakLine?: boolean;
+    readOnly?: boolean;
+}
 
 export abstract class AbstractFormElementModel {
     public abstract type: FormElementType;

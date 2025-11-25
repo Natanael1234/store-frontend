@@ -21,11 +21,11 @@ export class SelectFieldHarness extends ComponentHarness {
         ':scope mat-form-field mat-select',
     );
     private readonly selectHarness = this.locatorFor(MatSelectHarness);
-    private readonly selects = this.locatorForAll(
+    private readonly selectsEls = this.locatorForAll(
         ':scope mat-form-field mat-select',
     );
-    private readonly options = this.locatorForAll('mat-option');
-    private readonly error = this.locatorForOptional('mat-error');
+    private readonly optionsEl = this.locatorForAll('mat-option');
+    private readonly errorEl = this.locatorForOptional('mat-error');
 
     async getHostChildTagNames(): Promise<string[]> {
         const children = await this.hostChildrenEl();
@@ -52,11 +52,16 @@ export class SelectFieldHarness extends ComponentHarness {
         return await this.select();
     }
 
+    async getSelected() {
+        const select = await this.select();
+        const options = await select.selectOptions();
+    }
+
     async getSelectHarness() {
         return await this.selectHarness();
     }
 
-    async getOptionsHarness() {
+    async getOptionsHarnesses() {
         const selects = await this.selectHarness();
         const options = selects.getOptions();
         return options;
@@ -113,18 +118,18 @@ export class SelectFieldHarness extends ComponentHarness {
 
     /** 🔹 Retorna a mensagem de erro (se existir) */
     async getErrorMessage(): Promise<string | null> {
-        const error = await this.error();
+        const error = await this.errorEl();
         return error ? ((await error.text())?.trim() ?? null) : null;
     }
 
     async hasOneAndOnlyOneSelect(): Promise<boolean> {
-        const selects = await this.selects();
+        const selects = await this.selectsEls();
         return selects.length == 1;
     }
 
     /** 🔹 Conta o número de opções */
     async getOptionCount(): Promise<number> {
-        const options = await this.options();
+        const options = await this.optionsEl();
         return options.length;
     }
 

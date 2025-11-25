@@ -101,11 +101,6 @@ export class TextFieldHarness extends ComponentHarness {
         return tagName == 'MAT-FORM-FIELD';
     }
 
-    async getLabel() {
-        const field = await this.fieldHarness();
-        return await field.hasLabel();
-    }
-
     async getErrors() {
         const field = await this.fieldHarness();
         return await field.getErrors();
@@ -143,8 +138,14 @@ export class TextFieldHarness extends ComponentHarness {
 
     async getInputTabIndex() {
         const input = await this.inputHarness();
+
         const host = await input.host();
-        return await host.getAttribute('tabindex');
+        return host.getAttribute('tabindex');
+    }
+
+    async isInputReadOnly(): Promise<boolean> {
+        const input = await this.inputHarness();
+        return input.isReadonly();
     }
 
     async isInputDisabled(): Promise<boolean> {

@@ -1,6 +1,8 @@
 import { FormElementType } from '../../../enums/form-element-type/form-element-type.enum';
-import { AbstractFormElementOptions } from '../../abstract/abstract-form-element-options.interface';
-import { AbstractFormElementModel } from '../../abstract/abstract-form-element.model';
+import {
+    AbstractFormElementModel,
+    AbstractFormElementOptions,
+} from '../../abstract/abstract-form-element.model';
 
 type LabelFormElementOptions = AbstractFormElementOptions & {
     value: string;
