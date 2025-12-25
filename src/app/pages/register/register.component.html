@@ -12,90 +12,14 @@
             {{ mainError }}
         </app-alert>
     }
-    <!-- name -->
-    <mat-form-field id="name-field" appearance="outline">
-        <mat-label>Nome</mat-label>
-        <input
-            id="name-input"
-            formControlName="name"
-            matInput
-            type="text"
-            autoComplete="off"
-            [maxlength]="maxUsernameLength"
-            autofocus
-            autocomplete="off" />
-        <mat-error id="name-error">
-            {{ form.controls.name | firstErrorMessage }}
-        </mat-error>
-        <!-- <mat-error id="name-error">{{ getNameErrorMessage() }}</mat-error> -->
-    </mat-form-field>
 
-    <!-- email -->
-    <mat-form-field id="email-field" appearance="outline">
-        <mat-label>Email</mat-label>
-        <input
-            id="email-input"
-            formControlName="email"
-            matInput
-            type="email"
-            autoComplete="off"
-            [maxlength]="maxEmailLength" />
-        <mat-error id="email-error">
-            {{ form.controls.email | firstErrorMessage }}
-        </mat-error>
-    </mat-form-field>
-
-    <!-- password -->
-    <mat-form-field id="password-field" appearance="outline">
-        <mat-label>Senha</mat-label>
-        <input
-            id="password-input"
-            formControlName="password"
-            matInput
-            [type]="showPassword ? 'text' : 'password'"
-            autoComplete="off"
-            [maxlength]="maxPasswordLength"
-            class="material-icons-outlined"
-            autocomplete="new-password"
-            (blur)="onPasswordBlur($event)" />
-        <mat-icon
-            id="show-password-icon"
-            matSuffix
-            (click)="togglePasswordVisibility($event)">
-            {{ showPassword ? "visibility" : "visibility_off" }}
-        </mat-icon>
-
-        <mat-error id="password-error">
-            {{ getPasswordErrorMessage() }}
-        </mat-error>
-    </mat-form-field>
-
-    <!-- repeat password -->
-    <mat-form-field id="repeat-password-field" appearance="outline">
-        <mat-label>Repita a Senha</mat-label>
-        <input
-            id="repeat-password-input"
-            formControlName="repeatPassword"
-            matInput
-            [type]="showRepeatPassword ? 'text' : 'password'"
-            [maxlength]="maxPasswordLength"
-            class="material-icons-outlined"
-            autocomplete="off"
-            autoComplete="new-password" />
-        <mat-icon
-            matSuffix
-            id="show-repeat-password-icon"
-            (click)="toggleRepeatPasswordVisibility($event)">
-            {{ showRepeatPassword ? "visibility" : "visibility_off" }}
-        </mat-icon>
-
-        <mat-error id="repeat-password-error">
-            {{ getRepeatPasswordErrorMessage() }}
-        </mat-error>
-    </mat-form-field>
+    <app-form
+        [elements]="elements"
+        [alignItems]="alignItems"
+        [justifyContent]="justifyContent" />
 
     <!-- accept terms -->
-    <mat-checkbox
+    <!-- <mat-checkbox
         id="accept-terms-checkbox"
         color="basic"
         [classList]="[acceptTermsHasError ? 'invalid' : '']"
@@ -103,15 +27,15 @@
         (focus)="acceptTermsBlurred = false"
         (blur)="acceptTermsBlurred = true">
         Aceito os Termos de Serviço *
-    </mat-checkbox>
+    </mat-checkbox> -->
 
     <!-- login -->
-    <button mat-flat-button id="register" type="submit" [disabled]="loading">
+    <!-- <button mat-flat-button id="register" type="submit" [disabled]="loading">
         Registrar
-    </button>
+    </button> -->
 
     <!-- register -->
-    <button
+    <!-- <button
         mat-stroked-button
         id="login"
         type="button"
@@ -119,5 +43,5 @@
         routerLink="/login">
         Já tem uma conta?
         <b>Login</b>
-    </button>
+    </button> -->
 </form>

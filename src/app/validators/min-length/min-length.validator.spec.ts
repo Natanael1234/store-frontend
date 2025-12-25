@@ -5,7 +5,7 @@ describe('minLengthValidator', () => {
     it('should return error for empty value', () => {
         const validator = minLengthValidator(1);
         expect(validator(new FormControl(''))).toEqual({
-            minlength: { message: 'O comprimento mínimo permitido é 1.' },
+            minLength: { message: 'O comprimento mínimo permitido é 1.' },
         });
     });
 
@@ -23,7 +23,7 @@ describe('minLengthValidator', () => {
     it('should return error if string length is less than minLength', () => {
         const validator = minLengthValidator(5);
         expect(validator(new FormControl('1234'))).toEqual({
-            minlength: { message: 'O comprimento mínimo permitido é 5.' },
+            minLength: { message: 'O comprimento mínimo permitido é 5.' },
         });
     });
 
@@ -40,7 +40,7 @@ describe('minLengthValidator', () => {
     it('should handle numbers by converting to string', () => {
         const validator = minLengthValidator(3);
         expect(validator(new FormControl(12))).toEqual({
-            minlength: { message: 'O comprimento mínimo permitido é 3.' },
+            minLength: { message: 'O comprimento mínimo permitido é 3.' },
         });
         expect(validator(new FormControl(123))).toBeNull();
         expect(validator(new FormControl(12345))).toBeNull();

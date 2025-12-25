@@ -11,6 +11,9 @@ export function requiredValidator(options?: {
         const allowEmptyString = options?.allowEmptyString ?? false;
         const allowSpaceFilledString = options?.allowSpaceFilledString ?? false;
         const allowFalse = options?.allowFalse ?? false;
+        if (control == null) {
+            return null;
+        }
         if (!allowNull && control.value === null) {
             return { required: { message: `O campo é obrigatório.` } };
         }

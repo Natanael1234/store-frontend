@@ -9,6 +9,7 @@ export type AbstractFormControlOptions = AbstractFormElementOptions & {
     focusable?: boolean;
     readOnly?: boolean;
     control: FormControl;
+    autofocus?: boolean;
 };
 
 export abstract class AbstractFormControlModel extends AbstractFormElementModel {
@@ -16,6 +17,7 @@ export abstract class AbstractFormControlModel extends AbstractFormElementModel 
     public focusable: boolean;
     public readOnly: boolean;
     public readonly control: FormControl;
+    public autofocus?: boolean;
 
     constructor(options: AbstractFormControlOptions) {
         super(options);
@@ -23,5 +25,6 @@ export abstract class AbstractFormControlModel extends AbstractFormElementModel 
         this.focusable = options.focusable ?? true;
         this.readOnly = options.readOnly ?? false;
         this.control = options.control;
+        this.autofocus = options.autofocus ?? false;
     }
 }

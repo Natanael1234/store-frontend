@@ -7,8 +7,8 @@ class TestOptativeControl extends OptativeFormControl {
     public override type: FormElementType = FormElementType.select;
 }
 
-describe('OptativeModel', () => {
-    it('should initialize with options and control', () => {
+describe('OptativeModel.', () => {
+    it('should initialize with options and control.', () => {
         const elementOptions: OptativeModel = {
             control: new FormControl(),
             options: [
@@ -27,7 +27,7 @@ describe('OptativeModel', () => {
         expect(control.options[1].label).toBe('Option 2');
     });
 
-    it('should initialize options as empty array if none provided', () => {
+    it('should initialize options as empty array if none provided.', () => {
         const elementOptions: OptativeModel = {
             control: new FormControl(),
             options: [],
@@ -37,7 +37,7 @@ describe('OptativeModel', () => {
         expect(control.options).toEqual([]);
     });
 
-    it('should be compatible with inherited properties from AbstractFormControl', () => {
+    it('should be compatible with inherited properties from AbstractFormControl.', () => {
         const elementOptions: OptativeModel = {
             id: 'select-id',
             label: 'Select Label',
@@ -52,7 +52,7 @@ describe('OptativeModel', () => {
         expect(control.control.value).toBeNull();
     });
 
-    it('should allow updating options array', () => {
+    it('should allow updating options array.', () => {
         const elementOptions: OptativeModel = {
             control: new FormControl(),
             options: [{ value: '1', label: 'Option 1' }],

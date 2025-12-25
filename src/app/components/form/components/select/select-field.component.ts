@@ -1,10 +1,11 @@
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { CommonModule } from '@angular/common';
-import { Component, model } from '@angular/core';
+import { Component, computed, model } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { AutofocusDirective } from '../../directives/autofocus/autofocus.directive';
 
 @Component({
     selector: 'app-select-field',
@@ -16,6 +17,7 @@ import { MatSelectModule } from '@angular/material/select';
         CommonModule,
         MatIconModule,
         MatSelectModule,
+        AutofocusDirective,
     ],
     styles: `
         :host {
@@ -29,7 +31,7 @@ import { MatSelectModule } from '@angular/material/select';
         }
     `,
     template: `
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" [appAutofocus]="_autofocus()">
             <mat-label>{{ label() ?? '' }}</mat-label>
             <mat-select [id]="id() ?? ''" [formControl]="control()!">
                 <!-- [tabindex]="_tabIndex()" -->
@@ -46,8 +48,13 @@ export class SelectFieldComponent {
     public id = model<string>();
     public label = model<string>();
     public focusable = model<boolean | undefined>(true);
+    public autofocus = model<boolean | undefined>();
     public control = model<FormControl<string | null>>();
     public options = model<{ value: string; label: string }[]>();
 
     // protected _tabIndex = computed(() => (this.focusable() ? 0 : -1));
+
+    protected _autofocus = computed(() => {
+        return this.autofocus() ?? false;
+    });
 }

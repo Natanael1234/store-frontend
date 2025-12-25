@@ -335,12 +335,12 @@ describe('Name Validator', () => {
         });
 
         describe('when minlength is specified', () => {
-            const validator = nameValidator({ minlength: 5 });
+            const validator = nameValidator({ minLength: 5 });
 
             it('should return minlength error if value is too short', () => {
                 const control = new FormControl('Ana');
                 expect(validator(control)).toEqual({
-                    minlength: {
+                    minLength: {
                         message: 'O comprimento mínimo permitido é 5.',
                     },
                 });
@@ -369,7 +369,7 @@ describe('Name Validator', () => {
             it('should return error if value is number with length lower than minlength', () => {
                 const control = new FormControl(1000);
                 expect(validator(control)).toEqual({
-                    minlength: {
+                    minLength: {
                         message: 'O comprimento mínimo permitido é 5.',
                     },
                 });
@@ -427,7 +427,7 @@ describe('Name Validator', () => {
         });
 
         describe('when maxlength is specified', () => {
-            const validator = nameValidator({ maxlength: 5 });
+            const validator = nameValidator({ maxLength: 5 });
 
             it('should return maxLength error if value is too long', () => {
                 const control = new FormControl('Beatriz');

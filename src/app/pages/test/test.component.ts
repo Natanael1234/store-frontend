@@ -2,15 +2,15 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AbstractFormElementModel } from '../../components/form/components/abstract/abstract-form-element.model';
 import { ButtonStyle } from '../../components/form/components/button/enum/button-style.enum';
-import { ButtonModel } from '../../components/form/components/button/model/button-form-element.model';
+import { ButtonModel } from '../../components/form/components/button/model/button.model';
 import { CheckboxModel } from '../../components/form/components/checkbox/model/checkbox.model';
 import { DividerModel } from '../../components/form/components/divider/model/divider.-form-elementmodel';
 import { LabelModel } from '../../components/form/components/label/model/label-form-element.model';
-import { NumericFieldModel } from '../../components/form/components/numeric-field/model/numeric-field.model';
 import { RadioGroupModel } from '../../components/form/components/radio-group/model/radio-buttons-element.model';
 import { SelectModel } from '../../components/form/components/select/model/select-element.model';
-import { TextAreaModel } from '../../components/form/components/text-area/model/text-area.model';
-import { TextFieldModel } from '../../components/form/components/text-field/model/text-field.model';
+import { NumericFieldModel } from '../../components/form/components/text/numeric-field/model/numeric-field.model';
+import { TextAreaModel } from '../../components/form/components/text/text-area/model/text-area.model';
+import { TextFieldModel } from '../../components/form/components/text/text-field/model/text-field.model';
 import { TextFormat } from '../../components/form/enums/text-format/text-format.enum';
 import { FormComponent } from '../../components/form/form.component';
 import { UserConfigs } from '../../configs/user/user.configs';
@@ -20,9 +20,7 @@ import { cnpjValidator } from '../../validators/cnpj/cnpj.validator';
 import { cpfValidator } from '../../validators/cpf/cpf.validator';
 import { dateValidator } from '../../validators/date/date.validator';
 import { emailValidator } from '../../validators/email/email.validator';
-import { maxLengthValidator } from '../../validators/max-length/max-length.validator';
 import { maxValidator } from '../../validators/max/max.validator';
-import { minLengthValidator } from '../../validators/min-length/min-length.validator';
 import { minValidator } from '../../validators/min/min.validator';
 import { nameValidator } from '../../validators/name/name.validator';
 import { requiredTrueValidator } from '../../validators/required-true/required-true.validator';
@@ -47,26 +45,19 @@ export class TestComponent {
                     validators: [
                         nameValidator({
                             required: true,
-                            minlength: UserConfigs.NAME_MIN_LENGTH,
-                            maxlength: UserConfigs.NAME_MAX_LENGTH,
+                            minLength: UserConfigs.NAME_MIN_LENGTH,
+                            maxLength: UserConfigs.NAME_MAX_LENGTH,
                         }),
                     ],
                 },
             ),
             email: new FormControl(
                 { value: 'user@email.com', disabled: false },
-                { validators: [requiredValidator(), emailValidator()] },
+                { validators: [emailValidator({ required: true })] },
             ),
             password: new FormControl(
                 { value: 'Senha123$', disabled: false },
-                {
-                    validators: [
-                        requiredValidator(),
-                        minLengthValidator(UserConfigs.PASSWORD_MIN_LENGTH),
-                        maxLengthValidator(UserConfigs.PASSWORD_MAX_LENGTH),
-                        strongPasswordValidator(),
-                    ],
-                },
+                { validators: [strongPasswordValidator()] },
             ),
             phone: new FormControl(
                 { value: '91998689855', disabled: false },
@@ -145,6 +136,7 @@ export class TestComponent {
                 mask: undefined,
                 label: 'Nome',
                 control: this.form.controls.name,
+                autofocus: true,
                 minLength: 3,
                 maxLength: 7,
                 onBlur: () => console.log('On text input blur'),

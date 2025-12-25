@@ -7,13 +7,7 @@ import { leftMouseClickFilter } from '../../utils/mouse-events/mouse-click-filte
 
 @Component({
     selector: 'app-toolbar',
-    imports: [
-        MatToolbarModule,
-        MatIconModule,
-        MatButtonModule,
-        RouterModule,
-        acrout,
-    ],
+    imports: [MatToolbarModule, MatIconModule, MatButtonModule, RouterModule],
     styles: `
         .spacer {
             flex: 1 1 auto;

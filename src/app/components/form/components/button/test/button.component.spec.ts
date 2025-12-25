@@ -9,7 +9,7 @@ import { ButtonComponent } from '../button.component';
 import { ButtonStyle } from '../enum/button-style.enum';
 import { ButtonHarness } from './button.harness';
 
-describe('ButtonComponent', () => {
+describe('ButtonComponent.', () => {
     let component: ButtonComponent;
     let fixture: ComponentFixture<ButtonComponent>;
     let harness: ButtonHarness;
@@ -30,7 +30,7 @@ describe('ButtonComponent', () => {
         );
     });
 
-    it('should create', () => {
+    it('should create.', () => {
         expect(component).toBeTruthy();
     });
 
@@ -116,7 +116,7 @@ describe('ButtonComponent', () => {
         });
     });
 
-    describe('label', () => {
+    describe('label.', () => {
         it('should render the label correctly', async () => {
             component.label.set('Save');
             fixture.detectChanges();
@@ -143,7 +143,7 @@ describe('ButtonComponent', () => {
         });
     });
 
-    describe('style', () => {
+    describe('style.', () => {
         it('should apply the text style to the button by default', async () => {
             fixture.detectChanges();
             await testButton({
@@ -218,7 +218,7 @@ describe('ButtonComponent', () => {
         });
     });
 
-    describe('icon', () => {
+    describe('icon.', () => {
         it('should render the icon when defined', async () => {
             component.icon.set(Icon.checked);
             fixture.detectChanges();
@@ -233,7 +233,7 @@ describe('ButtonComponent', () => {
         });
     });
 
-    describe('disabled', () => {
+    describe('disabled.', () => {
         it('should not be disabled by default', async () => {
             fixture.detectChanges();
 
@@ -273,7 +273,7 @@ describe('ButtonComponent', () => {
         });
     });
 
-    xdescribe('focusable', () => {
+    xdescribe('focusable.', () => {
         it('should be focusable by default', async () => {
             fixture.detectChanges();
 
@@ -313,7 +313,7 @@ describe('ButtonComponent', () => {
         });
     });
 
-    describe('events', () => {
+    describe('events.', () => {
         it('should emit the click event when the left mouse button is clicked', async () => {
             spyOn(component.onClick, 'emit');
 

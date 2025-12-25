@@ -11,7 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AbstractFormElementModel } from '../../../../components/form/components/abstract/abstract-form-element.model';
 import { ButtonStyle } from '../../../../components/form/components/button/enum/button-style.enum';
-import { ButtonModel } from '../../../../components/form/components/button/model/button-form-element.model';
+import { ButtonModel } from '../../../../components/form/components/button/model/button.model';
 import { SelectModel } from '../../../../components/form/components/select/model/select-element.model';
 import { FormComponent } from '../../../../components/form/form.component';
 import { ActiveFilterOptions } from '../../../../constants/active-filter-options/active-filter-options';
@@ -71,19 +71,16 @@ export class UserFilterToolbarComponent {
     /** Column sort. */
     public sort = model<UserOrder>(UserOrder.name_asc);
     protected previousSort?: string;
-    protected innerSort = model<UserOrder>(UserOrder.name_asc);
     protected orderOptions = model(UserOrderOptions);
 
     /** Active users filter. */
     public active = model<ActiveFilter>(ActiveFilter.active);
     protected previousActive?: string;
-    protected innerActive = model<ActiveFilter>(ActiveFilter.active);
     protected activeOptions = model(ActiveFilterOptions);
 
     /** Deleted users filter. */
     public deleted = model<DeletedFilter>(DeletedFilter.not_deleted);
     protected previousDeleted?: string;
-    protected innerDeleted = model<DeletedFilter>(DeletedFilter.not_deleted);
     protected deletedOptions = model(DeletedFilterOptions);
 
     form = new FormGroup({
@@ -102,11 +99,11 @@ export class UserFilterToolbarComponent {
     });
 
     protected orderControl = new SelectModel({
-        id: 'order-select',
+        id: 'sort-select',
         label: 'Ordem',
         options: UserOrderOptions,
         control: this.form.controls.sort,
-        colSize: 3,
+        colSize: 12,
     });
 
     protected activeControl = new SelectModel({
@@ -114,7 +111,7 @@ export class UserFilterToolbarComponent {
         label: 'Ativos',
         options: ActiveFilterOptions,
         control: this.form.controls.active,
-        colSize: 3,
+        colSize: 12,
     });
 
     protected deletedControl = new SelectModel({
@@ -122,20 +119,20 @@ export class UserFilterToolbarComponent {
         label: 'Deletados',
         options: DeletedFilterOptions,
         control: this.form.controls.deleted,
-        colSize: 3,
+        colSize: 12,
     });
 
     protected cancelButton = new ButtonModel({
         id: 'cancel-button',
         label: 'Cancelar',
-        colSize: 1,
+        colSize: 5,
         clickCallback: (event: MouseEvent) => this.cancel(),
     });
 
     protected filterButton = new ButtonModel({
         id: 'filter-button',
         label: 'Filtrar',
-        colSize: 1,
+        colSize: 5,
         style: ButtonStyle.filled,
         clickCallback: (event: MouseEvent) => this.submit(),
     });
@@ -158,15 +155,15 @@ export class UserFilterToolbarComponent {
             }
             if (this.sort() != this.previousSort) {
                 this.previousSort = this.sort();
-                this.innerSort.set(this.sort());
+                this.form.controls.sort.setValue(this.sort());
             }
             if (this.active() != this.previousActive) {
                 this.previousActive = this.active();
-                this.innerActive.set(this.active());
+                this.form.controls.active.setValue(this.active());
             }
             if (this.deleted() != this.previousDeleted) {
                 this.previousDeleted = this.deleted();
-                this.innerDeleted.set(this.deleted());
+                this.form.controls.deleted.setValue(this.deleted());
             }
 
             if (this.showCancelButton() != this.previousShowCancelButton) {

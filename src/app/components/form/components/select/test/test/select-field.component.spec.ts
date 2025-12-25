@@ -6,7 +6,7 @@ import { SelectFieldComponent } from '../../select-field.component';
 import { _testSelectField } from './select-field.component.test';
 import { SelectFieldHarness } from './select-field.harness';
 
-describe('SelectFieldComponent', () => {
+describe('SelectFieldComponent.', () => {
     let component: SelectFieldComponent;
     let fixture: ComponentFixture<SelectFieldComponent>;
     let harness: SelectFieldHarness;
@@ -19,7 +19,7 @@ describe('SelectFieldComponent', () => {
         component = fixture.componentInstance;
     });
 
-    it('should create', () => {
+    it('should create.', () => {
         expect(component).toBeTruthy();
     });
 
@@ -56,8 +56,8 @@ describe('SelectFieldComponent', () => {
         });
     });
 
-    describe('bidings', () => {
-        describe('id', () => {
+    describe('bidings.', () => {
+        describe('id.', () => {
             it('should bind id', async () => {
                 const control = new FormControl<string | null>(null);
                 component.control.set(control);
@@ -106,7 +106,7 @@ describe('SelectFieldComponent', () => {
             });
         });
 
-        describe('label', () => {
+        describe('label.', () => {
             it('should bind label', async () => {
                 const control = new FormControl<string | null>(null);
                 component.control.set(control);
@@ -155,7 +155,7 @@ describe('SelectFieldComponent', () => {
             });
         });
 
-        describe('control', () => {
+        describe('control.', () => {
             it('should reflect FormControl value changes', async () => {
                 const control = new FormControl<string | null>(null, {});
                 component.control.set(control);
@@ -218,7 +218,7 @@ describe('SelectFieldComponent', () => {
             });
         });
 
-        describe('focusable', () => {
+        describe('focusable.', () => {
             it('should use tabIndex = 0 by default', async () => {
                 const control = new FormControl<string | null>(null);
                 component.control.set(control);
@@ -288,7 +288,7 @@ describe('SelectFieldComponent', () => {
             });
         });
 
-        describe('disabled', () => {
+        describe('disabled.', () => {
             it('should set not disabled by default', async () => {
                 const control = new FormControl<string | null>(null);
                 control.enable();
@@ -361,7 +361,7 @@ describe('SelectFieldComponent', () => {
             });
         });
 
-        describe('focusable', () => {
+        describe('focusable.', () => {
             it('should use tabIndex = 0 by default', async () => {
                 const control = new FormControl<string | null>(null);
                 component.control.set(control);
@@ -431,7 +431,7 @@ describe('SelectFieldComponent', () => {
             });
         });
 
-        describe('error', () => {
+        describe('error.', () => {
             it('should show error when form control is invalid', async () => {
                 const control = new FormControl<string | null>(null, {
                     validators: [Validators.required],

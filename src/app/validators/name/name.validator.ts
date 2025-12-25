@@ -4,14 +4,14 @@ import { minLengthValidator } from '../min-length/min-length.validator';
 import { nameFormatValidator } from '../name-format/name-format.validator';
 import { requiredValidator } from '../required/required.validator';
 
-export function nameValidator(options?: {
+export function nameValidator(args?: {
     required?: boolean;
-    minlength?: number;
-    maxlength?: number;
+    minLength?: number;
+    maxLength?: number;
 }): ValidatorFn {
-    const required = options?.required ?? true;
-    const minlength = options?.minlength;
-    const maxlength = options?.maxlength;
+    const required = args?.required ?? true;
+    const minLength = args?.minLength;
+    const maxLength = args?.maxLength;
 
     const validators = [];
     if (required) {
@@ -25,11 +25,11 @@ export function nameValidator(options?: {
         );
     }
     validators.push(nameFormatValidator());
-    if (minlength ?? false) {
-        validators.push(minLengthValidator(minlength!));
+    if (minLength ?? false) {
+        validators.push(minLengthValidator(minLength!));
     }
-    if (maxlength ?? false) {
-        validators.push(maxLengthValidator(maxlength!));
+    if (maxLength ?? false) {
+        validators.push(maxLengthValidator(maxLength!));
     }
     return Validators.compose(validators)!;
 }

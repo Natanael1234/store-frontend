@@ -1,8 +1,8 @@
 import { FormControl } from '@angular/forms';
 import { OptativeModel } from './optative-element.model';
 
-describe('OptativeModel Type', () => {
-    it('should create a valid instance with required options', () => {
+describe('OptativeModel Type.', () => {
+    it('should create a valid instance with required options.', () => {
         const options: OptativeModel = {
             control: new FormControl(),
             options: [
@@ -17,7 +17,7 @@ describe('OptativeModel Type', () => {
         expect(options.options[0].label).toBe('Opção 1');
     });
 
-    it('should allow setting an initial value', () => {
+    it('should allow setting an initial value.', () => {
         const options: OptativeModel = {
             control: new FormControl(),
             value: '2',
@@ -30,7 +30,7 @@ describe('OptativeModel Type', () => {
         expect(options.value).toBe('2');
     });
 
-    it('should allow updating the value', () => {
+    it('should allow updating the value.', () => {
         const control = new FormControl();
         const options: OptativeModel = {
             control,
@@ -46,7 +46,7 @@ describe('OptativeModel Type', () => {
         expect(options.value).toBe('2');
     });
 
-    it('should be compatible with inherited properties from AbstractFormControlOptions', () => {
+    it('should be compatible with inherited properties from AbstractFormControlOptions.', () => {
         const options: OptativeModel = {
             id: 'select-example',
             label: 'Selecione',

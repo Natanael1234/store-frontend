@@ -83,8 +83,8 @@ export class EditOwnProfileComponent {
         return [
             nameValidator({
                 required: true,
-                minlength: UserConfigs.NAME_MIN_LENGTH,
-                maxlength: UserConfigs.NAME_MAX_LENGTH,
+                minLength: UserConfigs.NAME_MIN_LENGTH,
+                maxLength: UserConfigs.NAME_MAX_LENGTH,
             }),
             remoteValidator(this.nameRemoteValidationContext),
         ];

@@ -77,9 +77,7 @@ export class LoginComponent {
     protected emailControl = new FormControl('', {
         validators: [
             // TODO: update tests
-            requiredValidator(),
-            // TODO: update tests
-            emailValidator(),
+            emailValidator({ required: true }),
             remoteValidator(this.emailRemoteValidationContext),
         ],
         updateOn: 'blur',

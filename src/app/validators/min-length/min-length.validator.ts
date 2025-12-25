@@ -17,7 +17,7 @@ export function minLengthValidator(minLength: number): ValidatorFn {
         }
         if (value.length < minLength) {
             return {
-                minlength: {
+                minLength: {
                     message: `O comprimento mínimo permitido é ${minLength}.`,
                 },
             };

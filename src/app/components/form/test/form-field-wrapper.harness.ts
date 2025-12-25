@@ -3,11 +3,11 @@ import { ButtonHarness } from '../components/button/test/button.harness';
 import { CheckboxHarness } from '../components/checkbox/test/checkbox.harness';
 import { DividerHarness } from '../components/divider/test/divider.harness';
 import { LabelHarness } from '../components/label/test/label.harness';
-import { NumericFieldHarness } from '../components/numeric-field/test/numeric-field.harness';
 import { RadioGroupHarness } from '../components/radio-group/test/radio-group.harness';
 import { SelectFieldHarness } from '../components/select/test/test/select-field.harness';
-import { TextAreaFieldHarness } from '../components/text-area/test/text-area.harness';
-import { TextFieldHarness } from '../components/text-field/test/text-field.harness';
+import { NumericFieldHarness } from '../components/text/numeric-field/test/numeric-field.harness';
+import { TextAreaFieldHarness } from '../components/text/text-area/test/text-area.harness';
+import { TextFieldHarness } from '../components/text/text-field/test/text-field.harness';
 
 export class FormFieldWrapperHarness extends ComponentHarness {
     static hostSelector = '.field-wrapper';

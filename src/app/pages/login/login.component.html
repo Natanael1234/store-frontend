@@ -21,7 +21,7 @@
             formControlName="email"
             matInput
             type="email"
-            autoComplete="on"
+            autocomplete="on"
             [maxlength]="maxEmailLength" />
         <mat-error id="email-error">
             {{ emailControl | firstErrorMessage }}
@@ -36,7 +36,7 @@
             formControlName="password"
             matInput
             [type]="showPassword ? 'text' : 'password'"
-            autoComplete="off"
+            autocomplete="off"
             [maxlength]="maxPasswordLength"
             class="material-icons-outlined"
             autocomplete="on" />

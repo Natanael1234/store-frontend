@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { OverlayContainer } from '@angular/cdk/overlay';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTooltip, MatTooltipModule } from '@angular/material/tooltip';
 import { By } from '@angular/platform-browser';
 import { RowItemComponent } from './row-item.component';
 
@@ -9,6 +10,8 @@ import { RowItemComponent } from './row-item.component';
 describe('IconRowItemComponent', () => {
     let component: RowItemComponent;
     let fixture: ComponentFixture<RowItemComponent>;
+    let overlayContainer: OverlayContainer;
+    let overlayElement: HTMLElement;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -17,6 +20,8 @@ describe('IconRowItemComponent', () => {
 
         fixture = TestBed.createComponent(RowItemComponent);
         component = fixture.componentInstance;
+        overlayContainer = TestBed.inject(OverlayContainer);
+        overlayElement = overlayContainer.getContainerElement();
         fixture.detectChanges();
     });
 
@@ -197,22 +202,20 @@ describe('IconRowItemComponent', () => {
         });
 
         describe('matToolTip', () => {
-            it('container should have matTooltip when toolTip model is defined', () => {
+            it('container should have matTooltip when toolTip model is defined', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(false);
                 component.toolTip.set('Test tooltip');
-                fixture.detectChanges();
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
+                const container = fixture.debugElement.query(
+                    By.css('#container'),
                 );
-                expect(
-                    containterElement.classes['mat-mdc-tooltip-trigger'],
-                ).toBeTrue();
-                expect(
-                    containterElement.attributes['ng-reflect-message'],
-                ).toEqual('Test tooltip');
+                fixture.detectChanges();
+                const tooltipInstance = container.injector.get(MatTooltip);
+
+                expect(tooltipInstance).not.toBeNull();
+                expect(tooltipInstance.message).toEqual('Test tooltip');
             });
 
             it('container should not have matTooltip when toolTip model is undefined', () => {
@@ -221,16 +224,14 @@ describe('IconRowItemComponent', () => {
                 component.loading.set(false);
                 component.disabled.set(false);
                 component.toolTip.set(undefined);
-                fixture.detectChanges();
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
+                const container = fixture.debugElement.query(
+                    By.css('#container'),
                 );
-                expect(
-                    containterElement.classes['mat-mdc-tooltip-trigger'],
-                ).toBeTrue();
-                expect(
-                    containterElement.attributes['ng-reflect-message'],
-                ).toBeUndefined();
+                fixture.detectChanges();
+                const tooltipInstance = container.injector.get(MatTooltip);
+
+                expect(tooltipInstance).not.toBeNull();
+                expect(tooltipInstance.message).toEqual('');
             });
         });
     });

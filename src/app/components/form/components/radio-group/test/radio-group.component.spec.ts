@@ -6,7 +6,7 @@ import { RadioGroupComponent } from '../radio-group.component';
 import { RadioGroupHarness } from './radio-group.harness';
 import { _testRadioGroup } from './radio-group;component.test';
 
-describe('RadioGroupComponent', () => {
+describe('RadioGroupComponent.', () => {
     let component: RadioGroupComponent;
     let fixture: ComponentFixture<RadioGroupComponent>;
     let control: FormControl;
@@ -29,12 +29,12 @@ describe('RadioGroupComponent', () => {
         );
     });
 
-    it('should create', () => {
+    it('should create.', () => {
         expect(component).toBeTruthy();
     });
 
-    describe('bidings', () => {
-        describe('id', () => {
+    describe('bidings.', () => {
+        describe('id.', () => {
             it('should bind id', async () => {
                 component.id.set('radio-group-id');
 
@@ -62,7 +62,7 @@ describe('RadioGroupComponent', () => {
             });
         });
 
-        describe('label', () => {
+        describe('label.', () => {
             it('should bind label', async () => {
                 component.label.set('Radio Group');
 
@@ -90,7 +90,7 @@ describe('RadioGroupComponent', () => {
             });
         });
 
-        describe('diabled', () => {
+        describe('diabled.', () => {
             it('should set component disabled', async () => {
                 const control = new FormControl();
                 control.disable();
@@ -132,12 +132,12 @@ describe('RadioGroupComponent', () => {
             });
         });
 
-        xdescribe('focusable', () => {
+        xdescribe('focusable.', () => {
             it('should use tabIndex = 0 by default', async () => {});
 
-            xit('should use tabIndex = -1 when focusable = false', () => {});
+            xit('should use tabIndex = -1 when focusable = false.', () => {});
 
-            xit('should use tabIndex = 0 when focusable = true', () => {});
+            xit('should use tabIndex = 0 when focusable = true.', () => {});
         });
 
         describe('options', () =>
@@ -163,7 +163,7 @@ describe('RadioGroupComponent', () => {
                 });
             }));
 
-        describe('control', () => {
+        describe('control.', () => {
             it('should reflect FormControl value changes', async () => {
                 component.options.set([
                     { label: 'Option 1', value: '1' },
@@ -240,7 +240,7 @@ describe('RadioGroupComponent', () => {
             });
         });
 
-        describe('error', () => {
+        describe('error.', () => {
             it('should display', async () => {
                 component.options.set([
                     { label: 'Option 1', value: '1' },

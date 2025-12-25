@@ -3,6 +3,7 @@ import { Component, computed, model } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
+import { AutofocusDirective } from '../../directives/autofocus/autofocus.directive';
 import { isRequired } from '../utils/is-required/is-required';
 
 @Component({
@@ -13,6 +14,7 @@ import { isRequired } from '../utils/is-required/is-required';
         CommonModule,
         MatInputModule,
         MatCheckboxModule,
+        AutofocusDirective,
     ],
     styles: `
         :host {
@@ -28,7 +30,8 @@ import { isRequired } from '../utils/is-required/is-required';
         <mat-checkbox
             [id]="id() ?? ''"
             [formControl]="control()!"
-            [tabindex]="_tabIndex()">
+            [tabindex]="_tabIndex()"
+            [appAutofocus]="_autofocus()">
             {{ label() ?? '' }} {{ _requiredSymbol() }}
         </mat-checkbox>
     `,
@@ -38,8 +41,12 @@ export class CheckboxComponent {
     public label = model<string>();
     public control = model<FormControl>();
     public focusable = model<boolean>();
+    public autofocus = model<boolean>();
 
     protected _tabIndex = computed(() => ((this.focusable() ?? true) ? 0 : -1));
+    protected _autofocus = computed(() => {
+        return this.autofocus() ?? false;
+    });
     protected _isRequired = computed(() => isRequired(this.control()));
     protected _requiredSymbol = computed(() =>
         isRequired(this.control()) ? '*' : '',

@@ -9,7 +9,7 @@
 @let formClasses = [justifyContentClass, alignItemsClass];
 
 <form [class]="formClasses" [class.flex-grid]="true">
-    @for (e of formElements(); track $index) {
+    @for (e of elements(); track $index) {
         <!-- col size class -->
         @let colSizeClass = e.colSize ? "col-" + e.colSize : "";
 
@@ -57,6 +57,8 @@
                             [control]="textField.control"
                             [focusable]="textField.focusable"
                             [readOnly]="textField.readOnly"
+                            [autocomplete]="textField.autocomplete"
+                            [autofocus]="textField.autofocus"
                             [format]="textField.format"
                             [minLength]="textField.minLength"
                             [maxLength]="textField.maxLength"
@@ -76,6 +78,7 @@
                         [placeholder]="textAreaField.placeholder"
                         [control]="textAreaField.control"
                         [focusable]="textAreaField.focusable"
+                        [autofocus]="textAreaField.autofocus"
                         [minLength]="textAreaField.minLength"
                         [maxLength]="textAreaField.maxLength"
                         [autosizeMinRows]="textAreaField.autosizeMinRows"
@@ -95,7 +98,8 @@
                         [label]="selectField.label"
                         [control]="selectField.control"
                         [options]="selectField.options"
-                        [focusable]="selectField.focusable" />
+                        [focusable]="selectField.focusable"
+                        [autofocus]="selectField.autofocus" />
                 }
                 <!-- RADIO BUTTONS -->
                 @case (FormElementType.radioGroup) {
@@ -107,7 +111,8 @@
                         [control]="radioGroup.control"
                         [focusable]="radioGroup.focusable"
                         [options]="radioGroup.options"
-                        [focusable]="radioGroup.focusable" />
+                        [focusable]="radioGroup.focusable"
+                        [autofocus]="radioGroup.autofocus" />
                 }
                 <!-- CHECKBOX -->
                 @case (FormElementType.checkbox) {
@@ -116,7 +121,8 @@
                         [id]="checkbox.id"
                         [label]="checkbox.label"
                         [control]="checkbox.control"
-                        [focusable]="checkbox.focusable" />
+                        [focusable]="checkbox.focusable"
+                        [autofocus]="checkbox.autofocus" />
                 }
                 <!-- LABEL -->
                 @case (FormElementType.label) {
@@ -136,6 +142,7 @@
                         [icon]="button.icon"
                         [label]="button.label"
                         [style]="button.style"
+                        [autofocus]="button.autofocus"
                         (onClick)="
                             button.clickCallback
                                 ? button.clickCallback($event)

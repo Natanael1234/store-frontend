@@ -4,7 +4,6 @@ import {
     FormGroup,
     FormsModule,
     ReactiveFormsModule,
-    Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -15,22 +14,30 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Router, RouterModule } from '@angular/router';
 import { AlertComponent } from '../../components/alert/alert.component';
+import { AbstractFormElementModel } from '../../components/form/components/abstract/abstract-form-element.model';
+import { CheckboxModel } from '../../components/form/components/checkbox/model/checkbox.model';
+import { TextFieldModel } from '../../components/form/components/text/text-field/model/text-field.model';
+import { AutoCompleteType } from '../../components/form/enums/auto-complete-type/auto-complete-type.enum';
+import { TextFormat } from '../../components/form/enums/text-format/text-format.enum';
+import { FormComponent } from '../../components/form/form.component';
 import { UserConfigs } from '../../configs/user/user.configs';
 import { EmailConstants } from '../../constants/email/email.constants';
+import { AlignItems } from '../../enums/align-items/align-items.enum';
+import { JustifyContent } from '../../enums/justify-content/justify-content.enum';
 import { EmailMessage } from '../../messages/email/email.messages';
 import { PasswordMessage } from '../../messages/password/password.messages';
 import { TextMessage } from '../../messages/text/text.messages';
-import { FirstErrorMessagePipe } from '../../pipes/first-error-message.pipe';
 import { AuthService } from '../../services/auth/auth.service';
 import { AuthResponseDto } from '../../services/auth/dtos/auth.response.dto';
 import { RegisterRequestDto } from '../../services/auth/dtos/register.request.dto';
 import { emailValidator } from '../../validators/email/email.validator';
-import { matchingFieldsValidator } from '../../validators/matching-password/matching-password.validator';
+import { matchingPasswordValidator } from '../../validators/matching-password/matching-password.validator';
 import { nameValidator } from '../../validators/name/name.validator';
 import {
     RemoteValidationContext,
     remoteValidator,
 } from '../../validators/remote/remote.validator';
+import { requiredTrueValidator } from '../../validators/required-true/required-true.validator';
 import { strongPasswordValidator } from '../../validators/strong-password/strong-password.validator';
 
 const _NameMessage = new TextMessage({
@@ -61,12 +68,15 @@ const _PasswordMessage = new PasswordMessage({
         MatCardModule,
         AlertComponent,
         MatProgressBarModule,
-        FirstErrorMessagePipe,
+        FormComponent,
     ],
     templateUrl: './register.component.html',
     styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
+    protected justifyContent: JustifyContent = JustifyContent.initial;
+    protected alignItems: AlignItems = AlignItems.initial;
+
     private authService: AuthService = inject(AuthService);
     private router: Router = inject(Router);
 
@@ -94,72 +104,100 @@ export class RegisterComponent {
 
     form = new FormGroup({
         name: new FormControl('', {
-            validators: this.nameValidators,
+            validators: [
+                nameValidator({
+                    required: true,
+                    minLength: UserConfigs.NAME_MIN_LENGTH,
+                    maxLength: UserConfigs.NAME_MAX_LENGTH,
+                }),
+                remoteValidator(this.nameRemoteValidationContext),
+            ],
             updateOn: 'blur',
         }),
         email: new FormControl('', {
-            validators: this.emailValidators,
+            validators: [
+                emailValidator({ required: true }),
+                remoteValidator(this.emailRemoteValidationContext),
+            ],
             updateOn: 'blur',
         }),
         password: new FormControl('', {
-            validators: this.passwordValidators,
+            validators: [
+                strongPasswordValidator(),
+                remoteValidator(this.passwordRemoteValidationContext),
+            ],
             updateOn: 'blur',
         }),
         repeatPassword: new FormControl('', {
-            validators: this.repeatPasswordValidators,
+            validators: [
+                matchingPasswordValidator('password'),
+                remoteValidator(this.repeatPasswordRemoteValidationContext),
+            ],
             updateOn: 'blur',
         }),
         acceptTerms: new FormControl(false, {
-            validators: this.acceptTermsValidator,
+            validators: [
+                requiredTrueValidator(),
+                remoteValidator(this.acceptTermsRemoteValidationContext),
+            ],
             updateOn: 'blur',
         }),
     });
 
-    protected get nameValidators() {
-        const _nameValidator = nameValidator({
-            required: true,
-            minlength: UserConfigs.NAME_MIN_LENGTH,
-            maxlength: UserConfigs.NAME_MAX_LENGTH,
-        });
-        return [
-            _nameValidator,
-            remoteValidator(this.nameRemoteValidationContext),
-        ];
-    }
+    protected nameControl = new TextFieldModel({
+        id: 'name-input',
+        label: 'Nome',
+        control: this.form.controls.name,
+        colSize: 12,
+        autocomplete: AutoCompleteType.off,
+        maxLength: UserConfigs.NAME_MAX_LENGTH,
+    });
 
-    protected get emailValidators() {
-        return [
-            Validators.required, // mover para o validador
-            emailValidator(),
-            remoteValidator(this.emailRemoteValidationContext),
-        ];
-    }
+    protected emailControl = new TextFieldModel({
+        id: 'email-input',
+        format: TextFormat.email,
+        label: 'E-mail',
+        control: this.form.controls.email,
+        colSize: 12,
+        autocomplete: AutoCompleteType.off,
+        maxLength: EmailConstants.MAX_LENGTH,
+    });
 
-    protected get passwordValidators() {
-        return [
-            Validators.required,
-            Validators.minLength(UserConfigs.PASSWORD_MIN_LENGTH),
-            Validators.maxLength(UserConfigs.PASSWORD_MAX_LENGTH),
-            strongPasswordValidator(),
-            remoteValidator(this.passwordRemoteValidationContext),
-        ];
-    }
+    protected passwordControl = new TextFieldModel({
+        id: 'password-input',
+        label: 'Senha',
+        format: TextFormat.password,
+        control: this.form.controls.password,
+        colSize: 12,
+        autocomplete: AutoCompleteType.new_password,
+        onBlur: () => this.onPasswordBlur(),
+    });
 
-    protected get repeatPasswordValidators() {
-        return [
-            Validators.required,
-            Validators.maxLength(UserConfigs.PASSWORD_MAX_LENGTH),
-            matchingFieldsValidator('password'),
-            remoteValidator(this.repeatPasswordRemoteValidationContext),
-        ];
-    }
+    protected repeatPasswordControl = new TextFieldModel({
+        id: 'repeat-password-input',
+        format: TextFormat.password,
+        label: 'Repita a senha',
+        control: this.form.controls.password,
+        colSize: 12,
+        autocomplete: AutoCompleteType.off,
+        maxLength: UserConfigs.PASSWORD_MAX_LENGTH,
+    });
 
-    protected get acceptTermsValidator() {
-        return [
-            Validators.requiredTrue,
-            remoteValidator(this.acceptTermsRemoteValidationContext),
-        ];
-    }
+    protected acceptTermsControl = new CheckboxModel({
+        id: 'accept-terms-checkbox',
+        label: 'Aceito os termos',
+        control: this.form.controls.acceptTerms,
+        colSize: 12,
+        autofocus: true,
+    });
+
+    protected elements: AbstractFormElementModel[] = [
+        this.nameControl,
+        this.emailControl,
+        this.passwordControl,
+        this.repeatPasswordControl,
+        this.acceptTermsControl,
+    ];
 
     protected onSubmit() {
         this.submitted = true;
@@ -237,111 +275,10 @@ export class RegisterComponent {
         });
     }
 
-    protected getNameErrorMessage() {
-        const nameFormControl: FormControl = this.form.controls.name;
-
-        let nameError: string | null | undefined = '';
-        if (nameFormControl.hasError('null')) {
-            nameError = _NameMessage.NULL;
-        } else if (nameFormControl.hasError('required')) {
-            nameError = _NameMessage.REQUIRED;
-        } else if (nameFormControl.hasError('name')) {
-            nameError = _NameMessage.INVALID;
-        } else if (nameFormControl.hasError('minlength')) {
-            nameError = _NameMessage.MIN_LEN;
-        } else if (nameFormControl.hasError('maxlength')) {
-            nameError = _NameMessage.MAX_LEN;
-        } else if (nameFormControl.hasError('remote')) {
-            nameError = this.nameRemoteValidationContext.remoteError;
-        }
-        return nameError;
-    }
-
-    protected onPasswordBlur(e: FocusEvent) {
+    protected onPasswordBlur() {
         this.form.controls.repeatPassword.updateValueAndValidity({
             emitEvent: false,
         });
-    }
-
-    protected getEmailErrorMessage() {
-        const emailFormControl = this.form.controls.email;
-        let emailErrorMessage: string | null | undefined = '';
-        if (emailFormControl.hasError('null')) {
-            emailErrorMessage = _EmailMessage.NULL;
-        } else if (emailFormControl.hasError('required')) {
-            emailErrorMessage = _EmailMessage.REQUIRED;
-        } else if (emailFormControl.hasError('email')) {
-            emailErrorMessage = _EmailMessage.INVALID;
-        } else if (emailFormControl.hasError('minlength')) {
-            emailErrorMessage = _EmailMessage.MIN_LEN;
-        } else if (emailFormControl.hasError('maxlength')) {
-            emailErrorMessage = _EmailMessage.MAX_LEN;
-        } else if (emailFormControl.hasError('remote')) {
-            emailErrorMessage = this.emailRemoteValidationContext.remoteError;
-        }
-
-        return emailErrorMessage;
-    }
-
-    protected getPasswordErrorMessage() {
-        const passwordFormControl = this.form.controls.password;
-
-        let passwordErrorMessage = '';
-        if (passwordFormControl.hasError('null')) {
-            passwordErrorMessage = _PasswordMessage.NULL;
-        }
-        if (passwordFormControl.hasError('required')) {
-            passwordErrorMessage = _PasswordMessage.REQUIRED;
-        }
-        if (passwordFormControl.hasError('weakPassword')) {
-            passwordErrorMessage = _PasswordMessage.STRONG as string;
-        }
-        if (passwordFormControl.hasError('minlength')) {
-            passwordErrorMessage = _PasswordMessage.MIN_LEN as string;
-        }
-        if (passwordFormControl.hasError('maxlength')) {
-            passwordErrorMessage = _PasswordMessage.MAX_LEN as string;
-        }
-        if (passwordFormControl.hasError('invalidPassword')) {
-            passwordErrorMessage = _PasswordMessage.INVALID;
-        }
-        if (passwordFormControl.hasError('remote')) {
-            passwordErrorMessage = this.passwordRemoteValidationContext
-                .remoteError as string;
-        }
-        return passwordErrorMessage;
-    }
-
-    protected getRepeatPasswordErrorMessage() {
-        const repeatPasswordFormControl = this.form.controls.repeatPassword;
-        if (repeatPasswordFormControl.hasError('required')) {
-            return _PasswordMessage.REQUIRED;
-        }
-        if (repeatPasswordFormControl.hasError('matchingFields')) {
-            return _PasswordMessage.DONT_MATCHES;
-        }
-        if (repeatPasswordFormControl.hasError('maxlength')) {
-            return _PasswordMessage.MAX_LEN;
-        }
-        if (repeatPasswordFormControl.hasError('remote')) {
-            return this.repeatPasswordRemoteValidationContext.remoteError;
-        }
-        return '';
-    }
-
-    protected get acceptTermsHasError() {
-        const acceptTerms = this.form.controls.acceptTerms;
-        const required = acceptTerms.hasError('required');
-        const hasError = acceptTerms.hasError('remote');
-        const pristine = acceptTerms.pristine;
-        const submitted = this.submitted;
-
-        const blurred = this.acceptTermsBlurred;
-
-        const showError =
-            (required || hasError) && (!pristine || submitted || blurred);
-
-        return showError;
     }
 
     protected togglePasswordVisibility(event: Event) {

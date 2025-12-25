@@ -13,5 +13,5 @@ describe('ResponsivityService', () => {
         expect(service).toBeTruthy();
     });
 
-    // TODO:
+    // TODO: test
 });

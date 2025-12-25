@@ -33,7 +33,7 @@ import { strongPasswordValidator } from '../../../validators/strong-password/str
 import { timeValidator } from '../../../validators/time/time.validator';
 import { AbstractFormElementModel } from '../components/abstract/abstract-form-element.model';
 import { ButtonStyle } from '../components/button/enum/button-style.enum';
-import { ButtonModel } from '../components/button/model/button-form-element.model';
+import { ButtonModel } from '../components/button/model/button.model';
 import { ButtonHarness } from '../components/button/test/button.harness';
 import { CheckboxModel } from '../components/checkbox/model/checkbox.model';
 import { CheckboxHarness } from '../components/checkbox/test/checkbox.harness';
@@ -41,25 +41,25 @@ import { DividerModel } from '../components/divider/model/divider.-form-elementm
 import { DividerHarness } from '../components/divider/test/divider.harness';
 import { LabelModel } from '../components/label/model/label-form-element.model';
 import { LabelHarness } from '../components/label/test/label.harness';
-import { NumericFieldModel } from '../components/numeric-field/model/numeric-field.model';
-import { NumericFieldComponent } from '../components/numeric-field/numeric-field.component';
-import { NumericFieldHarness } from '../components/numeric-field/test/numeric-field.harness';
 import { RadioGroupModel } from '../components/radio-group/model/radio-buttons-element.model';
 import { RadioGroupHarness } from '../components/radio-group/test/radio-group.harness';
 import { SelectModel } from '../components/select/model/select-element.model';
 import { SelectFieldHarness } from '../components/select/test/test/select-field.harness';
-import { TextAreaModel } from '../components/text-area/model/text-area.model';
-import { TextAreaFieldHarness } from '../components/text-area/test/text-area.harness';
-import { TextAreaComponent } from '../components/text-area/text-area.component';
-import { TextFieldModel } from '../components/text-field/model/text-field.model';
-import { TextFieldHarness } from '../components/text-field/test/text-field.harness';
-import { TextFieldComponent } from '../components/text-field/text-field.component';
+import { NumericFieldModel } from '../components/text/numeric-field/model/numeric-field.model';
+import { NumericFieldComponent } from '../components/text/numeric-field/numeric-field.component';
+import { NumericFieldHarness } from '../components/text/numeric-field/test/numeric-field.harness';
+import { TextAreaModel } from '../components/text/text-area/model/text-area.model';
+import { TextAreaFieldHarness } from '../components/text/text-area/test/text-area.harness';
+import { TextAreaComponent } from '../components/text/text-area/text-area.component';
+import { TextFieldModel } from '../components/text/text-field/model/text-field.model';
+import { TextFieldHarness } from '../components/text/text-field/test/text-field.harness';
+import { TextFieldComponent } from '../components/text/text-field/text-field.component';
 import { FormComponent } from '../form.component';
 import { FormFieldWrapperHarness } from './form-field-wrapper.harness';
 import { FormComponentHarness } from './form.component.harness';
 import { FormHarness } from './form.harness';
 
-describe('FormComponent', () => {
+describe('FormComponent.', () => {
     let component: FormComponent;
     let fixture: ComponentFixture<FormComponent>;
     let harness: FormComponentHarness;
@@ -82,15 +82,15 @@ describe('FormComponent', () => {
                     validators: [
                         nameValidator({
                             required: true,
-                            minlength: UserConfigs.NAME_MIN_LENGTH,
-                            maxlength: UserConfigs.NAME_MAX_LENGTH,
+                            minLength: UserConfigs.NAME_MIN_LENGTH,
+                            maxLength: UserConfigs.NAME_MAX_LENGTH,
                         }),
                     ],
                 },
             ),
             email: new FormControl(
                 { value: 'user@email.com', disabled: false },
-                { validators: [requiredValidator(), emailValidator()] },
+                { validators: [emailValidator({ required: true })] },
             ),
             password: new FormControl(
                 { value: 'Senha123$', disabled: false },
@@ -307,11 +307,11 @@ describe('FormComponent', () => {
         );
     });
 
-    it('should create', () => {
+    it('should create.', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should render an empty form', async () => {
+    it('should render an empty form.', async () => {
         fixture.detectChanges();
 
         // host contains one form
@@ -352,22 +352,22 @@ describe('FormComponent', () => {
         expect(formChildren.length).withContext('form child count').toEqual(0);
     });
 
-    describe('form with multiple elements', () => {
+    describe('form with multiple elements.', () => {
         let formHarness: FormHarness;
         let wrapperHarnessess: FormFieldWrapperHarness[];
 
         beforeEach(async () => {
-            component.formElements.set(formElements);
+            component.elements.set(formElements);
             component.justifyContent.set(JustifyContent.center);
             component.alignItems.set(AlignItems.flex_end);
-            component.formElements.set(formElements);
+            component.elements.set(formElements);
             fixture.detectChanges();
             formHarness = await harness.getFormHarness();
             wrapperHarnessess =
                 await formHarness.getFormFieldWrapperHarnesses();
         });
 
-        it('should render an form with fields', async () => {
+        it('should render an form with fields.', async () => {
             // host contains one form
 
             expect(await harness.getHostChildrenCount())
@@ -425,11 +425,13 @@ describe('FormComponent', () => {
                 .toHaveSize(formElements.length);
         });
 
-        describe('numeric field', () => {
-            it('should render form with numeric field', async () => {
+        describe('numeric field.', () => {
+            it('should render form with numeric field.', async () => {
                 const wrapperHarness = wrapperHarnessess[0];
                 const wrapperHost = await wrapperHarness.host();
-                expect(await wrapperHost.getProperty('tagName')).toEqual('DIV');
+                expect(await wrapperHost.getProperty('tagName'))
+                    .withContext('tag')
+                    .toEqual('DIV');
                 expect(await wrapperHarness.getColSizesClasses())
                     .withContext('numeric field col size classes')
                     .toEqual(
@@ -450,7 +452,7 @@ describe('FormComponent', () => {
                 const wrapperChildrenEl =
                     await wrapperHarness.getChildElement();
                 expect(await wrapperChildrenEl.getProperty('tagName'))
-                    .withContext('tagName')
+                    .withContext('tag')
                     .toEqual('APP-NUMERIC-FIELD');
                 const numericFieldHarness =
                     (await wrapperHarness.getChildHarness()) as NumericFieldHarness;
@@ -463,47 +465,63 @@ describe('FormComponent', () => {
                     .toEqual(numericFieldModel.label ?? null);
             });
 
-            it('should render numeric field with correct models', async () => {
+            it('should render numeric field with correct models.', async () => {
                 const component: NumericFieldComponent =
                     fixture.debugElement.query(
                         By.css('APP-NUMERIC-FIELD'),
                     ).componentInstance;
 
-                expect(component.id()).toEqual(numericFieldModel.id);
-                expect(component.label()).toEqual(numericFieldModel.label);
-                expect(component.placeholder()).toEqual(
-                    numericFieldModel.placeholder,
-                );
-                expect(component.readOnly()).toEqual(
-                    numericFieldModel.readOnly,
-                );
-                expect(component.control()).toEqual(numericFieldModel.control);
-                expect(component.focusable()).toEqual(
-                    numericFieldModel.focusable,
-                );
-                expect(component.minLength()).toEqual(
-                    numericFieldModel.minLength,
-                );
-                expect(component.maxLength()).toEqual(
-                    numericFieldModel.maxLength,
-                );
-                expect(component.prefix()).toEqual(numericFieldModel.prefix);
-                expect(component.suffix()).toEqual(numericFieldModel.suffix);
-                expect(component.min()).toEqual(numericFieldModel.min);
-                expect(component.max()).toEqual(numericFieldModel.max);
-                expect(component.step()).toEqual(numericFieldModel.step);
-                expect(component.leadZero()).toEqual(
-                    numericFieldModel.leadZero,
-                );
-                expect(component.allowNegativeNumbers()).toEqual(
-                    numericFieldModel.allowNegativeNumbers,
-                );
-                expect(component.decimalPlaces()).toEqual(
-                    numericFieldModel.decimalPlaces,
-                );
+                expect(component.id())
+                    .withContext('id')
+                    .toEqual(numericFieldModel.id);
+                expect(component.label())
+                    .withContext('label')
+                    .toEqual(numericFieldModel.label);
+                expect(component.placeholder())
+                    .withContext('placeholder')
+                    .toEqual(numericFieldModel.placeholder);
+                expect(component.readOnly())
+                    .withContext('readOnly')
+                    .toEqual(numericFieldModel.readOnly);
+                expect(component.control())
+                    .withContext('control')
+                    .toEqual(numericFieldModel.control);
+                expect(component.focusable())
+                    .withContext('focusable')
+                    .toEqual(numericFieldModel.focusable);
+                expect(component.minLength())
+                    .withContext('minLength')
+                    .toEqual(numericFieldModel.minLength);
+                expect(component.maxLength())
+                    .withContext('maxLength')
+                    .toEqual(numericFieldModel.maxLength);
+                expect(component.prefix())
+                    .withContext('prefix')
+                    .toEqual(numericFieldModel.prefix);
+                expect(component.suffix())
+                    .withContext('suffix')
+                    .toEqual(numericFieldModel.suffix);
+                expect(component.min())
+                    .withContext('min')
+                    .toEqual(numericFieldModel.min);
+                expect(component.max())
+                    .withContext('max')
+                    .toEqual(numericFieldModel.max);
+                expect(component.step())
+                    .withContext('step')
+                    .toEqual(numericFieldModel.step);
+                expect(component.leadZero())
+                    .withContext('leadZero')
+                    .toEqual(numericFieldModel.leadZero);
+                expect(component.allowNegativeNumbers())
+                    .withContext('allowNegativeNumbers')
+                    .toEqual(numericFieldModel.allowNegativeNumbers);
+                expect(component.decimalPlaces())
+                    .withContext('decimalPlaces')
+                    .toEqual(numericFieldModel.decimalPlaces);
             });
 
-            it('numeric field should delegate blur event to to the component', async () => {
+            it('numeric field should delegate blur event to to the component.', async () => {
                 const component: NumericFieldComponent =
                     fixture.debugElement.query(
                         By.css('APP-NUMERIC-FIELD'),
@@ -521,11 +539,13 @@ describe('FormComponent', () => {
             });
         });
 
-        describe('text field', () => {
-            it('should render form with text field', async () => {
+        describe('text field.', () => {
+            it('should render form with text field,', async () => {
                 const wrapperHarness = wrapperHarnessess[1];
                 const wrapperHost = await wrapperHarness.host();
-                expect(await wrapperHost.getProperty('tagName')).toEqual('DIV');
+                expect(await wrapperHost.getProperty('tagName'))
+                    .withContext('')
+                    .toEqual('DIV');
                 expect(await wrapperHarness.getColSizesClasses())
                     .withContext('text field col size classes')
                     .toEqual(
@@ -546,7 +566,7 @@ describe('FormComponent', () => {
                 const wrapperChildrenEl =
                     await wrapperHarness.getChildElement();
                 expect(await wrapperChildrenEl.getProperty('tagName'))
-                    .withContext('tagName')
+                    .withContext('tag')
                     .toEqual('APP-TEXT-FIELD');
                 const textFieldHarness =
                     (await wrapperHarness.getChildHarness()) as TextFieldHarness;
@@ -559,31 +579,51 @@ describe('FormComponent', () => {
                     .toEqual(textFieldModel.label ?? null);
             });
 
-            it('should render text field with correct models', async () => {
+            it('should render text field with correct models.', async () => {
                 const component: TextFieldComponent =
                     fixture.debugElement.query(
                         By.css('APP-TEXT-FIELD'),
                     ).componentInstance;
 
-                expect(component.id()).toEqual(textFieldModel.id);
-                expect(component.mask()).toEqual(textFieldModel.mask);
-                expect(component.label()).toEqual(textFieldModel.label);
-                expect(component.placeholder()).toEqual(
-                    textFieldModel.placeholder,
-                );
-                expect(component.control()).toEqual(textFieldModel.control);
-                expect(component.focusable()).toEqual(textFieldModel.focusable);
-                expect(component.readOnly()).toEqual(
-                    numericFieldModel.readOnly,
-                );
-                expect(component.format()).toEqual(textFieldModel.format);
-                expect(component.minLength()).toEqual(textFieldModel.minLength);
-                expect(component.maxLength()).toEqual(textFieldModel.maxLength);
-                expect(component.prefix()).toEqual(textFieldModel.prefix);
-                expect(component.suffix()).toEqual(textFieldModel.suffix);
+                expect(component.id())
+                    .withContext('id')
+                    .toEqual(textFieldModel.id);
+                expect(component.mask())
+                    .withContext('mask')
+                    .toEqual(textFieldModel.mask);
+                expect(component.label())
+                    .withContext('label')
+                    .toEqual(textFieldModel.label);
+                expect(component.placeholder())
+                    .withContext('placeholder')
+                    .toEqual(textFieldModel.placeholder);
+                expect(component.control())
+                    .withContext('control')
+                    .toEqual(textFieldModel.control);
+                expect(component.focusable())
+                    .withContext('focusable')
+                    .toEqual(textFieldModel.focusable);
+                expect(component.readOnly())
+                    .withContext('readOnly')
+                    .toEqual(numericFieldModel.readOnly);
+                expect(component.format())
+                    .withContext('format')
+                    .toEqual(textFieldModel.format);
+                expect(component.minLength())
+                    .withContext('minLength')
+                    .toEqual(textFieldModel.minLength);
+                expect(component.maxLength())
+                    .withContext('maxLength')
+                    .toEqual(textFieldModel.maxLength);
+                expect(component.prefix())
+                    .withContext('prefix')
+                    .toEqual(textFieldModel.prefix);
+                expect(component.suffix())
+                    .withContext('suffix')
+                    .toEqual(textFieldModel.suffix);
             });
 
-            it('text field should delegate blur event to to the component', async () => {
+            it('text field should delegate blur event to to the component.', async () => {
                 const component: TextFieldComponent =
                     fixture.debugElement.query(
                         By.css('APP-TEXT-FIELD'),
@@ -601,12 +641,14 @@ describe('FormComponent', () => {
             });
         });
 
-        describe('text area', () => {
-            it('should render form with text area', async () => {
+        describe('text area.', () => {
+            it('should render form with text area.', async () => {
                 const wrapperHarness = wrapperHarnessess[2];
 
                 const wrapperHost = await wrapperHarness.host();
-                expect(await wrapperHost.getProperty('tagName')).toEqual('DIV');
+                expect(await wrapperHost.getProperty('tagName'))
+                    .withContext('tag')
+                    .toEqual('DIV');
                 expect(await wrapperHarness.getColSizesClasses())
                     .withContext('textArea col size classes')
                     .toEqual(
@@ -624,10 +666,9 @@ describe('FormComponent', () => {
                 expect(await wrapperHarness.getChildrenCount())
                     .withContext('text area wrapper child count')
                     .toEqual(1);
-
                 const childEl = await wrapperHarness.getChildElement();
                 expect(await childEl.getProperty('tagName'))
-                    .withContext('tagName')
+                    .withContext('tag')
                     .toEqual('APP-TEXT-AREA-FIELD');
                 const textAreaFieldHarness =
                     (await wrapperHarness.getChildHarness()) as TextAreaFieldHarness;
@@ -639,26 +680,38 @@ describe('FormComponent', () => {
                     .toEqual(textAreaModel.label ?? null);
             });
 
-            it('should render text field with correct models', async () => {
+            it('should render text field with correct models.', async () => {
                 const component: TextAreaComponent = fixture.debugElement.query(
                     By.css('APP-TEXT-AREA-FIELD'),
                 ).componentInstance;
 
-                expect(component.id()).toEqual(textAreaModel.id);
-                expect(component.label()).toEqual(textAreaModel.label);
-                expect(component.placeholder()).toEqual(
-                    textAreaModel.placeholder,
-                );
-                expect(component.control()).toEqual(textAreaModel.control);
-                expect(component.focusable()).toEqual(textAreaModel.focusable);
-                expect(component.minLength()).toEqual(textAreaModel.minLength);
-                expect(component.maxLength()).toEqual(textAreaModel.maxLength);
-                expect(component.autosizeMinRows()).toEqual(
-                    textAreaModel.autosizeMaxRows,
-                );
+                expect(component.id())
+                    .withContext('id')
+                    .toEqual(textAreaModel.id);
+                expect(component.label())
+                    .withContext('label')
+                    .toEqual(textAreaModel.label);
+                expect(component.placeholder())
+                    .withContext('placeholder')
+                    .toEqual(textAreaModel.placeholder);
+                expect(component.control())
+                    .withContext('control')
+                    .toEqual(textAreaModel.control);
+                expect(component.focusable())
+                    .withContext('focusable')
+                    .toEqual(textAreaModel.focusable);
+                expect(component.minLength())
+                    .withContext('minLength')
+                    .toEqual(textAreaModel.minLength);
+                expect(component.maxLength())
+                    .withContext('maxLength')
+                    .toEqual(textAreaModel.maxLength);
+                expect(component.autosizeMinRows())
+                    .withContext('autosizeMinRows')
+                    .toEqual(textAreaModel.autosizeMaxRows);
             });
 
-            it('text field should delegate blur event to to the component', async () => {
+            it('text field should delegate blur event to to the component.', async () => {
                 const component: TextAreaComponent = fixture.debugElement.query(
                     By.css('APP-TEXT-AREA-FIELD'),
                 ).componentInstance;
@@ -675,11 +728,13 @@ describe('FormComponent', () => {
             });
         });
 
-        describe('select', () => {
-            it('should render form with select', async () => {
+        describe('select.', () => {
+            it('should render form with select.', async () => {
                 const wrapperHarness = wrapperHarnessess[5];
                 const wrapperHost = await wrapperHarness.host();
-                expect(await wrapperHost.getProperty('tagName')).toEqual('DIV');
+                expect(await wrapperHost.getProperty('tagName'))
+                    .withContext('tag')
+                    .toEqual('DIV');
                 expect(await wrapperHarness.getColSizesClasses())
                     .withContext('select field col size classes')
                     .toEqual(
@@ -699,7 +754,7 @@ describe('FormComponent', () => {
                     .toEqual(1);
                 const childrenEl = await wrapperHarness.getChildElement();
                 expect(await childrenEl.getProperty('tagName'))
-                    .withContext('tagName')
+                    .withContext('tag')
                     .toEqual('APP-SELECT-FIELD');
                 const selectFieldHarness =
                     (await wrapperHarness.getChildHarness()) as SelectFieldHarness;
@@ -722,11 +777,13 @@ describe('FormComponent', () => {
             });
         });
 
-        describe('radio group', () => {
-            it('should render form with radio group', async () => {
+        describe('radio group.', () => {
+            it('should render form with radio group.', async () => {
                 const wrapperHarness = wrapperHarnessess[6];
                 const wrapperHost = await wrapperHarness.host();
-                expect(await wrapperHost.getProperty('tagName')).toEqual('DIV');
+                expect(await wrapperHost.getProperty('tagName'))
+                    .withContext('')
+                    .toEqual('DIV');
                 expect(await wrapperHarness.getColSizesClasses())
                     .withContext('radio group col size classes')
                     .toEqual(
@@ -746,7 +803,7 @@ describe('FormComponent', () => {
                     .toEqual(1);
                 const childrenEl = await wrapperHarness.getChildElement();
                 expect(await childrenEl.getProperty('tagName'))
-                    .withContext('tagName')
+                    .withContext('tag')
                     .toEqual('APP-RADIO-GROUP');
                 const radioGroupHarness =
                     (await wrapperHarness.getChildHarness()) as RadioGroupHarness;
@@ -756,11 +813,13 @@ describe('FormComponent', () => {
             });
         });
 
-        describe('checkbox', () => {
-            it('should render form with checkbox', async () => {
+        describe('checkbox.', () => {
+            it('should render form with checkbox.', async () => {
                 const wrapperHarness = wrapperHarnessess[7];
                 const wrapperHost = await wrapperHarness.host();
-                expect(await wrapperHost.getProperty('tagName')).toEqual('DIV');
+                expect(await wrapperHost.getProperty('tagName'))
+                    .withContext('tag')
+                    .toEqual('DIV');
                 expect(await wrapperHarness.getColSizesClasses())
                     .withContext('checkbox col size classes')
                     .toEqual(
@@ -780,19 +839,22 @@ describe('FormComponent', () => {
                     .toEqual(1);
                 const childrenEl = await wrapperHarness.getChildElement();
                 expect(await childrenEl.getProperty('tagName'))
-                    .withContext('tagName')
+                    .withContext('tag')
                     .toEqual('APP-CHECKBOX');
+                // TODO:?
                 const checkboxHarness =
                     (await wrapperHarness.getChildHarness()) as CheckboxHarness;
             });
         });
 
-        describe('label', () => {
-            it('should render form with label', async () => {
+        describe('label.', () => {
+            it('should render form with label.', async () => {
                 const wrapperHarness = wrapperHarnessess[4];
 
                 const wrapperHost = await wrapperHarness.host();
-                expect(await wrapperHost.getProperty('tagName')).toEqual('DIV');
+                expect(await wrapperHost.getProperty('tagName'))
+                    .withContext('tag')
+                    .toEqual('DIV');
                 expect(await wrapperHarness.getColSizesClasses())
                     .withContext('label col size classes')
                     .toEqual(
@@ -812,7 +874,7 @@ describe('FormComponent', () => {
                     .toEqual(1);
                 const childrenEl = await wrapperHarness.getChildElement();
                 expect(await childrenEl.getProperty('tagName'))
-                    .withContext('tagName')
+                    .withContext('tag')
                     .toEqual('MAT-LABEL');
                 const labelHarness =
                     (await wrapperHarness.getChildHarness()) as LabelHarness;
@@ -820,8 +882,8 @@ describe('FormComponent', () => {
             });
         });
 
-        describe('divider', () => {
-            it('should render form divider', async () => {
+        describe('divider.', () => {
+            it('should render form divider.', async () => {
                 const wrapperHarness = wrapperHarnessess[3];
 
                 expect(await wrapperHarness.getColSizesClasses())
@@ -843,21 +905,25 @@ describe('FormComponent', () => {
                     .toEqual(1);
                 const dividerEl = await wrapperHarness.getChildElement();
                 expect(await dividerEl.getProperty('tagName'))
-                    .withContext('tagName')
+                    .withContext('tag')
                     .toEqual('MAT-DIVIDER');
                 const dividerHarness =
                     (await wrapperHarness.getChildHarness()) as DividerHarness; // TODO:
 
                 const wrapperHost = await wrapperHarness.host();
-                expect(await wrapperHost.getProperty('tagName')).toEqual('DIV');
+                expect(await wrapperHost.getProperty('tagName'))
+                    .withContext('tag')
+                    .toEqual('DIV');
             });
         });
 
-        describe('button', () => {
-            it('should render form with button', async () => {
+        describe('button.', () => {
+            it('should render form with button.', async () => {
                 const wrapperHarness = wrapperHarnessess[8];
                 const wrapperHost = await wrapperHarness.host();
-                expect(await wrapperHost.getProperty('tagName')).toEqual('DIV');
+                expect(await wrapperHost.getProperty('tagName'))
+                    .withContext('tag')
+                    .toEqual('DIV');
                 expect(await wrapperHarness.getColSizesClasses())
                     .withContext('button col size classes')
                     .toEqual(
@@ -877,14 +943,14 @@ describe('FormComponent', () => {
                     .toEqual(1);
                 const childrenEl = await wrapperHarness.getChildElement();
                 expect(await childrenEl.getProperty('tagName'))
-                    .withContext('tagName')
+                    .withContext('tag')
                     .toEqual('APP-BUTTON');
                 const buttonHarness =
                     (await wrapperHarness.getChildHarness()) as ButtonHarness;
 
-                expect(await buttonHarness.getInnerButtonLabelText()).toEqual(
-                    buttonModel.label,
-                );
+                expect(await buttonHarness.getInnerButtonLabelText())
+                    .withContext('label')
+                    .toEqual(buttonModel.label);
             });
         });
     });

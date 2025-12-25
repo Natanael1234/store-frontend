@@ -17,7 +17,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { By } from '@angular/platform-browser';
-import { SelectComponent } from '../../../../components/select/select.component';
 import { ActiveFilter } from '../../../../enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '../../../../enums/deleted-filter/deleted-filter.enum';
 import { UserOrder } from '../../../../services/user/enums/user-order/user-order.enum';
@@ -47,7 +46,6 @@ describe('UserFilterDialogComponent', () => {
                 MatChipsModule,
                 MatTooltipModule,
                 MatDividerModule,
-                SelectComponent,
             ],
             providers: [
                 {

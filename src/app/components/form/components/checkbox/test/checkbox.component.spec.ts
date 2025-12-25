@@ -5,7 +5,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { CheckboxComponent } from '../checkbox.component';
 import { CheckboxHarness } from './checkbox.harness';
 
-describe('CheckboxFormElement', () => {
+describe('CheckboxFormElement.', () => {
     let component: CheckboxComponent;
     let fixture: ComponentFixture<CheckboxComponent>;
     let harness: CheckboxHarness;
@@ -83,7 +83,7 @@ describe('CheckboxFormElement', () => {
         expect(component).toBeTruthy();
     });
 
-    describe('id', () => {
+    describe('id.', () => {
         it('should render the id correctly', async () => {
             component.id.set('checkbox-id');
             const control = new FormControl(false);
@@ -122,7 +122,7 @@ describe('CheckboxFormElement', () => {
         });
     });
 
-    describe('label', () => {
+    describe('label.', () => {
         it('should render the label correctly', async () => {
             component.label.set('Accept terms');
             const control = new FormControl(false);
@@ -161,8 +161,8 @@ describe('CheckboxFormElement', () => {
         });
     });
 
-    describe('control', () => {
-        describe('value', () => {
+    describe('control.', () => {
+        describe('value.', () => {
             {
                 it('should reflect FormControl value = true', async () => {
                     const control = new FormControl(true);
@@ -240,7 +240,7 @@ describe('CheckboxFormElement', () => {
             }
         });
 
-        describe('disabled', () => {
+        describe('disabled.', () => {
             it('should be disabled when form control is disabled', async () => {
                 const control = new FormControl({
                     value: false,
@@ -266,7 +266,7 @@ describe('CheckboxFormElement', () => {
         });
     });
 
-    describe('required', () => {
+    describe('required.', () => {
         it('should display * when the control is required', async () => {
             const control = new FormControl(false);
             component.control.set(control);
@@ -308,7 +308,7 @@ describe('CheckboxFormElement', () => {
         });
     });
 
-    describe('required', () => {
+    describe('required.', () => {
         it('should display * when the control is required', async () => {
             const control = new FormControl(false);
             component.control.set(control);
@@ -351,8 +351,8 @@ describe('CheckboxFormElement', () => {
     });
 
     // TODO: not working
-    xdescribe('focusable', () => {
-        it('should be focusable by default', () => {
+    xdescribe('focusable.', () => {
+        it('should be focusable by default.', () => {
             const control = new FormControl(false);
             component.control.set(control);
             fixture.detectChanges();
@@ -366,7 +366,7 @@ describe('CheckboxFormElement', () => {
             });
         });
 
-        it('should not be focusable when focusable = true', () => {
+        it('should not be focusable when focusable = true.', () => {
             const control = new FormControl(false);
             component.control.set(control);
             component.focusable.set(false);
@@ -381,7 +381,7 @@ describe('CheckboxFormElement', () => {
             });
         });
 
-        it('should not be focusable when focusable = false', () => {
+        it('should not be focusable when focusable = false.', () => {
             const control = new FormControl(false);
             component.control.set(control);
             component.focusable.set(false);

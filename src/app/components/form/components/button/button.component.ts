@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Icon } from '../../../../enums/icons/icons.enum';
 import { leftMouseClickFilter } from '../../../../utils/mouse-events/mouse-click-filter';
+import { AutofocusDirective } from '../../directives/autofocus/autofocus.directive';
 import { ButtonStyle } from './enum/button-style.enum';
 
 @Component({
@@ -25,6 +26,7 @@ import { ButtonStyle } from './enum/button-style.enum';
         CommonModule,
         MatIconModule,
         MatButtonModule,
+        AutofocusDirective,
     ],
     styles: `
         :host {
@@ -42,6 +44,7 @@ import { ButtonStyle } from './enum/button-style.enum';
             [matButton]="style()"
             (click)="fireClickButtonEvent($event)"
             [disabled]="!!disabled()"
+            [appAutofocus]="autofocus() ?? false"
             [tabindex]="tabIndex()">
             @if (icon()) {
                 <mat-icon>{{ icon() }}</mat-icon>
@@ -57,6 +60,7 @@ export class ButtonComponent {
     public style = model<ButtonStyle>(ButtonStyle.text);
     public disabled = model<boolean>();
     public focusable = model<boolean>();
+    public autofocus = model<boolean>();
 
     protected tabIndex = computed(() => ((this.focusable() ?? true) ? 0 : -1));
 
