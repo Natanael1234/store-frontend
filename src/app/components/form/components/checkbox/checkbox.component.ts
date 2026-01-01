@@ -47,6 +47,7 @@ export class CheckboxComponent {
     protected _autofocus = computed(() => {
         return this.autofocus() ?? false;
     });
+
     protected _isRequired = computed(() => isRequired(this.control()));
     protected _requiredSymbol = computed(() =>
         isRequired(this.control()) ? '*' : '',

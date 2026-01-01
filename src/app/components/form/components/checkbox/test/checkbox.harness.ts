@@ -4,8 +4,9 @@ import { MatCheckboxHarness } from '@angular/material/checkbox/testing';
 export class CheckboxHarness extends ComponentHarness {
     static hostSelector = 'app-checkbox';
     private readonly hostChildren = this.locatorForAll(':scope > *');
-    private readonly checkboxHarnesses = this.locatorForAll(MatCheckboxHarness);
-    private checkboxHarness = this.locatorFor(MatCheckboxHarness);
+    private readonly matCheckboxHarnesses =
+        this.locatorForAll(MatCheckboxHarness);
+    private readonly matCheckboxHarness = this.locatorFor(MatCheckboxHarness);
 
     async countHostChildren() {
         const children = await this.hostChildren();
@@ -31,34 +32,41 @@ export class CheckboxHarness extends ComponentHarness {
         return tagNames;
     }
 
-    async getCheckboxHarness() {
-        return this.checkboxHarness();
+    async getMatCheckboxHarness() {
+        return this.matCheckboxHarness();
     }
 
-    async getCheckboxHarnesses() {
-        return this.checkboxHarnesses();
+    async getMatCheckboxHarnesses() {
+        return this.matCheckboxHarnesses();
     }
 
     async getCheckboxId(): Promise<string> {
-        const checkbox = await this.checkboxHarness();
+        const checkbox = await this.matCheckboxHarness();
         const host = await checkbox.host();
         return (await host.getAttribute('id')) ?? '';
     }
 
     async getLabel(): Promise<string> {
-        const checkbox = await this.checkboxHarness();
+        const checkbox = await this.matCheckboxHarness();
         const host = await checkbox.host();
         return (await host.text()) ?? '';
     }
 
     async isChecked() {
-        const checkbox = await this.checkboxHarness();
+        const checkbox = await this.matCheckboxHarness();
         return checkbox.isChecked();
     }
 
     async isDisabled() {
-        const checkbox = await this.checkboxHarness();
+        const checkbox = await this.matCheckboxHarness();
         return checkbox.isDisabled();
+    }
+
+    async isCheckboxFocused(): Promise<boolean> {
+        const checkbox = await this.matCheckboxHarness();
+        const input = await checkbox._input();
+        const isFocused = await input.isFocused();
+        return isFocused;
     }
 
     async hasVisibleError(): Promise<boolean> {
@@ -75,7 +83,7 @@ export class CheckboxHarness extends ComponentHarness {
 
     /** 🔹 Retorna todas as classes aplicadas ao mat-form-field */
     async getFormFieldClasses(): Promise<string[]> {
-        const harness = await this.checkboxHarness();
+        const harness = await this.matCheckboxHarness();
         const host = await harness.host();
         const classAttr = (await host.getAttribute('class')) ?? '';
         return classAttr
@@ -98,13 +106,12 @@ export class CheckboxHarness extends ComponentHarness {
     }
 
     async getInnerButtonLabel() {
-        const label = (await this.checkboxHarness()).getLabelText();
+        const label = (await this.matCheckboxHarness()).getLabelText();
         return label;
     }
 
     async click() {
-        const checkbox = await this.checkboxHarness();
-
+        const checkbox = await this.matCheckboxHarness();
         (await checkbox._input()).click();
     }
 }
