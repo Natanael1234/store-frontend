@@ -200,7 +200,6 @@ export class FormComponentHarness extends ComponentHarness {
         const formClassStr =
             (await hostChildElement.getAttribute('class')) || '';
         const formClasses = formClassStr.split(' ');
-        // console.log(formClasses);
         if (!formClasses.includes('flex-grid')) {
             errors[`missingFormFlexGridClass`] =
                 `Missing 'flex-grid' class on form element.`;

@@ -496,7 +496,6 @@ describe('FormComponent.', () => {
                 const spacerWrapperElement = getSpacerWrapperElement();
                 expect(spacerWrapperElement).toBeDefined();
                 expect(spacerWrapperElement).not.toBeNull();
-                console.log(spacerWrapperElement.classList);
                 expect(spacerWrapperElement.children.length).toEqual(0);
                 expect(
                     spacerWrapperElement.classList.contains('spacer'),
