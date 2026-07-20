@@ -21,6 +21,7 @@ type ButtonFormElementOptions = AbstractFormElementOptions & {
     routerLink?: string | string[];
     queryParams?: object;
     queryParamsHandling?: QueryParamsHandling;
+    disabled?: boolean;
 };
 
 export class ButtonModel extends AbstractFormElementModel {
@@ -39,6 +40,8 @@ export class ButtonModel extends AbstractFormElementModel {
     public queryParams?: object;
     public queryParamsHandling?: QueryParamsHandling;
 
+    public disabled?: boolean;
+
     constructor(options: ButtonFormElementOptions) {
         super(options);
         this.type = options.type ?? FormElementType.button;
@@ -51,5 +54,6 @@ export class ButtonModel extends AbstractFormElementModel {
         this.routerLink = options.routerLink;
         this.queryParams = options.queryParams;
         this.queryParamsHandling = options.queryParamsHandling;
+        this.disabled = options.disabled ?? false;
     }
 }

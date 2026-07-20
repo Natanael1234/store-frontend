@@ -1,5 +1,6 @@
 import {
     AbstractControl,
+    FormGroup,
     ValidationErrors,
     ValidatorFn,
     Validators,
@@ -13,6 +14,13 @@ const _PasswordMessage = new PasswordMessage({
     maxLength: UserConfigs.PASSWORD_MAX_LENGTH,
 });
 
+function getMachingControl(control: AbstractControl, fieldToMatch: string) {
+    const formGroup = control.parent as FormGroup;
+    const matchingControl = formGroup?.get(fieldToMatch);
+    console.log('matchingControl', fieldToMatch);
+    return matchingControl;
+}
+
 function baseMatchingPasswordFieldsValidator(
     fieldToMatch: string,
 ): ValidatorFn {
@@ -21,20 +29,26 @@ function baseMatchingPasswordFieldsValidator(
             return null;
         }
 
-        const value = control.value;
-        if (value === false) {
+        if (control.value === false) {
             return { invalid: { message: _PasswordMessage.INVALID } };
         }
-        const matchingControl = control.root.get(fieldToMatch);
+
+        const matchingControl = getMachingControl(control, fieldToMatch);
         if (!matchingControl) {
             return null;
         }
-        if (matchingControl && value !== matchingControl.value) {
-            return {
-                matchingFields: { message: _PasswordMessage.DONT_MATCHES },
-            };
+        const valuesMatches = control.value === matchingControl.value;
+        console.log({
+            value: control.value,
+            matchingValue: matchingControl.value,
+            valuesMatches,
+        });
+        if (valuesMatches) {
+            return null;
         }
-        return null;
+        return {
+            matchingFields: { message: _PasswordMessage.DONT_MATCHES },
+        };
     };
 }
 

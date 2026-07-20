@@ -915,6 +915,36 @@ describe('TextFieldComponent.', () => {
                 });
             });
         });
+
+        describe('masks', () => {
+            it('email mask', async () => {
+                control.setValue('user@email.com');
+                component.mask.set(TextMask.email);
+                fixture.detectChanges();
+
+                const state = await harness.getState();
+                expect(state).toEqual({
+                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    type: FormElementType.text,
+                    value: 'user@email.com',
+                    isPassword: false,
+                    label: '',
+                    placeholder: '',
+                    isFocusable: true,
+                    isFocused: false,
+                    isReadOnly: false,
+                    autocomplete: AutoCompleteType.off,
+                    minLength: null,
+                    maxLength: null,
+                    prefix: '',
+                    suffix: '',
+                    errors: [],
+                    hasValidStructure: true,
+                });
+            });
+
+            // TODO: implementar outros
+        });
     });
 });
 

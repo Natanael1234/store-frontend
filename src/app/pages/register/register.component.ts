@@ -20,6 +20,7 @@ import { ButtonModel } from '../../components/form/components/button/model/butto
 import { CheckboxModel } from '../../components/form/components/checkbox/model/checkbox.model';
 import { TextFieldModel } from '../../components/form/components/text/text-field/model/text-field.model';
 import { AutoCompleteType } from '../../components/form/enums/auto-complete-type/auto-complete-type.enum';
+import { FormElementType } from '../../components/form/enums/form-element-type/form-element-type.enum';
 import { TextFormat } from '../../components/form/enums/text-format/text-format.enum';
 import { FormComponent } from '../../components/form/form.component';
 import { UserConfigs } from '../../configs/user/user.configs';
@@ -137,7 +138,7 @@ export class RegisterComponent {
                 requiredTrueValidator(),
                 remoteValidator(this.acceptTermsRemoteValidationContext),
             ],
-            updateOn: 'blur',
+            updateOn: 'blur', // TODO: criar enum
         }),
     });
 
@@ -174,7 +175,7 @@ export class RegisterComponent {
         id: 'repeat-password-input',
         format: TextFormat.password,
         label: 'Repita a senha',
-        control: this.form.controls.password,
+        control: this.form.controls.repeatPassword,
         colSize: 12,
         autocomplete: AutoCompleteType.off,
         maxLength: UserConfigs.PASSWORD_MAX_LENGTH,
@@ -193,8 +194,9 @@ export class RegisterComponent {
         label: 'Registrar',
         style: ButtonStyle.filled,
         colSize: 12,
-        // type="submit"
-        // [disabled]="loading"
+        type: FormElementType.submit,
+        disabled: false,
+        clickCallback: () => this.onSubmit(),
     });
 
     protected loginButton = new ButtonModel({
@@ -219,10 +221,10 @@ export class RegisterComponent {
 
     protected onSubmit() {
         this.submitted = true;
+        this.form.updateValueAndValidity();
         if (!this.form.valid) {
             return;
         }
-        this.form.updateValueAndValidity();
 
         const data = this.form.getRawValue() as RegisterRequestDto;
         this.mainError = undefined;

@@ -298,7 +298,7 @@ describe('FormComponent.', () => {
             label: 'Descrição',
             placeholder: 'Insira uma descrição',
             focusable: true,
-            autofocus: false,
+            autofocus: true,
             readOnly: false,
             maxLength: 200,
             control: form.controls.description,

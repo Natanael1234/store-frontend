@@ -79,7 +79,7 @@ import { TextMask } from '../../../enums/text-mask/text-mask.enum';
                 [attr.minlength]="_minLength()"
                 [attr.maxlength]="_maxLength()"
                 [mask]="_mask()"
-                [attr.dropSpecialCharacters]="false"
+                [dropSpecialCharacters]="false"
                 [formControl]="control()!"
                 (blur)="fireOnBlurEvent()" />
 
@@ -89,7 +89,9 @@ import { TextMask } from '../../../enums/text-mask/text-mask.enum';
                     mat-icon-button
                     matSuffix
                     (click)="toggleVisibility()"
-                    type="button">
+                    type="button"
+                    tabIndex="-1">
+                    <!-- TOOD: test tabIndex -->
                     <mat-icon>{{ _passwordIcon() }}</mat-icon>
                 </button>
             }
