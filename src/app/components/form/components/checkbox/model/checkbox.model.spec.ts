@@ -4,9 +4,7 @@ import { CheckboxModel } from './checkbox.model';
 
 describe('CheckboxModel.', () => {
     it('should have type FormElementType.checkbox.', () => {
-        const element = new CheckboxModel({
-            control: new FormControl(false),
-        });
+        const element = new CheckboxModel({ control: new FormControl(false) });
         expect(element.type).toBe(FormElementType.checkbox);
     });
 
@@ -19,27 +17,20 @@ describe('CheckboxModel.', () => {
     });
 
     it('should inherit properties from AbstractFormElement.', () => {
-        const element = new CheckboxModel({
-            label: 'Subscribe',
-            control: new FormControl(false),
-            autofocus: true,
+        const control = new FormControl(true);
+        const model = new CheckboxModel({
             id: 'checkbox-1',
+            label: 'Subscribe',
+            control,
+            focusable: true,
+            autofocus: true,
             colSize: 6,
-            colOffset: 2,
-            breakLine: true,
         });
 
-        expect(element.id).toBe('checkbox-1');
-        expect(element.autofocus).toBeTrue();
-        expect(element.colSize).toBe(6);
-        expect(element.colOffset).toBe(2);
-        expect(element.breakLine).toBeTrue();
-    });
-
-    it('should default breakLine to false.', () => {
-        const element = new CheckboxModel({
-            control: new FormControl(false),
-        });
-        expect(element.breakLine).toBeFalse();
+        expect(model.id).toBe('checkbox-1');
+        expect(model.control).toEqual(control);
+        expect(model.focusable).toBeTrue();
+        expect(model.autofocus).toBeTrue();
+        expect(model.colSize).toBe(6);
     });
 });

@@ -29,16 +29,6 @@ export class ToolbarScrapper {
         return form.elements();
     }
 
-    getAlignItems() {
-        const form = this.getFormComponentInstance();
-        return form.alignItems();
-    }
-
-    getJustifyContent() {
-        const form = this.getFormComponentInstance();
-        return form.justifyContent();
-    }
-
     getFormComponentInstance() {
         const formEl = this.getFormComponentDebugElement();
         const formComponentInstance = formEl.componentInstance as FormComponent;

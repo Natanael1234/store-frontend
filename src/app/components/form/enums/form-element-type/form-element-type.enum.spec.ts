@@ -31,10 +31,15 @@ describe('FormElementType enum', () => {
             radioGroup: 'radio-group',
 
             button: 'button',
+            submit: 'submit',
+            reset: 'reset',
+
             buttonGroup: 'button-group',
 
             label: 'label',
             divider: 'divider',
+
+            spacer: 'spacer',
         });
     });
 });

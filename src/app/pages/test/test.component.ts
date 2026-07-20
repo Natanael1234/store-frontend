@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { AbstractFormElementModel } from '../../components/form/components/abstract/abstract-form-element.model';
-import { ButtonStyle } from '../../components/form/components/button/enum/button-style.enum';
+import { ButtonStyle } from '../../components/form/components/button/enum/style/button-style.enum';
 import { ButtonModel } from '../../components/form/components/button/model/button.model';
 import { CheckboxModel } from '../../components/form/components/checkbox/model/checkbox.model';
 import { DividerModel } from '../../components/form/components/divider/model/divider.-form-elementmodel';
@@ -11,10 +12,13 @@ import { SelectModel } from '../../components/form/components/select/model/selec
 import { NumericFieldModel } from '../../components/form/components/text/numeric-field/model/numeric-field.model';
 import { TextAreaModel } from '../../components/form/components/text/text-area/model/text-area.model';
 import { TextFieldModel } from '../../components/form/components/text/text-field/model/text-field.model';
+import { FormElementType } from '../../components/form/enums/form-element-type/form-element-type.enum';
 import { TextFormat } from '../../components/form/enums/text-format/text-format.enum';
 import { FormComponent } from '../../components/form/form.component';
+import { SpacerModel } from '../../components/form/spacer/model/spacer.model';
 import { UserConfigs } from '../../configs/user/user.configs';
 import { Icon } from '../../enums/icons/icons.enum';
+import { ResponsityService } from '../../services/responsivity/responsivity.service';
 import { cepValidator } from '../../validators/cep/cep.validator';
 import { cnpjValidator } from '../../validators/cnpj/cnpj.validator';
 import { cpfValidator } from '../../validators/cpf/cpf.validator';
@@ -35,7 +39,10 @@ import { timeValidator } from '../../validators/time/time.validator';
     styleUrl: './test.component.scss',
 })
 export class TestComponent {
-    public formElements: AbstractFormElementModel[];
+    public formElements: AbstractFormElementModel[] = [];
+
+    protected responsivity: ResponsityService = inject(ResponsityService);
+    private resizeSubscription!: Subscription;
 
     form = new FormGroup(
         {
@@ -129,7 +136,17 @@ export class TestComponent {
         { updateOn: 'blur' },
     );
 
-    constructor() {
+    constructor() {}
+
+    public ngAfterViewInit() {
+        this.resizeSubscription = this.responsivity.mobile.subscribe(
+            (mobile) => {
+                this.setFormItems(mobile);
+            },
+        );
+    }
+
+    setFormItems(mobile: boolean) {
         this.formElements = [
             new TextFieldModel({
                 id: 'name',
@@ -140,8 +157,9 @@ export class TestComponent {
                 minLength: 3,
                 maxLength: 7,
                 onBlur: () => console.log('On text input blur'),
-                colSize: 6,
+                colSize: mobile ? 12 : 6,
             }),
+            ...(mobile ? [] : [new SpacerModel({ colSize: 2 })]),
             new TextFieldModel({
                 id: 'email',
                 format: TextFormat.email,
@@ -149,7 +167,7 @@ export class TestComponent {
                 placeholder: 'Insira um email',
                 maxLength: 200,
                 control: this.form.controls.email,
-                colSize: 12,
+                colSize: mobile ? 12 : 4,
             }),
             new TextFieldModel({
                 id: 'password',
@@ -157,7 +175,7 @@ export class TestComponent {
                 label: 'Senha',
                 placeholder: 'Insira a senha',
                 maxLength: 12,
-                colSize: 12,
+                colSize: mobile ? 12 : 12,
                 control: this.form.controls.password,
             }),
             new TextFieldModel({
@@ -168,44 +186,44 @@ export class TestComponent {
                 maxLength: 14,
                 focusable: false,
                 control: this.form.controls.phone,
-                colSize: 4,
+                colSize: mobile ? 12 : 4,
             }),
             new TextFieldModel({
                 id: 'zip-code',
                 format: TextFormat.zipCode,
                 label: 'CEP',
                 control: this.form.controls.zipCode,
-                colSize: 4,
-                breakLine: true,
+                colSize: mobile ? 12 : 4,
             }),
+            ...(mobile ? [] : [new SpacerModel({ colSize: 3 })]),
             new TextFieldModel({
                 id: 'date',
                 format: TextFormat.date,
                 label: 'Data',
                 control: this.form.controls.date,
-                colSize: 3,
+                colSize: mobile ? 12 : 3,
             }),
+            ...(mobile ? [] : [new SpacerModel({ colSize: 12 })]),
             new TextFieldModel({
                 id: 'time',
                 format: TextFormat.time,
                 label: 'Horário',
                 control: this.form.controls.time,
-                colSize: 3,
-                breakLine: true,
+                colSize: mobile ? 12 : 3,
             }),
             new TextFieldModel({
                 id: 'cnpj',
                 format: TextFormat.cnpj,
                 label: 'CNPJ',
                 control: this.form.controls.cnpj,
-                colSize: 5,
+                colSize: mobile ? 12 : 5,
             }),
             new TextFieldModel({
                 id: 'cpf',
                 format: TextFormat.cpf,
                 label: 'CPF',
                 control: this.form.controls.cpf,
-                colSize: 6,
+                colSize: mobile ? 12 : 6,
             }),
             new NumericFieldModel({
                 id: 'amount',
@@ -216,7 +234,7 @@ export class TestComponent {
                 min: 3,
                 max: 300,
                 step: 5,
-                colSize: 12,
+                colSize: mobile ? 12 : 12,
             }),
             new NumericFieldModel({
                 id: 'price',
@@ -224,9 +242,9 @@ export class TestComponent {
                 label: 'Preço',
                 decimalPlaces: 2,
                 allowNegativeNumbers: false,
+                leadZero: true,
                 control: this.form.controls.price,
-
-                colSize: 12,
+                colSize: mobile ? 12 : 12,
             }),
             new TextAreaModel({
                 id: 'description',
@@ -234,7 +252,7 @@ export class TestComponent {
                 placeholder: 'Insira uma descrição',
                 maxLength: 200,
                 control: this.form.controls.description,
-                colSize: 12,
+                colSize: mobile ? 12 : 12,
                 onBlur: () => console.log('On text area blur'),
             }),
             new TextAreaModel({
@@ -242,22 +260,23 @@ export class TestComponent {
                 label: 'Área de texto desabilitada',
                 placeholder: 'Placeholder',
                 maxLength: 200,
-                colSize: 12,
+                colSize: mobile ? 12 : 12,
                 autosizeMinRows: 2,
                 autosizeMaxRows: 2,
                 control: this.form.controls.disabledDescription,
             }),
             new DividerModel({
                 id: 'test-divider',
-                colSize: 12,
+                colSize: mobile ? 12 : 12,
             }),
             new LabelModel({
                 id: 'test-label',
                 value: 'Outro label',
-                colSize: 12,
+                colSize: mobile ? 12 : 12,
             }),
 
             new SelectModel({
+                focusable: false,
                 id: 'gender',
                 label: 'Gênero',
                 options: [
@@ -265,18 +284,19 @@ export class TestComponent {
                     { label: 'Feminino', value: 'F' },
                 ],
                 control: this.form.controls.gender,
-                colSize: 7,
+                colSize: mobile ? 12 : 7,
             }),
             new RadioGroupModel({
                 id: 'level',
                 label: 'Nível',
+
                 options: [
                     { label: 'Begginer', value: 'B' },
                     { label: 'Intermmediate', value: 'I' },
                     { label: 'Advanced', value: 'A' },
                 ],
                 control: this.form.controls.level,
-                colSize: 12,
+                colSize: mobile ? 12 : 12,
             }),
             new CheckboxModel({
                 id: 'accept-terms',
@@ -287,7 +307,11 @@ export class TestComponent {
             new LabelModel({
                 id: 'test-label',
                 value: 'Test label',
-                colSize: 12,
+                colSize: mobile ? 12 : 12,
+            }),
+
+            new SpacerModel({
+                colSize: mobile ? 12 : 1,
             }),
 
             new ButtonModel({
@@ -295,36 +319,42 @@ export class TestComponent {
                 icon: Icon.checked,
                 label: 'Botão plano',
                 style: ButtonStyle.text,
-                colSize: 2,
-                colOffset: 1,
+                colSize: mobile ? 12 : 2,
             }),
             new ButtonModel({
                 id: 'elevated-button',
+                type: FormElementType.button,
                 icon: Icon.checked,
-                label: 'Botão elevado',
+                label: 'Botão elevado BUTTON',
                 style: ButtonStyle.elevated,
-                colSize: 2,
+                colSize: mobile ? 12 : 2,
             }),
             new ButtonModel({
                 id: 'filled-button',
+                type: FormElementType.submit,
                 icon: Icon.checked,
-                label: 'Botão preenchido',
+                label: 'Botão preenchido SUBMIT',
                 style: ButtonStyle.filled,
-                colSize: 2,
+                colSize: mobile ? 12 : 2,
             }),
             new ButtonModel({
                 id: 'outlined-button',
+                type: FormElementType.reset,
                 icon: Icon.checked,
-                label: 'Botão contornado',
+                label: 'Botão contornado RESET',
                 style: ButtonStyle.outlined,
-                colSize: 2,
+                colSize: mobile ? 12 : 2,
             }),
             new ButtonModel({
                 id: 'tonal-button',
+                type: FormElementType.button,
                 icon: Icon.checked,
-                label: 'Botão tonal',
+                label: 'Botão tonal LINKS',
                 style: ButtonStyle.tonal,
-                colSize: 2,
+                colSize: mobile ? 12 : 2,
+                routerLink: ['/users'],
+                queryParams: { ref: 'testando' },
+                queryParamsHandling: 'replace',
             }),
         ];
 

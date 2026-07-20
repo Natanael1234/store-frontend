@@ -19,6 +19,7 @@ describe('TextFormat enum', () => {
             time: 'time',
             zipCode: 'zip-code',
             password: 'password',
+            text: 'text',
         });
     });
 });

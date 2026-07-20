@@ -15,6 +15,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Router, RouterModule } from '@angular/router';
 import { AlertComponent } from '../../components/alert/alert.component';
 import { AbstractFormElementModel } from '../../components/form/components/abstract/abstract-form-element.model';
+import { ButtonStyle } from '../../components/form/components/button/enum/style/button-style.enum';
+import { ButtonModel } from '../../components/form/components/button/model/button.model';
 import { CheckboxModel } from '../../components/form/components/checkbox/model/checkbox.model';
 import { TextFieldModel } from '../../components/form/components/text/text-field/model/text-field.model';
 import { AutoCompleteType } from '../../components/form/enums/auto-complete-type/auto-complete-type.enum';
@@ -22,8 +24,6 @@ import { TextFormat } from '../../components/form/enums/text-format/text-format.
 import { FormComponent } from '../../components/form/form.component';
 import { UserConfigs } from '../../configs/user/user.configs';
 import { EmailConstants } from '../../constants/email/email.constants';
-import { AlignItems } from '../../enums/align-items/align-items.enum';
-import { JustifyContent } from '../../enums/justify-content/justify-content.enum';
 import { EmailMessage } from '../../messages/email/email.messages';
 import { PasswordMessage } from '../../messages/password/password.messages';
 import { TextMessage } from '../../messages/text/text.messages';
@@ -74,9 +74,6 @@ const _PasswordMessage = new PasswordMessage({
     styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
-    protected justifyContent: JustifyContent = JustifyContent.initial;
-    protected alignItems: AlignItems = AlignItems.initial;
-
     private authService: AuthService = inject(AuthService);
     private router: Router = inject(Router);
 
@@ -191,12 +188,33 @@ export class RegisterComponent {
         autofocus: true,
     });
 
+    protected registerButton = new ButtonModel({
+        id: 'register',
+        label: 'Registrar',
+        style: ButtonStyle.filled,
+        colSize: 12,
+        // type="submit"
+        // [disabled]="loading"
+    });
+
+    protected loginButton = new ButtonModel({
+        id: 'register',
+        label: 'Já tem uma conta? <b>Login</b>',
+        style: ButtonStyle.outlined,
+        routerLink: '/login',
+        colSize: 12,
+        // type="button"
+        // [disabled]="loading"
+    });
+
     protected elements: AbstractFormElementModel[] = [
         this.nameControl,
         this.emailControl,
         this.passwordControl,
         this.repeatPasswordControl,
         this.acceptTermsControl,
+        this.registerButton,
+        this.loginButton,
     ];
 
     protected onSubmit() {

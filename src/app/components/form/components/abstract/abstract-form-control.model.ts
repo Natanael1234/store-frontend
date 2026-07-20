@@ -22,7 +22,7 @@ export abstract class AbstractFormControlModel extends AbstractFormElementModel 
     constructor(options: AbstractFormControlOptions) {
         super(options);
         this.label = options.label;
-        this.focusable = options.focusable ?? true;
+        this.focusable = options.focusable ?? true; // TODO: select não é focusable
         this.readOnly = options.readOnly ?? false;
         this.control = options.control;
         this.autofocus = options.autofocus ?? false;

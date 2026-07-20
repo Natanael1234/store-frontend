@@ -32,7 +32,8 @@ import { AutofocusDirective } from '../../directives/autofocus/autofocus.directi
             @for (option of options() || []; track $index) {
                 <mat-radio-button
                     [value]="option.value"
-                    [appAutofocus]="$index == 0 ? _autofocus() : false">
+                    [appAutofocus]="$index == 0 ? _autofocus() : false"
+                    [tabIndex]="_tabIndex()">
                     {{ option.label }}
                 </mat-radio-button>
             }
@@ -47,7 +48,7 @@ export class RadioGroupComponent {
     public autofocus = model<boolean>();
     public options = model<{ value: string; label: string }[]>();
 
-    protected _autofocus = computed(() => {
-        return this.autofocus() ?? false;
-    });
+    protected _autofocus = computed(() => this.autofocus() ?? false);
+    protected _focusable = computed(() => this.focusable() ?? true);
+    protected _tabIndex = () => (this._focusable() ? 0 : -1);
 }

@@ -85,7 +85,8 @@ import { InputMode } from '../../../enums/input-mode/input-mode.enum';
                 [class.align-right]="true"
                 [formControl]="control()!"
                 (blur)="fireOnBlurEvent()" />
-            <!-- [leadZero]="_leadZero()"  -->
+            <!-- causes error on testes:
+             [leadZero]="_leadZero()" -->
 
             <!-- suffix -->
             @if (suffix()) {
@@ -103,22 +104,18 @@ export class NumericFieldComponent {
     public label = model<string>();
     public placeholder = model<string>();
     public autocomplete = model<AutoCompleteType>(AutoCompleteType.off);
+    public focusable = model<boolean>(true);
     public autofocus = model<boolean>();
     public readOnly = model<boolean>(false);
     public control = model<FormControl>();
-    public focusable = model<boolean>(true);
     public minLength = model<number>();
     public maxLength = model<number>();
     public prefix = model<string>();
     public suffix = model<string>();
-
-    public breakLine = model<boolean>(); // TODO: test
-
     public min = model<number>();
     public max = model<number>();
     public step = model<number>();
-
-    public leadZero = model<boolean>(false);
+    public leadZero = model<boolean>();
     public allowNegativeNumbers = model<boolean>();
     public decimalPlaces = model<number>();
 
@@ -157,7 +154,8 @@ export class NumericFieldComponent {
         if (decimalPlaces == null || decimalPlaces == 0) {
             return false;
         }
-        return true;
+        const leadZero = this.leadZero() ?? false;
+        return leadZero;
     });
 
     protected _min = computed(() => this.min() ?? null);

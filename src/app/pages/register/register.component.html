@@ -13,10 +13,7 @@
         </app-alert>
     }
 
-    <app-form
-        [elements]="elements"
-        [alignItems]="alignItems"
-        [justifyContent]="justifyContent" />
+    <app-form [elements]="elements" />
 
     <!-- accept terms -->
     <!-- <mat-checkbox
@@ -29,13 +26,13 @@
         Aceito os Termos de Serviço *
     </mat-checkbox> -->
 
-    <!-- login -->
-    <!-- <button mat-flat-button id="register" type="submit" [disabled]="loading">
-        Registrar
-    </button> -->
-
     <!-- register -->
-    <!-- <button
+    <button mat-flat-button id="register" type="submit" [disabled]="loading">
+        Registrar
+    </button>
+
+    <!-- login -->
+    <button
         mat-stroked-button
         id="login"
         type="button"
@@ -43,5 +40,5 @@
         routerLink="/login">
         Já tem uma conta?
         <b>Login</b>
-    </button> -->
+    </button>
 </form>

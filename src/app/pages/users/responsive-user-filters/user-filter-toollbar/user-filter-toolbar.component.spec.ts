@@ -7,14 +7,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AbstractFormElementModel } from '../../../../components/form/components/abstract/abstract-form-element.model';
-import { ButtonStyle } from '../../../../components/form/components/button/enum/button-style.enum';
+import { ButtonStyle } from '../../../../components/form/components/button/enum/style/button-style.enum';
 import { ButtonModel } from '../../../../components/form/components/button/model/button.model';
 import { SelectModel } from '../../../../components/form/components/select/model/select-element.model';
 import { ActiveFilterOptions } from '../../../../constants/active-filter-options/active-filter-options';
 import { ActiveFilter } from '../../../../enums/active-filter/active-filter.enum';
-import { AlignItems } from '../../../../enums/align-items/align-items.enum';
 import { DeletedFilter } from '../../../../enums/deleted-filter/deleted-filter.enum';
-import { JustifyContent } from '../../../../enums/justify-content/justify-content.enum';
 import { UserOrder } from '../../../../services/user/enums/user-order/user-order.enum';
 import { UserOrderOptions } from './sort-options/user-sort.options';
 import { ToolbarScrapper } from './test/scrapper/scrapper.test';
@@ -45,14 +43,7 @@ describe('UserFilterToolbarComponent.', () => {
         fixture.detectChanges();
     });
 
-    function testForm(args: {
-        justifyContent: JustifyContent;
-        alignItems: AlignItems;
-        elements: AbstractFormElementModel[];
-    }) {
-        expect(formScrapper.getJustifyContent()).toEqual(args.justifyContent);
-        expect(formScrapper.getAlignItems()).toEqual(args.alignItems);
-
+    function testForm(args: { elements: AbstractFormElementModel[] }) {
         const elements = formScrapper.getFormElements();
         expect(elements).toHaveSize(args.elements.length);
 
@@ -108,12 +99,6 @@ describe('UserFilterToolbarComponent.', () => {
             expect(element.colSize)
                 .withContext('col size of ' + expectedElement.id)
                 .toEqual(expectedElement.colSize);
-            expect(element.colOffset)
-                .withContext('col offset of ' + expectedElement.id)
-                .toEqual(expectedElement.colOffset);
-            expect(element.breakLine)
-                .withContext('break line')
-                .toEqual(expectedElement.breakLine);
         }
     }
 
@@ -133,8 +118,6 @@ describe('UserFilterToolbarComponent.', () => {
             fixture.componentInstance.showCancelButton.set(true);
             fixture.detectChanges();
             testForm({
-                justifyContent: JustifyContent.center,
-                alignItems: AlignItems.initial,
                 elements: [
                     new SelectModel({
                         id: 'sort-select',
@@ -190,8 +173,6 @@ describe('UserFilterToolbarComponent.', () => {
             fixture.componentInstance.showCancelButton.set(true);
             fixture.detectChanges();
             testForm({
-                justifyContent: JustifyContent.center,
-                alignItems: AlignItems.initial,
                 elements: [
                     new SelectModel({
                         id: 'sort-select',
@@ -246,10 +227,7 @@ describe('UserFilterToolbarComponent.', () => {
             fixture.componentInstance.showCancelButton.set(true);
             fixture.componentInstance.showSort.set(true);
             fixture.detectChanges();
-            expect(formScrapper.getAlignItems()).toEqual(AlignItems.center);
             testForm({
-                justifyContent: JustifyContent.initial,
-                alignItems: AlignItems.center,
                 elements: [
                     new SelectModel({
                         id: 'sort-select',
@@ -305,8 +283,6 @@ describe('UserFilterToolbarComponent.', () => {
             fixture.componentInstance.showSort.set(false);
             fixture.detectChanges();
             testForm({
-                justifyContent: JustifyContent.center,
-                alignItems: AlignItems.initial,
                 elements: [
                     new SelectModel({
                         id: 'active-select',
@@ -343,8 +319,6 @@ describe('UserFilterToolbarComponent.', () => {
             fixture.componentInstance.showSort.set(false);
             fixture.detectChanges();
             testForm({
-                justifyContent: JustifyContent.center,
-                alignItems: AlignItems.initial,
                 elements: [
                     new SelectModel({
                         id: 'active-select',
@@ -381,8 +355,6 @@ describe('UserFilterToolbarComponent.', () => {
             fixture.componentInstance.showSort.set(true);
             fixture.detectChanges();
             testForm({
-                justifyContent: JustifyContent.center,
-                alignItems: AlignItems.initial,
                 elements: [
                     new SelectModel({
                         id: 'sort-select',
@@ -431,8 +403,6 @@ describe('UserFilterToolbarComponent.', () => {
             fixture.componentInstance.showCancelButton.set(false);
             fixture.detectChanges();
             testForm({
-                justifyContent: JustifyContent.center,
-                alignItems: AlignItems.initial,
                 elements: [
                     new SelectModel({
                         id: 'active-select',
@@ -469,8 +439,6 @@ describe('UserFilterToolbarComponent.', () => {
             fixture.componentInstance.showCancelButton.set(false);
             fixture.detectChanges();
             testForm({
-                justifyContent: JustifyContent.center,
-                alignItems: AlignItems.initial,
                 elements: [
                     new SelectModel({
                         id: 'active-select',
@@ -507,8 +475,6 @@ describe('UserFilterToolbarComponent.', () => {
             fixture.componentInstance.showCancelButton.set(true);
             fixture.detectChanges();
             testForm({
-                justifyContent: JustifyContent.center,
-                alignItems: AlignItems.initial,
                 elements: [
                     new SelectModel({
                         id: 'active-select',

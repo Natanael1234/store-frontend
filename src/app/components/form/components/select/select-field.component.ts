@@ -34,7 +34,6 @@ import { AutofocusDirective } from '../../directives/autofocus/autofocus.directi
         <mat-form-field appearance="outline" [appAutofocus]="_autofocus()">
             <mat-label>{{ label() ?? '' }}</mat-label>
             <mat-select [id]="id() ?? ''" [formControl]="control()!">
-                <!-- [tabindex]="_tabIndex()" -->
                 @for (option of options() || []; track $index) {
                     <mat-option [value]="option.value">
                         {{ option.label }}
@@ -47,12 +46,9 @@ import { AutofocusDirective } from '../../directives/autofocus/autofocus.directi
 export class SelectFieldComponent {
     public id = model<string>();
     public label = model<string>();
-    public focusable = model<boolean | undefined>(true);
     public autofocus = model<boolean | undefined>();
     public control = model<FormControl<string | null>>();
     public options = model<{ value: string; label: string }[]>();
-
-    // protected _tabIndex = computed(() => (this.focusable() ? 0 : -1));
 
     protected _autofocus = computed(() => {
         return this.autofocus() ?? false;

@@ -21,9 +21,15 @@ export enum FormElementType {
     checkbox = 'checkbox',
     radioGroup = 'radio-group',
 
+    // button types
     button = 'button',
+    submit = 'submit',
+    reset = 'reset',
+
     buttonGroup = 'button-group',
 
     label = 'label',
     divider = 'divider',
+
+    spacer = 'spacer',
 }

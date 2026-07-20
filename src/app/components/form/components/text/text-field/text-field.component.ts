@@ -110,16 +110,15 @@ export class TextFieldComponent {
     public label = model<string>();
     public placeholder = model<string>();
     public control = model<FormControl>();
-    public focusable = model<boolean>(true);
-    public autocomplete = model<AutoCompleteType>();
+    public focusable = model<boolean>();
     public autofocus = model<boolean>();
+    public autocomplete = model<AutoCompleteType>();
     public readOnly = model<boolean>(false);
     public format = model<TextFormat | undefined>();
     public minLength = model<number>();
     public maxLength = model<number>();
     public prefix = model<string>();
     public suffix = model<string>();
-    public breakLine = model<boolean>();
 
     protected _visible = model<boolean>(false);
 
@@ -135,7 +134,7 @@ export class TextFieldComponent {
     );
     protected _label = computed(() => this.label() ?? '');
     protected _placeholder = computed(() => this.placeholder() ?? '');
-    protected _tabIndex = computed(() => (this.focusable() ? 0 : -1));
+    protected _tabIndex = computed(() => ((this.focusable() ?? true) ? 0 : -1));
     protected _readOnly = computed(() => !!this.readOnly());
     protected _autocomplete = computed(
         () => this.autocomplete() ?? AutoCompleteType.off,

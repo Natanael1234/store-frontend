@@ -10,16 +10,14 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AbstractFormElementModel } from '../../../../components/form/components/abstract/abstract-form-element.model';
-import { ButtonStyle } from '../../../../components/form/components/button/enum/button-style.enum';
+import { ButtonStyle } from '../../../../components/form/components/button/enum/style/button-style.enum';
 import { ButtonModel } from '../../../../components/form/components/button/model/button.model';
 import { SelectModel } from '../../../../components/form/components/select/model/select-element.model';
 import { FormComponent } from '../../../../components/form/form.component';
 import { ActiveFilterOptions } from '../../../../constants/active-filter-options/active-filter-options';
 import { DeletedFilterOptions } from '../../../../constants/deleted-filter-options/deleted-filter-options';
 import { ActiveFilter } from '../../../../enums/active-filter/active-filter.enum';
-import { AlignItems } from '../../../../enums/align-items/align-items.enum';
 import { DeletedFilter } from '../../../../enums/deleted-filter/deleted-filter.enum';
-import { JustifyContent } from '../../../../enums/justify-content/justify-content.enum';
 import { UserOrder } from '../../../../services/user/enums/user-order/user-order.enum';
 import { UserOrderOptions } from './sort-options/user-sort.options';
 import { OnUserFilterMenuListCloseEvent } from './types/on-user-filter-menu-list-close-event.type';
@@ -51,8 +49,6 @@ export class UserFilterToolbarComponent {
      */
     public vertical = model<boolean>(true);
     private previousVertical: boolean = true;
-    protected justifyContent: JustifyContent = JustifyContent.initial;
-    protected alignItems: AlignItems = AlignItems.initial;
 
     /**
      * When true shows sort widget.
@@ -202,10 +198,6 @@ export class UserFilterToolbarComponent {
         this.deletedControl.colSize = vertical ? 12 : 2;
         this.filterButton.colSize = vertical ? 5 : 2;
         this.cancelButton.colSize = vertical ? 5 : 2;
-        this.justifyContent = vertical
-            ? JustifyContent.center
-            : JustifyContent.initial;
-        this.alignItems = vertical ? AlignItems.initial : AlignItems.center;
     }
 
     private insertFormElement(element: AbstractFormElementModel, idx: number) {

@@ -32,23 +32,10 @@ describe('RadioGroupModel.', () => {
             options: [{ value: 'M', label: 'Male' }],
             autofocus: true,
             colSize: 6,
-            colOffset: 3,
-            breakLine: true,
         });
         expect(element.label).toBe('Gender');
         expect(element.control).toBe(control);
         expect(element.autofocus).toBeTrue();
         expect(element.colSize).toBe(6);
-        expect(element.colOffset).toBe(3);
-        expect(element.breakLine).toBeTrue();
-    });
-
-    it('should default breakLine to false.', () => {
-        const element = new RadioGroupModel({
-            control: new FormControl(),
-            options: [{ value: 'M', label: 'Male' }],
-        });
-
-        expect(element.breakLine).toBeFalse();
     });
 });

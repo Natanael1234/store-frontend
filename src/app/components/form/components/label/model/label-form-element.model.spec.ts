@@ -16,19 +16,10 @@ describe('LabelModel.', () => {
         const element = new LabelModel({
             id: 'label-1',
             colSize: 6,
-            colOffset: 2,
-            breakLine: true,
             value: 'Telefone',
         });
 
         expect(element.id).toBe('label-1');
         expect(element.colSize).toBe(6);
-        expect(element.colOffset).toBe(2);
-        expect(element.breakLine).toBeTrue();
-    });
-
-    it('should set breakLine to false by default.', () => {
-        const element = new LabelModel({ value: 'CPF' });
-        expect(element.breakLine).toBeFalse();
     });
 });

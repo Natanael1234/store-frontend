@@ -14,21 +14,9 @@ describe('DividerModel.', () => {
     });
 
     it('should inherit properties from AbstractFormElement.', () => {
-        const element = new DividerModel({
-            id: 'divider-1',
-            colSize: 12,
-            colOffset: 1,
-            breakLine: true,
-        });
+        const element = new DividerModel({ id: 'divider-1', colSize: 12 });
 
         expect(element.id).toBe('divider-1');
         expect(element.colSize).toBe(12);
-        expect(element.colOffset).toBe(1);
-        expect(element.breakLine).toBeTrue();
-    });
-
-    it('should set breakLine to false by default.', () => {
-        const element = new DividerModel({});
-        expect(element.breakLine).toBeFalse();
     });
 });
