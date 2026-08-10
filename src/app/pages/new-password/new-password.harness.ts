@@ -8,8 +8,8 @@ type TextFieldState = {
     hasValidStructure: boolean | { [key: string]: string };
 };
 
-export class UpdateLoggedInUserPasswordHarness extends ComponentHarness {
-    static hostSelector = 'app-app-update-logged-in-user-password';
+export class NewPasswordHarness extends ComponentHarness {
+    static hostSelector = 'app-new-password';
 
     private readonly hostChildElement = this.locatorForOptional(':scope > *');
     private readonly hostChildrenElements = this.locatorForAll(':scope > *');

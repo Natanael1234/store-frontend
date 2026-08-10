@@ -32,7 +32,7 @@ const _PasswordMessage = new PasswordMessage({
 });
 
 @Component({
-    selector: 'app-password',
+    selector: 'app-update-logged-in-user-password',
     imports: [
         RouterModule,
         FormsModule,
