@@ -5,16 +5,13 @@ import {
     FormGroup,
     FormsModule,
     ReactiveFormsModule,
-    Validators,
 } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { RouterModule } from '@angular/router';
 import { AlertComponent } from '../../components/alert/alert.component';
+import { ButtonComponent } from '../../components/form/components/button/button.component';
+import { PasswordFieldComponent } from '../../components/form/components/text/password-field/password-field.component';
 import { UserConfigs } from '../../configs/user/user.configs';
 import { AuthInterceptor } from '../../interceptors/auth/auth.interceptor';
 import { PasswordMessage } from '../../messages/password/password.messages';
@@ -27,6 +24,7 @@ import {
     remoteValidator,
 } from '../../validators/remote/remote.validator';
 import { strongPasswordValidator } from '../../validators/strong-password/strong-password.validator';
+import { AbstractFormComponent } from '../abstract-form.component';
 
 const _PasswordMessage = new PasswordMessage({
     minLength: UserConfigs.PASSWORD_MIN_LENGTH,
@@ -36,16 +34,14 @@ const _PasswordMessage = new PasswordMessage({
 @Component({
     selector: 'app-password',
     imports: [
+        RouterModule,
         FormsModule,
         ReactiveFormsModule,
-        MatIconModule,
-        MatInputModule,
         MatFormFieldModule,
-        MatButtonModule,
-        MatCheckboxModule,
-        MatCardModule,
         AlertComponent,
         MatProgressBarModule,
+        PasswordFieldComponent,
+        ButtonComponent,
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
@@ -53,164 +49,66 @@ const _PasswordMessage = new PasswordMessage({
     templateUrl: './update-logged-in-user-password.component.html',
     styleUrl: './update-logged-in-user-password.component.scss',
 })
-export class UpdateLoggedInUserPasswordComponent {
+export class UpdateLoggedInUserPasswordComponent extends AbstractFormComponent<
+    UpdateLoggedInUserPasswordRequestDto,
+    AuthResponseDto
+> {
     private authService: AuthService = inject(AuthService);
-
-    protected data?: any;
-    protected mainError?: string;
-    protected loading: boolean = false;
-
-    protected maxPasswordLength = UserConfigs.PASSWORD_MAX_LENGTH;
-
-    protected showPassword: boolean = false;
-    protected showRepeatPassword: boolean = false;
-
     protected passwordRemoteValidationContext = new RemoteValidationContext();
     protected repeatPasswordRemoteValidationContext =
         new RemoteValidationContext();
-
-    form = new FormGroup({
+    protected formGroup = new FormGroup({
         password: new FormControl('', {
-            validators: this.passwordValidators,
+            validators: [
+                strongPasswordValidator(),
+                remoteValidator(this.passwordRemoteValidationContext),
+            ],
             updateOn: 'blur',
         }),
         repeatPassword: new FormControl('', {
-            validators: this.repeatPasswordValidators,
+            validators: [
+                matchingPasswordValidator('password'),
+                remoteValidator(this.repeatPasswordRemoteValidationContext),
+            ],
             updateOn: 'blur',
         }),
     });
 
-    protected get passwordValidators() {
-        return [
-            Validators.required,
-            Validators.minLength(UserConfigs.PASSWORD_MIN_LENGTH),
-            Validators.maxLength(UserConfigs.PASSWORD_MAX_LENGTH),
-            strongPasswordValidator(),
-            remoteValidator(this.passwordRemoteValidationContext),
-        ];
+    protected override navigateAfterComplete(): void {
+        this.navigateToHome();
     }
 
-    protected get repeatPasswordValidators() {
-        return [
-            Validators.required,
-            Validators.maxLength(UserConfigs.PASSWORD_MAX_LENGTH),
-            matchingPasswordValidator('password'),
-            remoteValidator(this.repeatPasswordRemoteValidationContext),
-        ];
+    protected fireSubmitRequest() {
+        const data = this.getFormData();
+        return this.authService.updateLoggedInUserPassword(data);
     }
 
-    protected onSubmit() {
-        if (!this.form.valid) {
-            return;
-        }
-        this.form.updateValueAndValidity();
+    protected setRemoteErrors(errors: {
+        main?: string;
+        password?: string;
+        repeatPassword?: string;
+    }): void {
+        const { main, password, repeatPassword } = errors;
+        this.mainError = main;
+        this.passwordRemoteValidationContext.setError(password);
+        this.repeatPasswordRemoteValidationContext.setError(repeatPassword);
+        this.formGroup.updateValueAndValidity();
+        this.formGroup.markAllAsTouched();
+    }
 
-        const data =
-            this.form.getRawValue() as UpdateLoggedInUserPasswordRequestDto;
+    protected clearRemoteErrors(): void {
         this.mainError = undefined;
-
-        this.loading = true;
-        this.form.disable();
-
-        const observable = this.authService.updateLoggedInUserPassword(data);
-
-        this.passwordRemoteValidationContext.remoteError = undefined;
-        this.repeatPasswordRemoteValidationContext.remoteError = undefined;
-
-        this.form.updateValueAndValidity();
-
-        this.mainError = undefined;
-
-        observable.subscribe({
-            next: (authResponse: AuthResponseDto) => {
-                this.loading = false;
-            },
-            error: (remoteError: any) => {
-                if (typeof remoteError == 'string') {
-                    this.mainError = remoteError;
-                    this.loading = false;
-                } else if (typeof remoteError.error?.message == 'string') {
-                    this.mainError = remoteError.error.message;
-                } else {
-                    // password
-                    if (remoteError.error?.message?.password) {
-                        this.passwordRemoteValidationContext.remoteError =
-                            remoteError.error?.message.password;
-                    }
-
-                    // repeat password
-                    if (remoteError.error?.message?.repeatPassword) {
-                        this.repeatPasswordRemoteValidationContext.remoteError =
-                            remoteError.error?.message.repeatPassword;
-                    }
-
-                    this.form.updateValueAndValidity();
-                    this.form.markAllAsTouched();
-                }
-
-                this.form.enable();
-            },
-            complete: () => {
-                this.mainError = undefined;
-                this.loading = false;
-                this.form.reset();
-            },
-        });
+        this.passwordRemoteValidationContext.clear();
+        this.repeatPasswordRemoteValidationContext.clear();
+        this.formGroup.updateValueAndValidity();
     }
 
-    protected onPasswordBlur(e: FocusEvent) {
-        this.form.controls.repeatPassword.updateValueAndValidity({
+    /**
+     * forces matching password and repeatPàssword validation after password field blur
+     */
+    protected onPasswordBlur() {
+        this.formGroup.controls.repeatPassword.updateValueAndValidity({
             emitEvent: false,
         });
-    }
-
-    protected getPasswordErrorMessage() {
-        const passwordFormControl = this.form.controls.password;
-
-        let passwordErrorMessage = '';
-        if (passwordFormControl.hasError('null')) {
-            passwordErrorMessage = _PasswordMessage.NULL;
-        } else if (passwordFormControl.hasError('required')) {
-            passwordErrorMessage = _PasswordMessage.REQUIRED;
-        } else if (passwordFormControl.hasError('weakPassword')) {
-            passwordErrorMessage = _PasswordMessage.STRONG as string;
-        } else if (passwordFormControl.hasError('minlength')) {
-            passwordErrorMessage = _PasswordMessage.MIN_LEN as string;
-        } else if (passwordFormControl.hasError('maxlength')) {
-            passwordErrorMessage = _PasswordMessage.MAX_LEN as string;
-        } else if (passwordFormControl.hasError('invalidPassword')) {
-            passwordErrorMessage = _PasswordMessage.INVALID;
-        } else if (passwordFormControl.hasError('remote')) {
-            passwordErrorMessage = this.passwordRemoteValidationContext
-                .remoteError as string;
-        }
-        return passwordErrorMessage;
-    }
-
-    protected getRepeatPasswordErrorMessage() {
-        const repeatPasswordFormControl = this.form.controls.repeatPassword;
-        if (repeatPasswordFormControl.hasError('required')) {
-            return _PasswordMessage.REQUIRED;
-        }
-        if (repeatPasswordFormControl.hasError('matchingFields')) {
-            return _PasswordMessage.DONT_MATCHES;
-        }
-        if (repeatPasswordFormControl.hasError('maxlength')) {
-            return _PasswordMessage.MAX_LEN;
-        }
-        if (repeatPasswordFormControl.hasError('remote')) {
-            return this.repeatPasswordRemoteValidationContext.remoteError;
-        }
-        return '';
-    }
-
-    protected togglePasswordVisibility(event: Event) {
-        event.stopPropagation();
-        this.showPassword = !this.showPassword;
-    }
-
-    protected toggleRepeatPasswordVisibility(event: Event) {
-        event.stopPropagation();
-        this.showRepeatPassword = !this.showRepeatPassword;
     }
 }

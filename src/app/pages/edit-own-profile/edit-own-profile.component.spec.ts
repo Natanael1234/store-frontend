@@ -21,24 +21,6 @@ import { HomeComponent } from '../home/home.component';
 import { EditOwnProfileComponent } from './edit-own-profile.component';
 import { EditOwnProfileHarness } from './edit-own-profile.harness';
 
-type FormData = { name: string };
-
-type FormErrors = { mainError?: string; name?: string };
-
-type ExceptionData = {
-    message: string;
-    name: string;
-    statusCode: HttpStatusCode.UnprocessableEntity;
-    statusText: string;
-    error: { error: string; message: { name?: string } | string };
-};
-
-type RemoteFormErrorData = {
-    formData: FormData;
-    expectedErrors: FormErrors;
-    exceptionData: ExceptionData;
-};
-
 describe('EditOwnProfileComponent', () => {
     let fixture: ComponentFixture<EditOwnProfileComponent>;
     let component: EditOwnProfileComponent;

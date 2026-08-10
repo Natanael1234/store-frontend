@@ -10,8 +10,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterModule } from '@angular/router';
 import { AlertComponent } from '../../components/alert/alert.component';
 import { ButtonComponent } from '../../components/form/components/button/button.component';
-import { CheckboxComponent } from '../../components/form/components/checkbox/checkbox.component';
-import { PasswordFieldComponent } from '../../components/form/components/text/password-field/password-field.component';
 import { TextFieldComponent } from '../../components/form/components/text/text-field/text-field.component';
 import { UserConfigs } from '../../configs/user/user.configs';
 import { AuthService } from '../../services/auth/auth.service';
@@ -33,8 +31,6 @@ import { AbstractFormComponent } from '../abstract-form.component';
         AlertComponent,
         MatProgressBarModule,
         TextFieldComponent,
-        PasswordFieldComponent,
-        CheckboxComponent,
         ButtonComponent,
     ],
     templateUrl: './edit-own-profile.component.html',
