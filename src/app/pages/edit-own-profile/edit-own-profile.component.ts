@@ -5,20 +5,15 @@ import {
     FormsModule,
     ReactiveFormsModule,
 } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { AlertComponent } from '../../components/alert/alert.component';
+import { ButtonComponent } from '../../components/form/components/button/button.component';
+import { CheckboxComponent } from '../../components/form/components/checkbox/checkbox.component';
+import { PasswordFieldComponent } from '../../components/form/components/text/password-field/password-field.component';
+import { TextFieldComponent } from '../../components/form/components/text/text-field/text-field.component';
 import { UserConfigs } from '../../configs/user/user.configs';
-import { EmailConstants } from '../../constants/email/email.constants';
-import { EmailMessage } from '../../messages/email/email.messages';
-import { PasswordMessage } from '../../messages/password/password.messages';
-import { TextMessage } from '../../messages/text/text.messages';
 import { AuthService } from '../../services/auth/auth.service';
 import { EditOwnProfileRequestDto } from '../../services/auth/dtos/edit-own-profile.request.dto';
 import { nameValidator } from '../../validators/name/name.validator';
@@ -26,133 +21,71 @@ import {
     RemoteValidationContext,
     remoteValidator,
 } from '../../validators/remote/remote.validator';
-
-const _NameMessage = new TextMessage({
-    minLength: UserConfigs.NAME_MIN_LENGTH,
-    maxLength: UserConfigs.NAME_MAX_LENGTH,
-});
-
-const _EmailMessage = new EmailMessage({
-    maxLength: EmailConstants.MAX_LENGTH,
-});
-
-const _PasswordMessage = new PasswordMessage({
-    minLength: UserConfigs.PASSWORD_MIN_LENGTH,
-    maxLength: UserConfigs.PASSWORD_MAX_LENGTH,
-});
+import { AbstractFormComponent } from '../abstract-form.component';
 
 @Component({
     selector: 'app-edit-own-profile',
     imports: [
+        RouterModule,
         FormsModule,
         ReactiveFormsModule,
-        MatIconModule,
-        MatInputModule,
         MatFormFieldModule,
-        MatButtonModule,
-        MatCheckboxModule,
-        MatCardModule,
         AlertComponent,
         MatProgressBarModule,
+        TextFieldComponent,
+        PasswordFieldComponent,
+        CheckboxComponent,
+        ButtonComponent,
     ],
     templateUrl: './edit-own-profile.component.html',
     styleUrl: './edit-own-profile.component.scss',
 })
-export class EditOwnProfileComponent {
+export class EditOwnProfileComponent extends AbstractFormComponent<
+    EditOwnProfileRequestDto,
+    true
+> {
     private authService: AuthService = inject(AuthService);
-    private router: Router = inject(Router);
-
-    protected data?: any;
-    protected mainError?: string;
-    protected loading: boolean = false;
-
-    protected maxPasswordLength = UserConfigs.PASSWORD_MAX_LENGTH;
-    protected maxEmailLength = EmailConstants.MAX_LENGTH;
-    protected maxUsernameLength = UserConfigs.NAME_MAX_LENGTH;
-
     protected nameRemoteValidationContext = new RemoteValidationContext();
-
-    form = new FormGroup({
+    protected formGroup = new FormGroup({
         name: new FormControl('', {
-            validators: this.nameValidators,
+            validators: [
+                nameValidator({
+                    required: true,
+                    minLength: UserConfigs.NAME_MIN_LENGTH,
+                    maxLength: UserConfigs.NAME_MAX_LENGTH,
+                }),
+                remoteValidator(this.nameRemoteValidationContext),
+            ],
             updateOn: 'blur',
         }),
     });
 
-    protected get nameValidators() {
-        return [
-            nameValidator({
-                required: true,
-                minLength: UserConfigs.NAME_MIN_LENGTH,
-                maxLength: UserConfigs.NAME_MAX_LENGTH,
-            }),
-            remoteValidator(this.nameRemoteValidationContext),
-        ];
+    protected override navigateAfterComplete(): void {
+        this.navigateToHome();
     }
 
-    protected onSubmit() {
-        if (!this.form.valid) {
-            return;
-        }
-        this.form.updateValueAndValidity();
+    protected fireSubmitRequest() {
+        const data = this.getFormData();
+        return this.authService.editOwnProfile(data);
+    }
 
-        const data = this.form.getRawValue() as EditOwnProfileRequestDto;
+    protected setRemoteErrors(errors: {
+        main?: string;
+        name?: string;
+        email?: string;
+        password?: string;
+        repeatPassword?: string;
+        acceptTerms?: boolean;
+    }): void {
+        const { main, name } = errors;
+        this.mainError = main;
+        this.nameRemoteValidationContext.setError(name);
+        this.formGroup.markAllAsTouched();
+    }
+
+    protected clearRemoteErrors(): void {
         this.mainError = undefined;
-
-        this.loading = true;
-        this.form.disable();
-
-        const observable = this.authService.editOwnProfile(data);
-
-        this.nameRemoteValidationContext.remoteError = undefined;
-        this.form.updateValueAndValidity();
-
-        observable.subscribe({
-            next: (response: true) => {
-                this.loading = false;
-            },
-            error: (error: any) => {
-                this.loading = false;
-                if (typeof error == 'string') {
-                    this.mainError = error;
-                } else if (typeof error.error?.message == 'string') {
-                    this.mainError = error.error.message;
-                } else {
-                    if (error.error?.message?.name) {
-                        this.nameRemoteValidationContext.remoteError =
-                            error.error?.message.name;
-                    }
-                    this.mainError = undefined;
-                    this.form.updateValueAndValidity();
-                    this.form.markAllAsTouched();
-                }
-
-                this.form.enable();
-            },
-            complete: () => {
-                this.mainError = undefined;
-                this.loading = false;
-            },
-        });
-    }
-
-    protected getNameErrorMessage() {
-        const nameFormControl: FormControl = this.form.controls.name;
-
-        let nameError: string | null | undefined = '';
-        if (nameFormControl.hasError('null')) {
-            nameError = _NameMessage.NULL;
-        } else if (nameFormControl.hasError('required')) {
-            nameError = _NameMessage.REQUIRED;
-        } else if (nameFormControl.hasError('name')) {
-            nameError = _NameMessage.INVALID;
-        } else if (nameFormControl.hasError('minlength')) {
-            nameError = _NameMessage.MIN_LEN;
-        } else if (nameFormControl.hasError('maxlength')) {
-            nameError = _NameMessage.MAX_LEN;
-        } else if (nameFormControl.hasError('remote')) {
-            nameError = this.nameRemoteValidationContext.remoteError as any;
-        }
-        return nameError;
+        this.nameRemoteValidationContext.clear();
+        this.formGroup.updateValueAndValidity();
     }
 }

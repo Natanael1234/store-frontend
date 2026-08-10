@@ -50,7 +50,6 @@ export class RegisterComponent extends AbstractFormComponent<
     AuthResponseDto
 > {
     private authService: AuthService = inject(AuthService);
-
     protected nameRemoteValidationContext = new RemoteValidationContext();
     protected emailRemoteValidationContext = new RemoteValidationContext();
     protected passwordRemoteValidationContext = new RemoteValidationContext();
