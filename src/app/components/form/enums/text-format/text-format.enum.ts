@@ -11,4 +11,5 @@ export enum TextFormat {
     zipCode = 'zip-code',
     password = 'password',
     text = 'text',
+    search = 'search',
 }

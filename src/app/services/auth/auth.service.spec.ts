@@ -60,7 +60,7 @@ let mockAuthResponse: AuthResponseDto = {
     data: {
         user: {
             id: '891db31e-dfb5-42ed-b912-48b98463b004',
-            name: 'John Doe',
+            name: 'John Williams',
             email: 'john@example.com',
             roles: [Role.user],
             active: true,
@@ -586,7 +586,7 @@ describe('AuthService', () => {
         it('should call refreshToken method and receive access token', async () => {
             const payload = {
                 id: '891db31e-dfb5-42ed-b912-48b98463b004',
-                name: 'John Doe',
+                name: 'John Williams',
                 email: 'john@example.com',
                 roles: [Role.user],
                 active: true,
@@ -602,7 +602,7 @@ describe('AuthService', () => {
                 data: {
                     user: {
                         id: '891db31e-dfb5-42ed-b912-48b98463b004',
-                        name: 'John Doe',
+                        name: 'John Williams',
                         email: 'john@example.com',
                         roles: [Role.user],
                         active: true,
@@ -686,7 +686,7 @@ describe('AuthService', () => {
         it('should call refreshToken method and receive null istead of access token when both token and refresh token are not defined', async () => {
             const payload = {
                 id: '891db31e-dfb5-42ed-b912-48b98463b004',
-                name: 'John Doe',
+                name: 'John Williams',
                 email: 'john@example.com',
                 roles: [Role.user],
                 active: true,
@@ -702,7 +702,7 @@ describe('AuthService', () => {
                 data: {
                     user: {
                         id: '891db31e-dfb5-42ed-b912-48b98463b004',
-                        name: 'John Doe',
+                        name: 'John Williams',
                         email: 'john@example.com',
                         roles: [Role.user],
                         active: true,
@@ -767,7 +767,7 @@ describe('AuthService', () => {
         it('should return false when calling refreshToken method and receiving a 401 Unauthorized error from http request', async () => {
             const payload = {
                 id: '891db31e-dfb5-42ed-b912-48b98463b004',
-                name: 'John Doe',
+                name: 'John Williams',
                 email: 'john@example.com',
                 roles: [Role.user],
                 active: true,
@@ -830,7 +830,7 @@ describe('AuthService', () => {
         it('should fail calling refreshToken method when receives a non 401 Unauthorized error from http request', async () => {
             const payload = {
                 id: '891db31e-dfb5-42ed-b912-48b98463b004',
-                name: 'John Doe',
+                name: 'John Williams',
                 email: 'john@example.com',
                 roles: [Role.user],
                 active: true,

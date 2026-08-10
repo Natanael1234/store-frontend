@@ -57,16 +57,16 @@ export class TableSorter {
         if (!sort) return; // TODO:
         const columnId = sort.columnId;
         const direction = sort.direction;
-        this.sortByColumnIdAndDirection(columnId, direction);
+        this.orderByColumnIdAndDirection(columnId, direction);
     }
 
-    public sortByOrderId(orderId: string) {
+    public orderByOrderId(orderId: string) {
         const { columnId, direction } = orderToSort(orderId);
         // order by column id and direction
-        this.sortByColumnIdAndDirection(columnId, direction);
+        this.orderByColumnIdAndDirection(columnId, direction);
     }
 
-    public sortByOrderIds(orderIds: string[]) {
+    public orderByOrderIds(orderIds: string[]) {
         const sorts = orderIds.map((order) => splitOrderData(order));
 
         let rightShift = orderIds.length;
@@ -97,7 +97,7 @@ export class TableSorter {
             });
     }
 
-    public sortByColumnIdAndDirection(
+    public orderByColumnIdAndDirection(
         columnId: string,
         direction?: SortDirection,
     ) {

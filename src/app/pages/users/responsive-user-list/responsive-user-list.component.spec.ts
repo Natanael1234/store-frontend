@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { ListComponent } from '../../../components/list/list.component';
 import { ListItem } from '../../../components/list/types/list-item.model';
 import { ItemIcon } from '../../../components/models/item-icon/item-icon.model';
@@ -31,6 +32,7 @@ describe('ResponsiveUserListComponent', () => {
                 MockTableComponent,
                 MockListComponent,
             ],
+            providers: [provideRouter([])],
         })
             .overrideComponent(ListComponent, {
                 remove: { imports: [ListComponent] },

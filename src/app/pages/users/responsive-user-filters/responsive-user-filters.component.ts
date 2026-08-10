@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
     Component,
-    computed,
     effect,
     EventEmitter,
     inject,
@@ -37,50 +36,59 @@ import { UserFilterToolbarComponent } from './user-filter-toollbar/user-filter-t
         TextFilterComponent,
         UserFilterToolbarComponent,
     ],
-    templateUrl: './responsive-user-filters.component.html',
-    styleUrl: './responsive-user-filters.component.scss',
+    styles: ['#container { display: flex; flex-direction: column; gap: 1em; }'],
+    template: `
+        @let isMobile = !!mobile();
+        <div id="container" [class]="{ filters: true, mobile: isMobile }">
+            <app-text-filter
+                (textSearch)="onTextSearch($event)"></app-text-filter>
+            @if (isMobile) {
+                <button mat-button (click)="openFilterDialog()">
+                    <mat-icon>filter_list</mat-icon>
+                    Ordenar e filtrar
+                </button>
+            } @else {
+                <app-user-filter-toolbar
+                    [order]="mobileOrder()"
+                    [showOrder]="true"
+                    [active]="active()"
+                    [deleted]="deleted()"
+                    [showCancelButton]="true"
+                    [vertical]="false"
+                    (onClose)="
+                        closeFilterMenu($event)
+                    "></app-user-filter-toolbar>
+            }
+        </div>
+    `,
 })
 export class ResponsiveUserFiltersComponent {
-    /* FILTERS */
-
+    public loading = model<boolean>(false);
+    public mobile = model<boolean>(true);
     public textQuery = model<string>('');
     public active = model<ActiveFilter>(ActiveFilter.active);
     public deleted = model<DeletedFilter>(DeletedFilter.not_deleted);
-    protected previousActive = model<ActiveFilter>(ActiveFilter.active);
-    protected previousDeleted = model<DeletedFilter>(DeletedFilter.not_deleted);
-
-    /* ORDERING */
-
     public orderBy = model<UserOrder[]>([
         UserOrder.name_asc,
         UserOrder.email_asc,
         UserOrder.active_asc,
         UserOrder.deleted_desc,
     ]);
-    protected mobileSort = model<UserOrder>(UserOrder.name_asc);
 
-    /* RESPONSIVITY */
+    protected mobileOrder = model<UserOrder>(UserOrder.name_asc);
+    protected previousMobile = model<boolean>(true);
 
-    public mobile = model<boolean>(true);
-    public previousMobile = model<boolean>(true);
-
-    /* DIALOG */
-
-    protected readonly name = model('');
     protected readonly dialog = inject(MatDialog);
     protected dialogRef?: MatDialogRef<UserFilterDialogComponent, any>;
 
-    /* OTHERS */
-
-    public loading = model<boolean>(false);
     @Output() public refresh = new EventEmitter<OnUserFilterEvent>();
 
     constructor() {
         effect(() => {
-            const mobileSort = this.getMobileSortFromOrderBy();
-            const prevMobileSort = this.mobileSort();
-            if (prevMobileSort != mobileSort) {
-                this.mobileSort.set(mobileSort);
+            const mobileOrder = this.getMobileOrderFromOrderBy();
+            const prevMobileOrder = this.mobileOrder();
+            if (prevMobileOrder != mobileOrder) {
+                this.mobileOrder.set(mobileOrder);
             }
             if (this.previousMobile() != this.mobile()) {
                 this.dialogRef?.close();
@@ -89,33 +97,23 @@ export class ResponsiveUserFiltersComponent {
         });
     }
 
-    /**
-     *
-     * @param event
-     */
     protected closeFilterMenu(event: OnUserFilterMenuListCloseEvent) {
         // if saving
         if (event) {
-            const { active, deleted, sort } =
+            const { active, deleted, order } =
                 event as OnUserFilterMenuListSubmitEvent;
+
             this.active.set(active);
             this.deleted.set(deleted);
-            this.mobileSort.set(sort as UserOrder);
+            this.mobileOrder.set(order as UserOrder);
             this.fireRefreshEvent();
         }
     }
 
-    protected filtersClassList = computed<object>(() => {
-        return {
-            filters: true,
-            mobile: !!this.mobile(),
-        };
-    });
-
     protected openFilterDialog(): void {
         this.dialogRef = this.dialog.open(UserFilterDialogComponent, {
             data: {
-                sort: this.getMobileSortFromOrderBy() || UserOrder.name_asc,
+                order: this.getMobileOrderFromOrderBy() || UserOrder.name_asc,
                 active: this.active(),
                 deleted: this.deleted(),
             },
@@ -131,7 +129,7 @@ export class ResponsiveUserFiltersComponent {
             .afterClosed()
             .subscribe((result: UserFilterUserDialogData) => {
                 if (result !== undefined) {
-                    const { sort, active, deleted } = result;
+                    const { order: sort, active, deleted } = result;
                     if (active) {
                         this.active.set(active);
                     }
@@ -139,7 +137,7 @@ export class ResponsiveUserFiltersComponent {
                         this.deleted.set(deleted);
                     }
                     if (sort) {
-                        this.mobileSort.set(sort);
+                        this.mobileOrder.set(sort);
                     }
                     this.fireRefreshEvent();
                 }
@@ -155,7 +153,7 @@ export class ResponsiveUserFiltersComponent {
     private fireRefreshEvent() {
         const filterEvent: OnUserFilterEvent = {
             textQuery: this.textQuery(),
-            sort: this.mobileSort(),
+            order: this.mobileOrder(),
             active: this.active(),
             deleted: this.deleted(),
         };
@@ -163,7 +161,7 @@ export class ResponsiveUserFiltersComponent {
         this.refresh.emit(filterEvent);
     }
 
-    private getMobileSortFromOrderBy() {
+    private getMobileOrderFromOrderBy() {
         const orderBy = this.orderBy();
         return orderBy[0];
     }

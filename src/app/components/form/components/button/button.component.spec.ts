@@ -14,7 +14,7 @@ import { FormElementType } from '../../enums/form-element-type/form-element-type
 import { QueryParamsHandling } from '../../enums/query-params-handling/query-params-handling.enum';
 import { ButtonComponent } from './button.component';
 import { ButtonHarness } from './button.harness';
-import { ButtonStyle } from './enum/style/button-style.enum';
+import { ButtonAppearance } from './enum/appearance/button-appearance.enum';
 
 describe('ButtonComponent.', () => {
     let component: ButtonComponent;
@@ -48,7 +48,7 @@ describe('ButtonComponent.', () => {
         component.icon.set(Icon.checked);
         component.label.set('Button 1');
         component.disabled.set(false);
-        component.style.set(ButtonStyle.outlined);
+        component.appearance.set(ButtonAppearance.outlined);
         fixture.detectChanges();
 
         const state = await harness.getState();
@@ -57,7 +57,7 @@ describe('ButtonComponent.', () => {
             type: FormElementType.button,
             label: 'Button 1',
             icon: Icon.checked,
-            style: ButtonStyle.outlined,
+            appearance: ButtonAppearance.outlined,
             isFocused: false,
             isDisabled: false,
             isFocusable: true,
@@ -75,7 +75,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -94,7 +94,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -113,7 +113,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -131,7 +131,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -149,7 +149,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.submit,
                 label: '',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -167,7 +167,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.reset,
                 label: '',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -187,7 +187,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: 'Save',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -204,7 +204,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -213,8 +213,8 @@ describe('ButtonComponent.', () => {
         });
     });
 
-    describe('style.', () => {
-        it('should apply the text style to the button by default', async () => {
+    describe('appearance.', () => {
+        it('should apply the text appearance to the button by default', async () => {
             fixture.detectChanges();
 
             const state = await harness.getState();
@@ -223,7 +223,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -231,8 +231,8 @@ describe('ButtonComponent.', () => {
             });
         });
 
-        it('should apply the text style to the button', async () => {
-            component.style.set(ButtonStyle.text);
+        it('should apply the text appearance to the button', async () => {
+            component.appearance.set(ButtonAppearance.text);
             fixture.detectChanges();
 
             const state = await harness.getState();
@@ -241,7 +241,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -249,8 +249,8 @@ describe('ButtonComponent.', () => {
             });
         });
 
-        it('should apply the elevated style to the button', async () => {
-            component.style.set(ButtonStyle.elevated);
+        it('should apply the elevated appearance to the button', async () => {
+            component.appearance.set(ButtonAppearance.elevated);
             fixture.detectChanges();
 
             const state = await harness.getState();
@@ -259,7 +259,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.elevated,
+                appearance: ButtonAppearance.elevated,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -267,8 +267,8 @@ describe('ButtonComponent.', () => {
             });
         });
 
-        it('should apply the filled style to the button', async () => {
-            component.style.set(ButtonStyle.filled);
+        it('should apply the filled appearance to the button', async () => {
+            component.appearance.set(ButtonAppearance.filled);
             fixture.detectChanges();
 
             const state = await harness.getState();
@@ -277,7 +277,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.filled,
+                appearance: ButtonAppearance.filled,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -285,8 +285,8 @@ describe('ButtonComponent.', () => {
             });
         });
 
-        it('should apply the outlined style to the button', async () => {
-            component.style.set(ButtonStyle.outlined);
+        it('should apply the outlined appearance to the button', async () => {
+            component.appearance.set(ButtonAppearance.outlined);
             fixture.detectChanges();
 
             const state = await harness.getState();
@@ -295,7 +295,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.outlined,
+                appearance: ButtonAppearance.outlined,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -303,8 +303,8 @@ describe('ButtonComponent.', () => {
             });
         });
 
-        it('should apply the tonal style to the button', async () => {
-            component.style.set(ButtonStyle.tonal);
+        it('should apply the tonal appearance to the button', async () => {
+            component.appearance.set(ButtonAppearance.tonal);
             fixture.detectChanges();
 
             const state = await harness.getState();
@@ -313,7 +313,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.tonal,
+                appearance: ButtonAppearance.tonal,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -333,7 +333,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: Icon.checked,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -350,7 +350,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -369,7 +369,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -387,7 +387,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -405,7 +405,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: true,
                 isFocusable: true,
@@ -424,7 +424,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -442,7 +442,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -460,7 +460,7 @@ describe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: false,
@@ -758,7 +758,7 @@ xdescribe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -776,7 +776,7 @@ xdescribe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,
@@ -794,7 +794,7 @@ xdescribe('ButtonComponent.', () => {
                 type: FormElementType.button,
                 label: '',
                 icon: null,
-                style: ButtonStyle.text,
+                appearance: ButtonAppearance.text,
                 isFocused: false,
                 isDisabled: false,
                 isFocusable: true,

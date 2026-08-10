@@ -123,7 +123,7 @@ describe('Table Sorter', () => {
 
     it('should sort by column id', () => {
         const sorter = new TableSorter(columns);
-        sorter.sortByColumnIdAndDirection('col2');
+        sorter.orderByColumnIdAndDirection('col2');
         expect(sorter.getColumns())
             .withContext('expected columns')
             .toEqual([
@@ -175,7 +175,7 @@ describe('Table Sorter', () => {
 
     it('should sort by column id and direction', () => {
         const sorter = new TableSorter(columns);
-        sorter.sortByColumnIdAndDirection('col2', SortDirection.desc);
+        sorter.orderByColumnIdAndDirection('col2', SortDirection.desc);
         expect(sorter.getColumns())
             .withContext('expected columns')
             .toEqual([
@@ -227,7 +227,7 @@ describe('Table Sorter', () => {
 
     it('should sort by order id', () => {
         const sorter = new TableSorter(columns);
-        sorter.sortByOrderId('col2_desc');
+        sorter.orderByOrderId('col2_desc');
         expect(sorter.getColumns())
             .withContext('expected columns')
             .toEqual([
@@ -279,7 +279,7 @@ describe('Table Sorter', () => {
 
     it('should sort by multiple order ids', () => {
         const sorter = new TableSorter(columns);
-        sorter.sortByOrderIds([
+        sorter.orderByOrderIds([
             'col2_desc',
             'col1_asc',
             'col3_desc',

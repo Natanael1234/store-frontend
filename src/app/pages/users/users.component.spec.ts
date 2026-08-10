@@ -388,7 +388,7 @@ describe('UsersComponent', () => {
                 fixture.detectChanges();
                 filtersMock.refresh.emit({
                     textQuery: 'test',
-                    sort: UserOrder.active_desc,
+                    order: UserOrder.active_desc,
                     active: ActiveFilter.all,
                     deleted: DeletedFilter.all,
                 });

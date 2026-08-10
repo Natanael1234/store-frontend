@@ -25,7 +25,7 @@ import { DeletedFilter } from '../../../enums/deleted-filter/deleted-filter.enum
 import { SortDirection } from '../../../enums/direction/direction.enum';
 import { UserOrder } from '../../../services/user/enums/user-order/user-order.enum';
 import { UserColumnId } from '../types/user-column-id/user-column-id.enum';
-import { UserSortParam } from '../types/user-sort-param.type';
+import { UserOrderParam } from '../types/user-order-param.type';
 
 @Component({
     selector: 'app-responsive-user-list',
@@ -42,10 +42,10 @@ export class ResponsiveUserListComponent implements AfterViewInit {
     @Output() public headerClick = new EventEmitter();
     @Output() public itemClick = new EventEmitter<string>();
 
-    protected activeSortEnabled = computed<boolean>(
+    protected activeOrderEnabled = computed<boolean>(
         () => this.active() == ActiveFilter.all,
     );
-    protected deleteSortEnabled = computed<boolean>(
+    protected deleteOrderEnabled = computed<boolean>(
         () => this.deleted() == DeletedFilter.all,
     );
     protected sorter = new TableSorter([
@@ -72,7 +72,7 @@ export class ResponsiveUserListComponent implements AfterViewInit {
             direction: SortDirection.asc,
             label: UserColumnLabel.active,
             disabled: this.loading(),
-            sortable: this.activeSortEnabled(),
+            sortable: this.activeOrderEnabled(),
             position: 2,
             shrink: true,
         }),
@@ -81,7 +81,7 @@ export class ResponsiveUserListComponent implements AfterViewInit {
             direction: SortDirection.desc,
             label: UserColumnLabel.deleted,
             disabled: this.loading(),
-            sortable: this.deleteSortEnabled(),
+            sortable: this.deleteOrderEnabled(),
             position: 3,
             shrink: true,
         }),
@@ -157,32 +157,32 @@ export class ResponsiveUserListComponent implements AfterViewInit {
             const activeColumn = this.sorter.getColumn(UserColumnId.active);
             if (
                 activeColumn &&
-                activeColumn?.sortable != this.activeSortEnabled()
+                activeColumn?.sortable != this.activeOrderEnabled()
             ) {
-                activeColumn.sortable = this.activeSortEnabled();
+                activeColumn.sortable = this.activeOrderEnabled();
             }
 
             const deletedColumn = this.sorter.getColumn(UserColumnId.deleted);
             if (
                 deletedColumn &&
-                deletedColumn?.sortable != this.deleteSortEnabled()
+                deletedColumn?.sortable != this.deleteOrderEnabled()
             ) {
-                deletedColumn.sortable = this.deleteSortEnabled();
+                deletedColumn.sortable = this.deleteOrderEnabled();
             }
         });
     }
 
     ngAfterViewInit() {}
 
-    public updateSort(sort: UserSortParam) {
-        if (this.loading() || !sort) {
+    public updateSort(order: UserOrderParam) {
+        if (this.loading() || !order) {
             return;
-        } else if (this.sortIsArray(sort as UserSortParam)) {
-            this.sorter.sortByOrderIds(sort as UserOrder[]);
-        } else if (this.sortIsColumn(sort as UserSortParam)) {
-            this.sorter.sortByColumnIdAndDirection(sort as UserColumnId);
-        } else if (this.sortIsOrder(sort as UserSortParam)) {
-            this.sorter.sortByOrderId(sort as UserOrder);
+        } else if (this.orderIsArray(order as UserOrderParam)) {
+            this.sorter.orderByOrderIds(order as UserOrder[]);
+        } else if (this.orderIsColumn(order as UserOrderParam)) {
+            this.sorter.orderByColumnIdAndDirection(order as UserColumnId);
+        } else if (this.orderIsOrder(order as UserOrderParam)) {
+            this.sorter.orderByOrderId(order as UserOrder);
         }
         this.refreshColumns();
     }
@@ -197,26 +197,26 @@ export class ResponsiveUserListComponent implements AfterViewInit {
         return orderBy?.length ? orderBy[0] : undefined;
     }
 
-    private sortIsArray(sortParam: UserSortParam): boolean {
-        return Array.isArray(sortParam);
+    private orderIsArray(orderParam: UserOrderParam): boolean {
+        return Array.isArray(orderParam);
     }
 
-    private sortIsColumn(sortParam: UserSortParam): boolean {
+    private orderIsColumn(orderParam: UserOrderParam): boolean {
         return (
-            typeof sortParam === 'string' &&
-            Object.values(UserColumnId).includes(sortParam as UserColumnId)
+            typeof orderParam === 'string' &&
+            Object.values(UserColumnId).includes(orderParam as UserColumnId)
         );
     }
 
-    private sortIsOrder(sortParam: UserSortParam): boolean {
+    private orderIsOrder(orderParam: UserOrderParam): boolean {
         return (
-            typeof sortParam === 'string' &&
-            Object.values(UserOrder).includes(sortParam as UserOrder)
+            typeof orderParam === 'string' &&
+            Object.values(UserOrder).includes(orderParam as UserOrder)
         );
     }
 
     protected fireHeaderClickEvent(order: string) {
-        this.sorter.sortByOrderId(order);
+        this.sorter.orderByOrderId(order);
         this.refreshColumns();
         this.headerClick.emit();
     }

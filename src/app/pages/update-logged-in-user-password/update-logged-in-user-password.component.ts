@@ -65,9 +65,9 @@ export class UpdateLoggedInUserPasswordComponent {
     protected showPassword: boolean = false;
     protected showRepeatPassword: boolean = false;
 
-    protected passwordRemoteValidationContext: RemoteValidationContext = {};
-    protected repeatPasswordRemoteValidationContext: RemoteValidationContext =
-        {};
+    protected passwordRemoteValidationContext = new RemoteValidationContext();
+    protected repeatPasswordRemoteValidationContext =
+        new RemoteValidationContext();
 
     form = new FormGroup({
         password: new FormControl('', {

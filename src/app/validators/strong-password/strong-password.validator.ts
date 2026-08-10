@@ -53,6 +53,7 @@ export function baseStrongPasswordValidator(): ValidatorFn {
             return { weakPassword: { message: _PasswordMessage.STRONG } };
         }
 
+        // space
         if (/\s/.test(password)) {
             return { invalidPassword: { message: _PasswordMessage.INVALID } };
         }

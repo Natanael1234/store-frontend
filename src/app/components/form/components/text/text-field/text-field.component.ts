@@ -9,16 +9,15 @@ import {
     Output,
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatIconButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
-import { Icon } from '../../../../../enums/icons/icons.enum';
 import { FirstErrorMessagePipe } from '../../../../../pipes/first-error-message.pipe';
 import { AutofocusDirective } from '../../../directives/autofocus/autofocus.directive';
 import { AutoCompleteType } from '../../../enums/auto-complete-type/auto-complete-type.enum';
 import { FormElementType } from '../../../enums/form-element-type/form-element-type.enum';
+import { InputMode } from '../../../enums/input-mode/input-mode.enum';
 import { TextFormat } from '../../../enums/text-format/text-format.enum';
 import { TextMask } from '../../../enums/text-mask/text-mask.enum';
 
@@ -33,7 +32,6 @@ import { TextMask } from '../../../enums/text-mask/text-mask.enum';
         NgxMaskDirective,
         CommonModule,
         MatIconModule,
-        MatIconButton,
         FirstErrorMessagePipe,
         AutofocusDirective,
         A11yModule,
@@ -79,22 +77,11 @@ import { TextMask } from '../../../enums/text-mask/text-mask.enum';
                 [attr.minlength]="_minLength()"
                 [attr.maxlength]="_maxLength()"
                 [mask]="_mask()"
+                [inputMode]="_inputMode()"
                 [dropSpecialCharacters]="false"
                 [formControl]="control()!"
                 (blur)="fireOnBlurEvent()" />
 
-            <!-- password -->
-            @if (_buttonVisible()) {
-                <button
-                    mat-icon-button
-                    matSuffix
-                    (click)="toggleVisibility()"
-                    type="button"
-                    tabIndex="-1">
-                    <!-- TOOD: test tabIndex -->
-                    <mat-icon>{{ _passwordIcon() }}</mat-icon>
-                </button>
-            }
             <!-- suffix -->
             @if (suffix()) {
                 <span matTextSuffix class="padding-right">
@@ -115,8 +102,20 @@ export class TextFieldComponent {
     public focusable = model<boolean>();
     public autofocus = model<boolean>();
     public autocomplete = model<AutoCompleteType>();
-    public readOnly = model<boolean>(false);
-    public format = model<TextFormat | undefined>();
+    public readOnly = model<boolean>();
+    public format = model<
+        | TextFormat.text
+        | TextFormat.search
+        | TextFormat.cnpj
+        | TextFormat.cpf
+        | TextFormat.zipCode
+        | TextFormat.date
+        | TextFormat.time
+        | TextFormat.phone
+        | TextFormat.email
+        | TextFormat.url
+        | undefined
+    >();
     public minLength = model<number>();
     public maxLength = model<number>();
     public prefix = model<string>();
@@ -125,38 +124,75 @@ export class TextFieldComponent {
     protected _visible = model<boolean>(false);
 
     protected _id = computed(() => this.id() ?? '');
-    protected _type = computed<FormElementType.password | FormElementType.text>(
-        () =>
-            this._isPassword() && !this._visible()
-                ? FormElementType.password
-                : FormElementType.text,
-    );
-    protected _buttonVisible = computed(
-        () => this.format() == TextFormat.password,
+    protected _type = computed<FormElementType.text>(
+        () => FormElementType.text,
     );
     protected _label = computed(() => this.label() ?? '');
     protected _placeholder = computed(() => this.placeholder() ?? '');
     protected _tabIndex = computed(() => ((this.focusable() ?? true) ? 0 : -1));
-    protected _readOnly = computed(() => !!this.readOnly());
+    protected _readOnly = computed(() => this.readOnly() ?? false);
     protected _autocomplete = computed(
         () => this.autocomplete() ?? AutoCompleteType.off,
     );
     protected _autofocus = computed(() => this.autofocus() ?? false);
     protected _minLength = computed(() => this.minLength() ?? null);
     protected _maxLength = computed(() => this.maxLength() ?? null);
-    protected _mask = computed(() => this.mask() ?? null);
-    protected _passwordIcon = computed(() =>
-        this._visible() ? Icon.visibility_off : Icon.visibility,
-    );
-    protected _isPassword = computed(
-        () => this.format() == TextFormat.password,
-    );
+    protected _mask = computed(() => {
+        const mask = this.mask();
+        if (mask) {
+            return mask;
+        }
+        const format = this.format();
+        switch (format) {
+            case TextFormat.cnpj:
+                return TextMask.cnpj;
+            case TextFormat.cpf:
+                return TextMask.cpf;
+            case TextFormat.date:
+                return TextMask.date;
+            case TextFormat.email:
+                return TextMask.email;
+            case TextFormat.phone:
+                return TextMask.phone;
+            case TextFormat.time:
+                return TextMask.time;
+            case TextFormat.zipCode:
+                return TextMask.zipCode;
+            default:
+                return null;
+        }
+    });
+    protected _inputMode = computed(() => {
+        const format = this.format();
+        switch (format) {
+            case TextFormat.text:
+                return InputMode.text;
+            case TextFormat.search:
+                return InputMode.search;
+            case TextFormat.cnpj:
+                return InputMode.numeric;
+            case TextFormat.cpf:
+                return InputMode.numeric;
+            case TextFormat.zipCode:
+                return InputMode.numeric;
+            case TextFormat.date:
+                return InputMode.numeric;
+            case TextFormat.time:
+                return InputMode.numeric;
+            case TextFormat.email:
+                return InputMode.email;
+            case TextFormat.url:
+                return InputMode.url;
+            case TextFormat.phone:
+                return InputMode.tel;
+            case TextFormat.time:
+                return InputMode.numeric;
+            default:
+                return null;
+        }
+    });
 
     @Output() onBlur = new EventEmitter();
-
-    protected toggleVisibility() {
-        this._visible.set(!this._visible());
-    }
 
     protected fireOnBlurEvent() {
         this.onBlur.emit();

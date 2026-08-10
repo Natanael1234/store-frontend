@@ -13,7 +13,6 @@ import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { maxLengthValidator } from '../../../../../validators/max-length/max-length.validator';
 import { AutoCompleteType } from '../../../enums/auto-complete-type/auto-complete-type.enum';
 import { FormElementType } from '../../../enums/form-element-type/form-element-type.enum';
-import { NumericFieldModel } from './model/numeric-field.model';
 import { NumericFieldComponent } from './numeric-field.component';
 import { NumericFieldHarness } from './numeric-field.harness';
 
@@ -583,31 +582,85 @@ describe('NumericFieldComponent.', () => {
             });
         });
 
-        xdescribe('autocomplete.', () => {
-            it('should set autocomplete = off by default.', () => {
-                const model = new NumericFieldModel({
-                    control: new FormControl(),
-                });
+        describe('autocomplete.', () => {
+            it('should set autocomplete = off by default.', async () => {
+                fixture.detectChanges();
 
-                expect(model.autocomplete).toEqual(AutoCompleteType.off);
-            });
-
-            it('autocomplete should be set on.', () => {
-                const model = new NumericFieldModel({
-                    control: new FormControl(),
-                    autocomplete: AutoCompleteType.on,
-                });
-
-                expect(model.autocomplete).toEqual(AutoCompleteType.on);
-            });
-
-            it('autocomplete should be set off.', () => {
-                const model = new NumericFieldModel({
-                    control: new FormControl(),
+                const state = await harness.getState();
+                expect(state).toEqual({
+                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    type: FormElementType.text,
+                    value: '',
+                    label: '',
+                    placeholder: '',
+                    isReadOnly: false,
                     autocomplete: AutoCompleteType.off,
+                    isFocusable: true,
+                    isFocused: false,
+                    minLength: null,
+                    maxLength: null,
+                    min: null,
+                    max: null,
+                    step: null,
+                    prefix: '',
+                    suffix: '',
+                    errors: [],
+                    hasValidStructure: true,
                 });
+            });
 
-                expect(model.autocomplete).toEqual(AutoCompleteType.off);
+            it('autocomplete should be set on.', async () => {
+                component.autocomplete.set(AutoCompleteType.on);
+                fixture.detectChanges();
+
+                const state = await harness.getState();
+                expect(state).toEqual({
+                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    type: FormElementType.text,
+                    value: '',
+                    label: '',
+                    placeholder: '',
+                    isReadOnly: false,
+                    autocomplete: AutoCompleteType.on,
+                    isFocusable: true,
+                    isFocused: false,
+                    minLength: null,
+                    maxLength: null,
+                    min: null,
+                    max: null,
+                    step: null,
+                    prefix: '',
+                    suffix: '',
+                    errors: [],
+                    hasValidStructure: true,
+                });
+            });
+
+            it('autocomplete should be set off.', async () => {
+                component.autocomplete.set(AutoCompleteType.off);
+                fixture.detectChanges();
+
+                const state = await harness.getState();
+                expect(state).toEqual({
+                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    type: FormElementType.text,
+                    value: '',
+                    label: '',
+                    placeholder: '',
+                    isReadOnly: false,
+                    autocomplete: AutoCompleteType.off,
+                    isFocusable: true,
+                    isFocused: false,
+                    minLength: null,
+                    maxLength: null,
+                    min: null,
+                    max: null,
+                    step: null,
+                    prefix: '',
+                    suffix: '',
+                    errors: [],
+                    hasValidStructure: true,
+                });
             });
         });
 

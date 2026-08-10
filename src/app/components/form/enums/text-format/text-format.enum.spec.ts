@@ -20,6 +20,7 @@ describe('TextFormat enum', () => {
             zipCode: 'zip-code',
             password: 'password',
             text: 'text',
+            search: 'search',
         });
     });
 });

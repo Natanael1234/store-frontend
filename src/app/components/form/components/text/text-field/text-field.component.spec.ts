@@ -11,6 +11,7 @@ import {
 import { NgxMaskDirective } from 'ngx-mask';
 import { AutoCompleteType } from '../../../enums/auto-complete-type/auto-complete-type.enum';
 import { FormElementType } from '../../../enums/form-element-type/form-element-type.enum';
+import { InputMode } from '../../../enums/input-mode/input-mode.enum';
 import { TextFormat } from '../../../enums/text-format/text-format.enum';
 import { TextMask } from '../../../enums/text-mask/text-mask.enum';
 import { TextFieldComponent } from './text-field.component';
@@ -72,9 +73,9 @@ describe('TextFieldComponent.', () => {
             id: 'quantity',
             type: FormElementType.text,
             value: '96 675 977 091',
-            isPassword: false,
             label: 'Quantity',
             placeholder: 'Type the quantity',
+            inputmode: InputMode.numeric,
             isFocusable: true,
             isFocused: false,
             isReadOnly: false,
@@ -101,9 +102,9 @@ describe('TextFieldComponent.', () => {
             id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
             type: FormElementType.text,
             value: '9667',
-            isPassword: false,
             label: '',
             placeholder: '',
+            inputmode: null,
             isFocusable: true,
             isFocused: false,
             isReadOnly: false,
@@ -128,8 +129,8 @@ describe('TextFieldComponent.', () => {
                     id: 'test-id',
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -150,8 +151,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -177,8 +178,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: 'Test label',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -199,8 +200,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -217,7 +218,7 @@ describe('TextFieldComponent.', () => {
         });
 
         describe('format.', () => {
-            it('should set text format by default.', async () => {
+            it('should not set text format.', async () => {
                 component.format.set(undefined);
                 fixture.detectChanges();
 
@@ -226,8 +227,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -252,8 +253,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: InputMode.text,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -268,62 +269,9 @@ describe('TextFieldComponent.', () => {
                 });
             });
 
-            it('should set password format.', async () => {
-                component.format.set(TextFormat.password);
+            it('should set text format.', async () => {
+                component.format.set(TextFormat.search);
                 component.autofocus.set(undefined);
-                fixture.detectChanges();
-
-                const state = await harness.getState();
-                expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
-                    type: FormElementType.password,
-                    value: '',
-                    isPassword: true,
-                    label: '',
-                    placeholder: '',
-                    isFocusable: true,
-                    isFocused: false,
-                    isReadOnly: false,
-                    autocomplete: AutoCompleteType.off,
-                    minLength: null,
-                    maxLength: null,
-                    prefix: '',
-                    suffix: '',
-                    errors: [],
-                    hasValidStructure: true,
-                });
-            });
-
-            it('should set password format.', async () => {
-                component.format.set(TextFormat.password);
-                component.autofocus.set(undefined);
-                fixture.detectChanges();
-
-                const state = await harness.getState();
-                expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
-                    type: FormElementType.password,
-                    value: '',
-                    isPassword: true,
-                    label: '',
-                    placeholder: '',
-                    isFocusable: true,
-                    isFocused: false,
-                    isReadOnly: false,
-                    autocomplete: AutoCompleteType.off,
-                    minLength: null,
-                    maxLength: null,
-                    prefix: '',
-                    suffix: '',
-                    errors: [],
-                    hasValidStructure: true,
-                });
-            });
-
-            it('should set password format and make text visible.', async () => {
-                component.format.set(TextFormat.password);
-                component.autofocus.set(undefined);
-                await harness.clickPasswordToggle();
                 fixture.detectChanges();
 
                 const state = await harness.getState();
@@ -331,11 +279,11 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: true,
                     label: '',
+                    inputmode: InputMode.search,
                     placeholder: '',
                     isFocusable: true,
-                    isFocused: true,
+                    isFocused: false,
                     isReadOnly: false,
                     autocomplete: AutoCompleteType.off,
                     minLength: null,
@@ -347,24 +295,22 @@ describe('TextFieldComponent.', () => {
                 });
             });
 
-            it('should set password format and make text invisible.', async () => {
-                component.format.set(TextFormat.password);
+            it('should set search format.', async () => {
+                control.setValue('Test');
+                component.format.set(TextFormat.search);
                 component.autofocus.set(undefined);
-                await harness.clickPasswordToggle();
-                fixture.detectChanges();
-                await harness.clickPasswordToggle();
                 fixture.detectChanges();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
-                    type: FormElementType.password,
-                    value: '',
-                    isPassword: true,
+                    type: FormElementType.text,
+                    value: 'Test',
                     label: '',
+                    inputmode: InputMode.search,
                     placeholder: '',
                     isFocusable: true,
-                    isFocused: true,
+                    isFocused: false,
                     isReadOnly: false,
                     autocomplete: AutoCompleteType.off,
                     minLength: null,
@@ -376,7 +322,34 @@ describe('TextFieldComponent.', () => {
                 });
             });
 
-            it('should set custom format.', async () => {
+            it('should set cnpj format.', async () => {
+                control.setValue('81220601000101');
+                component.format.set(TextFormat.cnpj);
+                component.autofocus.set(undefined);
+                fixture.detectChanges();
+
+                const state = await harness.getState();
+                expect(state).toEqual({
+                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    type: FormElementType.text,
+                    value: '81.220.601/0001-01',
+                    label: '',
+                    inputmode: InputMode.numeric,
+                    placeholder: '',
+                    isFocusable: true,
+                    isFocused: false,
+                    isReadOnly: false,
+                    autocomplete: AutoCompleteType.off,
+                    minLength: null,
+                    maxLength: null,
+                    prefix: '',
+                    suffix: '',
+                    errors: [],
+                    hasValidStructure: true,
+                });
+            });
+
+            it('should set cpf format.', async () => {
                 control.setValue('67351279004');
                 component.format.set(TextFormat.cpf);
                 component.autofocus.set(undefined);
@@ -386,9 +359,171 @@ describe('TextFieldComponent.', () => {
                 expect(state).toEqual({
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
-                    value: '67351279004',
-                    isPassword: false,
+                    value: '673.512.790-04',
                     label: '',
+                    inputmode: InputMode.numeric,
+                    placeholder: '',
+                    isFocusable: true,
+                    isFocused: false,
+                    isReadOnly: false,
+                    autocomplete: AutoCompleteType.off,
+                    minLength: null,
+                    maxLength: null,
+                    prefix: '',
+                    suffix: '',
+                    errors: [],
+                    hasValidStructure: true,
+                });
+            });
+
+            it('should set zip code format.', async () => {
+                control.setValue('54580745');
+                component.format.set(TextFormat.zipCode);
+                component.autofocus.set(undefined);
+                fixture.detectChanges();
+
+                const state = await harness.getState();
+                expect(state).toEqual({
+                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    type: FormElementType.text,
+                    value: '54580-745',
+                    label: '',
+                    inputmode: InputMode.numeric,
+                    placeholder: '',
+                    isFocusable: true,
+                    isFocused: false,
+                    isReadOnly: false,
+                    autocomplete: AutoCompleteType.off,
+                    minLength: null,
+                    maxLength: null,
+                    prefix: '',
+                    suffix: '',
+                    errors: [],
+                    hasValidStructure: true,
+                });
+            });
+
+            it('should set date format.', async () => {
+                control.setValue('02032026');
+                component.format.set(TextFormat.date);
+                component.autofocus.set(undefined);
+                fixture.detectChanges();
+
+                const state = await harness.getState();
+                expect(state).toEqual({
+                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    type: FormElementType.text,
+                    value: '02/03/2026',
+                    label: '',
+                    inputmode: InputMode.numeric,
+                    placeholder: '',
+                    isFocusable: true,
+                    isFocused: false,
+                    isReadOnly: false,
+                    autocomplete: AutoCompleteType.off,
+                    minLength: null,
+                    maxLength: null,
+                    prefix: '',
+                    suffix: '',
+                    errors: [],
+                    hasValidStructure: true,
+                });
+            });
+
+            it('should set time format.', async () => {
+                control.setValue('2236');
+                component.format.set(TextFormat.time);
+                component.autofocus.set(undefined);
+                fixture.detectChanges();
+
+                const state = await harness.getState();
+                expect(state).toEqual({
+                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    type: FormElementType.text,
+                    value: '22:36',
+                    label: '',
+                    inputmode: InputMode.numeric,
+                    placeholder: '',
+                    isFocusable: true,
+                    isFocused: false,
+                    isReadOnly: false,
+                    autocomplete: AutoCompleteType.off,
+                    minLength: null,
+                    maxLength: null,
+                    prefix: '',
+                    suffix: '',
+                    errors: [],
+                    hasValidStructure: true,
+                });
+            });
+
+            it('should set phone format.', async () => {
+                control.setValue('51999999999');
+                component.format.set(TextFormat.phone);
+                component.autofocus.set(undefined);
+                fixture.detectChanges();
+
+                const state = await harness.getState();
+                expect(state).toEqual({
+                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    type: FormElementType.text,
+                    value: '(51) 99999-9999',
+                    label: '',
+                    inputmode: InputMode.tel,
+                    placeholder: '',
+                    isFocusable: true,
+                    isFocused: false,
+                    isReadOnly: false,
+                    autocomplete: AutoCompleteType.off,
+                    minLength: null,
+                    maxLength: null,
+                    prefix: '',
+                    suffix: '',
+                    errors: [],
+                    hasValidStructure: true,
+                });
+            });
+
+            it('should set email format.', async () => {
+                control.setValue('user@mail.com');
+                component.format.set(TextFormat.email);
+                component.autofocus.set(undefined);
+                fixture.detectChanges();
+
+                const state = await harness.getState();
+                expect(state).toEqual({
+                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    type: FormElementType.text,
+                    value: 'user@mail.com',
+                    label: '',
+                    inputmode: InputMode.email,
+                    placeholder: '',
+                    isFocusable: true,
+                    isFocused: false,
+                    isReadOnly: false,
+                    autocomplete: AutoCompleteType.off,
+                    minLength: null,
+                    maxLength: null,
+                    prefix: '',
+                    suffix: '',
+                    errors: [],
+                    hasValidStructure: true,
+                });
+            });
+
+            it('should set url format.', async () => {
+                control.setValue('https://www.google.com.br');
+                component.format.set(TextFormat.url);
+                component.autofocus.set(undefined);
+                fixture.detectChanges();
+
+                const state = await harness.getState();
+                expect(state).toEqual({
+                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    type: FormElementType.text,
+                    value: 'https://www.google.com.br',
+                    label: '',
+                    inputmode: InputMode.url,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -413,8 +548,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: true,
@@ -439,8 +574,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: true,
@@ -464,8 +599,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: false,
                     isFocused: false,
@@ -488,8 +623,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -513,8 +648,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -538,8 +673,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -562,8 +697,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -587,8 +722,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -612,8 +747,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -637,8 +772,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -663,8 +798,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -688,8 +823,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -714,8 +849,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -739,8 +874,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -765,8 +900,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -790,8 +925,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -816,8 +951,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -841,8 +976,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -871,8 +1006,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -899,8 +1034,8 @@ describe('TextFieldComponent.', () => {
                     id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
-                    isPassword: false,
                     label: '',
+                    inputmode: null,
                     placeholder: '',
                     isFocusable: true,
                     isFocused: false,
@@ -917,29 +1052,31 @@ describe('TextFieldComponent.', () => {
         });
 
         describe('masks', () => {
-            it('email mask', async () => {
-                control.setValue('user@email.com');
-                component.mask.set(TextMask.email);
-                fixture.detectChanges();
+            describe('email', () => {
+                it('email mask', async () => {
+                    control.setValue('user@email.com');
+                    component.mask.set(TextMask.email);
+                    fixture.detectChanges();
 
-                const state = await harness.getState();
-                expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
-                    type: FormElementType.text,
-                    value: 'user@email.com',
-                    isPassword: false,
-                    label: '',
-                    placeholder: '',
-                    isFocusable: true,
-                    isFocused: false,
-                    isReadOnly: false,
-                    autocomplete: AutoCompleteType.off,
-                    minLength: null,
-                    maxLength: null,
-                    prefix: '',
-                    suffix: '',
-                    errors: [],
-                    hasValidStructure: true,
+                    const state = await harness.getState();
+                    expect(state).toEqual({
+                        id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                        type: FormElementType.text,
+                        value: 'user@email.com',
+                        label: '',
+                        inputmode: null,
+                        placeholder: '',
+                        isFocusable: true,
+                        isFocused: false,
+                        isReadOnly: false,
+                        autocomplete: AutoCompleteType.off,
+                        minLength: null,
+                        maxLength: null,
+                        prefix: '',
+                        suffix: '',
+                        errors: [],
+                        hasValidStructure: true,
+                    });
                 });
             });
 
@@ -997,9 +1134,9 @@ describe('TextFieldComponent.', () => {
                 id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                 type: FormElementType.text,
                 value: '',
-                isPassword: false,
                 label: '',
                 placeholder: '',
+                inputmode: null,
                 isFocusable: true,
                 isFocused: false,
                 isReadOnly: false,
@@ -1022,9 +1159,9 @@ describe('TextFieldComponent.', () => {
                 id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                 type: FormElementType.text,
                 value: '',
-                isPassword: false,
                 label: '',
                 placeholder: '',
+                inputmode: null,
                 isFocusable: true,
                 isFocused: false,
                 isReadOnly: false,
@@ -1047,9 +1184,9 @@ describe('TextFieldComponent.', () => {
                 id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
                 type: FormElementType.text,
                 value: '',
-                isPassword: false,
                 label: '',
                 placeholder: '',
+                inputmode: null,
                 isFocusable: true,
                 isFocused: true,
                 isReadOnly: false,

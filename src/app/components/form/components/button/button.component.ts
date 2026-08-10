@@ -17,7 +17,7 @@ import { Icon } from '../../../../enums/icons/icons.enum';
 import { leftMouseClickFilter } from '../../../../utils/mouse-events/mouse-click-filter';
 import { AutofocusDirective } from '../../directives/autofocus/autofocus.directive';
 import { FormElementType } from '../../enums/form-element-type/form-element-type.enum';
-import { ButtonStyle } from './enum/style/button-style.enum';
+import { ButtonAppearance } from './enum/appearance/button-appearance.enum';
 
 @Component({
     selector: 'app-button',
@@ -70,7 +70,7 @@ export class ButtonComponent {
     public id = model<string | undefined>();
     public icon = model<Icon>();
     public label = model<string>();
-    public style = model<ButtonStyle>(ButtonStyle.text);
+    public appearance = model<ButtonAppearance>(ButtonAppearance.text);
     public disabled = model<boolean>();
     public focusable = model<boolean>();
     public autofocus = model<boolean>();
@@ -83,7 +83,7 @@ export class ButtonComponent {
 
     protected _id = computed(() => this.id());
     protected _type = computed(() => this.type() ?? FormElementType.button);
-    protected _matButton = computed(() => this.style());
+    protected _matButton = computed(() => this.appearance());
     protected _disabled = computed(() => !!this.disabled());
     protected _autofocus = computed(() => this.autofocus() ?? false);
     protected _tabindex = computed(() => ((this.focusable() ?? true) ? 0 : -1));
@@ -93,7 +93,7 @@ export class ButtonComponent {
         () => this.queryParamsHandling() ?? null,
     );
 
-    @Output() onClick = new EventEmitter();
+    @Output() public onClick = new EventEmitter();
 
     protected fireClickButtonEvent(event: MouseEvent) {
         if (leftMouseClickFilter(event)) {

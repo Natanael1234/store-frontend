@@ -106,7 +106,7 @@ export class NumericFieldComponent {
     public autocomplete = model<AutoCompleteType>(AutoCompleteType.off);
     public focusable = model<boolean>(true);
     public autofocus = model<boolean>();
-    public readOnly = model<boolean>(false);
+    public readOnly = model<boolean>();
     public control = model<FormControl>();
     public minLength = model<number>();
     public maxLength = model<number>();
@@ -127,7 +127,7 @@ export class NumericFieldComponent {
         () => this.autocomplete() ?? AutoCompleteType.off,
     );
     protected _autofocus = computed(() => this.autofocus() ?? false);
-    protected _readOnly = computed(() => !!this.readOnly());
+    protected _readOnly = computed(() => this.readOnly() ?? false);
     protected _tabIndex = computed(() => (this.focusable() ? 0 : -1));
     protected _minLength = computed(() => this.minLength() ?? null);
     protected _maxLength = computed(() => this.maxLength() ?? null);

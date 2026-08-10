@@ -20,8 +20,8 @@ import { By } from '@angular/platform-browser';
 import { ActiveFilter } from '../../../../enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '../../../../enums/deleted-filter/deleted-filter.enum';
 import { UserOrder } from '../../../../services/user/enums/user-order/user-order.enum';
-import { MockUserFilterToolbarComponent } from '../user-filter-toollbar/test/mock/user-filter-toolbar.component.mock';
 import { UserFilterToolbarComponent } from '../user-filter-toollbar/user-filter-toolbar.component';
+import { MockUserFilterToolbarComponent } from '../user-filter-toollbar/user-filter-toolbar.component.mock';
 import { UserFilterDialogComponent } from './user-filter-dialog.component';
 
 describe('UserFilterDialogComponent', () => {
@@ -58,7 +58,7 @@ describe('UserFilterDialogComponent', () => {
                 {
                     provide: MAT_DIALOG_DATA,
                     useValue: {
-                        sort: UserOrder.email_asc,
+                        order: UserOrder.email_asc,
                         active: ActiveFilter.inactive,
                         deleted: DeletedFilter.deleted,
                     },
@@ -87,7 +87,7 @@ describe('UserFilterDialogComponent', () => {
     });
 
     it('should initialize data from MAT_DIALOG_DATA', () => {
-        expect(component.sort()).toEqual(UserOrder.email_asc);
+        expect(component.order()).toEqual(UserOrder.email_asc);
         expect(component.active()).toEqual(ActiveFilter.inactive);
         expect(component.deleted()).toEqual(DeletedFilter.deleted);
     });
@@ -104,13 +104,13 @@ describe('UserFilterDialogComponent', () => {
             By.directive(UserFilterToolbarComponent),
         ).componentInstance as UserFilterToolbarComponent;
 
-        expect(toolbar.sort()).toEqual(UserOrder.email_asc);
+        expect(toolbar.order()).toEqual(UserOrder.email_asc);
         expect(toolbar.active()).toEqual(ActiveFilter.inactive);
         expect(toolbar.deleted()).toEqual(DeletedFilter.deleted);
     });
 
     it('should update toolbar inputs', () => {
-        component.sort.set(UserOrder.email_desc);
+        component.order.set(UserOrder.email_desc);
         component.active.set(ActiveFilter.all);
         component.deleted.set(DeletedFilter.all);
 
@@ -120,7 +120,7 @@ describe('UserFilterDialogComponent', () => {
             By.directive(UserFilterToolbarComponent),
         ).componentInstance as UserFilterToolbarComponent;
 
-        expect(toolbar.sort()).toEqual(UserOrder.email_desc);
+        expect(toolbar.order()).toEqual(UserOrder.email_desc);
         expect(toolbar.active()).toEqual(ActiveFilter.all);
         expect(toolbar.deleted()).toEqual(DeletedFilter.all);
     });
@@ -128,11 +128,11 @@ describe('UserFilterDialogComponent', () => {
     it('should close the dialog with the selected event data', () => {
         const closeSpy = spyOn(dialogRef, 'close');
 
-        expect(component.sort()).toEqual(UserOrder.email_asc);
+        expect(component.order()).toEqual(UserOrder.email_asc);
         expect(component.active()).toEqual(ActiveFilter.inactive);
         expect(component.deleted()).toEqual(DeletedFilter.deleted);
 
-        component.sort.set(UserOrder.email_desc);
+        component.order.set(UserOrder.email_desc);
         component.active.set(ActiveFilter.all);
         component.deleted.set(DeletedFilter.all);
 
@@ -143,7 +143,7 @@ describe('UserFilterDialogComponent', () => {
         ).componentInstance as UserFilterToolbarComponent;
 
         toolbarMock.onClose.emit({
-            sort: UserOrder.email_desc,
+            order: UserOrder.email_desc,
             active: ActiveFilter.all,
             deleted: DeletedFilter.all,
         });
@@ -152,7 +152,7 @@ describe('UserFilterDialogComponent', () => {
 
         expect(closeSpy).toHaveBeenCalled();
         expect(closeSpy).toHaveBeenCalledWith({
-            sort: UserOrder.email_desc,
+            order: UserOrder.email_desc,
             active: ActiveFilter.all,
             deleted: DeletedFilter.all,
         });
@@ -161,11 +161,11 @@ describe('UserFilterDialogComponent', () => {
     it('should close the dialog with false when cancel is triggered', () => {
         const closeSpy = spyOn(dialogRef, 'close');
 
-        expect(component.sort()).toEqual(UserOrder.email_asc);
+        expect(component.order()).toEqual(UserOrder.email_asc);
         expect(component.active()).toEqual(ActiveFilter.inactive);
         expect(component.deleted()).toEqual(DeletedFilter.deleted);
 
-        component.sort.set(UserOrder.email_desc);
+        component.order.set(UserOrder.email_desc);
         component.active.set(ActiveFilter.all);
         component.deleted.set(DeletedFilter.all);
 

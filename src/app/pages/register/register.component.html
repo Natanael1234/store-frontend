@@ -1,44 +1,106 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <!-- main error -->
+<form [formGroup]="formGroup" class="grid">
+    <!-- loading progress TODO: mover para a barra principal? -->
+
     @if (loading) {
-        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-    }
-    @if (mainError) {
-        <app-alert
-            [showCloseButton]="true"
-            type="danger"
-            icon="warning"
-            (onClose)="mainError = undefined">
-            {{ mainError }}
-        </app-alert>
+        <div [attr.col]="12">
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </div>
     }
 
-    <app-form [elements]="elements" />
+    <!-- main error -->
+
+    @if (mainError) {
+        <div [attr.col]="12">
+            <app-alert
+                [showCloseButton]="true"
+                type="danger"
+                icon="warning"
+                (onClose)="mainError = undefined">
+                {{ mainError }}
+            </app-alert>
+        </div>
+    }
+
+    <!-- name -->
+
+    <div [attr.col]="12">
+        <app-text-field
+            id="name-input"
+            label="Nome"
+            [control]="formGroup.controls.name"
+            [autofocus]="true"
+            [format]="TextFormat.text"
+            [minLength]="UserConfigs.NAME_MIN_LENGTH"
+            [maxLength]="UserConfigs.NAME_MAX_LENGTH" />
+    </div>
+
+    <!-- email  -->
+
+    <div [attr.col]="12">
+        <app-text-field
+            id="email-input"
+            [mask]="TextMask.email"
+            label="Email"
+            [inputMode]="InputMode.email"
+            [control]="formGroup.controls.email"
+            [format]="TextFormat.email"
+            [maxLength]="EmailConstants.MAX_LENGTH" />
+    </div>
+
+    <!-- password -->
+
+    <div [attr.col]="12">
+        <app-password-field
+            id="password-input"
+            label="Senha"
+            [control]="formGroup.controls.password"
+            [autocomplete]="AutoCompleteType.new_password"
+            [minLength]="UserConfigs.PASSWORD_MIN_LENGTH"
+            [maxLength]="UserConfigs.PASSWORD_MAX_LENGTH"
+            (onBlur)="onPasswordBlur()" />
+    </div>
+
+    <!-- repeat password -->
+
+    <div [attr.col]="12">
+        <app-password-field
+            id="repeat-password-input"
+            label="Repita a senha"
+            [control]="formGroup.controls.repeatPassword"
+            [minLength]="UserConfigs.PASSWORD_MIN_LENGTH"
+            [maxLength]="UserConfigs.PASSWORD_MAX_LENGTH" />
+    </div>
 
     <!-- accept terms -->
-    <!-- <mat-checkbox
-        id="accept-terms-checkbox"
-        color="basic"
-        [classList]="[acceptTermsHasError ? 'invalid' : '']"
-        formControlName="acceptTerms"
-        (focus)="acceptTermsBlurred = false"
-        (blur)="acceptTermsBlurred = true">
-        Aceito os Termos de Serviço *
-    </mat-checkbox> -->
 
-    <!-- register -->
-    <!-- <button mat-flat-button id="register" type="submit" [disabled]="loading">
-        Registrar
-    </button> -->
+    <div [attr.col]="12">
+        <app-checkbox
+            id="accept-terms-checkbox"
+            label="Aceito os termos"
+            [control]="formGroup.controls.acceptTerms" />
+    </div>
 
-    <!-- login -->
-    <!-- <button
-        mat-stroked-button
-        id="login"
-        type="button"
-        [disabled]="loading"
-        routerLink="/login">
-        Já tem uma conta?
-        <b>Login</b>
-    </button> -->
+    <!-- register button -->
+
+    <div [attr.col]="12">
+        <app-button
+            id="register-button"
+            [type]="FormElementType.button"
+            label="Registrar"
+            [appearance]="ButtonAppearance.filled"
+            [disabled]="!!loading"
+            (onClick)="onSubmit()" />
+    </div>
+
+    <!-- login button -->
+
+    <div [attr.col]="12">
+        <app-button
+            id="login-button"
+            [type]="FormElementType.button"
+            label="Já tem uma conta? <b>Login</b>"
+            [appearance]="ButtonAppearance.outlined"
+            [disabled]="!!loading"
+            routerLink="/login" />
+    </div>
 </form>

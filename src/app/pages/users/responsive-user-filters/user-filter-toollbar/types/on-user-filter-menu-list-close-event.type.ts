@@ -5,7 +5,7 @@ import { UserOrder } from '../../../../../services/user/enums/user-order/user-or
 export type OnUserFilterMenuListSubmitEvent = {
     active: ActiveFilter;
     deleted: DeletedFilter;
-    sort: UserOrder;
+    order: UserOrder;
 };
 
 export type OnUserFilterMenuListCancelEvent = false;
@@ -14,7 +14,7 @@ export type onUserFilterListEvent = {
     textQuery: string;
     active: ActiveFilter;
     deleted: DeletedFilter;
-    sort: UserOrder;
+    order: UserOrder;
 };
 
 export type OnUserFilterMenuListCloseEvent =

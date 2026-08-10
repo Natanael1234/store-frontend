@@ -1,8 +1,11 @@
 import { ComponentHarness } from '@angular/cdk/testing';
+import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatIconHarness } from '@angular/material/icon/testing';
 import { Icon } from '../../../../enums/icons/icons.enum';
+import { MouseButton } from '../../../../enums/mouse-button/mouse-button.enum';
+import { PointerType } from '../../../../enums/pointer-type/pointer-type.enum';
 import { FormElementType } from '../../enums/form-element-type/form-element-type.enum';
-import { ButtonStyle } from './enum/style/button-style.enum';
+import { ButtonAppearance } from './enum/appearance/button-appearance.enum';
 
 type ButtonState = {
     id: string | null;
@@ -12,7 +15,7 @@ type ButtonState = {
         | FormElementType.reset;
     label: string | null;
     icon: Icon | null;
-    style: ButtonStyle | null;
+    appearance: ButtonAppearance | null;
     isFocused: boolean;
     isFocusable: boolean;
     isDisabled: boolean;
@@ -40,6 +43,7 @@ export class ButtonHarness extends ComponentHarness {
     private innerButtonLabels = this.locatorForAll(
         ':scope > button > .mdc-button__label > mat-label',
     );
+    private natButtonHarness = this.locatorFor(MatButtonHarness);
 
     async getHostChildrenCount() {
         return (await this.hostChildrenElements()).length;
@@ -195,6 +199,15 @@ export class ButtonHarness extends ComponentHarness {
         return label;
     }
 
+    async click() {
+        const button = await this.natButtonHarness();
+        const host = await button.host();
+        await host.dispatchEvent('click', {
+            pointerType: PointerType.mouse,
+            button: MouseButton.left,
+        });
+    }
+
     async getButtonStyle() {
         const button = await this.getButton();
         const clazzStr = (await button.getAttribute('class')) ?? '';
@@ -202,15 +215,15 @@ export class ButtonHarness extends ComponentHarness {
         for (const clazz of clazzList) {
             switch (clazz) {
                 case 'mat-mdc-button':
-                    return ButtonStyle.text;
+                    return ButtonAppearance.text;
                 case 'mat-mdc-raised-button':
-                    return ButtonStyle.elevated;
+                    return ButtonAppearance.elevated;
                 case 'mat-mdc-unelevated-button':
-                    return ButtonStyle.filled;
+                    return ButtonAppearance.filled;
                 case 'mat-mdc-outlined-button':
-                    return ButtonStyle.outlined;
+                    return ButtonAppearance.outlined;
                 case 'mat-tonal-button':
-                    return ButtonStyle.tonal;
+                    return ButtonAppearance.tonal;
             }
         }
         return null;
@@ -240,7 +253,7 @@ export class ButtonHarness extends ComponentHarness {
         const type = await this.getType();
         const label = await this.getInnerButtonLabelText();
         const icon = await this.getIconText();
-        const style = await this.getButtonStyle();
+        const appearance = await this.getButtonStyle();
         const isDisabled = await this.isButtonDisabled();
         const isFocused = await this.isFocused();
         const isFocusable = await this.isFocusable();
@@ -251,7 +264,7 @@ export class ButtonHarness extends ComponentHarness {
             type,
             label,
             icon,
-            style,
+            appearance,
             isDisabled,
             isFocused,
             isFocusable,

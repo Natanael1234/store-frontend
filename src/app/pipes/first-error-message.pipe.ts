@@ -36,6 +36,12 @@ export class FirstErrorMessagePipe implements PipeTransform {
                 case StandardControlValidatorError.nullValidator:
                     return 'O valor não pode ser nulo.';
                 default:
+                    if (key == 'remote') {
+                        return error;
+                    }
+                    if (key == 'mask') {
+                        return 'Invalid format.'; // TODO: testar
+                    }
                     return 'Inválido!'; //JSON.stringify(error);
             }
         }

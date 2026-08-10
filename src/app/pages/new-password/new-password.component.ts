@@ -62,10 +62,10 @@ export class NewPasswordComponent {
     protected showPassword: boolean = false;
     protected showRepeatPassword: boolean = false;
 
-    protected hashRemoteValidationContext: RemoteValidationContext = {};
-    protected passwordRemoteValidationContext: RemoteValidationContext = {};
-    protected repeatPasswordRemoteValidationContext: RemoteValidationContext =
-        {};
+    protected hashRemoteValidationContext = new RemoteValidationContext();
+    protected passwordRemoteValidationContext = new RemoteValidationContext();
+    protected repeatPasswordRemoteValidationContext =
+        new RemoteValidationContext();
 
     form = new FormGroup({
         hash: new FormControl('', {}),

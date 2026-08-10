@@ -1,24 +1,19 @@
 import { ComponentHarness } from '@angular/cdk/testing';
-import { MatButtonHarness } from '@angular/material/button/testing';
 import {
     MatErrorHarness,
     MatFormFieldHarness,
 } from '@angular/material/form-field/testing';
-import { MatIconHarness } from '@angular/material/icon/testing';
 import { MatInputHarness } from '@angular/material/input/testing';
-import { Icon } from '../../../../../enums/icons/icons.enum';
 import { AutoCompleteType } from '../../../enums/auto-complete-type/auto-complete-type.enum';
-import { FormElementType } from '../../../enums/form-element-type/form-element-type.enum';
-import { InputType } from '../../../enums/input-type/input-type.enum';
+import { InputMode } from '../../../enums/input-mode/input-mode.enum';
 
 type TextFieldState = {
     id: string;
-    /** input type (text or password) */
+    /** input type (text) */
     type: string;
     value: string;
-    /** If is password (even if visible/text input type) */
-    isPassword: boolean;
     label: string | null;
+    inputmode: InputMode | null;
     placeholder: string;
     isFocusable: boolean;
     isFocused: boolean;
@@ -39,39 +34,28 @@ export class TextFieldHarness extends ComponentHarness {
     private fieldHarness = this.locatorFor(MatFormFieldHarness);
     private labelHarness = this.locatorFor(MatFormFieldHarness);
     private inputHarness = this.locatorFor(MatInputHarness);
-    private buttonHarness = this.locatorForOptional(MatButtonHarness);
-    private iconHarness = this.locatorForOptional(MatIconHarness);
     private errorHarness = this.locatorForOptional(MatErrorHarness);
 
     private fieldHarnesses = this.locatorForAll(MatFormFieldHarness);
     private labelHarnessess = this.locatorForAll(MatFormFieldHarness);
     private inputHarnesses = this.locatorForAll(MatInputHarness);
-    private iconHarnessess = this.locatorForAll(MatIconHarness);
-    private buttonHarnesses = this.locatorForAll(MatButtonHarness);
     private errorHarnesses = this.locatorForAll(MatErrorHarness);
 
     private fieldElement = this.locatorFor('mat-form-field');
     private labelElement = this.locatorFor('mat-label');
     private prefixElement = this.locatorForOptional('[matTextPrefix]');
     private inputElement = this.locatorFor('input');
-    private iconElement = this.locatorForOptional('mat-icon');
     private suffixElement = this.locatorForOptional('[matTextSuffix]');
-    private buttonElement = this.locatorForOptional('button');
     private errorElement = this.locatorForOptional('mat-error');
 
     private fieldElements = this.locatorForAll('mat-form-field');
     private labelElements = this.locatorForAll('mat-label');
     private prefixElements = this.locatorForAll('[matTextPrefix]');
     private inputElements = this.locatorForAll('input');
-    private iconElements = this.locatorForAll('mat-icon');
     private suffixElements = this.locatorForAll('[matTextSuffix]');
-    private buttonElements = this.locatorForAll('button');
     private errorElements = this.locatorForAll('mat-error');
 
     private hostChildrenElements = this.locatorForAll(':scope > *');
-    private iconInsideButton = this.locatorForAll(
-        ':scope > mat-form-field button > mat-icon',
-    );
 
     // -----------------------------
     // Métodos utilitários públicos
@@ -90,7 +74,7 @@ export class TextFieldHarness extends ComponentHarness {
         return await this.inputHarnesses();
     }
 
-    async getChilCount() {
+    async getChildCount() {
         return (await this.hostChildrenElements()).length;
     }
 
@@ -106,14 +90,6 @@ export class TextFieldHarness extends ComponentHarness {
         return (await this.inputElements()).length;
     }
 
-    async getButtonCount() {
-        return (await this.buttonElements()).length;
-    }
-
-    async getIconCount() {
-        return (await this.iconHarnessess()).length;
-    }
-
     async getPrefixCount() {
         return (await this.prefixElements()).length;
     }
@@ -124,6 +100,16 @@ export class TextFieldHarness extends ComponentHarness {
 
     async getErrorCount() {
         return (await this.errorHarnesses()).length;
+    }
+
+    async getErrorHanerness() {
+        return this.errorHarness();
+    }
+
+    async getErrorMessage() {
+        const errorHarness = await this.getErrorHanerness();
+        const message = errorHarness?.getText();
+        return message;
     }
 
     async isHostChildAField() {
@@ -165,6 +151,13 @@ export class TextFieldHarness extends ComponentHarness {
         return input.getType();
     }
 
+    async getInputMode() {
+        const input = await this.inputElement();
+        const str = await input.getAttribute('inputmode');
+        const inputmode = str == 'null' ? null : str;
+        return inputmode as InputMode | null;
+    }
+
     async getInputValue(): Promise<string> {
         const input = await this.inputHarness();
         return input.getValue();
@@ -173,6 +166,7 @@ export class TextFieldHarness extends ComponentHarness {
     async setInputValue(value: string): Promise<void> {
         const input = await this.inputHarness();
         await input.setValue(value);
+        await input.blur();
     }
 
     async getInputTabIndex() {
@@ -255,50 +249,6 @@ export class TextFieldHarness extends ComponentHarness {
         return await field.getSuffixText();
     }
 
-    // -----------------------------
-    // Controles de senha / ícone
-    // -----------------------------
-
-    async hasPasswordToggleButton(): Promise<boolean> {
-        return (await this.buttonHarness()) !== null;
-    }
-
-    async setPasswordVisible(visible: boolean): Promise<boolean> {
-        const button = await this.buttonHarness();
-        if (!button) return false;
-        const inputType = await this.getInputType();
-        const isVisible = inputType != FormElementType.password;
-        if ((visible && !isVisible) || (!visible && isVisible)) {
-            const button = await this.buttonHarness();
-            if (button) await button.click();
-        }
-        return true;
-    }
-
-    async clickPasswordToggle(): Promise<void> {
-        const button = await this.buttonHarness();
-        if (button) await button.click();
-    }
-
-    async getPasswordIconName(): Promise<string | null> {
-        const icon = await this.iconHarness();
-        return icon ? icon.getName() : null;
-    }
-
-    async buttonContainsIcon(): Promise<boolean> {
-        const buttonIcons = await this.iconInsideButton();
-        return buttonIcons.length == 1;
-    }
-
-    async isPassword() {
-        return this.hasPasswordToggleButton();
-    }
-
-    async isTextVisible() {
-        const type = await this.getInputType();
-        return type == InputType.text;
-    }
-
     async hasValidStructure(): Promise<boolean | { [key: string]: string }> {
         const errors: any = {};
 
@@ -349,38 +299,6 @@ export class TextFieldHarness extends ComponentHarness {
                 `Has invalid number of suffix elements: ${suffixCount}.`;
         }
 
-        const buttonCount = await this.getButtonCount();
-        const hasValidButtonCount = buttonCount <= 1;
-        if (!hasValidButtonCount) {
-            errors['hasValidButtonCount'] =
-                `Has invalid number of button elements ${buttonCount}.`;
-        }
-
-        const iconCount = await this.getIconCount();
-        const validIconCount = iconCount <= 1;
-        if (!validIconCount) {
-            errors['hasNoIcons'] =
-                `Has invalid number of icon elements ${iconCount}.`;
-        }
-
-        const type = await this.getInputType();
-        if (buttonCount > 0) {
-            const iconName = await this.getPasswordIconName();
-
-            const isValidIcon =
-                (iconName == Icon.visibility && type == InputType.password) ||
-                (iconName == Icon.visibility_off && type == InputType.text);
-            if (!isValidIcon) {
-                errors['hasValidIcon'] =
-                    `Has invalid icon name "${iconName}" for input type "${type}".`;
-            }
-        }
-
-        const buttonsContainsIcon = await this.buttonContainsIcon();
-        if (buttonCount == 1 && !buttonsContainsIcon) {
-            errors['buttonsContainsIcon'] = `Button does not contain icon.`;
-        }
-
         const errorCount = await this.getErrorCount();
         const hasValidErrorCount = errorCount <= 1;
         if (!hasValidErrorCount) {
@@ -395,16 +313,16 @@ export class TextFieldHarness extends ComponentHarness {
         const id = await this.getInputId()!;
         const type = await this.getInputType();
         const value = await this.getInputValue();
-        const isPassword = await this.isPassword();
         const label = await this.getLabelText();
         const placeholder = await this.getInputPlaceholder();
+        const inputmode = await this.getInputMode();
         const isFocusable = await this.isInputFocusable();
         const isFocused = await this.isInputFocused();
         const isReadOnly = await this.isInputReadOnly();
         const autocomplete = await this.getAutocomplete();
         const _minLength = await this.getInputMinLength();
         const minLength = _minLength != null ? Number(_minLength) : null;
-        let _maxLength = await this.getInputMaxLength();
+        const _maxLength = await this.getInputMaxLength();
         const maxLength = _maxLength != null ? Number(_maxLength) : null;
         const prefix = await this.getPrefixText();
         const suffix = await this.getSuffixText();
@@ -419,8 +337,8 @@ export class TextFieldHarness extends ComponentHarness {
             id,
             type,
             value,
-            isPassword,
             label,
+            inputmode,
             placeholder,
             isFocusable,
             isFocused,

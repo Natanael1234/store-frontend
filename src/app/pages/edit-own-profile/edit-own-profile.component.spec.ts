@@ -209,13 +209,15 @@ describe('EditOwnProfileComponent', () => {
 
     describe('registration request', () => {
         it("should call service's editOwnProfile method on submit", () => {
-            testLocalValidationOnSubmit({ formData: { name: 'John Doe' } });
+            testLocalValidationOnSubmit({
+                formData: { name: 'John Williams' },
+            });
         });
 
         describe('remote errors', () => {
             it('should handle main remote error during registration', () => {
                 testRemoteValidationFail({
-                    formData: { name: 'John Doe' },
+                    formData: { name: 'John Williams' },
                     expectedErrors: { mainError: 'Algo deu errado!' },
                     exceptionData: {
                         message: 'Some error',
@@ -232,7 +234,7 @@ describe('EditOwnProfileComponent', () => {
 
             it('should handle form fields remote errors during registration', () => {
                 testRemoteValidationFail({
-                    formData: { name: 'John Doe' },
+                    formData: { name: 'John Williams' },
                     expectedErrors: { name: 'Error 1' },
                     exceptionData: {
                         message: 'Algo deu errado!',
@@ -269,7 +271,7 @@ describe('EditOwnProfileComponent', () => {
                     );
                     error.statusText = 'Unprocessable Entity'; // TODO:
 
-                    component.form.setValue({ name: 'John Doe' });
+                    component.form.setValue({ name: 'John Williams' });
 
                     const submitButton =
                         fixture.nativeElement.querySelector('button#save');
@@ -381,7 +383,7 @@ describe('EditOwnProfileComponent', () => {
                 label: ' Salvar ',
                 type: 'submit',
                 color: null,
-                style: 'flat',
+                appearance: 'flat',
             });
         });
     });

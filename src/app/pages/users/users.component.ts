@@ -1,5 +1,4 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import {
     AfterViewInit,
@@ -119,10 +118,7 @@ export class UsersComponent implements AfterViewInit {
     /* CSS CLASSES */
 
     protected filtersClassList = computed<object>(() => {
-        return {
-            filters: true,
-            mobile: !!this.mobile(),
-        };
+        return { filters: true, mobile: !!this.mobile() };
     });
 
     /* OTHERS */
@@ -139,14 +135,7 @@ export class UsersComponent implements AfterViewInit {
         const page = this.page();
         const pageSize = this.pageSize();
         const textQuery = this.textQuery();
-        const dto = {
-            textQuery,
-            active,
-            deleted,
-            orderBy,
-            page,
-            pageSize,
-        };
+        const dto = { textQuery, active, deleted, orderBy, page, pageSize };
         return dto;
     }
 
@@ -202,7 +191,7 @@ export class UsersComponent implements AfterViewInit {
             this.textQuery.set(filters.textQuery || '');
             this.active.set(filters.active);
             this.deleted.set(filters.deleted);
-            this.list.updateSort(filters.sort);
+            this.list.updateSort(filters.order);
             this.getUsers();
         }
     }
@@ -212,10 +201,7 @@ export class UsersComponent implements AfterViewInit {
         this.getUsers();
     }
 
-    counter = 1;
-
     protected async getUsers() {
-        const counter = this.counter++;
         this.loading.set(true);
         this.error.set(undefined);
         const payload = this.payload;

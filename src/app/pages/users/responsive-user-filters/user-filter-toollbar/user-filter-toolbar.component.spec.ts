@@ -1,27 +1,32 @@
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { AbstractFormElementModel } from '../../../../components/form/components/abstract/abstract-form-element.model';
-import { ButtonStyle } from '../../../../components/form/components/button/enum/style/button-style.enum';
-import { ButtonModel } from '../../../../components/form/components/button/model/button.model';
-import { SelectModel } from '../../../../components/form/components/select/model/select-element.model';
+import { provideRouter } from '@angular/router';
+import { ButtonComponent } from '../../../../components/form/components/button/button.component';
+import { ButtonAppearance } from '../../../../components/form/components/button/enum/appearance/button-appearance.enum';
+import { SelectFieldComponent } from '../../../../components/form/components/select/select-field.component';
+import { FormElementType } from '../../../../components/form/enums/form-element-type/form-element-type.enum';
 import { ActiveFilterOptions } from '../../../../constants/active-filter-options/active-filter-options';
+import { DeletedFilterOptions } from '../../../../constants/deleted-filter-options/deleted-filter-options';
 import { ActiveFilter } from '../../../../enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '../../../../enums/deleted-filter/deleted-filter.enum';
 import { UserOrder } from '../../../../services/user/enums/user-order/user-order.enum';
-import { UserOrderOptions } from './sort-options/user-sort.options';
-import { ToolbarScrapper } from './test/scrapper/scrapper.test';
+import { UserOrderOptions } from './order-options/user-order.options';
 import { UserFilterToolbarComponent } from './user-filter-toolbar.component';
+import { UserFilterToolbarHarness } from './user-filter-toolbar.harness';
 
 describe('UserFilterToolbarComponent.', () => {
     let toolbarComponent: UserFilterToolbarComponent;
     let fixture: ComponentFixture<UserFilterToolbarComponent>;
-    let formScrapper: ToolbarScrapper;
+
+    let harness: UserFilterToolbarHarness;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -36,482 +41,898 @@ describe('UserFilterToolbarComponent.', () => {
                 NoopAnimationsModule, // Evita erros de animação no teste
                 UserFilterToolbarComponent,
             ],
+            providers: [provideRouter([])],
         }).compileComponents();
         fixture = TestBed.createComponent(UserFilterToolbarComponent);
-        formScrapper = new ToolbarScrapper(fixture);
         toolbarComponent = fixture.componentInstance;
         fixture.detectChanges();
+
+        harness = await TestbedHarnessEnvironment.harnessForFixture(
+            fixture,
+            UserFilterToolbarHarness,
+        );
     });
 
-    function testForm(args: { elements: AbstractFormElementModel[] }) {
-        const elements = formScrapper.getFormElements();
-        expect(elements).toHaveSize(args.elements.length);
-
-        for (let i = 0; i < elements.length; i++) {
-            const element = elements[i];
-            const expectedElement = args.elements[i];
-
-            expect(element.id).withContext('id').toEqual(expectedElement.id);
-            expect(element.id).withContext('id').toEqual(expectedElement.id);
-            if (element instanceof SelectModel) {
-                const select = element as SelectModel;
-                const expectedSelect = expectedElement as SelectModel;
-                expect(select.label)
-                    .withContext('label')
-                    .toEqual(expectedSelect.label);
-                expect(select.label)
-                    .withContext('label')
-                    .toEqual(expectedSelect.label);
-                expect(select.focusable)
-                    .withContext('focusable')
-                    .toEqual(expectedSelect.focusable);
-                expect(select.readOnly)
-                    .withContext('readOnly')
-                    .toEqual(expectedSelect.readOnly);
-                // control
-                expect(select.control).withContext('control').toBeDefined();
-                expect(select.control).withContext('control').not.toBeNull();
-                expect(select.control.value)
-                    .withContext('control value')
-                    .toEqual(expectedSelect.control.value);
-                expect(select.control.disabled)
-                    .withContext('control disabled')
-                    .toEqual(expectedSelect.control.disabled);
-            } else if (element instanceof ButtonModel) {
-                const button = element as ButtonModel;
-                const expectedButton = expectedElement as ButtonModel;
-                expect(button.type)
-                    .withContext('button type')
-                    .toEqual(expectedButton.type);
-                expect(button.icon)
-                    .withContext('icon')
-                    .toEqual(expectedButton.icon);
-                expect(button.label)
-                    .withContext('label')
-                    .toEqual(expectedButton.label);
-                expect(button.style)
-                    .withContext('style')
-                    .toEqual(expectedButton.style ?? ButtonStyle.text);
-                // TODO: test events
-            } else {
-                fail('Invalid model');
-            }
-            expect(element.colSize)
-                .withContext('col size of ' + expectedElement.id)
-                .toEqual(expectedElement.colSize);
-        }
+    function getSelectFieldComponents() {
+        return fixture.debugElement
+            .queryAll(By.directive(SelectFieldComponent))
+            .map(
+                (debugEl) => debugEl.componentInstance as SelectFieldComponent,
+            );
     }
 
-    it('should create the component.', () => {
+    function getButtonComponents() {
+        return fixture.debugElement
+            .queryAll(By.directive(ButtonComponent))
+            .map((debugEl) => debugEl.componentInstance as ButtonComponent);
+    }
+
+    it('should create the component.', async () => {
         expect(toolbarComponent)
             .withContext('component is defined')
             .toBeTruthy();
-    });
 
-    it('should contain only a FormComponent instance.', () => {
-        expect(formScrapper.onlyContainsFormComponent()).toBeTrue();
+        const state = await harness.getState();
+        expect(state).toEqual({
+            hasValidStructure: true,
+            children: [
+                { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                { col: 6, childTagName: 'APP-BUTTON' },
+            ],
+        });
+
+        const selects = await getSelectFieldComponents();
+        expect(selects).toHaveSize(2);
+
+        expect(selects[0].id()).toEqual('active-select');
+        expect(selects[0].label()).toEqual('Ativos');
+        expect(selects[0].autofocus()).toBeFalse();
+        expect(selects[0].control()).toBeDefined();
+        expect(selects[0].control()).not.toBeNull();
+        expect(selects[0].control()?.value).toEqual(ActiveFilter.active);
+        expect(selects[0].options()).toEqual(ActiveFilterOptions);
+
+        expect(selects[1].id()).toEqual('deleted-select');
+        expect(selects[1].label()).toEqual('Deletados');
+        expect(selects[1].autofocus()).toBeFalse();
+        expect(selects[1].control()).toBeDefined();
+        expect(selects[1].control()).not.toBeNull();
+        expect(selects[1].control()?.value).toEqual(DeletedFilter.not_deleted);
+        expect(selects[1].options()).toEqual(DeletedFilterOptions);
+
+        const buttons = await getButtonComponents();
+        expect(buttons).toHaveSize(1);
+
+        expect(buttons[0].id()).toEqual('filter-button');
+        expect(buttons[0].label()).toEqual('Filtrar');
+        expect(buttons[0].icon()).toBeUndefined();
+        expect(buttons[0].appearance()).toEqual(ButtonAppearance.filled);
+        expect(buttons[0].autofocus()).toBeUndefined();
+        expect(buttons[0].focusable()).toBeUndefined();
+        expect(buttons[0].disabled()).toBeUndefined();
+        expect(buttons[0].queryParams()).toBeUndefined();
+        expect(buttons[0].queryParamsHandling()).toBeUndefined();
+        expect(buttons[0].routerLink()).toBeUndefined();
+        expect(buttons[0].type()).toEqual(FormElementType.button);
+        expect(buttons[0].onClick).toBeDefined();
+        expect(buttons[0].onClick).not.toBeNull();
     });
 
     describe('vertical.', () => {
-        it('should show vertical layout by default.', () => {
-            fixture.componentInstance.showSort.set(true);
+        it('should show vertical layout by default.', async () => {
+            fixture.componentInstance.showOrder.set(true);
             fixture.componentInstance.showCancelButton.set(true);
             fixture.detectChanges();
-            testForm({
-                elements: [
-                    new SelectModel({
-                        id: 'sort-select',
-                        label: 'Ordem',
-                        options: UserOrderOptions,
-                        control: new FormControl({
-                            value: UserOrder.name_asc,
-                            disabled: false,
-                        }),
-                        colSize: 12,
-                    }),
-                    new SelectModel({
-                        id: 'active-select',
-                        label: 'Ativos',
-                        options: ActiveFilterOptions,
-                        control: new FormControl({
-                            value: ActiveFilter.active,
-                            disabled: false,
-                        }),
-                        colSize: 12,
-                    }),
-                    new SelectModel({
-                        id: 'deleted-select',
-                        label: 'Deletados',
-                        options: UserOrderOptions,
-                        control: new FormControl({
-                            value: DeletedFilter.not_deleted,
-                            disabled: false,
-                        }),
-                        colSize: 12,
-                    }),
-                    new ButtonModel({
-                        id: 'filter-button',
-                        label: 'Filtrar',
-                        colSize: 5,
-                        style: ButtonStyle.filled,
-                        clickCallback: undefined,
-                    }),
-                    new ButtonModel({
-                        id: 'cancel-button',
-                        label: 'Cancelar',
-                        colSize: 5,
-                        style: ButtonStyle.text,
-                        clickCallback: undefined,
-                    }),
+
+            const state = await harness.getState();
+            expect(state).toEqual({
+                hasValidStructure: true,
+                children: [
+                    { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 6, childTagName: 'APP-BUTTON' },
+                    { col: 6, childTagName: 'APP-BUTTON' },
                 ],
             });
+
+            const selects = await getSelectFieldComponents();
+            expect(selects).toHaveSize(3);
+
+            expect(selects[0].id()).toEqual('order-select');
+            expect(selects[0].label()).toEqual('Ordem');
+            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].control()).toBeDefined();
+            expect(selects[0].control()).not.toBeNull();
+            expect(selects[0].control()?.value).toEqual(UserOrder.name_asc);
+            expect(selects[0].options()).toEqual(UserOrderOptions);
+
+            expect(selects[1].id()).toEqual('active-select');
+            expect(selects[1].label()).toEqual('Ativos');
+            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].control()).toBeDefined();
+            expect(selects[1].control()).not.toBeNull();
+            expect(selects[1].control()?.value).toEqual(ActiveFilter.active);
+            expect(selects[1].options()).toEqual(ActiveFilterOptions);
+
+            expect(selects[2].id()).toEqual('deleted-select');
+            expect(selects[2].label()).toEqual('Deletados');
+            expect(selects[2].autofocus()).toBeFalse();
+            expect(selects[2].control()).toBeDefined();
+            expect(selects[2].control()).not.toBeNull();
+            expect(selects[2].control()?.value).toEqual(
+                DeletedFilter.not_deleted,
+            );
+            expect(selects[2].options()).toEqual(DeletedFilterOptions);
+
+            const buttons = await getButtonComponents();
+            expect(buttons).toHaveSize(2);
+
+            expect(buttons[0].id()).toEqual('cancel-button');
+            expect(buttons[0].label()).toEqual('Cancelar');
+            expect(buttons[0].icon()).toBeUndefined();
+            expect(buttons[0].appearance()).toEqual(ButtonAppearance.text);
+            expect(buttons[0].autofocus()).toBeUndefined();
+            expect(buttons[0].focusable()).toBeUndefined();
+            expect(buttons[0].disabled()).toBeUndefined();
+            expect(buttons[0].queryParams()).toBeUndefined();
+            expect(buttons[0].queryParamsHandling()).toBeUndefined();
+            expect(buttons[0].routerLink()).toBeUndefined();
+            expect(buttons[0].type()).toEqual(FormElementType.button);
+            expect(buttons[0].onClick).toBeDefined();
+            expect(buttons[0].onClick).not.toBeNull();
+
+            expect(buttons[1].id()).toEqual('filter-button');
+            expect(buttons[1].label()).toEqual('Filtrar');
+            expect(buttons[1].icon()).toBeUndefined();
+            expect(buttons[1].appearance()).toEqual(ButtonAppearance.filled);
+            expect(buttons[1].autofocus()).toBeUndefined();
+            expect(buttons[1].focusable()).toBeUndefined();
+            expect(buttons[1].disabled()).toBeUndefined();
+            expect(buttons[1].queryParams()).toBeUndefined();
+            expect(buttons[1].queryParamsHandling()).toBeUndefined();
+            expect(buttons[1].routerLink()).toBeUndefined();
+            expect(buttons[1].type()).toEqual(FormElementType.button);
+            expect(buttons[1].onClick).toBeDefined();
+            expect(buttons[1].onClick).not.toBeNull();
         });
 
-        it('should show vertical layout when vertical is true.', () => {
+        it('should show vertical layout when vertical is true.', async () => {
             fixture.componentInstance.vertical.set(true);
-            fixture.componentInstance.showSort.set(true);
+            fixture.componentInstance.showOrder.set(true);
             fixture.componentInstance.showCancelButton.set(true);
             fixture.detectChanges();
-            testForm({
-                elements: [
-                    new SelectModel({
-                        id: 'sort-select',
-                        label: 'Ordem',
-                        options: UserOrderOptions,
-                        control: new FormControl({
-                            value: UserOrder.name_asc,
-                            disabled: false,
-                        }),
-                        colSize: 12,
-                    }),
-                    new SelectModel({
-                        id: 'active-select',
-                        label: 'Ativos',
-                        options: ActiveFilterOptions,
-                        control: new FormControl({
-                            value: ActiveFilter.active,
-                            disabled: false,
-                        }),
-                        colSize: 12,
-                    }),
-                    new SelectModel({
-                        id: 'deleted-select',
-                        label: 'Deletados',
-                        options: UserOrderOptions,
-                        control: new FormControl({
-                            value: DeletedFilter.not_deleted,
-                            disabled: false,
-                        }),
-                        colSize: 12,
-                    }),
-                    new ButtonModel({
-                        id: 'filter-button',
-                        label: 'Filtrar',
-                        colSize: 5,
-                        style: ButtonStyle.filled,
-                        clickCallback: undefined,
-                    }),
-                    new ButtonModel({
-                        id: 'cancel-button',
-                        label: 'Cancelar',
-                        colSize: 5,
-                        style: ButtonStyle.text,
-                        clickCallback: undefined,
-                    }),
+
+            const state = await harness.getState();
+            expect(state).toEqual({
+                hasValidStructure: true,
+                children: [
+                    { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 6, childTagName: 'APP-BUTTON' },
+                    { col: 6, childTagName: 'APP-BUTTON' },
                 ],
             });
+
+            const selects = await getSelectFieldComponents();
+            expect(selects).toHaveSize(3);
+
+            expect(selects[0].id()).toEqual('order-select');
+            expect(selects[0].label()).toEqual('Ordem');
+            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].control()).toBeDefined();
+            expect(selects[0].control()).not.toBeNull();
+            expect(selects[0].control()?.value).toEqual(UserOrder.name_asc);
+            expect(selects[0].options()).toEqual(UserOrderOptions);
+
+            expect(selects[1].id()).toEqual('active-select');
+            expect(selects[1].label()).toEqual('Ativos');
+            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].control()).toBeDefined();
+            expect(selects[1].control()).not.toBeNull();
+            expect(selects[1].control()?.value).toEqual(ActiveFilter.active);
+            expect(selects[1].options()).toEqual(ActiveFilterOptions);
+
+            expect(selects[2].id()).toEqual('deleted-select');
+            expect(selects[2].label()).toEqual('Deletados');
+            expect(selects[2].autofocus()).toBeFalse();
+            expect(selects[2].control()).toBeDefined();
+            expect(selects[2].control()).not.toBeNull();
+            expect(selects[2].control()?.value).toEqual(
+                DeletedFilter.not_deleted,
+            );
+            expect(selects[2].options()).toEqual(DeletedFilterOptions);
+
+            const buttons = await getButtonComponents();
+            expect(buttons).toHaveSize(2);
+
+            expect(buttons[0].id()).toEqual('cancel-button');
+            expect(buttons[0].label()).toEqual('Cancelar');
+            expect(buttons[0].icon()).toBeUndefined();
+            expect(buttons[0].appearance()).toEqual(ButtonAppearance.text);
+            expect(buttons[0].autofocus()).toBeUndefined();
+            expect(buttons[0].focusable()).toBeUndefined();
+            expect(buttons[0].disabled()).toBeUndefined();
+            expect(buttons[0].queryParams()).toBeUndefined();
+            expect(buttons[0].queryParamsHandling()).toBeUndefined();
+            expect(buttons[0].routerLink()).toBeUndefined();
+            expect(buttons[0].type()).toEqual(FormElementType.button);
+            expect(buttons[0].onClick).toBeDefined();
+            expect(buttons[0].onClick).not.toBeNull();
+
+            expect(buttons[1].id()).toEqual('filter-button');
+            expect(buttons[1].label()).toEqual('Filtrar');
+            expect(buttons[1].icon()).toBeUndefined();
+            expect(buttons[1].appearance()).toEqual(ButtonAppearance.filled);
+            expect(buttons[1].autofocus()).toBeUndefined();
+            expect(buttons[1].focusable()).toBeUndefined();
+            expect(buttons[1].disabled()).toBeUndefined();
+            expect(buttons[1].queryParams()).toBeUndefined();
+            expect(buttons[1].queryParamsHandling()).toBeUndefined();
+            expect(buttons[1].routerLink()).toBeUndefined();
+            expect(buttons[1].type()).toEqual(FormElementType.button);
+            expect(buttons[1].onClick).toBeDefined();
+            expect(buttons[1].onClick).not.toBeNull();
         });
 
-        it('should show horizontal layout when vertical is false.', () => {
+        it('should show horizontal layout when vertical is false.', async () => {
             fixture.componentInstance.vertical.set(false);
+            fixture.componentInstance.showOrder.set(true);
             fixture.componentInstance.showCancelButton.set(true);
-            fixture.componentInstance.showSort.set(true);
             fixture.detectChanges();
-            testForm({
-                elements: [
-                    new SelectModel({
-                        id: 'sort-select',
-                        label: 'Ordem',
-                        options: UserOrderOptions,
-                        control: new FormControl({
-                            value: UserOrder.name_asc,
-                            disabled: false,
-                        }),
-                        colSize: 2,
-                    }),
-                    new SelectModel({
-                        id: 'active-select',
-                        label: 'Ativos',
-                        options: ActiveFilterOptions,
-                        control: new FormControl({
-                            value: ActiveFilter.active,
-                            disabled: false,
-                        }),
-                        colSize: 2,
-                    }),
-                    new SelectModel({
-                        id: 'deleted-select',
-                        label: 'Deletados',
-                        options: UserOrderOptions,
-                        control: new FormControl({
-                            value: DeletedFilter.not_deleted,
-                            disabled: false,
-                        }),
-                        colSize: 2,
-                    }),
-                    new ButtonModel({
-                        id: 'filter-button',
-                        label: 'Filtrar',
-                        colSize: 2,
-                        style: ButtonStyle.filled,
-                        clickCallback: undefined,
-                    }),
-                    new ButtonModel({
-                        id: 'cancel-button',
-                        label: 'Cancelar',
-                        colSize: 2,
-                        style: ButtonStyle.text,
-                        clickCallback: undefined,
-                    }),
+
+            const state = await harness.getState();
+            expect(state).toEqual({
+                hasValidStructure: true,
+                children: [
+                    { col: 2, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 2, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 2, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 2, childTagName: 'APP-BUTTON' },
+                    { col: 2, childTagName: 'APP-BUTTON' },
                 ],
             });
+
+            const selects = await getSelectFieldComponents();
+            expect(selects).toHaveSize(3);
+
+            expect(selects[0].id()).toEqual('order-select');
+            expect(selects[0].label()).toEqual('Ordem');
+            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].control()).toBeDefined();
+            expect(selects[0].control()).not.toBeNull();
+            expect(selects[0].control()?.value).toEqual(UserOrder.name_asc);
+            expect(selects[0].options()).toEqual(UserOrderOptions);
+
+            expect(selects[1].id()).toEqual('active-select');
+            expect(selects[1].label()).toEqual('Ativos');
+            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].control()).toBeDefined();
+            expect(selects[1].control()).not.toBeNull();
+            expect(selects[1].control()?.value).toEqual(ActiveFilter.active);
+            expect(selects[1].options()).toEqual(ActiveFilterOptions);
+
+            expect(selects[2].id()).toEqual('deleted-select');
+            expect(selects[2].label()).toEqual('Deletados');
+            expect(selects[2].autofocus()).toBeFalse();
+            expect(selects[2].control()).toBeDefined();
+            expect(selects[2].control()).not.toBeNull();
+            expect(selects[2].control()?.value).toEqual(
+                DeletedFilter.not_deleted,
+            );
+            expect(selects[2].options()).toEqual(DeletedFilterOptions);
+
+            const buttons = await getButtonComponents();
+            expect(buttons).toHaveSize(2);
+
+            expect(buttons[0].id()).toEqual('cancel-button');
+            expect(buttons[0].label()).toEqual('Cancelar');
+            expect(buttons[0].icon()).toBeUndefined();
+            expect(buttons[0].appearance()).toEqual(ButtonAppearance.text);
+            expect(buttons[0].autofocus()).toBeUndefined();
+            expect(buttons[0].focusable()).toBeUndefined();
+            expect(buttons[0].disabled()).toBeUndefined();
+            expect(buttons[0].queryParams()).toBeUndefined();
+            expect(buttons[0].queryParamsHandling()).toBeUndefined();
+            expect(buttons[0].routerLink()).toBeUndefined();
+            expect(buttons[0].type()).toEqual(FormElementType.button);
+            expect(buttons[0].onClick).toBeDefined();
+            expect(buttons[0].onClick).not.toBeNull();
+
+            expect(buttons[1].id()).toEqual('filter-button');
+            expect(buttons[1].label()).toEqual('Filtrar');
+            expect(buttons[1].icon()).toBeUndefined();
+            expect(buttons[1].appearance()).toEqual(ButtonAppearance.filled);
+            expect(buttons[1].autofocus()).toBeUndefined();
+            expect(buttons[1].focusable()).toBeUndefined();
+            expect(buttons[1].disabled()).toBeUndefined();
+            expect(buttons[1].queryParams()).toBeUndefined();
+            expect(buttons[1].queryParamsHandling()).toBeUndefined();
+            expect(buttons[1].routerLink()).toBeUndefined();
+            expect(buttons[1].type()).toEqual(FormElementType.button);
+            expect(buttons[1].onClick).toBeDefined();
+            expect(buttons[1].onClick).not.toBeNull();
         });
     });
 
-    describe('showSort.', () => {
-        it('should not show sort select by default.', () => {
-            fixture.componentInstance.showSort.set(false);
+    describe('showOrder.', () => {
+        it('should not show order select by default.', async () => {
+            fixture.componentInstance.showOrder.set(false);
             fixture.detectChanges();
-            testForm({
-                elements: [
-                    new SelectModel({
-                        id: 'active-select',
-                        label: 'Ativos',
-                        options: ActiveFilterOptions,
-                        control: new FormControl({
-                            value: ActiveFilter.active,
-                            disabled: false,
-                        }),
-                        colSize: 12,
-                    }),
-                    new SelectModel({
-                        id: 'deleted-select',
-                        label: 'Deletados',
-                        options: UserOrderOptions,
-                        control: new FormControl({
-                            value: DeletedFilter.not_deleted,
-                            disabled: false,
-                        }),
-                        colSize: 12,
-                    }),
-                    new ButtonModel({
-                        id: 'filter-button',
-                        label: 'Filtrar',
-                        colSize: 5,
-                        style: ButtonStyle.filled,
-                        clickCallback: undefined,
-                    }),
+
+            const state = await harness.getState();
+
+            expect(state).toEqual({
+                hasValidStructure: true,
+                children: [
+                    { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 6, childTagName: 'APP-BUTTON' },
                 ],
             });
+
+            const selects = await getSelectFieldComponents();
+            expect(selects).toHaveSize(2);
+
+            expect(selects[0].id()).toEqual('active-select');
+            expect(selects[0].label()).toEqual('Ativos');
+            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].control()).toBeDefined();
+            expect(selects[0].control()).not.toBeNull();
+            expect(selects[0].control()?.value).toEqual(ActiveFilter.active);
+            expect(selects[0].options()).toEqual(ActiveFilterOptions);
+
+            expect(selects[1].id()).toEqual('deleted-select');
+            expect(selects[1].label()).toEqual('Deletados');
+            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].control()).toBeDefined();
+            expect(selects[1].control()).not.toBeNull();
+            expect(selects[1].control()?.value).toEqual(
+                DeletedFilter.not_deleted,
+            );
+            expect(selects[1].options()).toEqual(DeletedFilterOptions);
+
+            const buttons = await getButtonComponents();
+            expect(buttons).toHaveSize(1);
+
+            expect(buttons[0].id()).toEqual('filter-button');
+            expect(buttons[0].label()).toEqual('Filtrar');
+            expect(buttons[0].icon()).toBeUndefined();
+            expect(buttons[0].appearance()).toEqual(ButtonAppearance.filled);
+            expect(buttons[0].autofocus()).toBeUndefined();
+            expect(buttons[0].focusable()).toBeUndefined();
+            expect(buttons[0].disabled()).toBeUndefined();
+            expect(buttons[0].queryParams()).toBeUndefined();
+            expect(buttons[0].queryParamsHandling()).toBeUndefined();
+            expect(buttons[0].routerLink()).toBeUndefined();
+            expect(buttons[0].type()).toEqual(FormElementType.button);
+            expect(buttons[0].onClick).toBeDefined();
+            expect(buttons[0].onClick).not.toBeNull();
         });
 
-        it('should not show sort select when showSort is false.', () => {
-            fixture.componentInstance.showSort.set(false);
+        it('should not show order select when showOrder is false.', async () => {
+            fixture.componentInstance.showOrder.set(false);
             fixture.detectChanges();
-            testForm({
-                elements: [
-                    new SelectModel({
-                        id: 'active-select',
-                        label: 'Ativos',
-                        options: ActiveFilterOptions,
-                        control: new FormControl({
-                            value: ActiveFilter.active,
-                            disabled: false,
-                        }),
-                        colSize: 12,
-                    }),
-                    new SelectModel({
-                        id: 'deleted-select',
-                        label: 'Deletados',
-                        options: UserOrderOptions,
-                        control: new FormControl({
-                            value: DeletedFilter.not_deleted,
-                            disabled: false,
-                        }),
-                        colSize: 12,
-                    }),
-                    new ButtonModel({
-                        id: 'filter-button',
-                        label: 'Filtrar',
-                        colSize: 5,
-                        style: ButtonStyle.filled,
-                        clickCallback: undefined,
-                    }),
+
+            const state = await harness.getState();
+
+            expect(state).toEqual({
+                hasValidStructure: true,
+                children: [
+                    { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 6, childTagName: 'APP-BUTTON' },
                 ],
             });
+
+            const selects = await getSelectFieldComponents();
+            expect(selects).toHaveSize(2);
+
+            expect(selects[0].id()).toEqual('active-select');
+            expect(selects[0].label()).toEqual('Ativos');
+            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].control()).toBeDefined();
+            expect(selects[0].control()).not.toBeNull();
+            expect(selects[0].control()?.value).toEqual(ActiveFilter.active);
+            expect(selects[0].options()).toEqual(ActiveFilterOptions);
+
+            expect(selects[1].id()).toEqual('deleted-select');
+            expect(selects[1].label()).toEqual('Deletados');
+            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].control()).toBeDefined();
+            expect(selects[1].control()).not.toBeNull();
+            expect(selects[1].control()?.value).toEqual(
+                DeletedFilter.not_deleted,
+            );
+            expect(selects[1].options()).toEqual(DeletedFilterOptions);
+
+            const buttons = await getButtonComponents();
+            expect(buttons).toHaveSize(1);
+
+            expect(buttons[0].id()).toEqual('filter-button');
+            expect(buttons[0].label()).toEqual('Filtrar');
+            expect(buttons[0].icon()).toBeUndefined();
+            expect(buttons[0].appearance()).toEqual(ButtonAppearance.filled);
+            expect(buttons[0].autofocus()).toBeUndefined();
+            expect(buttons[0].focusable()).toBeUndefined();
+            expect(buttons[0].disabled()).toBeUndefined();
+            expect(buttons[0].queryParams()).toBeUndefined();
+            expect(buttons[0].queryParamsHandling()).toBeUndefined();
+            expect(buttons[0].routerLink()).toBeUndefined();
+            expect(buttons[0].type()).toEqual(FormElementType.button);
+            expect(buttons[0].onClick).toBeDefined();
+            expect(buttons[0].onClick).not.toBeNull();
         });
 
-        it('should show sort select when showSort is true.', () => {
-            fixture.componentInstance.showSort.set(true);
+        it('should show order select when showOrder is true.', async () => {
+            fixture.componentInstance.showOrder.set(true);
             fixture.detectChanges();
-            testForm({
-                elements: [
-                    new SelectModel({
-                        id: 'sort-select',
-                        label: 'Ordem',
-                        options: UserOrderOptions,
-                        control: new FormControl({
-                            value: UserOrder.name_asc,
-                            disabled: false,
-                        }),
-                        colSize: 12,
-                    }),
-                    new SelectModel({
-                        id: 'active-select',
-                        label: 'Ativos',
-                        options: ActiveFilterOptions,
-                        control: new FormControl({
-                            value: ActiveFilter.active,
-                            disabled: false,
-                        }),
-                        colSize: 12,
-                    }),
-                    new SelectModel({
-                        id: 'deleted-select',
-                        label: 'Deletados',
-                        options: UserOrderOptions,
-                        control: new FormControl({
-                            value: DeletedFilter.not_deleted,
-                            disabled: false,
-                        }),
-                        colSize: 12,
-                    }),
-                    new ButtonModel({
-                        id: 'filter-button',
-                        label: 'Filtrar',
-                        colSize: 5,
-                        style: ButtonStyle.filled,
-                        clickCallback: undefined,
-                    }),
+
+            const state = await harness.getState();
+
+            expect(state).toEqual({
+                hasValidStructure: true,
+                children: [
+                    { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 6, childTagName: 'APP-BUTTON' },
                 ],
             });
+
+            const selects = await getSelectFieldComponents();
+            expect(selects).toHaveSize(3);
+
+            expect(selects[0].id()).toEqual('order-select');
+            expect(selects[0].label()).toEqual('Ordem');
+            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].control()).toBeDefined();
+            expect(selects[0].control()).not.toBeNull();
+            expect(selects[0].control()?.value).toEqual(UserOrder.name_asc);
+            expect(selects[0].options()).toEqual(UserOrderOptions);
+
+            expect(selects[1].id()).toEqual('active-select');
+            expect(selects[1].label()).toEqual('Ativos');
+            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].control()).toBeDefined();
+            expect(selects[1].control()).not.toBeNull();
+            expect(selects[1].control()?.value).toEqual(ActiveFilter.active);
+            expect(selects[1].options()).toEqual(ActiveFilterOptions);
+
+            expect(selects[2].id()).toEqual('deleted-select');
+            expect(selects[2].label()).toEqual('Deletados');
+            expect(selects[2].autofocus()).toBeFalse();
+            expect(selects[2].control()).toBeDefined();
+            expect(selects[2].control()).not.toBeNull();
+            expect(selects[2].control()?.value).toEqual(
+                DeletedFilter.not_deleted,
+            );
+            expect(selects[2].options()).toEqual(DeletedFilterOptions);
+
+            const buttons = await getButtonComponents();
+            expect(buttons).toHaveSize(1);
+
+            expect(buttons[0].id()).toEqual('filter-button');
+            expect(buttons[0].label()).toEqual('Filtrar');
+            expect(buttons[0].icon()).toBeUndefined();
+            expect(buttons[0].appearance()).toEqual(ButtonAppearance.filled);
+            expect(buttons[0].autofocus()).toBeUndefined();
+            expect(buttons[0].focusable()).toBeUndefined();
+            expect(buttons[0].disabled()).toBeUndefined();
+            expect(buttons[0].queryParams()).toBeUndefined();
+            expect(buttons[0].queryParamsHandling()).toBeUndefined();
+            expect(buttons[0].routerLink()).toBeUndefined();
+            expect(buttons[0].type()).toEqual(FormElementType.button);
+            expect(buttons[0].onClick).toBeDefined();
+            expect(buttons[0].onClick).not.toBeNull();
         });
     });
 
     describe('showCancelButton.', () => {
-        it('should not show cancel button by default.', () => {
+        it('should not show cancel button by default.', async () => {
             fixture.componentInstance.showCancelButton.set(false);
             fixture.detectChanges();
-            testForm({
-                elements: [
-                    new SelectModel({
-                        id: 'active-select',
-                        label: 'Ativos',
-                        options: ActiveFilterOptions,
-                        control: new FormControl({
-                            value: ActiveFilter.active,
-                            disabled: false,
-                        }),
-                        colSize: 12,
-                    }),
-                    new SelectModel({
-                        id: 'deleted-select',
-                        label: 'Deletados',
-                        options: UserOrderOptions,
-                        control: new FormControl({
-                            value: DeletedFilter.not_deleted,
-                            disabled: false,
-                        }),
-                        colSize: 12,
-                    }),
-                    new ButtonModel({
-                        id: 'filter-button',
-                        label: 'Filtrar',
-                        colSize: 5,
-                        style: ButtonStyle.filled,
-                        clickCallback: undefined,
-                    }),
+
+            const state = await harness.getState();
+
+            expect(state).toEqual({
+                hasValidStructure: true,
+                children: [
+                    { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 6, childTagName: 'APP-BUTTON' },
                 ],
             });
+
+            const selects = await getSelectFieldComponents();
+            expect(selects).toHaveSize(2);
+
+            expect(selects[0].id()).toEqual('active-select');
+            expect(selects[0].label()).toEqual('Ativos');
+            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].control()).toBeDefined();
+            expect(selects[0].control()).not.toBeNull();
+            expect(selects[0].control()?.value).toEqual(ActiveFilter.active);
+            expect(selects[0].options()).toEqual(ActiveFilterOptions);
+
+            expect(selects[1].id()).toEqual('deleted-select');
+            expect(selects[1].label()).toEqual('Deletados');
+            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].control()).toBeDefined();
+            expect(selects[1].control()).not.toBeNull();
+            expect(selects[1].control()?.value).toEqual(
+                DeletedFilter.not_deleted,
+            );
+            expect(selects[1].options()).toEqual(DeletedFilterOptions);
+
+            const buttons = await getButtonComponents();
+            expect(buttons).toHaveSize(1);
+
+            expect(buttons[0].id()).toEqual('filter-button');
+            expect(buttons[0].label()).toEqual('Filtrar');
+            expect(buttons[0].icon()).toBeUndefined();
+            expect(buttons[0].appearance()).toEqual(ButtonAppearance.filled);
+            expect(buttons[0].autofocus()).toBeUndefined();
+            expect(buttons[0].focusable()).toBeUndefined();
+            expect(buttons[0].disabled()).toBeUndefined();
+            expect(buttons[0].queryParams()).toBeUndefined();
+            expect(buttons[0].queryParamsHandling()).toBeUndefined();
+            expect(buttons[0].routerLink()).toBeUndefined();
+            expect(buttons[0].type()).toEqual(FormElementType.button);
+            expect(buttons[0].onClick).toBeDefined();
+            expect(buttons[0].onClick).not.toBeNull();
         });
 
-        it('should not show cancel button when showCancelButton is false.', () => {
+        it('should not show cancel button when showCancelButton is false.', async () => {
             fixture.componentInstance.showCancelButton.set(false);
             fixture.detectChanges();
-            testForm({
-                elements: [
-                    new SelectModel({
-                        id: 'active-select',
-                        label: 'Ativos',
-                        options: ActiveFilterOptions,
-                        control: new FormControl({
-                            value: ActiveFilter.active,
-                            disabled: false,
-                        }),
-                        colSize: 12,
-                    }),
-                    new SelectModel({
-                        id: 'deleted-select',
-                        label: 'Deletados',
-                        options: UserOrderOptions,
-                        control: new FormControl({
-                            value: DeletedFilter.not_deleted,
-                            disabled: false,
-                        }),
-                        colSize: 12,
-                    }),
-                    new ButtonModel({
-                        id: 'filter-button',
-                        label: 'Filtrar',
-                        colSize: 5,
-                        style: ButtonStyle.filled,
-                        clickCallback: undefined,
-                    }),
+
+            const state = await harness.getState();
+
+            expect(state).toEqual({
+                hasValidStructure: true,
+                children: [
+                    { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 6, childTagName: 'APP-BUTTON' },
                 ],
             });
+
+            const selects = await getSelectFieldComponents();
+            expect(selects).toHaveSize(2);
+
+            expect(selects[0].id()).toEqual('active-select');
+            expect(selects[0].label()).toEqual('Ativos');
+            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].control()).toBeDefined();
+            expect(selects[0].control()).not.toBeNull();
+            expect(selects[0].control()?.value).toEqual(ActiveFilter.active);
+            expect(selects[0].options()).toEqual(ActiveFilterOptions);
+
+            expect(selects[1].id()).toEqual('deleted-select');
+            expect(selects[1].label()).toEqual('Deletados');
+            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].control()).toBeDefined();
+            expect(selects[1].control()).not.toBeNull();
+            expect(selects[1].control()?.value).toEqual(
+                DeletedFilter.not_deleted,
+            );
+            expect(selects[1].options()).toEqual(DeletedFilterOptions);
+
+            const buttons = await getButtonComponents();
+            expect(buttons).toHaveSize(1);
+
+            expect(buttons[0].id()).toEqual('filter-button');
+            expect(buttons[0].label()).toEqual('Filtrar');
+            expect(buttons[0].icon()).toBeUndefined();
+            expect(buttons[0].appearance()).toEqual(ButtonAppearance.filled);
+            expect(buttons[0].autofocus()).toBeUndefined();
+            expect(buttons[0].focusable()).toBeUndefined();
+            expect(buttons[0].disabled()).toBeUndefined();
+            expect(buttons[0].queryParams()).toBeUndefined();
+            expect(buttons[0].queryParamsHandling()).toBeUndefined();
+            expect(buttons[0].routerLink()).toBeUndefined();
+            expect(buttons[0].type()).toEqual(FormElementType.button);
+            expect(buttons[0].onClick).toBeDefined();
+            expect(buttons[0].onClick).not.toBeNull();
         });
 
-        it('should show cancel button when showCancelButton is true.', () => {
+        it('should show cancel button when showCancelButton is true.', async () => {
             fixture.componentInstance.showCancelButton.set(true);
             fixture.detectChanges();
-            testForm({
-                elements: [
-                    new SelectModel({
-                        id: 'active-select',
-                        label: 'Ativos',
-                        options: ActiveFilterOptions,
-                        control: new FormControl({
-                            value: ActiveFilter.active,
-                            disabled: false,
-                        }),
-                        colSize: 12,
-                    }),
-                    new SelectModel({
-                        id: 'deleted-select',
-                        label: 'Deletados',
-                        options: UserOrderOptions,
-                        control: new FormControl({
-                            value: DeletedFilter.not_deleted,
-                            disabled: false,
-                        }),
-                        colSize: 12,
-                    }),
-                    new ButtonModel({
-                        id: 'filter-button',
-                        label: 'Filtrar',
-                        colSize: 5,
-                        style: ButtonStyle.filled,
-                        clickCallback: undefined,
-                    }),
-                    new ButtonModel({
-                        id: 'cancel-button',
-                        label: 'Cancelar',
-                        colSize: 5,
-                        style: ButtonStyle.text,
-                        clickCallback: undefined,
-                    }),
+
+            const state = await harness.getState();
+
+            expect(state).toEqual({
+                hasValidStructure: true,
+                children: [
+                    { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 12, childTagName: 'APP-SELECT-FIELD' },
+                    { col: 6, childTagName: 'APP-BUTTON' },
+                    { col: 6, childTagName: 'APP-BUTTON' },
                 ],
             });
+
+            const selects = await getSelectFieldComponents();
+            expect(selects).toHaveSize(2);
+
+            expect(selects[0].id()).toEqual('active-select');
+            expect(selects[0].label()).toEqual('Ativos');
+            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].control()).toBeDefined();
+            expect(selects[0].control()).not.toBeNull();
+            expect(selects[0].control()?.value).toEqual(ActiveFilter.active);
+            expect(selects[0].options()).toEqual(ActiveFilterOptions);
+
+            expect(selects[1].id()).toEqual('deleted-select');
+            expect(selects[1].label()).toEqual('Deletados');
+            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].control()).toBeDefined();
+            expect(selects[1].control()).not.toBeNull();
+            expect(selects[1].control()?.value).toEqual(
+                DeletedFilter.not_deleted,
+            );
+            expect(selects[1].options()).toEqual(DeletedFilterOptions);
+
+            const buttons = await getButtonComponents();
+            expect(buttons).toHaveSize(2);
+
+            expect(buttons[0].id()).toEqual('cancel-button');
+            expect(buttons[0].label()).toEqual('Cancelar');
+            expect(buttons[0].icon()).toBeUndefined();
+            expect(buttons[0].appearance()).toEqual(ButtonAppearance.text);
+            expect(buttons[0].autofocus()).toBeUndefined();
+            expect(buttons[0].focusable()).toBeUndefined();
+            expect(buttons[0].disabled()).toBeUndefined();
+            expect(buttons[0].queryParams()).toBeUndefined();
+            expect(buttons[0].queryParamsHandling()).toBeUndefined();
+            expect(buttons[0].routerLink()).toBeUndefined();
+            expect(buttons[0].type()).toEqual(FormElementType.button);
+            expect(buttons[0].onClick).toBeDefined();
+            expect(buttons[0].onClick).not.toBeNull();
+
+            expect(buttons[1].id()).toEqual('filter-button');
+            expect(buttons[1].label()).toEqual('Filtrar');
+            expect(buttons[1].icon()).toBeUndefined();
+            expect(buttons[1].appearance()).toEqual(ButtonAppearance.filled);
+            expect(buttons[1].autofocus()).toBeUndefined();
+            expect(buttons[1].focusable()).toBeUndefined();
+            expect(buttons[1].disabled()).toBeUndefined();
+            expect(buttons[1].queryParams()).toBeUndefined();
+            expect(buttons[1].queryParamsHandling()).toBeUndefined();
+            expect(buttons[1].routerLink()).toBeUndefined();
+            expect(buttons[1].type()).toEqual(FormElementType.button);
+            expect(buttons[1].onClick).toBeDefined();
+            expect(buttons[1].onClick).not.toBeNull();
+        });
+    });
+
+    describe('events.', () => {
+        beforeEach(async () => {
+            fixture.componentInstance.showOrder.set(true);
+            fixture.componentInstance.showCancelButton.set(true);
+            fixture.detectChanges();
+            const [orderSelect, activeSelect, deledtedSelect] =
+                await fixture.debugElement.queryAll(
+                    By.directive(SelectFieldComponent),
+                );
+        });
+
+        it('should fire on close event when click on filter button.', async () => {
+            fixture.componentInstance.showOrder.set(true);
+            fixture.componentInstance.showCancelButton.set(true);
+            spyOn(toolbarComponent.onClose, 'emit');
+            await harness.selectOrderOption('Não deletados');
+            await harness.selectActiveOption('Todos');
+            await harness.selectDeletedOption('Todos');
+            await harness.fireFilterButtonClick();
+
+            expect(toolbarComponent.onClose.emit).toHaveBeenCalledOnceWith({
+                order: UserOrder.deleted_desc,
+                active: ActiveFilter.all,
+                deleted: DeletedFilter.all,
+            });
+
+            const selects = await getSelectFieldComponents();
+            expect(selects).toHaveSize(3);
+
+            expect(selects[0].id()).toEqual('order-select');
+            expect(selects[0].label()).toEqual('Ordem');
+            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].control()).toBeDefined();
+            expect(selects[0].control()).not.toBeNull();
+            expect(selects[0].control()?.value).toEqual(UserOrder.deleted_desc);
+            expect(selects[0].options()).toEqual(UserOrderOptions);
+
+            expect(selects[1].id()).toEqual('active-select');
+            expect(selects[1].label()).toEqual('Ativos');
+            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].control()).toBeDefined();
+            expect(selects[1].control()).not.toBeNull();
+            expect(selects[1].control()?.value).toEqual(ActiveFilter.all);
+            expect(selects[1].options()).toEqual(ActiveFilterOptions);
+
+            expect(selects[2].id()).toEqual('deleted-select');
+            expect(selects[2].label()).toEqual('Deletados');
+            expect(selects[2].autofocus()).toBeFalse();
+            expect(selects[2].control()).toBeDefined();
+            expect(selects[2].control()).not.toBeNull();
+            expect(selects[2].control()?.value).toEqual(DeletedFilter.all);
+            expect(selects[2].options()).toEqual(DeletedFilterOptions);
+
+            const buttons = await getButtonComponents();
+            expect(buttons).toHaveSize(2);
+
+            expect(buttons[0].id()).toEqual('cancel-button');
+            expect(buttons[0].label()).toEqual('Cancelar');
+            expect(buttons[0].icon()).toBeUndefined();
+            expect(buttons[0].appearance()).toEqual(ButtonAppearance.text);
+            expect(buttons[0].autofocus()).toBeUndefined();
+            expect(buttons[0].focusable()).toBeUndefined();
+            expect(buttons[0].disabled()).toBeUndefined();
+            expect(buttons[0].queryParams()).toBeUndefined();
+            expect(buttons[0].queryParamsHandling()).toBeUndefined();
+            expect(buttons[0].routerLink()).toBeUndefined();
+            expect(buttons[0].type()).toEqual(FormElementType.button);
+            expect(buttons[0].onClick).toBeDefined();
+            expect(buttons[0].onClick).not.toBeNull();
+
+            expect(buttons[1].id()).toEqual('filter-button');
+            expect(buttons[1].label()).toEqual('Filtrar');
+            expect(buttons[1].icon()).toBeUndefined();
+            expect(buttons[1].appearance()).toEqual(ButtonAppearance.filled);
+            expect(buttons[1].autofocus()).toBeUndefined();
+            expect(buttons[1].focusable()).toBeUndefined();
+            expect(buttons[1].disabled()).toBeUndefined();
+            expect(buttons[1].queryParams()).toBeUndefined();
+            expect(buttons[1].queryParamsHandling()).toBeUndefined();
+            expect(buttons[1].routerLink()).toBeUndefined();
+            expect(buttons[1].type()).toEqual(FormElementType.button);
+            expect(buttons[1].onClick).toBeDefined();
+            expect(buttons[1].onClick).not.toBeNull();
+        });
+
+        it('should fire on close event when click on cancel button.', async () => {
+            fixture.componentInstance.showOrder.set(true);
+            fixture.componentInstance.showCancelButton.set(true);
+            spyOn(toolbarComponent.onClose, 'emit');
+            await harness.selectOrderOption('Não deletados');
+            await harness.selectActiveOption('Todos');
+            await harness.selectDeletedOption('Todos');
+            await harness.fireCancelButtonClick();
+
+            expect(toolbarComponent.onClose.emit).toHaveBeenCalledOnceWith(
+                false,
+            );
+
+            const selects = await getSelectFieldComponents();
+            expect(selects).toHaveSize(3);
+
+            expect(selects[0].id()).toEqual('order-select');
+            expect(selects[0].label()).toEqual('Ordem');
+            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].control()).toBeDefined();
+            expect(selects[0].control()).not.toBeNull();
+            expect(selects[0].control()?.value).toEqual(UserOrder.name_asc);
+            expect(selects[0].options()).toEqual(UserOrderOptions);
+
+            expect(selects[1].id()).toEqual('active-select');
+            expect(selects[1].label()).toEqual('Ativos');
+            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].control()).toBeDefined();
+            expect(selects[1].control()).not.toBeNull();
+            expect(selects[1].control()?.value).toEqual(ActiveFilter.active);
+            expect(selects[1].options()).toEqual(ActiveFilterOptions);
+
+            expect(selects[2].id()).toEqual('deleted-select');
+            expect(selects[2].label()).toEqual('Deletados');
+            expect(selects[2].autofocus()).toBeFalse();
+            expect(selects[2].control()).toBeDefined();
+            expect(selects[2].control()).not.toBeNull();
+            expect(selects[2].control()?.value).toEqual(
+                DeletedFilter.not_deleted,
+            );
+            expect(selects[2].options()).toEqual(DeletedFilterOptions);
+
+            const buttons = await getButtonComponents();
+            expect(buttons).toHaveSize(2);
+
+            expect(buttons[0].id()).toEqual('cancel-button');
+            expect(buttons[0].label()).toEqual('Cancelar');
+            expect(buttons[0].icon()).toBeUndefined();
+            expect(buttons[0].appearance()).toEqual(ButtonAppearance.text);
+            expect(buttons[0].autofocus()).toBeUndefined();
+            expect(buttons[0].focusable()).toBeUndefined();
+            expect(buttons[0].disabled()).toBeUndefined();
+            expect(buttons[0].queryParams()).toBeUndefined();
+            expect(buttons[0].queryParamsHandling()).toBeUndefined();
+            expect(buttons[0].routerLink()).toBeUndefined();
+            expect(buttons[0].type()).toEqual(FormElementType.button);
+            expect(buttons[0].onClick).toBeDefined();
+            expect(buttons[0].onClick).not.toBeNull();
+
+            expect(buttons[1].id()).toEqual('filter-button');
+            expect(buttons[1].label()).toEqual('Filtrar');
+            expect(buttons[1].icon()).toBeUndefined();
+            expect(buttons[1].appearance()).toEqual(ButtonAppearance.filled);
+            expect(buttons[1].autofocus()).toBeUndefined();
+            expect(buttons[1].focusable()).toBeUndefined();
+            expect(buttons[1].disabled()).toBeUndefined();
+            expect(buttons[1].queryParams()).toBeUndefined();
+            expect(buttons[1].queryParamsHandling()).toBeUndefined();
+            expect(buttons[1].routerLink()).toBeUndefined();
+            expect(buttons[1].type()).toEqual(FormElementType.button);
+            expect(buttons[1].onClick).toBeDefined();
+            expect(buttons[1].onClick).not.toBeNull();
+        });
+
+        it('should not fire on close event.', async () => {
+            fixture.componentInstance.showOrder.set(true);
+            fixture.componentInstance.showCancelButton.set(true);
+            spyOn(toolbarComponent.onClose, 'emit');
+            expect(toolbarComponent.onClose.emit).not.toHaveBeenCalled();
+
+            const selects = await getSelectFieldComponents();
+            expect(selects).toHaveSize(3);
+
+            expect(selects[0].id()).toEqual('order-select');
+            expect(selects[0].label()).toEqual('Ordem');
+            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].control()).toBeDefined();
+            expect(selects[0].control()).not.toBeNull();
+            expect(selects[0].control()?.value).toEqual(UserOrder.name_asc);
+            expect(selects[0].options()).toEqual(UserOrderOptions);
+
+            expect(selects[1].id()).toEqual('active-select');
+            expect(selects[1].label()).toEqual('Ativos');
+            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].control()).toBeDefined();
+            expect(selects[1].control()).not.toBeNull();
+            expect(selects[1].control()?.value).toEqual(ActiveFilter.active);
+            expect(selects[1].options()).toEqual(ActiveFilterOptions);
+
+            expect(selects[2].id()).toEqual('deleted-select');
+            expect(selects[2].label()).toEqual('Deletados');
+            expect(selects[2].autofocus()).toBeFalse();
+            expect(selects[2].control()).toBeDefined();
+            expect(selects[2].control()).not.toBeNull();
+            expect(selects[2].control()?.value).toEqual(
+                DeletedFilter.not_deleted,
+            );
+            expect(selects[2].options()).toEqual(DeletedFilterOptions);
+
+            const buttons = await getButtonComponents();
+            expect(buttons).toHaveSize(2);
+
+            expect(buttons[0].id()).toEqual('cancel-button');
+            expect(buttons[0].label()).toEqual('Cancelar');
+            expect(buttons[0].icon()).toBeUndefined();
+            expect(buttons[0].appearance()).toEqual(ButtonAppearance.text);
+            expect(buttons[0].autofocus()).toBeUndefined();
+            expect(buttons[0].focusable()).toBeUndefined();
+            expect(buttons[0].disabled()).toBeUndefined();
+            expect(buttons[0].queryParams()).toBeUndefined();
+            expect(buttons[0].queryParamsHandling()).toBeUndefined();
+            expect(buttons[0].routerLink()).toBeUndefined();
+            expect(buttons[0].type()).toEqual(FormElementType.button);
+            expect(buttons[0].onClick).toBeDefined();
+            expect(buttons[0].onClick).not.toBeNull();
+
+            expect(buttons[1].id()).toEqual('filter-button');
+            expect(buttons[1].label()).toEqual('Filtrar');
+            expect(buttons[1].icon()).toBeUndefined();
+            expect(buttons[1].appearance()).toEqual(ButtonAppearance.filled);
+            expect(buttons[1].autofocus()).toBeUndefined();
+            expect(buttons[1].focusable()).toBeUndefined();
+            expect(buttons[1].disabled()).toBeUndefined();
+            expect(buttons[1].queryParams()).toBeUndefined();
+            expect(buttons[1].queryParamsHandling()).toBeUndefined();
+            expect(buttons[1].routerLink()).toBeUndefined();
+            expect(buttons[1].type()).toEqual(FormElementType.button);
+            expect(buttons[1].onClick).toBeDefined();
+            expect(buttons[1].onClick).not.toBeNull();
         });
     });
 });

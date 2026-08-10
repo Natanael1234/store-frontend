@@ -45,7 +45,7 @@ describe('AuthInterceptor', () => {
         data: {
             user: {
                 id: '891db31e-dfb5-42ed-b912-48b98463b004',
-                name: 'John Doe',
+                name: 'John Williams',
                 email: 'john@example.com',
                 roles: [Role.user],
                 active: true,

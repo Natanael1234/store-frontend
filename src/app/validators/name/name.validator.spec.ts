@@ -35,7 +35,7 @@ describe('Name Validator', () => {
             });
 
             it('should return null for valid name', () => {
-                const control = new FormControl('John Doe');
+                const control = new FormControl('John Williams');
                 expect(validator(control)).toBeNull();
             });
 
@@ -104,7 +104,7 @@ describe('Name Validator', () => {
             });
 
             it('should return null for valid name', () => {
-                const control = new FormControl('John Doe');
+                const control = new FormControl('John Williams');
                 expect(validator(control)).toBeNull();
             });
 
@@ -165,7 +165,7 @@ describe('Name Validator', () => {
             });
 
             it('should return null for valid name', () => {
-                const control = new FormControl('John Doe');
+                const control = new FormControl('John Williams');
                 expect(validator(control)).toBeNull();
             });
 

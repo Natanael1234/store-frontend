@@ -11,8 +11,19 @@ import { UserFilterUserDialogData } from './filter-dialog-data';
 @Component({
     selector: 'app-user-filter-dialog',
     imports: [UserFilterToolbarComponent, MatDialogModule],
-    templateUrl: './user-filter-dialog.component.html',
     styleUrl: './user-filter-dialog.component.scss',
+    template: `
+        <div class="wrapper">
+            <app-user-filter-toolbar
+                [showOrder]="true"
+                [order]="order()"
+                [active]="active()"
+                [deleted]="deleted()"
+                [showCancelButton]="true"
+                [vertical]="true"
+                (onClose)="closeFilterMenu($event)"></app-user-filter-toolbar>
+        </div>
+    `,
 })
 export class UserFilterDialogComponent {
     public data: UserFilterUserDialogData =
@@ -24,7 +35,7 @@ export class UserFilterDialogComponent {
         MatDialogRef<UserFilterDialogComponent, OnUserFilterMenuListCloseEvent>,
     );
 
-    readonly sort = model(this.data.sort);
+    readonly order = model(this.data.order);
     readonly active = model(this.data.active);
     readonly deleted = model(this.data.deleted);
 

@@ -17,7 +17,6 @@ const _PasswordMessage = new PasswordMessage({
 function getMachingControl(control: AbstractControl, fieldToMatch: string) {
     const formGroup = control.parent as FormGroup;
     const matchingControl = formGroup?.get(fieldToMatch);
-    console.log('matchingControl', fieldToMatch);
     return matchingControl;
 }
 
@@ -38,11 +37,6 @@ function baseMatchingPasswordFieldsValidator(
             return null;
         }
         const valuesMatches = control.value === matchingControl.value;
-        console.log({
-            value: control.value,
-            matchingValue: matchingControl.value,
-            valuesMatches,
-        });
         if (valuesMatches) {
             return null;
         }

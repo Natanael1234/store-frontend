@@ -1,5 +1,4 @@
 import { ComponentHarness } from '@angular/cdk/testing';
-import { MatOptionHarness } from '@angular/material/core/testing';
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatSelectHarness } from '@angular/material/select/testing';
 
@@ -110,7 +109,6 @@ export class SelectFieldHarness extends ComponentHarness {
         const options = await select.getOptions();
 
         const results: { selected: boolean; label: string | null }[] = [];
-        MatOptionHarness;
 
         for (const option of options) {
             const selected = await option.isSelected();
@@ -124,6 +122,24 @@ export class SelectFieldHarness extends ComponentHarness {
         }
 
         return results;
+    }
+
+    async clickOption(label: string) {
+        const select = await this.getSelectHarness();
+        const isOpen = await select.isOpen();
+        if (!isOpen) {
+            await select.open();
+        }
+        const options = await select.getOptions();
+        for (const option of options) {
+            const _label = (await option.getText())?.trim() ?? null;
+            if (_label == label) {
+                await option.click();
+                return true;
+            }
+        }
+        await select.close();
+        return false;
     }
 
     /** 🔹 Retorna a lista de labels (strings) das opções */

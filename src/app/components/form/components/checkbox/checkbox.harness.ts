@@ -68,6 +68,29 @@ export class CheckboxHarness extends ComponentHarness {
         return (await host.text()) ?? '';
     }
 
+    async setValue(checked: boolean) {
+        const checkbox = await this.matCheckboxHarness();
+        const isChecked = await checkbox.isChecked();
+
+        // Se já estiver no estado desejado, alterna primeiro para forçar o evento de mudança
+        if (isChecked === checked) {
+            if (checked) {
+                await checkbox.uncheck();
+            } else {
+                await checkbox.check();
+            }
+        }
+
+        // Aplica o estado final desejado
+        if (checked) {
+            await checkbox.check();
+        } else {
+            await checkbox.uncheck();
+        }
+
+        await checkbox.blur();
+    }
+
     async isChecked() {
         const checkbox = await this.matCheckboxHarness();
         return checkbox.isChecked();
@@ -85,8 +108,19 @@ export class CheckboxHarness extends ComponentHarness {
         return isFocused;
     }
 
+    /** 🔹 Retorna todas as classes aplicadas ao mat-form-field */
+    async getMatCheckboxClasses(): Promise<string[]> {
+        const harness = await this.matCheckboxHarness();
+        const host = await harness.host();
+        const classAttr = (await host.getAttribute('class')) ?? '';
+        return classAttr
+            .split(/\s+/)
+            .map((c) => c.trim())
+            .filter(Boolean);
+    }
+
     async hasVisibleError(): Promise<boolean> {
-        const classes = await this.getFormFieldClasses();
+        const classes = await this.getMatCheckboxClasses();
         if (
             classes.includes('ng-touched') &&
             classes.includes('ng-dirty') &&
@@ -95,17 +129,6 @@ export class CheckboxHarness extends ComponentHarness {
             return true;
         }
         return false;
-    }
-
-    /** 🔹 Retorna todas as classes aplicadas ao mat-form-field */
-    async getFormFieldClasses(): Promise<string[]> {
-        const harness = await this.matCheckboxHarness();
-        const host = await harness.host();
-        const classAttr = (await host.getAttribute('class')) ?? '';
-        return classAttr
-            .split(/\s+/)
-            .map((c) => c.trim())
-            .filter(Boolean);
     }
 
     async getButtonChildTagNames(): Promise<string[]> {

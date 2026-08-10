@@ -70,7 +70,7 @@ export class EditOwnProfileComponent {
     protected maxEmailLength = EmailConstants.MAX_LENGTH;
     protected maxUsernameLength = UserConfigs.NAME_MAX_LENGTH;
 
-    protected nameRemoteValidationContext: RemoteValidationContext = {};
+    protected nameRemoteValidationContext = new RemoteValidationContext();
 
     form = new FormGroup({
         name: new FormControl('', {
@@ -118,12 +118,10 @@ export class EditOwnProfileComponent {
                 } else if (typeof error.error?.message == 'string') {
                     this.mainError = error.error.message;
                 } else {
-                    // name
                     if (error.error?.message?.name) {
                         this.nameRemoteValidationContext.remoteError =
                             error.error?.message.name;
                     }
-
                     this.mainError = undefined;
                     this.form.updateValueAndValidity();
                     this.form.markAllAsTouched();
@@ -153,7 +151,7 @@ export class EditOwnProfileComponent {
         } else if (nameFormControl.hasError('maxlength')) {
             nameError = _NameMessage.MAX_LEN;
         } else if (nameFormControl.hasError('remote')) {
-            nameError = this.nameRemoteValidationContext.remoteError;
+            nameError = this.nameRemoteValidationContext.remoteError as any;
         }
         return nameError;
     }

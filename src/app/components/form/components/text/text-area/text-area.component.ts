@@ -78,7 +78,7 @@ export class TextAreaFieldComponent {
     protected _placeholder = computed(() => this.placeholder() ?? '');
     protected _tabIndex = computed(() => ((this.focusable() ?? true) ? 0 : -1));
     protected _autofocus = computed(() => this.autofocus() ?? false);
-    protected _readOnly = computed(() => !!this.readOnly());
+    protected _readOnly = computed(() => this.readOnly() ?? false);
     protected _minLength = computed(() => this.minLength() ?? null);
     protected _maxLength = computed(() => this.maxLength() ?? null);
     protected _autosizeMinRows = computed(() => this.autosizeMinRows() ?? 2);

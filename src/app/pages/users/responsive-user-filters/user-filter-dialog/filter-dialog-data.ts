@@ -4,7 +4,7 @@ import { UserOrder } from '../../../../services/user/enums/user-order/user-order
 
 // TODO: test
 export interface UserFilterUserDialogData {
-    sort: UserOrder;
+    order: UserOrder;
     active: ActiveFilter;
     deleted: DeletedFilter;
 }

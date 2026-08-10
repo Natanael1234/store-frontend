@@ -12,13 +12,34 @@ export type AlertType =
     | 'primary'
     | 'secondary'
     | 'light'
-    | 'dark';
+    | 'dark'; // TODO: separar
 
 @Component({
     selector: 'app-alert',
     imports: [CommonModule, MatIconModule, MatButtonModule],
-    templateUrl: './alert.component.html',
     styleUrl: './alert.component.scss',
+    template: `
+        <div [ngClass]="[type || '']" class="container">
+            <div class="content">
+                @if (icon) {
+                    <mat-icon aria-hidden="false" [fontIcon]="icon"></mat-icon>
+                }
+                <div class="message">
+                    <ng-content></ng-content>
+                </div>
+            </div>
+
+            @if (showCloseButton) {
+                <button
+                    (click)="onClose.emit()"
+                    mat-icon-button
+                    aria-label="Fechar alerta"
+                    class="close-button">
+                    <mat-icon>close</mat-icon>
+                </button>
+            }
+        </div>
+    `,
 })
 export class AlertComponent {
     @Input() public showCloseButton?: boolean;

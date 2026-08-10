@@ -1,21 +1,35 @@
 import { Component, inject } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+    FormControl,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDivider } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { AbstractFormElementModel } from '../../components/form/components/abstract/abstract-form-element.model';
-import { ButtonStyle } from '../../components/form/components/button/enum/style/button-style.enum';
-import { ButtonModel } from '../../components/form/components/button/model/button.model';
-import { CheckboxModel } from '../../components/form/components/checkbox/model/checkbox.model';
-import { DividerModel } from '../../components/form/components/divider/model/divider.-form-elementmodel';
-import { LabelModel } from '../../components/form/components/label/model/label-form-element.model';
-import { RadioGroupModel } from '../../components/form/components/radio-group/model/radio-buttons-element.model';
-import { SelectModel } from '../../components/form/components/select/model/select-element.model';
-import { NumericFieldModel } from '../../components/form/components/text/numeric-field/model/numeric-field.model';
-import { TextAreaModel } from '../../components/form/components/text/text-area/model/text-area.model';
-import { TextFieldModel } from '../../components/form/components/text/text-field/model/text-field.model';
+import { ButtonComponent } from '../../components/form/components/button/button.component';
+import { ButtonAppearance } from '../../components/form/components/button/enum/appearance/button-appearance.enum';
+import { CheckboxComponent } from '../../components/form/components/checkbox/checkbox.component';
+import { RadioGroupComponent } from '../../components/form/components/radio-group/radio-group.component';
+import { SelectFieldComponent } from '../../components/form/components/select/select-field.component';
+import { NumericFieldComponent } from '../../components/form/components/text/numeric-field/numeric-field.component';
+import { PasswordFieldComponent } from '../../components/form/components/text/password-field/password-field.component';
+import { TextAreaFieldComponent } from '../../components/form/components/text/text-area/text-area.component';
+import { TextFieldComponent } from '../../components/form/components/text/text-field/text-field.component';
+import { AutoCompleteType } from '../../components/form/enums/auto-complete-type/auto-complete-type.enum';
 import { FormElementType } from '../../components/form/enums/form-element-type/form-element-type.enum';
+import { InputMode } from '../../components/form/enums/input-mode/input-mode.enum';
 import { TextFormat } from '../../components/form/enums/text-format/text-format.enum';
-import { FormComponent } from '../../components/form/form.component';
-import { SpacerModel } from '../../components/form/spacer/model/spacer.model';
+import { TextMask } from '../../components/form/enums/text-mask/text-mask.enum';
 import { UserConfigs } from '../../configs/user/user.configs';
 import { Icon } from '../../enums/icons/icons.enum';
 import { ResponsityService } from '../../services/responsivity/responsivity.service';
@@ -34,17 +48,37 @@ import { timeValidator } from '../../validators/time/time.validator';
 
 @Component({
     selector: 'app-test',
-    imports: [FormComponent],
-    templateUrl: './test.component.html',
+    imports: [
+        // FormComponent,
+        RouterModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatIconModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatCardModule,
+        // AlertComponent,
+        MatProgressBarModule,
+        TextFieldComponent,
+        PasswordFieldComponent,
+        TextAreaFieldComponent,
+        NumericFieldComponent,
+        SelectFieldComponent,
+        RadioGroupComponent,
+        CheckboxComponent,
+        ButtonComponent,
+        MatDivider,
+    ],
     styleUrl: './test.component.scss',
+    templateUrl: './test.component.html',
 })
 export class TestComponent {
-    public formElements: AbstractFormElementModel[] = [];
-
     protected responsivity: ResponsityService = inject(ResponsityService);
     private resizeSubscription!: Subscription;
 
-    form = new FormGroup(
+    protected formGroup = new FormGroup(
         {
             name: new FormControl(
                 { value: 'x', disabled: false },
@@ -136,230 +170,38 @@ export class TestComponent {
         { updateOn: 'blur' },
     );
 
+    protected mobile: boolean = true;
+
+    protected AutoCompleteType = AutoCompleteType;
+    protected TextFormat = TextFormat;
+    protected TextMask = TextMask;
+    protected FormElementType = FormElementType;
+    protected ButtonAppearance = ButtonAppearance;
+    protected Icon = Icon;
+    protected InputMode = InputMode;
+
     constructor() {}
+
+    onTextFieldBlur() {
+        console.log('On text input blur');
+    }
+
+    onTextAreaBlur() {
+        console.log('On text area blur');
+    }
 
     public ngAfterViewInit() {
         this.resizeSubscription = this.responsivity.mobile.subscribe(
             (mobile) => {
-                this.setFormItems(mobile);
+                this.mobile = mobile;
+                // this.formGroup.markAllAsTouched();
+                // this.formGroup.markAllAsDirty();
+                // this.formGroup.updateValueAndValidity();
             },
         );
     }
 
-    setFormItems(mobile: boolean) {
-        this.formElements = [
-            new TextFieldModel({
-                id: 'name',
-                mask: undefined,
-                label: 'Nome',
-                control: this.form.controls.name,
-                autofocus: true,
-                minLength: 3,
-                maxLength: 7,
-                onBlur: () => console.log('On text input blur'),
-                colSize: mobile ? 12 : 6,
-            }),
-            ...(mobile ? [] : [new SpacerModel({ colSize: 2 })]),
-            new TextFieldModel({
-                id: 'email',
-                format: TextFormat.email,
-                label: 'Email',
-                placeholder: 'Insira um email',
-                maxLength: 200,
-                control: this.form.controls.email,
-                colSize: mobile ? 12 : 4,
-            }),
-            new TextFieldModel({
-                id: 'password',
-                format: TextFormat.password,
-                label: 'Senha',
-                placeholder: 'Insira a senha',
-                maxLength: 12,
-                colSize: mobile ? 12 : 12,
-                control: this.form.controls.password,
-            }),
-            new TextFieldModel({
-                id: 'phone',
-                format: TextFormat.phone,
-                label: 'Fone',
-                placeholder: 'Insira seu telefone',
-                maxLength: 14,
-                focusable: false,
-                control: this.form.controls.phone,
-                colSize: mobile ? 12 : 4,
-            }),
-            new TextFieldModel({
-                id: 'zip-code',
-                format: TextFormat.zipCode,
-                label: 'CEP',
-                control: this.form.controls.zipCode,
-                colSize: mobile ? 12 : 4,
-            }),
-            ...(mobile ? [] : [new SpacerModel({ colSize: 3 })]),
-            new TextFieldModel({
-                id: 'date',
-                format: TextFormat.date,
-                label: 'Data',
-                control: this.form.controls.date,
-                colSize: mobile ? 12 : 3,
-            }),
-            ...(mobile ? [] : [new SpacerModel({ colSize: 12 })]),
-            new TextFieldModel({
-                id: 'time',
-                format: TextFormat.time,
-                label: 'Horário',
-                control: this.form.controls.time,
-                colSize: mobile ? 12 : 3,
-            }),
-            new TextFieldModel({
-                id: 'cnpj',
-                format: TextFormat.cnpj,
-                label: 'CNPJ',
-                control: this.form.controls.cnpj,
-                colSize: mobile ? 12 : 5,
-            }),
-            new TextFieldModel({
-                id: 'cpf',
-                format: TextFormat.cpf,
-                label: 'CPF',
-                control: this.form.controls.cpf,
-                colSize: mobile ? 12 : 6,
-            }),
-            new NumericFieldModel({
-                id: 'amount',
-                prefix: 'R$ ',
-                label: 'Quantidade',
-                allowNegativeNumbers: true,
-                control: this.form.controls.amount,
-                min: 3,
-                max: 300,
-                step: 5,
-                colSize: mobile ? 12 : 12,
-            }),
-            new NumericFieldModel({
-                id: 'price',
-                suffix: ' %',
-                label: 'Preço',
-                decimalPlaces: 2,
-                allowNegativeNumbers: false,
-                leadZero: true,
-                control: this.form.controls.price,
-                colSize: mobile ? 12 : 12,
-            }),
-            new TextAreaModel({
-                id: 'description',
-                label: 'Descrição',
-                placeholder: 'Insira uma descrição',
-                maxLength: 200,
-                control: this.form.controls.description,
-                colSize: mobile ? 12 : 12,
-                onBlur: () => console.log('On text area blur'),
-            }),
-            new TextAreaModel({
-                id: 'disabled-description',
-                label: 'Área de texto desabilitada',
-                placeholder: 'Placeholder',
-                maxLength: 200,
-                colSize: mobile ? 12 : 12,
-                autosizeMinRows: 2,
-                autosizeMaxRows: 2,
-                control: this.form.controls.disabledDescription,
-            }),
-            new DividerModel({
-                id: 'test-divider',
-                colSize: mobile ? 12 : 12,
-            }),
-            new LabelModel({
-                id: 'test-label',
-                value: 'Outro label',
-                colSize: mobile ? 12 : 12,
-            }),
-
-            new SelectModel({
-                focusable: false,
-                id: 'gender',
-                label: 'Gênero',
-                options: [
-                    { label: 'Masculino', value: 'M' },
-                    { label: 'Feminino', value: 'F' },
-                ],
-                control: this.form.controls.gender,
-                colSize: mobile ? 12 : 7,
-            }),
-            new RadioGroupModel({
-                id: 'level',
-                label: 'Nível',
-
-                options: [
-                    { label: 'Begginer', value: 'B' },
-                    { label: 'Intermmediate', value: 'I' },
-                    { label: 'Advanced', value: 'A' },
-                ],
-                control: this.form.controls.level,
-                colSize: mobile ? 12 : 12,
-            }),
-            new CheckboxModel({
-                id: 'accept-terms',
-                label: 'Aceito os termos',
-                control: this.form.controls.acceptTerms,
-                colSize: 4,
-            }),
-            new LabelModel({
-                id: 'test-label',
-                value: 'Test label',
-                colSize: mobile ? 12 : 12,
-            }),
-
-            new SpacerModel({
-                colSize: mobile ? 12 : 1,
-            }),
-
-            new ButtonModel({
-                id: 'flat-button',
-                icon: Icon.checked,
-                label: 'Botão plano',
-                style: ButtonStyle.text,
-                colSize: mobile ? 12 : 2,
-            }),
-            new ButtonModel({
-                id: 'elevated-button',
-                type: FormElementType.button,
-                icon: Icon.checked,
-                label: 'Botão elevado BUTTON',
-                style: ButtonStyle.elevated,
-                colSize: mobile ? 12 : 2,
-            }),
-            new ButtonModel({
-                id: 'filled-button',
-                type: FormElementType.submit,
-                icon: Icon.checked,
-                label: 'Botão preenchido SUBMIT',
-                style: ButtonStyle.filled,
-                colSize: mobile ? 12 : 2,
-            }),
-            new ButtonModel({
-                id: 'outlined-button',
-                type: FormElementType.reset,
-                icon: Icon.checked,
-                label: 'Botão contornado RESET',
-                style: ButtonStyle.outlined,
-                colSize: mobile ? 12 : 2,
-            }),
-            new ButtonModel({
-                id: 'tonal-button',
-                type: FormElementType.button,
-                icon: Icon.checked,
-                label: 'Botão tonal LINKS',
-                style: ButtonStyle.tonal,
-                colSize: mobile ? 12 : 2,
-                routerLink: ['/users'],
-                queryParams: { ref: 'testando' },
-                queryParamsHandling: 'replace',
-            }),
-        ];
-
-        this.form.markAllAsTouched();
-        this.form.markAllAsDirty();
-        this.form.updateValueAndValidity();
+    public ngOnDestroy() {
+        this.resizeSubscription?.unsubscribe();
     }
 }
