@@ -21,7 +21,7 @@ export class RequestPasswordLinkHarness extends ComponentHarness {
     private readonly formChildrenElements =
         this.locatorForAll(':scope > form > *');
 
-    private aletHarness = this.locatorForOptional(AlertHarness);
+    private alertHarness = this.locatorForOptional(AlertHarness);
     private textFieldHarness = this.locatorFor(TextFieldHarness);
 
     async getHostChildrenCount() {
@@ -115,7 +115,7 @@ export class RequestPasswordLinkHarness extends ComponentHarness {
     }
 
     async getAlertHarness() {
-        return await this.aletHarness();
+        return await this.alertHarness();
     }
 
     async getEmailFieldHarness() {

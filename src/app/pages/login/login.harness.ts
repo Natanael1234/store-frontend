@@ -22,7 +22,7 @@ export class LoginHarness extends ComponentHarness {
     private readonly formChildrenElements =
         this.locatorForAll(':scope > form > *');
 
-    private aletHarness = this.locatorForOptional(AlertHarness);
+    private alertHarness = this.locatorForOptional(AlertHarness);
     private textFieldHarness = this.locatorFor(TextFieldHarness);
     private passwordFieldHarness = this.locatorFor(PasswordFieldHarness);
 
@@ -117,7 +117,7 @@ export class LoginHarness extends ComponentHarness {
     }
 
     async getAlertHarness() {
-        return await this.aletHarness();
+        return await this.alertHarness();
     }
 
     async getEmailFieldHarness() {
