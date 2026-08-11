@@ -8,7 +8,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { By } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { NavigationExtras, provideRouter, Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { AlertComponent } from '../../components/alert/alert.component';
 import { ButtonComponent } from '../../components/form/components/button/button.component';
 import { ButtonAppearance } from '../../components/form/components/button/enum/appearance/button-appearance.enum';
@@ -646,6 +646,82 @@ describe('LoginComponent', () => {
 
                 expect(routerSpy).not.toHaveBeenCalled();
             });
+        });
+    });
+
+    describe('loading', () => {
+        it('should show loading while requesting.', async () => {
+            let subject = new Subject<any>();
+
+            component['formGroup'].setValue({
+                email: 'john@example.com',
+                password: 'Password123$',
+            });
+            authServiceSpy.login.and.returnValue(subject.asObservable());
+
+            fixture.detectChanges();
+
+            let progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeNull();
+
+            await harness.clickLoginButton();
+            fixture.detectChanges();
+
+            progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeDefined();
+            expect(progressBarHarness).not.toBeNull();
+
+            subject.next({
+                status: 'success',
+                data: {
+                    user: {
+                        id: '891db31e-dfb5-42ed-b912-48b98463b004',
+                        name: 'John Williams',
+                        email: 'john@example.com',
+                        roles: [Role.user],
+                        active: true,
+                        created: '2024-02-03T19:05:21.689Z',
+                        updated: '2024-02-03T19:05:21.689Z',
+                        deletedAt: null,
+                    },
+                    payload: {
+                        type: 'bearer',
+                        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6MTcwNzA3MzUyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0In0.LaW-Z0DkU5ZheRtst0mvZ3WtMgMmMeawJVke9qtCVyE',
+                        refreshToken:
+                            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6NDI5ODk4NzEyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0IiwianRpIjoiMTI4In0.bJTClITMvD5NCDt5DjTmxn3DIjFOabEvsCvnK795VXU',
+                    },
+                },
+            });
+            subject.complete();
+            fixture.detectChanges();
+
+            progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeNull();
+        });
+
+        it('should show stop to show loading after remote error', async () => {
+            const exception: any = new Error('Registration failed!');
+            exception.error = {
+                error: ExceptionName.unprocessable_entity,
+                message: 'Algo deu errado!',
+            };
+            exception.message = 'Some error';
+            exception.name = 'HttpErrorResponse';
+            exception.status = HttpStatusCode.UnprocessableEntity;
+            exception.statusText = 'Unprocessable Entity';
+
+            fixture.detectChanges();
+
+            authServiceSpy.login.and.returnValue(throwError(() => exception));
+            await harness.setValues({
+                email: 'john@email.com',
+                password: 'Password123$',
+            });
+            await harness.clickLoginButton();
+            fixture.detectChanges();
+
+            let progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeNull();
         });
     });
 });
