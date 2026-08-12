@@ -13,7 +13,7 @@ import {
     provideRouter,
     Router,
 } from '@angular/router';
-import { BehaviorSubject, of, throwError } from 'rxjs';
+import { BehaviorSubject, of, Subject, throwError } from 'rxjs';
 import { AlertComponent } from '../../components/alert/alert.component';
 import { ButtonComponent } from '../../components/form/components/button/button.component';
 import { ButtonAppearance } from '../../components/form/components/button/enum/appearance/button-appearance.enum';
@@ -24,6 +24,7 @@ import { ExceptionName } from '../../enums/exception-names/exception-text.enum';
 import { AuthService } from '../../services/auth/auth.service';
 import { Role } from '../../services/user/dtos/role/role.enum';
 import { HomeComponent } from '../home/home.component';
+import { LoginComponent } from '../login/login.component';
 import { NewPasswordComponent } from './new-password.component';
 import { NewPasswordHarness } from './new-password.harness';
 
@@ -72,8 +73,6 @@ describe('NewPasswordComponent.', () => {
         );
     }
 
-    // TODO: test loading
-
     beforeEach(async () => {
         const spy = jasmine.createSpyObj('AuthService', ['createNewPassword']);
 
@@ -96,6 +95,11 @@ describe('NewPasswordComponent.', () => {
                         path: 'home',
                         component: HomeComponent,
                         title: 'Home Page',
+                    },
+                    {
+                        path: 'login',
+                        component: LoginComponent,
+                        title: 'Login Page',
                     },
                 ]),
                 {
@@ -650,6 +654,85 @@ describe('NewPasswordComponent.', () => {
 
                 expect(routerSpy).not.toHaveBeenCalled();
             });
+        });
+    });
+
+    describe('loading.', () => {
+        it('should show loading while requesting.', async () => {
+            let subject = new Subject<any>();
+
+            component['formGroup'].setValue({
+                hash: 'SOME_HASH',
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+            });
+            authServiceSpy.createNewPassword.and.returnValue(
+                subject.asObservable(),
+            );
+            fixture.detectChanges();
+
+            let progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeNull();
+
+            await harness.clickSaveButton();
+            subject.next({
+                status: 'success',
+                data: {
+                    user: {
+                        id: '891db31e-dfb5-42ed-b912-48b98463b004',
+                        name: 'John Williams',
+                        email: 'john@example.com',
+                        roles: [Role.user],
+                        active: true,
+                        created: '2024-02-03T19:05:21.689Z',
+                        updated: '2024-02-03T19:05:21.689Z',
+                        deletedAt: null,
+                    },
+                    payload: {
+                        type: 'bearer',
+                        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6MTcwNzA3MzUyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0In0.LaW-Z0DkU5ZheRtst0mvZ3WtMgMmMeawJVke9qtCVyE',
+                        refreshToken:
+                            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6NDI5ODk4NzEyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0IiwianRpIjoiMTI4In0.bJTClITMvD5NCDt5DjTmxn3DIjFOabEvsCvnK795VXU',
+                    },
+                },
+            });
+
+            progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeDefined();
+            expect(progressBarHarness).not.toBeNull();
+
+            subject.complete();
+            fixture.detectChanges();
+
+            progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeNull();
+        });
+
+        it('should stop to show loading after remote error', async () => {
+            const exception: any = new Error('Request failed!');
+            exception.error = {
+                error: ExceptionName.unprocessable_entity,
+                message: 'Algo deu errado!',
+            };
+            exception.message = 'Some error';
+            exception.name = 'HttpErrorResponse';
+            exception.status = HttpStatusCode.UnprocessableEntity;
+            exception.statusText = 'Unprocessable Entity';
+
+            fixture.detectChanges();
+
+            authServiceSpy.createNewPassword.and.returnValue(
+                throwError(() => exception),
+            );
+            await harness.setValues({
+                password: 'Password123$',
+                repeatPassword: 'Password123$',
+            });
+            await harness.clickSaveButton();
+            fixture.detectChanges();
+
+            let progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeNull();
         });
     });
 });

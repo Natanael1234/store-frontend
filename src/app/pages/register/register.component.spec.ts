@@ -1030,6 +1030,11 @@ describe('RegisterComponent.', () => {
                     },
                 },
             });
+
+            progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeDefined();
+            expect(progressBarHarness).not.toBeNull();
+
             subject.complete();
             fixture.detectChanges();
 

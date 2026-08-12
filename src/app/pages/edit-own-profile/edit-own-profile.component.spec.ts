@@ -17,7 +17,6 @@ import { TextFormat } from '../../components/form/enums/text-format/text-format.
 import { UserConfigs } from '../../configs/user/user.configs';
 import { ExceptionName } from '../../enums/exception-names/exception-text.enum';
 import { AuthService } from '../../services/auth/auth.service';
-import { Role } from '../../services/user/dtos/role/role.enum';
 import { HomeComponent } from '../home/home.component';
 import { EditOwnProfileComponent } from './edit-own-profile.component';
 import { EditOwnProfileHarness } from './edit-own-profile.harness';
@@ -402,27 +401,12 @@ describe('EditOwnProfileComponent.', () => {
             expect(progressBarHarness).toBeDefined();
             expect(progressBarHarness).not.toBeNull();
 
-            subject.next({
-                status: 'success',
-                data: {
-                    user: {
-                        id: '891db31e-dfb5-42ed-b912-48b98463b004',
-                        name: 'John Williams',
-                        email: 'john@example.com',
-                        roles: [Role.user],
-                        active: true,
-                        created: '2024-02-03T19:05:21.689Z',
-                        updated: '2024-02-03T19:05:21.689Z',
-                        deletedAt: null,
-                    },
-                    payload: {
-                        type: 'bearer',
-                        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6MTcwNzA3MzUyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0In0.LaW-Z0DkU5ZheRtst0mvZ3WtMgMmMeawJVke9qtCVyE',
-                        refreshToken:
-                            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6NDI5ODk4NzEyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0IiwianRpIjoiMTI4In0.bJTClITMvD5NCDt5DjTmxn3DIjFOabEvsCvnK795VXU',
-                    },
-                },
-            });
+            subject.next(true);
+
+            progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeDefined();
+            expect(progressBarHarness).not.toBeNull();
+
             subject.complete();
             fixture.detectChanges();
 

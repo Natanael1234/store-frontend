@@ -7,7 +7,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { By } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { NavigationExtras, provideRouter, Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { AlertComponent } from '../../components/alert/alert.component';
 import { ButtonComponent } from '../../components/form/components/button/button.component';
 import { ButtonAppearance } from '../../components/form/components/button/enum/appearance/button-appearance.enum';
@@ -376,6 +376,60 @@ describe('RequestPasswordChangeLinkComponent.', () => {
 
                 expect(routerSpy).not.toHaveBeenCalled();
             });
+        });
+    });
+
+    describe('loading.', () => {
+        it('should show loading while requesting.', async () => {
+            let subject = new Subject<any>();
+
+            component['formGroup'].setValue({ email: 'john@example.com' });
+            authServiceSpy.requestPasswordChangeLink.and.returnValue(
+                subject.asObservable(),
+            );
+
+            fixture.detectChanges();
+
+            let progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeNull();
+
+            await harness.clickRequestButton();
+            fixture.detectChanges();
+
+            progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeDefined();
+            expect(progressBarHarness).not.toBeNull();
+
+            subject.next(true);
+            subject.complete();
+            fixture.detectChanges();
+
+            progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeNull();
+        });
+
+        it('should stop to show loading after remote error', async () => {
+            const exception: any = new Error('Request failed!');
+            exception.error = {
+                error: ExceptionName.unprocessable_entity,
+                message: 'Algo deu errado!',
+            };
+            exception.message = 'Some error';
+            exception.name = 'HttpErrorResponse';
+            exception.status = HttpStatusCode.UnprocessableEntity;
+            exception.statusText = 'Unprocessable Entity';
+
+            fixture.detectChanges();
+
+            authServiceSpy.requestPasswordChangeLink.and.returnValue(
+                throwError(() => exception),
+            );
+            await harness.setValues({ email: 'john@example.com' });
+            await harness.clickRequestButton();
+            fixture.detectChanges();
+
+            let progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeNull();
         });
     });
 });

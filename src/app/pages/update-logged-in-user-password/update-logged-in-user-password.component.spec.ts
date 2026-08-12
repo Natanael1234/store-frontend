@@ -8,7 +8,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { By } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { NavigationExtras, provideRouter, Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { AlertComponent } from '../../components/alert/alert.component';
 import { ButtonComponent } from '../../components/form/components/button/button.component';
 import { ButtonAppearance } from '../../components/form/components/button/enum/appearance/button-appearance.enum';
@@ -284,283 +284,301 @@ describe('UpdateLoggedInUserPasswordComponent.', () => {
         expect(routerSpy).toHaveBeenCalledWith(['/']);
     });
 
-    describe('errors.', () => {
-        describe('local errors.', () => {
-            let routerSpy: jasmine.Spy<
-                (
-                    commands: readonly any[],
-                    extras?: NavigationExtras,
-                ) => Promise<boolean>
-            >;
+    describe('local errors.', () => {
+        let routerSpy: jasmine.Spy<
+            (
+                commands: readonly any[],
+                extras?: NavigationExtras,
+            ) => Promise<boolean>
+        >;
 
-            beforeEach(() => {
-                authServiceSpy.updateLoggedInUserPassword.and.returnValue(
-                    of({
-                        status: 'success',
-                        data: {
-                            user: {
-                                id: '891db31e-dfb5-42ed-b912-48b98463b004',
-                                name: 'John Williams',
-                                email: 'john@example.com',
-                                roles: [Role.user],
-                                active: true,
-                                created: '2024-02-03T19:05:21.689Z',
-                                updated: '2024-02-03T19:05:21.689Z',
-                                deletedAt: null,
-                            },
-                            payload: {
-                                type: 'bearer',
-                                token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6MTcwNzA3MzUyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0In0.LaW-Z0DkU5ZheRtst0mvZ3WtMgMmMeawJVke9qtCVyE',
-                                refreshToken:
-                                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6NDI5ODk4NzEyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0IiwianRpIjoiMTI4In0.bJTClITMvD5NCDt5DjTmxn3DIjFOabEvsCvnK795VXU',
-                            },
+        beforeEach(() => {
+            authServiceSpy.updateLoggedInUserPassword.and.returnValue(
+                of({
+                    status: 'success',
+                    data: {
+                        user: {
+                            id: '891db31e-dfb5-42ed-b912-48b98463b004',
+                            name: 'John Williams',
+                            email: 'john@example.com',
+                            roles: [Role.user],
+                            active: true,
+                            created: '2024-02-03T19:05:21.689Z',
+                            updated: '2024-02-03T19:05:21.689Z',
+                            deletedAt: null,
                         },
-                    }),
-                );
-                routerSpy = spyOn(component['router'], 'navigate');
-                spyOn(router, 'navigateByUrl');
-            });
+                        payload: {
+                            type: 'bearer',
+                            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6MTcwNzA3MzUyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0In0.LaW-Z0DkU5ZheRtst0mvZ3WtMgMmMeawJVke9qtCVyE',
+                            refreshToken:
+                                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6NDI5ODk4NzEyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0IiwianRpIjoiMTI4In0.bJTClITMvD5NCDt5DjTmxn3DIjFOabEvsCvnK795VXU',
+                        },
+                    },
+                }),
+            );
+            routerSpy = spyOn(component['router'], 'navigate');
+            spyOn(router, 'navigateByUrl');
+        });
 
-            describe('on blur.', () => {
-                it('should handle local error.', async () => {
-                    await harness.setValues({
-                        password: 'Pass',
-                        repeatPassword: 'Password123$',
-                    });
-
-                    const location = TestBed.inject(Location);
-                    expect(
-                        authServiceSpy.updateLoggedInUserPassword,
-                    ).not.toHaveBeenCalled();
-                    const errors = await harness.getErrors();
-                    expect(errors).toEqual({
-                        password: 'O comprimento mínimo permitido é 8.',
-                        repeatPassword: 'As senhas não coincidem.',
-                    });
-                    const values = await harness.getValues();
-                    expect(values).toEqual({
-                        password: 'Pass',
-                        repeatPassword: 'Password123$',
-                    });
-
-                    expect(location.path()).toBe('');
-                    expect(routerSpy).not.toHaveBeenCalled();
+        describe('on blur.', () => {
+            it('should handle local error.', async () => {
+                await harness.setValues({
+                    password: 'Pass',
+                    repeatPassword: 'Password123$',
                 });
 
-                describe('validations.', () => {
-                    describe('password.', () => {
-                        it('should accept valid value.', async () => {
-                            await harness.setValues({
-                                password: 'Pass123$',
-                                repeatPassword: 'Pass123$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({});
-                        });
-
-                        it('should reject empty string.', async () => {
-                            await harness.setValues({
-                                password: '',
-                                repeatPassword: '',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                password: 'O campo é obrigatório.',
-                                repeatPassword: 'O campo é obrigatório.',
-                            });
-                        });
-
-                        it('should reject value shorter than min length.', async () => {
-                            await harness.setValues({
-                                password: 'Pas123$',
-                                repeatPassword: 'Pas123$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                password: 'O comprimento mínimo permitido é 8.',
-                            });
-                        });
-
-                        it('should accept value with the min length.', async () => {
-                            await harness.setValues({
-                                password: 'Pass123$',
-                                repeatPassword: 'Pass123$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({});
-                        });
-
-                        it('should reject value longer than max length.', async () => {
-                            await harness.setValues({
-                                password: 'Password1234$',
-                                repeatPassword: 'Password1234$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                password:
-                                    'O comprimento máximo permitido é 12.',
-                            });
-                        });
-
-                        it('should accept value with the max length.', async () => {
-                            await harness.setValues({
-                                password: 'Password123$',
-                                repeatPassword: 'Password123$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({});
-                        });
-
-                        it('should reject value without uppercase letter.', async () => {
-                            await harness.setValues({
-                                password: 'password123$',
-                                repeatPassword: 'password123$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                password:
-                                    'Deve conter maíscula, minúscula, número e caractere especial.',
-                            });
-                        });
-
-                        it('should reject value without lowercase letter.', async () => {
-                            await harness.setValues({
-                                password: 'PASSWORD123$',
-                                repeatPassword: 'PASSWORD123$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                password:
-                                    'Deve conter maíscula, minúscula, número e caractere especial.',
-                            });
-                        });
-
-                        it('should reject value without digit.', async () => {
-                            await harness.setValues({
-                                password: 'Password$',
-                                repeatPassword: 'Password$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                password:
-                                    'Deve conter maíscula, minúscula, número e caractere especial.',
-                            });
-                        });
-
-                        it('should reject value without special character.', async () => {
-                            await harness.setValues({
-                                password: 'Password123',
-                                repeatPassword: 'Password123',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                password:
-                                    'Deve conter maíscula, minúscula, número e caractere especial.',
-                            });
-                        });
-
-                        it('should reject value with space.', async () => {
-                            await harness.setValues({
-                                password: 'Pass 123$',
-                                repeatPassword: 'Pass 123$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({ password: 'Inválido.' });
-                        });
-                    });
-
-                    describe('repeatPassword.', () => {
-                        it('should accept valid value.', async () => {
-                            await harness.setValues({
-                                password: 'Pass123$',
-                                repeatPassword: 'Pass123$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({});
-                        });
-
-                        it('should reject empty string.', async () => {
-                            await harness.setValues({
-                                password: '',
-                                repeatPassword: '',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                password: 'O campo é obrigatório.',
-                                repeatPassword: 'O campo é obrigatório.',
-                            });
-                        });
-
-                        it("should reject value when passwords don't matches.", async () => {
-                            await harness.setValues({
-                                password: 'Password123$',
-                                repeatPassword: 'Password124$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                repeatPassword: 'As senhas não coincidem.',
-                            });
-                        });
-                    });
+                const location = TestBed.inject(Location);
+                expect(
+                    authServiceSpy.updateLoggedInUserPassword,
+                ).not.toHaveBeenCalled();
+                const errors = await harness.getErrors();
+                expect(errors).toEqual({
+                    password: 'O comprimento mínimo permitido é 8.',
+                    repeatPassword: 'As senhas não coincidem.',
                 });
+                const values = await harness.getValues();
+                expect(values).toEqual({
+                    password: 'Pass',
+                    repeatPassword: 'Password123$',
+                });
+
+                expect(location.path()).toBe('');
+                expect(routerSpy).not.toHaveBeenCalled();
             });
 
-            describe('on submit.', () => {
-                it('should handle local error.', async () => {
-                    const location = TestBed.inject(Location);
-                    await harness.setValues({
-                        password: 'Pass',
-                        repeatPassword: 'Password123$',
-                    });
-                    await harness.clickSaveButton();
+            describe('validations.', () => {
+                describe('password.', () => {
+                    it('should accept valid value.', async () => {
+                        await harness.setValues({
+                            password: 'Pass123$',
+                            repeatPassword: 'Pass123$',
+                        });
 
-                    expect(
-                        authServiceSpy.updateLoggedInUserPassword,
-                    ).not.toHaveBeenCalled();
-                    expect(location.path()).toBe('');
-                    expect(routerSpy).not.toHaveBeenCalled();
-                    const errors = await harness.getErrors();
-                    expect(errors).toEqual({
-                        password: 'O comprimento mínimo permitido é 8.',
-                        repeatPassword: 'As senhas não coincidem.',
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({});
                     });
-                    const values = await harness.getValues();
-                    expect(values).toEqual({
-                        password: 'Pass',
-                        repeatPassword: 'Password123$',
+
+                    it('should reject empty string.', async () => {
+                        await harness.setValues({
+                            password: '',
+                            repeatPassword: '',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            password: 'O campo é obrigatório.',
+                            repeatPassword: 'O campo é obrigatório.',
+                        });
+                    });
+
+                    it('should reject value shorter than min length.', async () => {
+                        await harness.setValues({
+                            password: 'Pas123$',
+                            repeatPassword: 'Pas123$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            password: 'O comprimento mínimo permitido é 8.',
+                        });
+                    });
+
+                    it('should accept value with the min length.', async () => {
+                        await harness.setValues({
+                            password: 'Pass123$',
+                            repeatPassword: 'Pass123$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({});
+                    });
+
+                    it('should reject value longer than max length.', async () => {
+                        await harness.setValues({
+                            password: 'Password1234$',
+                            repeatPassword: 'Password1234$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            password: 'O comprimento máximo permitido é 12.',
+                        });
+                    });
+
+                    it('should accept value with the max length.', async () => {
+                        await harness.setValues({
+                            password: 'Password123$',
+                            repeatPassword: 'Password123$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({});
+                    });
+
+                    it('should reject value without uppercase letter.', async () => {
+                        await harness.setValues({
+                            password: 'password123$',
+                            repeatPassword: 'password123$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            password:
+                                'Deve conter maíscula, minúscula, número e caractere especial.',
+                        });
+                    });
+
+                    it('should reject value without lowercase letter.', async () => {
+                        await harness.setValues({
+                            password: 'PASSWORD123$',
+                            repeatPassword: 'PASSWORD123$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            password:
+                                'Deve conter maíscula, minúscula, número e caractere especial.',
+                        });
+                    });
+
+                    it('should reject value without digit.', async () => {
+                        await harness.setValues({
+                            password: 'Password$',
+                            repeatPassword: 'Password$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            password:
+                                'Deve conter maíscula, minúscula, número e caractere especial.',
+                        });
+                    });
+
+                    it('should reject value without special character.', async () => {
+                        await harness.setValues({
+                            password: 'Password123',
+                            repeatPassword: 'Password123',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            password:
+                                'Deve conter maíscula, minúscula, número e caractere especial.',
+                        });
+                    });
+
+                    it('should reject value with space.', async () => {
+                        await harness.setValues({
+                            password: 'Pass 123$',
+                            repeatPassword: 'Pass 123$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({ password: 'Inválido.' });
+                    });
+                });
+
+                describe('repeatPassword.', () => {
+                    it('should accept valid value.', async () => {
+                        await harness.setValues({
+                            password: 'Pass123$',
+                            repeatPassword: 'Pass123$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({});
+                    });
+
+                    it('should reject empty string.', async () => {
+                        await harness.setValues({
+                            password: '',
+                            repeatPassword: '',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            password: 'O campo é obrigatório.',
+                            repeatPassword: 'O campo é obrigatório.',
+                        });
+                    });
+
+                    it("should reject value when passwords don't matches.", async () => {
+                        await harness.setValues({
+                            password: 'Password123$',
+                            repeatPassword: 'Password124$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            repeatPassword: 'As senhas não coincidem.',
+                        });
                     });
                 });
             });
         });
 
-        describe('remote errors.', () => {
-            let routerSpy: jasmine.Spy<
-                (
-                    commands: readonly any[],
-                    extras?: NavigationExtras,
-                ) => Promise<boolean>
-            >;
+        describe('on submit.', () => {
+            it('should handle local error.', async () => {
+                const location = TestBed.inject(Location);
+                await harness.setValues({
+                    password: 'Pass',
+                    repeatPassword: 'Password123$',
+                });
+                await harness.clickSaveButton();
 
-            beforeEach(() => {
-                routerSpy = spyOn(component['router'], 'navigate');
-                spyOn(router, 'navigateByUrl');
+                expect(
+                    authServiceSpy.updateLoggedInUserPassword,
+                ).not.toHaveBeenCalled();
+                expect(location.path()).toBe('');
+                expect(routerSpy).not.toHaveBeenCalled();
+                const errors = await harness.getErrors();
+                expect(errors).toEqual({
+                    password: 'O comprimento mínimo permitido é 8.',
+                    repeatPassword: 'As senhas não coincidem.',
+                });
+                const values = await harness.getValues();
+                expect(values).toEqual({
+                    password: 'Pass',
+                    repeatPassword: 'Password123$',
+                });
+            });
+        });
+    });
+
+    describe('errors.', () => {
+        describe('loading.', () => {
+            it('should show loading while requesting.', async () => {
+                let subject = new Subject<any>();
+
+                component['formGroup'].setValue({
+                    password: 'Password123$',
+                    repeatPassword: 'Password123$',
+                });
+                authServiceSpy.updateLoggedInUserPassword.and.returnValue(
+                    subject.asObservable(),
+                );
+
+                fixture.detectChanges();
+
+                let progressBarHarness = await harness.getProgressBarHarness();
+                expect(progressBarHarness).toBeNull();
+
+                await harness.clickSaveButton();
+                fixture.detectChanges();
+
+                progressBarHarness = await harness.getProgressBarHarness();
+                expect(progressBarHarness).toBeDefined();
+                expect(progressBarHarness).not.toBeNull();
+
+                subject.next(true);
+                subject.complete();
+                fixture.detectChanges();
+
+                progressBarHarness = await harness.getProgressBarHarness();
+                expect(progressBarHarness).toBeNull();
             });
 
-            it('should handle main remote error.', async () => {
+            it('should stop to show loading after remote error', async () => {
                 const exception: any = new Error('Request failed!');
                 exception.error = {
                     error: ExceptionName.unprocessable_entity,
@@ -570,7 +588,9 @@ describe('UpdateLoggedInUserPasswordComponent.', () => {
                 exception.name = 'HttpErrorResponse';
                 exception.status = HttpStatusCode.UnprocessableEntity;
                 exception.statusText = 'Unprocessable Entity';
-                const location = TestBed.inject(Location);
+
+                fixture.detectChanges();
+
                 authServiceSpy.updateLoggedInUserPassword.and.returnValue(
                     throwError(() => exception),
                 );
@@ -581,69 +601,8 @@ describe('UpdateLoggedInUserPasswordComponent.', () => {
                 await harness.clickSaveButton();
                 fixture.detectChanges();
 
-                expect(
-                    authServiceSpy.updateLoggedInUserPassword,
-                ).toHaveBeenCalledWith({
-                    password: 'Password123$',
-                    repeatPassword: 'Password123$',
-                });
-
-                const errors = await harness.getErrors();
-                expect(errors).toEqual({ main: 'Algo deu errado!' });
-                const values = await harness.getValues();
-                expect(values).toEqual({
-                    password: 'Password123$',
-                    repeatPassword: 'Password123$',
-                });
-
-                expect(location.path()).toBe('');
-                expect(routerSpy).not.toHaveBeenCalled();
-            });
-
-            it('should handle form fields remote errors.', async () => {
-                const exception: any = new Error('Request failed!');
-                exception.error = {
-                    error: ExceptionName.unprocessable_entity,
-                    message: {
-                        password: 'Error 3',
-                        repeatPassword: 'Error 4',
-                    },
-                };
-                exception.message = 'Algo deu errado!';
-                exception.name = 'HttpErrorResponse';
-                exception.status = HttpStatusCode.UnprocessableEntity;
-                exception.statusText = 'Unprocessable Entity';
-                const location = TestBed.inject(Location);
-                authServiceSpy.updateLoggedInUserPassword.and.returnValue(
-                    throwError(() => exception),
-                );
-                await harness.setValues({
-                    password: 'Password123$',
-                    repeatPassword: 'Password123$',
-                });
-                await harness.clickSaveButton();
-                fixture.detectChanges();
-
-                expect(location.path()).toBe('');
-                expect(
-                    authServiceSpy.updateLoggedInUserPassword,
-                ).toHaveBeenCalledWith({
-                    password: 'Password123$',
-                    repeatPassword: 'Password123$',
-                });
-
-                const errors = await harness.getErrors();
-                expect(errors).toEqual({
-                    password: 'Error 3',
-                    repeatPassword: 'Error 4',
-                });
-                const values = await harness.getValues();
-                expect(values).toEqual({
-                    password: 'Password123$',
-                    repeatPassword: 'Password123$',
-                });
-
-                expect(routerSpy).not.toHaveBeenCalled();
+                let progressBarHarness = await harness.getProgressBarHarness();
+                expect(progressBarHarness).toBeNull();
             });
         });
     });

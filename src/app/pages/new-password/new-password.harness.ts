@@ -1,4 +1,5 @@
 import { ComponentHarness } from '@angular/cdk/testing';
+import { MatProgressBarHarness } from '@angular/material/progress-bar/testing';
 import { isEqual } from 'lodash';
 import { AlertHarness } from '../../components/alert/alert.harness';
 import { ButtonHarness } from '../../components/form/components/button/button.harness';
@@ -16,10 +17,12 @@ export class NewPasswordHarness extends ComponentHarness {
     private readonly wrapperChildrenElements = this.locatorForAll(
         ':scope > form > div > *',
     );
+
     private readonly buttonHarnesses = this.locatorForAll(ButtonHarness);
 
     private readonly formChildrenElements =
         this.locatorForAll(':scope > form > *');
+    private progressBarHarness = this.locatorForOptional(MatProgressBarHarness);
 
     private alertHarness = this.locatorForOptional(AlertHarness);
     private passwordFieldHarnesses = this.locatorForAll(PasswordFieldHarness);
@@ -112,6 +115,10 @@ export class NewPasswordHarness extends ComponentHarness {
             ),
         );
         return wrapperChildtagNames;
+    }
+
+    async getProgressBarHarness() {
+        return this.progressBarHarness();
     }
 
     async getAlertHarness() {
