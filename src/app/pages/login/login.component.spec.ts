@@ -564,7 +564,7 @@ describe('LoginComponent.', () => {
         });
 
         it('should handle main remote error.', async () => {
-            const exception: any = new Error('Login failed!');
+            const exception: any = new Error('Request failed!');
             exception.error = {
                 error: ExceptionName.unprocessable_entity,
                 message: 'Algo deu errado!',
@@ -600,7 +600,7 @@ describe('LoginComponent.', () => {
         });
 
         it('should handle form fields remote errors.', async () => {
-            const exception: any = new Error('Login failed!');
+            const exception: any = new Error('Request failed!');
             exception.error = {
                 error: ExceptionName.unprocessable_entity,
                 message: { email: 'Error 1', password: 'Error 2' },
@@ -686,31 +686,6 @@ describe('LoginComponent.', () => {
             fixture.detectChanges();
 
             progressBarHarness = await harness.getProgressBarHarness();
-            expect(progressBarHarness).toBeNull();
-        });
-
-        it('should show stop to show loading after remote error', async () => {
-            const exception: any = new Error('Login failed!');
-            exception.error = {
-                error: ExceptionName.unprocessable_entity,
-                message: 'Algo deu errado!',
-            };
-            exception.message = 'Some error';
-            exception.name = 'HttpErrorResponse';
-            exception.status = HttpStatusCode.UnprocessableEntity;
-            exception.statusText = 'Unprocessable Entity';
-
-            fixture.detectChanges();
-
-            authServiceSpy.login.and.returnValue(throwError(() => exception));
-            await harness.setValues({
-                email: 'john@email.com',
-                password: 'Password123$',
-            });
-            await harness.clickLoginButton();
-            fixture.detectChanges();
-
-            let progressBarHarness = await harness.getProgressBarHarness();
             expect(progressBarHarness).toBeNull();
         });
     });

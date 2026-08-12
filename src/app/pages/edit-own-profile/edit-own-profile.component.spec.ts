@@ -319,7 +319,7 @@ describe('EditOwnProfileComponent.', () => {
         });
 
         it('should handle main remote error.', async () => {
-            const exception: any = new Error('Saving failed!');
+            const exception: any = new Error('Request failed!');
             exception.error = {
                 error: ExceptionName.unprocessable_entity,
                 message: 'Algo deu errado!',
@@ -350,7 +350,7 @@ describe('EditOwnProfileComponent.', () => {
         });
 
         it('should handle form fields remote errors.', async () => {
-            const exception: any = new Error('Saving failed!');
+            const exception: any = new Error('Request failed!');
             exception.error = {
                 error: ExceptionName.unprocessable_entity,
                 message: { name: 'Error 1' },
@@ -431,7 +431,7 @@ describe('EditOwnProfileComponent.', () => {
         });
 
         it('should show stop to show loading after remote error.', async () => {
-            const exception: any = new Error('Saving failed!');
+            const exception: any = new Error('Request failed!');
             exception.error = {
                 error: ExceptionName.unprocessable_entity,
                 message: 'Algo deu errado!',
