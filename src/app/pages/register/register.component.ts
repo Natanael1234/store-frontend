@@ -99,6 +99,9 @@ export class RegisterComponent extends AbstractFormComponent<
         }),
     });
 
+    protected acceptTermsLabel =
+        'Aceito os <a href="/terms-of-use" target="_blank" class="link-modern">termos de uso</a>.'; // TODO: test
+
     protected override navigateAfterComplete(): void {
         this.navigateToLogin();
     }

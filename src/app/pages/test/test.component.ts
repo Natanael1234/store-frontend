@@ -180,6 +180,9 @@ export class TestComponent {
     protected Icon = Icon;
     protected InputMode = InputMode;
 
+    protected acceptTermsLabel =
+        'Aceito os <a href="/terms-of-use" target="_blank" class="link-modern">termos</a>'; // TODO: test
+
     constructor() {}
 
     onTextFieldBlur() {

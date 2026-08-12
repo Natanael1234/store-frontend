@@ -32,7 +32,7 @@ import { isRequired } from '../utils/is-required/is-required';
             [formControl]="control()!"
             [tabindex]="_tabIndex()"
             [appAutofocus]="_autofocus()">
-            {{ label() ?? '' }} {{ _requiredSymbol() }}
+            <span [innerHTML]="_label()"></span>
         </mat-checkbox>
     `,
 })
@@ -49,7 +49,16 @@ export class CheckboxComponent {
     });
 
     protected _isRequired = computed(() => isRequired(this.control()));
-    protected _requiredSymbol = computed(() =>
-        isRequired(this.control()) ? '*' : '',
+    protected _requiredSymbol = computed(
+        () => (isRequired(this.control()) ? '*' : ''), // TODO: não funciona
     );
+
+    protected _label() {
+        const label = this.label() ?? '';
+        const requiredSymbol = this._requiredSymbol();
+        if (requiredSymbol) {
+            return `${label} ${requiredSymbol}`;
+        }
+        return label;
+    }
 }

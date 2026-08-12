@@ -310,7 +310,7 @@
     <div [attr.col]="4">
         <app-checkbox
             id="accept-terms"
-            label="Aceito os termos"
+            [label]="acceptTermsLabel"
             [control]="this.formGroup.controls.acceptTerms"
             [focusable]="true"
             [autofocus]="false" />
