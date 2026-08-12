@@ -688,5 +688,30 @@ describe('LoginComponent.', () => {
             progressBarHarness = await harness.getProgressBarHarness();
             expect(progressBarHarness).toBeNull();
         });
+
+        it('should stop to show loading after remote error', async () => {
+            const exception: any = new Error('Request failed!');
+            exception.error = {
+                error: ExceptionName.unprocessable_entity,
+                message: 'Algo deu errado!',
+            };
+            exception.message = 'Some error';
+            exception.name = 'HttpErrorResponse';
+            exception.status = HttpStatusCode.UnprocessableEntity;
+            exception.statusText = 'Unprocessable Entity';
+
+            fixture.detectChanges();
+
+            authServiceSpy.login.and.returnValue(throwError(() => exception));
+            await harness.setValues({
+                email: 'john@example.com',
+                password: 'Password123$',
+            });
+            await harness.clickLoginButton();
+            fixture.detectChanges();
+
+            let progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeNull();
+        });
     });
 });
