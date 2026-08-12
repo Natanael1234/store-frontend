@@ -8,7 +8,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { By } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { NavigationExtras, provideRouter, Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { AlertComponent } from '../../components/alert/alert.component';
 import { ButtonComponent } from '../../components/form/components/button/button.component';
 import { ButtonAppearance } from '../../components/form/components/button/enum/appearance/button-appearance.enum';
@@ -17,11 +17,12 @@ import { TextFormat } from '../../components/form/enums/text-format/text-format.
 import { UserConfigs } from '../../configs/user/user.configs';
 import { ExceptionName } from '../../enums/exception-names/exception-text.enum';
 import { AuthService } from '../../services/auth/auth.service';
+import { Role } from '../../services/user/dtos/role/role.enum';
 import { HomeComponent } from '../home/home.component';
 import { EditOwnProfileComponent } from './edit-own-profile.component';
 import { EditOwnProfileHarness } from './edit-own-profile.harness';
 
-describe('EditOwnProfileComponent', () => {
+describe('EditOwnProfileComponent.', () => {
     let fixture: ComponentFixture<EditOwnProfileComponent>;
     let component: EditOwnProfileComponent;
     let authServiceSpy: jasmine.SpyObj<AuthService>;
@@ -99,7 +100,7 @@ describe('EditOwnProfileComponent', () => {
         );
     });
 
-    it('should create', async () => {
+    it('should create.', async () => {
         expect(component).toBeTruthy();
 
         const state = await harness.getState();
@@ -156,7 +157,7 @@ describe('EditOwnProfileComponent', () => {
         expect(cancelButton.queryParamsHandling()).toBeUndefined();
     });
 
-    it('should go to home page', async () => {
+    it('should go to home page.', async () => {
         const location = TestBed.inject(Location);
         const routerSpy = spyOn(component['router'], 'navigate');
 
@@ -177,218 +178,280 @@ describe('EditOwnProfileComponent', () => {
         expect(errors).toEqual({});
     });
 
-    describe('saving request', () => {
-        it("should sucessfully call service's editOwnProfile method on submit", async () => {
-            const location = TestBed.inject(Location);
-            const routerSpy = spyOn(component['router'], 'navigate');
-            component['formGroup'].setValue({ name: 'John Williams' });
-            authServiceSpy.editOwnProfile.and.returnValue(of(true));
+    it("should sucessfully call service's editOwnProfile method on submit.", async () => {
+        const location = TestBed.inject(Location);
+        const routerSpy = spyOn(component['router'], 'navigate');
+        component['formGroup'].setValue({ name: 'John Williams' });
+        authServiceSpy.editOwnProfile.and.returnValue(of(true));
 
-            await harness.clickSaveButton();
-            expect(location.path()).toBe('');
-            expect(authServiceSpy.editOwnProfile).toHaveBeenCalledOnceWith({
-                name: 'John Williams',
+        await harness.clickSaveButton();
+        expect(location.path()).toBe('');
+        expect(authServiceSpy.editOwnProfile).toHaveBeenCalledOnceWith({
+            name: 'John Williams',
+        });
+
+        const values = await harness.getValues();
+        expect(values).toEqual({ name: '' });
+
+        const errors = await harness.getErrors();
+        expect(errors).toEqual({});
+
+        expect(routerSpy).toHaveBeenCalledWith(['/']);
+    });
+
+    describe('local errors.', () => {
+        let routerSpy: jasmine.Spy<
+            (
+                commands: readonly any[],
+                extras?: NavigationExtras,
+            ) => Promise<boolean>
+        >;
+
+        beforeEach(() => {
+            authServiceSpy.editOwnProfile.and.returnValue(of(true));
+            routerSpy = spyOn(component['router'], 'navigate');
+            spyOn(router, 'navigateByUrl');
+        });
+
+        describe('on blur.', () => {
+            it('should handle local error.', async () => {
+                await harness.setValues({ name: 'J' });
+
+                const location = TestBed.inject(Location);
+                expect(authServiceSpy.editOwnProfile).not.toHaveBeenCalled();
+                const errors = await harness.getErrors();
+                expect(errors).toEqual({
+                    name: 'O comprimento mínimo permitido é 6.',
+                });
+                const values = await harness.getValues();
+                expect(values).toEqual({ name: 'J' });
+
+                expect(location.path()).toBe('');
+                expect(routerSpy).not.toHaveBeenCalled();
             });
 
-            const values = await harness.getValues();
-            expect(values).toEqual({ name: '' });
+            describe('validations.', () => {
+                describe('name.', () => {
+                    it('should reject empty string', async () => {
+                        await harness.setValues({
+                            name: undefined as unknown as string,
+                        });
 
-            const errors = await harness.getErrors();
-            expect(errors).toEqual({});
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            name: 'O campo é obrigatório.',
+                        });
+                    });
 
-            expect(routerSpy).toHaveBeenCalledWith(['/']);
+                    it('should accept name with min length', async () => {
+                        await harness.setValues({
+                            name: 'x'.repeat(UserConfigs.NAME_MIN_LENGTH),
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({});
+                    });
+
+                    it('should reject name shorter than min length', async () => {
+                        await harness.setValues({
+                            name: 'x'.repeat(UserConfigs.NAME_MIN_LENGTH - 1),
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            name: 'O comprimento mínimo permitido é 6.',
+                        });
+                    });
+
+                    it('should accept name with max length', async () => {
+                        await harness.setValues({
+                            name: 'X'.repeat(UserConfigs.NAME_MAX_LENGTH),
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({});
+                    });
+
+                    it('should reject name longer than max length', async () => {
+                        await harness.setValues({
+                            name: 'X'.repeat(UserConfigs.NAME_MAX_LENGTH + 1),
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            name: 'O comprimento máximo permitido é 60.',
+                        });
+                    });
+                });
+            });
+        });
+
+        describe('on submit.', () => {
+            it('should handle local error.', async () => {
+                const location = TestBed.inject(Location);
+                await harness.setValues({ name: 'J' });
+                await harness.clickSaveButton();
+
+                expect(authServiceSpy.editOwnProfile).not.toHaveBeenCalled();
+                expect(location.path()).toBe('');
+                expect(routerSpy).not.toHaveBeenCalled();
+                const errors = await harness.getErrors();
+                expect(errors).toEqual({
+                    name: 'O comprimento mínimo permitido é 6.',
+                });
+                const values = await harness.getValues();
+                expect(values).toEqual({ name: 'J' });
+            });
         });
     });
 
-    describe('errors', () => {
-        describe('local errors', () => {
-            let routerSpy: jasmine.Spy<
-                (
-                    commands: readonly any[],
-                    extras?: NavigationExtras,
-                ) => Promise<boolean>
-            >;
+    describe('remote errors.', () => {
+        let routerSpy: jasmine.Spy<
+            (
+                commands: readonly any[],
+                extras?: NavigationExtras,
+            ) => Promise<boolean>
+        >;
 
-            beforeEach(() => {
-                authServiceSpy.editOwnProfile.and.returnValue(of(true));
-                routerSpy = spyOn(component['router'], 'navigate');
-                spyOn(router, 'navigateByUrl');
-            });
-
-            describe('on blur', () => {
-                it('should handle local error during name input blur.', async () => {
-                    await harness.setValues({ name: 'J' });
-
-                    const location = TestBed.inject(Location);
-                    expect(
-                        authServiceSpy.editOwnProfile,
-                    ).not.toHaveBeenCalled();
-                    const errors = await harness.getErrors();
-                    expect(errors).toEqual({
-                        name: 'O comprimento mínimo permitido é 6.',
-                    });
-                    const values = await harness.getValues();
-                    expect(values).toEqual({ name: 'J' });
-
-                    expect(location.path()).toBe('');
-                    expect(routerSpy).not.toHaveBeenCalled();
-                });
-
-                describe('validations.', () => {
-                    describe('name', () => {
-                        it('should reject empty string', async () => {
-                            await harness.setValues({
-                                name: undefined as unknown as string,
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                name: 'O campo é obrigatório.',
-                            });
-                        });
-
-                        it('should accept name with min length', async () => {
-                            await harness.setValues({
-                                name: 'x'.repeat(UserConfigs.NAME_MIN_LENGTH),
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({});
-                        });
-
-                        it('should reject name shorter than min length', async () => {
-                            await harness.setValues({
-                                name: 'x'.repeat(
-                                    UserConfigs.NAME_MIN_LENGTH - 1,
-                                ),
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                name: 'O comprimento mínimo permitido é 6.',
-                            });
-                        });
-
-                        it('should accept name with max length', async () => {
-                            await harness.setValues({
-                                name: 'X'.repeat(UserConfigs.NAME_MAX_LENGTH),
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({});
-                        });
-
-                        it('should reject name longer than max length', async () => {
-                            await harness.setValues({
-                                name: 'X'.repeat(
-                                    UserConfigs.NAME_MAX_LENGTH + 1,
-                                ),
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                name: 'O comprimento máximo permitido é 60.',
-                            });
-                        });
-                    });
-                });
-            });
-
-            describe('on submit.', () => {
-                it('should handle local error during form submission.', async () => {
-                    const location = TestBed.inject(Location);
-                    await harness.setValues({ name: 'J' });
-                    await harness.clickSaveButton();
-
-                    expect(
-                        authServiceSpy.editOwnProfile,
-                    ).not.toHaveBeenCalled();
-                    expect(location.path()).toBe('');
-                    expect(routerSpy).not.toHaveBeenCalled();
-                    const errors = await harness.getErrors();
-                    expect(errors).toEqual({
-                        name: 'O comprimento mínimo permitido é 6.',
-                    });
-                    const values = await harness.getValues();
-                    expect(values).toEqual({ name: 'J' });
-                });
-            });
+        beforeEach(() => {
+            routerSpy = spyOn(component['router'], 'navigate');
+            spyOn(router, 'navigateByUrl');
         });
 
-        describe('remote errors', () => {
-            let routerSpy: jasmine.Spy<
-                (
-                    commands: readonly any[],
-                    extras?: NavigationExtras,
-                ) => Promise<boolean>
-            >;
+        it('should handle main remote error.', async () => {
+            const exception: any = new Error('Saving failed!');
+            exception.error = {
+                error: ExceptionName.unprocessable_entity,
+                message: 'Algo deu errado!',
+            };
+            exception.message = 'Some error';
+            exception.name = 'HttpErrorResponse';
+            exception.status = HttpStatusCode.UnprocessableEntity;
+            exception.statusText = 'Unprocessable Entity';
+            const location = TestBed.inject(Location);
+            authServiceSpy.editOwnProfile.and.returnValue(
+                throwError(() => exception),
+            );
+            await harness.setValues({ name: 'John Williams' });
+            await harness.clickSaveButton();
+            fixture.detectChanges();
 
-            beforeEach(() => {
-                routerSpy = spyOn(component['router'], 'navigate');
-                spyOn(router, 'navigateByUrl');
+            expect(authServiceSpy.editOwnProfile).toHaveBeenCalledWith({
+                name: 'John Williams',
             });
 
-            it('should handle main remote error during saving', async () => {
-                const exception: any = new Error('Saving failed!');
-                exception.error = {
-                    error: ExceptionName.unprocessable_entity,
-                    message: 'Algo deu errado!',
-                };
-                exception.message = 'Some error';
-                exception.name = 'HttpErrorResponse';
-                exception.status = HttpStatusCode.UnprocessableEntity;
-                exception.statusText = 'Unprocessable Entity';
-                const location = TestBed.inject(Location);
-                authServiceSpy.editOwnProfile.and.returnValue(
-                    throwError(() => exception),
-                );
-                await harness.setValues({ name: 'John Williams' });
-                await harness.clickSaveButton();
-                fixture.detectChanges();
+            const errors = await harness.getErrors();
+            expect(errors).toEqual({ main: 'Algo deu errado!' });
+            const values = await harness.getValues();
+            expect(values).toEqual({ name: 'John Williams' });
 
-                expect(authServiceSpy.editOwnProfile).toHaveBeenCalledWith({
-                    name: 'John Williams',
-                });
+            expect(location.path()).toBe('');
+            expect(routerSpy).not.toHaveBeenCalled();
+        });
 
-                const errors = await harness.getErrors();
-                expect(errors).toEqual({ main: 'Algo deu errado!' });
-                const values = await harness.getValues();
-                expect(values).toEqual({ name: 'John Williams' });
+        it('should handle form fields remote errors.', async () => {
+            const exception: any = new Error('Saving failed!');
+            exception.error = {
+                error: ExceptionName.unprocessable_entity,
+                message: { name: 'Error 1' },
+            };
+            exception.message = 'Algo deu errado!';
+            exception.name = 'HttpErrorResponse';
+            exception.status = HttpStatusCode.UnprocessableEntity;
+            exception.statusText = 'Unprocessable Entity';
+            const location = TestBed.inject(Location);
+            authServiceSpy.editOwnProfile.and.returnValue(
+                throwError(() => exception),
+            );
+            await harness.setValues({ name: 'John Williams' });
+            await harness.clickSaveButton();
+            fixture.detectChanges();
 
-                expect(location.path()).toBe('');
-                expect(routerSpy).not.toHaveBeenCalled();
+            expect(location.path()).toBe('');
+            expect(authServiceSpy.editOwnProfile).toHaveBeenCalledWith({
+                name: 'John Williams',
             });
 
-            it('should handle form fields remote errors during saving', async () => {
-                const exception: any = new Error('Saving failed!');
-                exception.error = {
-                    error: ExceptionName.unprocessable_entity,
-                    message: { name: 'Error 1' },
-                };
-                exception.message = 'Algo deu errado!';
-                exception.name = 'HttpErrorResponse';
-                exception.status = HttpStatusCode.UnprocessableEntity;
-                exception.statusText = 'Unprocessable Entity';
-                const location = TestBed.inject(Location);
-                authServiceSpy.editOwnProfile.and.returnValue(
-                    throwError(() => exception),
-                );
-                await harness.setValues({ name: 'John Williams' });
-                await harness.clickSaveButton();
-                fixture.detectChanges();
+            const errors = await harness.getErrors();
+            expect(errors).toEqual({ name: 'Error 1' });
+            const values = await harness.getValues();
+            expect(values).toEqual({ name: 'John Williams' });
 
-                expect(location.path()).toBe('');
-                expect(authServiceSpy.editOwnProfile).toHaveBeenCalledWith({
-                    name: 'John Williams',
-                });
+            expect(routerSpy).not.toHaveBeenCalled();
+        });
+    });
 
-                const errors = await harness.getErrors();
-                expect(errors).toEqual({ name: 'Error 1' });
-                const values = await harness.getValues();
-                expect(values).toEqual({ name: 'John Williams' });
+    describe('loading.', () => {
+        it('should show loading while requesting.', async () => {
+            let subject = new Subject<any>();
 
-                expect(routerSpy).not.toHaveBeenCalled();
+            component['formGroup'].setValue({ name: 'John Williams' });
+            authServiceSpy.editOwnProfile.and.returnValue(
+                subject.asObservable(),
+            );
+
+            fixture.detectChanges();
+
+            let progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeNull();
+
+            await harness.clickSaveButton();
+            fixture.detectChanges();
+
+            progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeDefined();
+            expect(progressBarHarness).not.toBeNull();
+
+            subject.next({
+                status: 'success',
+                data: {
+                    user: {
+                        id: '891db31e-dfb5-42ed-b912-48b98463b004',
+                        name: 'John Williams',
+                        email: 'john@example.com',
+                        roles: [Role.user],
+                        active: true,
+                        created: '2024-02-03T19:05:21.689Z',
+                        updated: '2024-02-03T19:05:21.689Z',
+                        deletedAt: null,
+                    },
+                    payload: {
+                        type: 'bearer',
+                        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6MTcwNzA3MzUyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0In0.LaW-Z0DkU5ZheRtst0mvZ3WtMgMmMeawJVke9qtCVyE',
+                        refreshToken:
+                            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6NDI5ODk4NzEyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0IiwianRpIjoiMTI4In0.bJTClITMvD5NCDt5DjTmxn3DIjFOabEvsCvnK795VXU',
+                    },
+                },
             });
+            subject.complete();
+            fixture.detectChanges();
+
+            progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeNull();
+        });
+
+        it('should show stop to show loading after remote error.', async () => {
+            const exception: any = new Error('Saving failed!');
+            exception.error = {
+                error: ExceptionName.unprocessable_entity,
+                message: 'Algo deu errado!',
+            };
+            exception.message = 'Some error';
+            exception.name = 'HttpErrorResponse';
+            exception.status = HttpStatusCode.UnprocessableEntity;
+            exception.statusText = 'Unprocessable Entity';
+
+            fixture.detectChanges();
+
+            authServiceSpy.editOwnProfile.and.returnValue(
+                throwError(() => exception),
+            );
+            await harness.setValues({ name: 'John Williams' });
+            await harness.clickSaveButton();
+            fixture.detectChanges();
+
+            let progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeNull();
         });
     });
 });

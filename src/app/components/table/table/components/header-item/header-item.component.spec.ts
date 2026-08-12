@@ -7,7 +7,7 @@ import { PointerType } from '../../../../../enums/pointer-type/pointer-type.enum
 import { HeaderItemComponent } from './header-item.component';
 import { _testHeaderItemComponent } from './test/fn/header-item.test';
 
-describe('HeaderItemComponent', () => {
+describe('HeaderItemComponent.', () => {
     let component: HeaderItemComponent;
     let fixture: ComponentFixture<HeaderItemComponent>;
 

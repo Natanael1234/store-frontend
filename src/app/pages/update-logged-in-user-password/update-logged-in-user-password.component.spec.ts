@@ -23,7 +23,7 @@ import { RegisterComponent } from '../register/register.component';
 import { UpdateLoggedInUserPasswordComponent } from './update-logged-in-user-password.component';
 import { UpdateLoggedInUserPasswordHarness } from './update-logged-in-user-password.harness';
 
-describe('UpdateLoggedInUserPasswordComponent', () => {
+describe('UpdateLoggedInUserPasswordComponent.', () => {
     let fixture: ComponentFixture<UpdateLoggedInUserPasswordComponent>;
     let component: UpdateLoggedInUserPasswordComponent;
     let authServiceSpy: jasmine.SpyObj<AuthService>;
@@ -111,7 +111,7 @@ describe('UpdateLoggedInUserPasswordComponent', () => {
         );
     });
 
-    it('should create', async () => {
+    it('should create.', async () => {
         expect(component).toBeTruthy();
 
         const state = await harness.getState();
@@ -192,7 +192,7 @@ describe('UpdateLoggedInUserPasswordComponent', () => {
         expect(cancelButton.queryParamsHandling()).toBeUndefined();
     });
 
-    it('should go to home page', async () => {
+    it('should go to home page.', async () => {
         const location = TestBed.inject(Location);
         const routerSpy = spyOn(component['router'], 'navigate');
 
@@ -235,59 +235,57 @@ describe('UpdateLoggedInUserPasswordComponent', () => {
         expect(errors).toEqual({});
     });
 
-    describe('registration request', () => {
-        it("should sucessfully call service's updateLoggedInUserPassword method on submit", async () => {
-            const location = TestBed.inject(Location);
-            const routerSpy = spyOn(component['router'], 'navigate');
-            component['formGroup'].setValue({
-                password: 'Password123$',
-                repeatPassword: 'Password123$',
-            });
-            authServiceSpy.updateLoggedInUserPassword.and.returnValue(
-                of({
-                    status: 'success',
-                    data: {
-                        user: {
-                            id: '891db31e-dfb5-42ed-b912-48b98463b004',
-                            name: 'John Williams',
-                            email: 'john@example.com',
-                            roles: [Role.user],
-                            active: true,
-                            created: '2024-02-03T19:05:21.689Z',
-                            updated: '2024-02-03T19:05:21.689Z',
-                            deletedAt: null,
-                        },
-                        payload: {
-                            type: 'bearer',
-                            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6MTcwNzA3MzUyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0In0.LaW-Z0DkU5ZheRtst0mvZ3WtMgMmMeawJVke9qtCVyE',
-                            refreshToken:
-                                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6NDI5ODk4NzEyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0IiwianRpIjoiMTI4In0.bJTClITMvD5NCDt5DjTmxn3DIjFOabEvsCvnK795VXU',
-                        },
-                    },
-                }),
-            );
-
-            await harness.clickSaveButton();
-            expect(location.path()).toBe('');
-            expect(
-                authServiceSpy.updateLoggedInUserPassword,
-            ).toHaveBeenCalledOnceWith({
-                password: 'Password123$',
-                repeatPassword: 'Password123$',
-            });
-
-            const values = await harness.getValues();
-            expect(values).toEqual({ password: '', repeatPassword: '' });
-
-            const errors = await harness.getErrors();
-            expect(errors).toEqual({});
-
-            expect(routerSpy).toHaveBeenCalledWith(['/']);
+    it("should sucessfully call service's updateLoggedInUserPassword method on submit.", async () => {
+        const location = TestBed.inject(Location);
+        const routerSpy = spyOn(component['router'], 'navigate');
+        component['formGroup'].setValue({
+            password: 'Password123$',
+            repeatPassword: 'Password123$',
         });
+        authServiceSpy.updateLoggedInUserPassword.and.returnValue(
+            of({
+                status: 'success',
+                data: {
+                    user: {
+                        id: '891db31e-dfb5-42ed-b912-48b98463b004',
+                        name: 'John Williams',
+                        email: 'john@example.com',
+                        roles: [Role.user],
+                        active: true,
+                        created: '2024-02-03T19:05:21.689Z',
+                        updated: '2024-02-03T19:05:21.689Z',
+                        deletedAt: null,
+                    },
+                    payload: {
+                        type: 'bearer',
+                        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6MTcwNzA3MzUyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0In0.LaW-Z0DkU5ZheRtst0mvZ3WtMgMmMeawJVke9qtCVyE',
+                        refreshToken:
+                            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6NDI5ODk4NzEyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0IiwianRpIjoiMTI4In0.bJTClITMvD5NCDt5DjTmxn3DIjFOabEvsCvnK795VXU',
+                    },
+                },
+            }),
+        );
+
+        await harness.clickSaveButton();
+        expect(location.path()).toBe('');
+        expect(
+            authServiceSpy.updateLoggedInUserPassword,
+        ).toHaveBeenCalledOnceWith({
+            password: 'Password123$',
+            repeatPassword: 'Password123$',
+        });
+
+        const values = await harness.getValues();
+        expect(values).toEqual({ password: '', repeatPassword: '' });
+
+        const errors = await harness.getErrors();
+        expect(errors).toEqual({});
+
+        expect(routerSpy).toHaveBeenCalledWith(['/']);
     });
 
-    describe('errors', () => {
-        describe('local errors', () => {
+    describe('errors.', () => {
+        describe('local errors.', () => {
             let routerSpy: jasmine.Spy<
                 (
                     commands: readonly any[],
@@ -323,8 +321,8 @@ describe('UpdateLoggedInUserPasswordComponent', () => {
                 spyOn(router, 'navigateByUrl');
             });
 
-            describe('on blur', () => {
-                it('should handle local error during name input blur.', async () => {
+            describe('on blur.', () => {
+                it('should handle local error.', async () => {
                     await harness.setValues({
                         password: 'Pass',
                         repeatPassword: 'Password123$',
@@ -350,7 +348,7 @@ describe('UpdateLoggedInUserPasswordComponent', () => {
                 });
 
                 describe('validations.', () => {
-                    describe('password', () => {
+                    describe('password.', () => {
                         it('should accept valid value.', async () => {
                             await harness.setValues({
                                 password: 'Pass123$',
@@ -482,7 +480,7 @@ describe('UpdateLoggedInUserPasswordComponent', () => {
                         });
                     });
 
-                    describe('repeatPassword', () => {
+                    describe('repeatPassword.', () => {
                         it('should accept valid value.', async () => {
                             await harness.setValues({
                                 password: 'Pass123$',
@@ -522,7 +520,7 @@ describe('UpdateLoggedInUserPasswordComponent', () => {
             });
 
             describe('on submit.', () => {
-                it('should handle local error during form submission.', async () => {
+                it('should handle local error.', async () => {
                     const location = TestBed.inject(Location);
                     await harness.setValues({
                         password: 'Pass',
@@ -549,7 +547,7 @@ describe('UpdateLoggedInUserPasswordComponent', () => {
             });
         });
 
-        describe('remote errors', () => {
+        describe('remote errors.', () => {
             let routerSpy: jasmine.Spy<
                 (
                     commands: readonly any[],
@@ -562,8 +560,8 @@ describe('UpdateLoggedInUserPasswordComponent', () => {
                 spyOn(router, 'navigateByUrl');
             });
 
-            it('should handle main remote error during registration', async () => {
-                const exception: any = new Error('Registration failed!');
+            it('should handle main remote error.', async () => {
+                const exception: any = new Error('Request failed!');
                 exception.error = {
                     error: ExceptionName.unprocessable_entity,
                     message: 'Algo deu errado!',
@@ -602,8 +600,8 @@ describe('UpdateLoggedInUserPasswordComponent', () => {
                 expect(routerSpy).not.toHaveBeenCalled();
             });
 
-            it('should handle form fields remote errors during registration', async () => {
-                const exception: any = new Error('Registration failed!');
+            it('should handle form fields remote errors.', async () => {
+                const exception: any = new Error('Request failed!');
                 exception.error = {
                     error: ExceptionName.unprocessable_entity,
                     message: {

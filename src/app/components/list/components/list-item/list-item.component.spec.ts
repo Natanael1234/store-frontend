@@ -6,7 +6,7 @@ import { ListItemComponent } from './list-item.component';
 import { _testListItem } from './test/fn/list-item.test';
 import { _testSetComponentData } from './test/fn/set-list-item.test';
 
-describe('ListItemComponent', () => {
+describe('ListItemComponent.', () => {
     let component: ListItemComponent;
     let fixture: ComponentFixture<ListItemComponent>;
 

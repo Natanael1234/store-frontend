@@ -7,7 +7,7 @@ import { By } from '@angular/platform-browser';
 import { RowItemComponent } from './row-item.component';
 
 // TODO: test
-describe('IconRowItemComponent', () => {
+describe('IconRowItemComponent.', () => {
     let component: RowItemComponent;
     let fixture: ComponentFixture<RowItemComponent>;
     let overlayContainer: OverlayContainer;

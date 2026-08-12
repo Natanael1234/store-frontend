@@ -25,7 +25,7 @@ import { RegisterComponent } from '../register/register.component';
 import { LoginComponent } from './login.component';
 import { LoginHarness } from './login.harness';
 
-describe('LoginComponent', () => {
+describe('LoginComponent.', () => {
     let fixture: ComponentFixture<LoginComponent>;
     let component: LoginComponent;
     let authServiceSpy: jasmine.SpyObj<AuthService>;
@@ -114,7 +114,7 @@ describe('LoginComponent', () => {
         );
     });
 
-    it('should create', async () => {
+    it('should create.', async () => {
         expect(component).toBeTruthy();
 
         const state = await harness.getState();
@@ -196,7 +196,7 @@ describe('LoginComponent', () => {
         expect(registerButton.queryParamsHandling()).toBeUndefined();
     });
 
-    it('should go to register page', async () => {
+    it('should go to register page.', async () => {
         const location = TestBed.inject(Location);
         const routerSpy = spyOn(component['router'], 'navigate');
 
@@ -236,15 +236,62 @@ describe('LoginComponent', () => {
         expect(errors).toEqual({});
     });
 
-    describe('login request', () => {
-        it("should sucessfully call service's login method on submit", async () => {
-            const location = TestBed.inject(Location);
+    it("should sucessfully call service's login method on submit.", async () => {
+        const location = TestBed.inject(Location);
 
-            const routerSpy = spyOn(component['router'], 'navigate');
-            component['formGroup'].setValue({
-                email: 'john@example.com',
-                password: 'Password123$',
-            });
+        const routerSpy = spyOn(component['router'], 'navigate');
+        component['formGroup'].setValue({
+            email: 'john@example.com',
+            password: 'Password123$',
+        });
+        authServiceSpy.login.and.returnValue(
+            of({
+                status: 'success',
+                data: {
+                    user: {
+                        id: '891db31e-dfb5-42ed-b912-48b98463b004',
+                        name: 'John Williams',
+                        email: 'john@example.com',
+                        roles: [Role.user],
+                        active: true,
+                        created: '2024-02-03T19:05:21.689Z',
+                        updated: '2024-02-03T19:05:21.689Z',
+                        deletedAt: null,
+                    },
+                    payload: {
+                        type: 'bearer',
+                        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6MTcwNzA3MzUyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0In0.LaW-Z0DkU5ZheRtst0mvZ3WtMgMmMeawJVke9qtCVyE',
+                        refreshToken:
+                            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6NDI5ODk4NzEyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0IiwianRpIjoiMTI4In0.bJTClITMvD5NCDt5DjTmxn3DIjFOabEvsCvnK795VXU',
+                    },
+                },
+            }),
+        );
+        await harness.clickLoginButton();
+        expect(location.path()).toBe('');
+        expect(authServiceSpy.login).toHaveBeenCalledOnceWith({
+            email: 'john@example.com',
+            password: 'Password123$',
+        });
+
+        const values = await harness.getValues();
+        expect(values).toEqual({ email: '', password: '' });
+
+        const errors = await harness.getErrors();
+        expect(errors).toEqual({});
+
+        expect(routerSpy).toHaveBeenCalledWith(['/']);
+    });
+
+    describe('local errors.', () => {
+        let routerSpy: jasmine.Spy<
+            (
+                commands: readonly any[],
+                extras?: NavigationExtras,
+            ) => Promise<boolean>
+        >;
+
+        beforeEach(() => {
             authServiceSpy.login.and.returnValue(
                 of({
                     status: 'success',
@@ -268,388 +315,331 @@ describe('LoginComponent', () => {
                     },
                 }),
             );
+            routerSpy = spyOn(component['router'], 'navigate');
+            spyOn(router, 'navigateByUrl');
+        });
+
+        describe('on blur.', () => {
+            it('should handle local error.', async () => {
+                await harness.setValues({
+                    email: 'john@',
+                    password: 'Pass',
+                });
+
+                const location = TestBed.inject(Location);
+                expect(authServiceSpy.login).not.toHaveBeenCalled();
+                const errors = await harness.getErrors();
+                expect(errors).toEqual({
+                    email: 'E-mail inválido.',
+                    password: 'O comprimento mínimo permitido é 8.',
+                });
+                const values = await harness.getValues();
+                expect(values).toEqual({
+                    email: 'john@',
+                    password: 'Pass',
+                });
+
+                expect(location.path()).toBe('');
+                expect(routerSpy).not.toHaveBeenCalled();
+            });
+
+            describe('validations.', () => {
+                describe('email', () => {
+                    it('should reject empty string.', async () => {
+                        await harness.setValues({
+                            email: undefined as unknown as string,
+                            password: 'Password123$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            email: 'O campo é obrigatório.',
+                        });
+                    });
+
+                    it('should reject email with invalid format.', async () => {
+                        await harness.setValues({
+                            email: '@email.com',
+                            password: 'Password123$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            email: 'E-mail inválido.',
+                        });
+                    });
+
+                    it('should accept email with min length.', async () => {
+                        await harness.setValues({
+                            email: 'w@x.com', // TODO: deveria aceitar w@x.c?
+                            password: 'Password123$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({});
+                    });
+
+                    it('should accept name with max length.', async () => {
+                        await harness.setValues({
+                            email:
+                                'X'.repeat(UserConfigs.NAME_MAX_LENGTH - 4) +
+                                '@x.c',
+                            password: 'Password123$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({});
+                    });
+                });
+
+                describe('password', () => {
+                    it('should accept valid value.', async () => {
+                        await harness.setValues({
+                            email: 'user@email.com',
+                            password: 'Pass123$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({});
+                    });
+
+                    it('should reject empty string.', async () => {
+                        await harness.setValues({
+                            email: 'user@email.com',
+                            password: '',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            password: 'O campo é obrigatório.',
+                        });
+                    });
+
+                    it('should reject value shorter than min length.', async () => {
+                        await harness.setValues({
+                            email: 'user@email.com',
+                            password: 'Pas123$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            password: 'O comprimento mínimo permitido é 8.',
+                        });
+                    });
+
+                    it('should accept value with the min length.', async () => {
+                        await harness.setValues({
+                            email: 'user@email.com',
+                            password: 'Pass123$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({});
+                    });
+
+                    it('should reject value longer than max length.', async () => {
+                        await harness.setValues({
+                            email: 'user@email.com',
+                            password: 'Password1234$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            password: 'O comprimento máximo permitido é 12.',
+                        });
+                    });
+
+                    it('should accept value with the max length.', async () => {
+                        await harness.setValues({
+                            email: 'user@email.com',
+                            password: 'Password123$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({});
+                    });
+
+                    it('should reject value without uppercase letter.', async () => {
+                        await harness.setValues({
+                            email: 'user@email.com',
+                            password: 'password123$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            password:
+                                'Deve conter maíscula, minúscula, número e caractere especial.',
+                        });
+                    });
+
+                    it('should reject value without lowercase letter.', async () => {
+                        await harness.setValues({
+                            email: 'user@email.com',
+                            password: 'PASSWORD123$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            password:
+                                'Deve conter maíscula, minúscula, número e caractere especial.',
+                        });
+                    });
+
+                    it('should reject value without digit.', async () => {
+                        await harness.setValues({
+                            email: 'user@email.com',
+                            password: 'Password$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            password:
+                                'Deve conter maíscula, minúscula, número e caractere especial.',
+                        });
+                    });
+
+                    it('should reject value without special character.', async () => {
+                        await harness.setValues({
+                            email: 'user@email.com',
+                            password: 'Password123',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            password:
+                                'Deve conter maíscula, minúscula, número e caractere especial.',
+                        });
+                    });
+
+                    it('should reject value with space.', async () => {
+                        await harness.setValues({
+                            email: 'user@email.com',
+                            password: 'Pass 123$',
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({ password: 'Inválido.' });
+                    });
+                });
+            });
+        });
+
+        describe('on submit.', () => {
+            it('should handle local error.', async () => {
+                const location = TestBed.inject(Location);
+                await harness.setValues({
+                    email: 'john@',
+                    password: 'Pass',
+                });
+                await harness.clickLoginButton();
+
+                expect(authServiceSpy.login).not.toHaveBeenCalled();
+                expect(location.path()).toBe('');
+                expect(routerSpy).not.toHaveBeenCalled();
+                const errors = await harness.getErrors();
+                expect(errors).toEqual({
+                    email: 'E-mail inválido.',
+                    password: 'O comprimento mínimo permitido é 8.',
+                });
+                const values = await harness.getValues();
+                expect(values).toEqual({
+                    email: 'john@',
+                    password: 'Pass',
+                });
+            });
+        });
+    });
+
+    describe('remote errors.', () => {
+        let routerSpy: jasmine.Spy<
+            (
+                commands: readonly any[],
+                extras?: NavigationExtras,
+            ) => Promise<boolean>
+        >;
+
+        beforeEach(() => {
+            routerSpy = spyOn(component['router'], 'navigate');
+            spyOn(router, 'navigateByUrl');
+        });
+
+        it('should handle main remote error.', async () => {
+            const exception: any = new Error('Login failed!');
+            exception.error = {
+                error: ExceptionName.unprocessable_entity,
+                message: 'Algo deu errado!',
+            };
+            exception.message = 'Some error';
+            exception.name = 'HttpErrorResponse';
+            exception.status = HttpStatusCode.UnprocessableEntity;
+            exception.statusText = 'Unprocessable Entity';
+            const location = TestBed.inject(Location);
+            authServiceSpy.login.and.returnValue(throwError(() => exception));
+            await harness.setValues({
+                email: 'john@email.com',
+                password: 'Password123$',
+            });
             await harness.clickLoginButton();
-            expect(location.path()).toBe('');
-            expect(authServiceSpy.login).toHaveBeenCalledOnceWith({
-                email: 'john@example.com',
+            fixture.detectChanges();
+
+            expect(authServiceSpy.login).toHaveBeenCalledWith({
+                email: 'john@email.com',
                 password: 'Password123$',
             });
 
+            const errors = await harness.getErrors();
+            expect(errors).toEqual({ main: 'Algo deu errado!' });
             const values = await harness.getValues();
-            expect(values).toEqual({ email: '', password: '' });
+            expect(values).toEqual({
+                email: 'john@email.com',
+                password: 'Password123$',
+            });
+
+            expect(location.path()).toBe('');
+            expect(routerSpy).not.toHaveBeenCalled();
+        });
+
+        it('should handle form fields remote errors.', async () => {
+            const exception: any = new Error('Login failed!');
+            exception.error = {
+                error: ExceptionName.unprocessable_entity,
+                message: { email: 'Error 1', password: 'Error 2' },
+            };
+            exception.message = 'Algo deu errado!';
+            exception.name = 'HttpErrorResponse';
+            exception.status = HttpStatusCode.UnprocessableEntity;
+            exception.statusText = 'Unprocessable Entity';
+            const location = TestBed.inject(Location);
+            authServiceSpy.login.and.returnValue(throwError(() => exception));
+            await harness.setValues({
+                email: 'john@email.com',
+                password: 'Password123$',
+            });
+            await harness.clickLoginButton();
+            fixture.detectChanges();
+
+            expect(location.path()).toBe('');
+            expect(authServiceSpy.login).toHaveBeenCalledWith({
+                email: 'john@email.com',
+                password: 'Password123$',
+            });
 
             const errors = await harness.getErrors();
-            expect(errors).toEqual({});
+            expect(errors).toEqual({
+                email: 'Error 1',
+                password: 'Error 2',
+            });
+            const values = await harness.getValues();
+            expect(values).toEqual({
+                email: 'john@email.com',
+                password: 'Password123$',
+            });
 
-            expect(routerSpy).toHaveBeenCalledWith(['/']);
+            expect(routerSpy).not.toHaveBeenCalled();
         });
     });
 
-    describe('errors', () => {
-        describe('local errors', () => {
-            let routerSpy: jasmine.Spy<
-                (
-                    commands: readonly any[],
-                    extras?: NavigationExtras,
-                ) => Promise<boolean>
-            >;
-
-            beforeEach(() => {
-                authServiceSpy.login.and.returnValue(
-                    of({
-                        status: 'success',
-                        data: {
-                            user: {
-                                id: '891db31e-dfb5-42ed-b912-48b98463b004',
-                                name: 'John Williams',
-                                email: 'john@example.com',
-                                roles: [Role.user],
-                                active: true,
-                                created: '2024-02-03T19:05:21.689Z',
-                                updated: '2024-02-03T19:05:21.689Z',
-                                deletedAt: null,
-                            },
-                            payload: {
-                                type: 'bearer',
-                                token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6MTcwNzA3MzUyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0In0.LaW-Z0DkU5ZheRtst0mvZ3WtMgMmMeawJVke9qtCVyE',
-                                refreshToken:
-                                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6NDI5ODk4NzEyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0IiwianRpIjoiMTI4In0.bJTClITMvD5NCDt5DjTmxn3DIjFOabEvsCvnK795VXU',
-                            },
-                        },
-                    }),
-                );
-                routerSpy = spyOn(component['router'], 'navigate');
-                spyOn(router, 'navigateByUrl');
-            });
-
-            describe('on blur', () => {
-                it('should handle local error during name input blur.', async () => {
-                    await harness.setValues({
-                        email: 'john@',
-                        password: 'Pass',
-                    });
-
-                    const location = TestBed.inject(Location);
-                    expect(authServiceSpy.login).not.toHaveBeenCalled();
-                    const errors = await harness.getErrors();
-                    expect(errors).toEqual({
-                        email: 'E-mail inválido.',
-                        password: 'O comprimento mínimo permitido é 8.',
-                    });
-                    const values = await harness.getValues();
-                    expect(values).toEqual({
-                        email: 'john@',
-                        password: 'Pass',
-                    });
-
-                    expect(location.path()).toBe('');
-                    expect(routerSpy).not.toHaveBeenCalled();
-                });
-
-                describe('validations.', () => {
-                    describe('email', () => {
-                        it('should reject empty string.', async () => {
-                            await harness.setValues({
-                                email: undefined as unknown as string,
-                                password: 'Password123$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                email: 'O campo é obrigatório.',
-                            });
-                        });
-
-                        it('should reject email with invalid format.', async () => {
-                            await harness.setValues({
-                                email: '@email.com',
-                                password: 'Password123$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                email: 'E-mail inválido.',
-                            });
-                        });
-
-                        it('should accept email with min length.', async () => {
-                            await harness.setValues({
-                                email: 'w@x.com', // TODO: deveria aceitar w@x.c?
-                                password: 'Password123$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({});
-                        });
-
-                        it('should accept name with max length.', async () => {
-                            await harness.setValues({
-                                email:
-                                    'X'.repeat(
-                                        UserConfigs.NAME_MAX_LENGTH - 4,
-                                    ) + '@x.c',
-                                password: 'Password123$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({});
-                        });
-                    });
-
-                    describe('password', () => {
-                        it('should accept valid value.', async () => {
-                            await harness.setValues({
-                                email: 'user@email.com',
-                                password: 'Pass123$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({});
-                        });
-
-                        it('should reject empty string.', async () => {
-                            await harness.setValues({
-                                email: 'user@email.com',
-                                password: '',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                password: 'O campo é obrigatório.',
-                            });
-                        });
-
-                        it('should reject value shorter than min length.', async () => {
-                            await harness.setValues({
-                                email: 'user@email.com',
-                                password: 'Pas123$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                password: 'O comprimento mínimo permitido é 8.',
-                            });
-                        });
-
-                        it('should accept value with the min length.', async () => {
-                            await harness.setValues({
-                                email: 'user@email.com',
-                                password: 'Pass123$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({});
-                        });
-
-                        it('should reject value longer than max length.', async () => {
-                            await harness.setValues({
-                                email: 'user@email.com',
-                                password: 'Password1234$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                password:
-                                    'O comprimento máximo permitido é 12.',
-                            });
-                        });
-
-                        it('should accept value with the max length.', async () => {
-                            await harness.setValues({
-                                email: 'user@email.com',
-                                password: 'Password123$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({});
-                        });
-
-                        it('should reject value without uppercase letter.', async () => {
-                            await harness.setValues({
-                                email: 'user@email.com',
-                                password: 'password123$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                password:
-                                    'Deve conter maíscula, minúscula, número e caractere especial.',
-                            });
-                        });
-
-                        it('should reject value without lowercase letter.', async () => {
-                            await harness.setValues({
-                                email: 'user@email.com',
-                                password: 'PASSWORD123$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                password:
-                                    'Deve conter maíscula, minúscula, número e caractere especial.',
-                            });
-                        });
-
-                        it('should reject value without digit.', async () => {
-                            await harness.setValues({
-                                email: 'user@email.com',
-                                password: 'Password$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                password:
-                                    'Deve conter maíscula, minúscula, número e caractere especial.',
-                            });
-                        });
-
-                        it('should reject value without special character.', async () => {
-                            await harness.setValues({
-                                email: 'user@email.com',
-                                password: 'Password123',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({
-                                password:
-                                    'Deve conter maíscula, minúscula, número e caractere especial.',
-                            });
-                        });
-
-                        it('should reject value with space.', async () => {
-                            await harness.setValues({
-                                email: 'user@email.com',
-                                password: 'Pass 123$',
-                            });
-
-                            const errors = await harness.getErrors();
-                            expect(errors).toEqual({ password: 'Inválido.' });
-                        });
-                    });
-                });
-            });
-
-            describe('on submit.', () => {
-                it('should handle local error during form submission.', async () => {
-                    const location = TestBed.inject(Location);
-                    await harness.setValues({
-                        email: 'john@',
-                        password: 'Pass',
-                    });
-                    await harness.clickLoginButton();
-
-                    expect(authServiceSpy.login).not.toHaveBeenCalled();
-                    expect(location.path()).toBe('');
-                    expect(routerSpy).not.toHaveBeenCalled();
-                    const errors = await harness.getErrors();
-                    expect(errors).toEqual({
-                        email: 'E-mail inválido.',
-                        password: 'O comprimento mínimo permitido é 8.',
-                    });
-                    const values = await harness.getValues();
-                    expect(values).toEqual({
-                        email: 'john@',
-                        password: 'Pass',
-                    });
-                });
-            });
-        });
-
-        describe('remote errors', () => {
-            let routerSpy: jasmine.Spy<
-                (
-                    commands: readonly any[],
-                    extras?: NavigationExtras,
-                ) => Promise<boolean>
-            >;
-
-            beforeEach(() => {
-                routerSpy = spyOn(component['router'], 'navigate');
-                spyOn(router, 'navigateByUrl');
-            });
-
-            it('should handle main remote error during registration', async () => {
-                const exception: any = new Error('Registration failed!');
-                exception.error = {
-                    error: ExceptionName.unprocessable_entity,
-                    message: 'Algo deu errado!',
-                };
-                exception.message = 'Some error';
-                exception.name = 'HttpErrorResponse';
-                exception.status = HttpStatusCode.UnprocessableEntity;
-                exception.statusText = 'Unprocessable Entity';
-                const location = TestBed.inject(Location);
-                authServiceSpy.login.and.returnValue(
-                    throwError(() => exception),
-                );
-                await harness.setValues({
-                    email: 'john@email.com',
-                    password: 'Password123$',
-                });
-                await harness.clickLoginButton();
-                fixture.detectChanges();
-
-                expect(authServiceSpy.login).toHaveBeenCalledWith({
-                    email: 'john@email.com',
-                    password: 'Password123$',
-                });
-
-                const errors = await harness.getErrors();
-                expect(errors).toEqual({ main: 'Algo deu errado!' });
-                const values = await harness.getValues();
-                expect(values).toEqual({
-                    email: 'john@email.com',
-                    password: 'Password123$',
-                });
-
-                expect(location.path()).toBe('');
-                expect(routerSpy).not.toHaveBeenCalled();
-            });
-
-            it('should handle form fields remote errors during registration', async () => {
-                const exception: any = new Error('Registration failed!');
-                exception.error = {
-                    error: ExceptionName.unprocessable_entity,
-                    message: { email: 'Error 1', password: 'Error 2' },
-                };
-                exception.message = 'Algo deu errado!';
-                exception.name = 'HttpErrorResponse';
-                exception.status = HttpStatusCode.UnprocessableEntity;
-                exception.statusText = 'Unprocessable Entity';
-                const location = TestBed.inject(Location);
-                authServiceSpy.login.and.returnValue(
-                    throwError(() => exception),
-                );
-                await harness.setValues({
-                    email: 'john@email.com',
-                    password: 'Password123$',
-                });
-                await harness.clickLoginButton();
-                fixture.detectChanges();
-
-                expect(location.path()).toBe('');
-                expect(authServiceSpy.login).toHaveBeenCalledWith({
-                    email: 'john@email.com',
-                    password: 'Password123$',
-                });
-
-                const errors = await harness.getErrors();
-                expect(errors).toEqual({
-                    email: 'Error 1',
-                    password: 'Error 2',
-                });
-                const values = await harness.getValues();
-                expect(values).toEqual({
-                    email: 'john@email.com',
-                    password: 'Password123$',
-                });
-
-                expect(routerSpy).not.toHaveBeenCalled();
-            });
-        });
-    });
-
-    describe('loading', () => {
+    describe('loading.', () => {
         it('should show loading while requesting.', async () => {
             let subject = new Subject<any>();
 
@@ -700,7 +690,7 @@ describe('LoginComponent', () => {
         });
 
         it('should show stop to show loading after remote error', async () => {
-            const exception: any = new Error('Registration failed!');
+            const exception: any = new Error('Login failed!');
             exception.error = {
                 error: ExceptionName.unprocessable_entity,
                 message: 'Algo deu errado!',

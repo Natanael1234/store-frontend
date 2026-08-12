@@ -12,7 +12,7 @@ import { _testListClickEvent } from './test/fn/list-test-click-event.test';
 import { _testListComponent } from './test/fn/list.test';
 import { ListItem } from './types/list-item.model';
 
-describe('ListComponent', () => {
+describe('ListComponent.', () => {
     let component: ListComponent;
     let fixture: ComponentFixture<ListComponent>;
 

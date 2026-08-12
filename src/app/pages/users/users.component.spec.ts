@@ -35,7 +35,7 @@ import { _testUsersComponentRefreshFilter } from './tests/tests/users-component-
 import { _testUsersComponent } from './tests/tests/users-component.test';
 import { UsersComponent } from './users.component';
 
-describe('UsersComponent', () => {
+describe('UsersComponent.', () => {
     let fixture: ComponentFixture<UsersComponent>;
     let component: UsersComponent;
     let userServiceSpy: jasmine.SpyObj<UserService>;

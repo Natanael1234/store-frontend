@@ -24,7 +24,7 @@ import { UserFilterToolbarComponent } from '../user-filter-toollbar/user-filter-
 import { MockUserFilterToolbarComponent } from '../user-filter-toollbar/user-filter-toolbar.component.mock';
 import { UserFilterDialogComponent } from './user-filter-dialog.component';
 
-describe('UserFilterDialogComponent', () => {
+describe('UserFilterDialogComponent.', () => {
     let component: UserFilterDialogComponent;
     let fixture: ComponentFixture<UserFilterDialogComponent>;
     let dialogRef: MatDialogRef<UserFilterDialogComponent>;

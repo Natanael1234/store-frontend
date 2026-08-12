@@ -26,7 +26,7 @@ import { LoginComponent } from '../login/login.component';
 import { RegisterComponent } from './register.component';
 import { RegisterHarness } from './register.harness';
 
-describe('RegisterComponent', () => {
+describe('RegisterComponent.', () => {
     let fixture: ComponentFixture<RegisterComponent>;
     let component: RegisterComponent;
     let authServiceSpy: jasmine.SpyObj<AuthService>;
@@ -146,7 +146,7 @@ describe('RegisterComponent', () => {
         );
     });
 
-    it('should create', async () => {
+    it('should create.', async () => {
         expect(component).toBeTruthy();
 
         const state = await harness.getState();
@@ -279,7 +279,7 @@ describe('RegisterComponent', () => {
         expect(loginButton.queryParamsHandling()).toBeUndefined();
     });
 
-    it('should go to login page', async () => {
+    it('should go to login page.', async () => {
         const location = TestBed.inject(Location);
         const routerSpy = spyOn(component['router'], 'navigate');
 
@@ -326,69 +326,67 @@ describe('RegisterComponent', () => {
         expect(errors).toEqual({});
     });
 
-    describe('registration request', () => {
-        it("should sucessfully call service's register method on submit", async () => {
-            const location = TestBed.inject(Location);
-            const routerSpy = spyOn(component['router'], 'navigate');
-            component['formGroup'].setValue({
-                name: 'John Williams',
-                email: 'john@example.com',
-                password: 'Password123$',
-                repeatPassword: 'Password123$',
-                acceptTerms: true,
-            });
-            authServiceSpy.register.and.returnValue(
-                of({
-                    status: 'success',
-                    data: {
-                        user: {
-                            id: '891db31e-dfb5-42ed-b912-48b98463b004',
-                            name: 'John Williams',
-                            email: 'john@example.com',
-                            roles: [Role.user],
-                            active: true,
-                            created: '2024-02-03T19:05:21.689Z',
-                            updated: '2024-02-03T19:05:21.689Z',
-                            deletedAt: null,
-                        },
-                        payload: {
-                            type: 'bearer',
-                            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6MTcwNzA3MzUyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0In0.LaW-Z0DkU5ZheRtst0mvZ3WtMgMmMeawJVke9qtCVyE',
-                            refreshToken:
-                                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6NDI5ODk4NzEyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0IiwianRpIjoiMTI4In0.bJTClITMvD5NCDt5DjTmxn3DIjFOabEvsCvnK795VXU',
-                        },
-                    },
-                }),
-            );
-
-            await harness.clickRegisterButton();
-            expect(location.path()).toBe('');
-            expect(authServiceSpy.register).toHaveBeenCalledOnceWith({
-                name: 'John Williams',
-                email: 'john@example.com',
-                password: 'Password123$',
-                repeatPassword: 'Password123$',
-                acceptTerms: true,
-            });
-
-            const values = await harness.getValues();
-            expect(values).toEqual({
-                name: '',
-                email: '',
-                password: '',
-                repeatPassword: '',
-                acceptTerms: false,
-            });
-
-            const errors = await harness.getErrors();
-            expect(errors).toEqual({});
-
-            expect(routerSpy).toHaveBeenCalledWith(['/login']);
+    it("should sucessfully call service's register method on submit.", async () => {
+        const location = TestBed.inject(Location);
+        const routerSpy = spyOn(component['router'], 'navigate');
+        component['formGroup'].setValue({
+            name: 'John Williams',
+            email: 'john@example.com',
+            password: 'Password123$',
+            repeatPassword: 'Password123$',
+            acceptTerms: true,
         });
+        authServiceSpy.register.and.returnValue(
+            of({
+                status: 'success',
+                data: {
+                    user: {
+                        id: '891db31e-dfb5-42ed-b912-48b98463b004',
+                        name: 'John Williams',
+                        email: 'john@example.com',
+                        roles: [Role.user],
+                        active: true,
+                        created: '2024-02-03T19:05:21.689Z',
+                        updated: '2024-02-03T19:05:21.689Z',
+                        deletedAt: null,
+                    },
+                    payload: {
+                        type: 'bearer',
+                        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6MTcwNzA3MzUyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0In0.LaW-Z0DkU5ZheRtst0mvZ3WtMgMmMeawJVke9qtCVyE',
+                        refreshToken:
+                            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDY5ODcxMjEsImV4cCI6NDI5ODk4NzEyMSwic3ViIjoiODkxZGIzMWUtZGZiNS00MmVkLWI5MTItNDhiOTg0NjNiMDA0IiwianRpIjoiMTI4In0.bJTClITMvD5NCDt5DjTmxn3DIjFOabEvsCvnK795VXU',
+                    },
+                },
+            }),
+        );
+
+        await harness.clickRegisterButton();
+        expect(location.path()).toBe('');
+        expect(authServiceSpy.register).toHaveBeenCalledOnceWith({
+            name: 'John Williams',
+            email: 'john@example.com',
+            password: 'Password123$',
+            repeatPassword: 'Password123$',
+            acceptTerms: true,
+        });
+
+        const values = await harness.getValues();
+        expect(values).toEqual({
+            name: '',
+            email: '',
+            password: '',
+            repeatPassword: '',
+            acceptTerms: false,
+        });
+
+        const errors = await harness.getErrors();
+        expect(errors).toEqual({});
+
+        expect(routerSpy).toHaveBeenCalledWith(['/login']);
     });
 
-    describe('errors', () => {
-        describe('local errors', () => {
+    describe('errors.', () => {
+        describe('local errors.', () => {
             let routerSpy: jasmine.Spy<
                 (
                     commands: readonly any[],
@@ -424,8 +422,8 @@ describe('RegisterComponent', () => {
                 spyOn(router, 'navigateByUrl');
             });
 
-            describe('on blur', () => {
-                it('should handle local error during name input blur.', async () => {
+            describe('on blur.', () => {
+                it('should handle local error.', async () => {
                     await harness.setValues({
                         name: 'J',
                         email: 'john@',
@@ -458,8 +456,8 @@ describe('RegisterComponent', () => {
                 });
 
                 describe('validations.', () => {
-                    describe('name', () => {
-                        it('should reject empty string', async () => {
+                    describe('name.', () => {
+                        it('should reject empty string.', async () => {
                             await harness.setValues({
                                 name: undefined as unknown as string,
                                 email: 'john@email.com',
@@ -474,7 +472,7 @@ describe('RegisterComponent', () => {
                             });
                         });
 
-                        it('should accept name with min length', async () => {
+                        it('should accept name with min length.', async () => {
                             await harness.setValues({
                                 name: 'x'.repeat(UserConfigs.NAME_MIN_LENGTH),
                                 email: 'john@email.com',
@@ -487,7 +485,7 @@ describe('RegisterComponent', () => {
                             expect(errors).toEqual({});
                         });
 
-                        it('should reject name shorter than min length', async () => {
+                        it('should reject name shorter than min length.', async () => {
                             await harness.setValues({
                                 name: 'x'.repeat(
                                     UserConfigs.NAME_MIN_LENGTH - 1,
@@ -504,7 +502,7 @@ describe('RegisterComponent', () => {
                             });
                         });
 
-                        it('should accept name with max length', async () => {
+                        it('should accept name with max length.', async () => {
                             await harness.setValues({
                                 name: 'X'.repeat(UserConfigs.NAME_MAX_LENGTH),
                                 email: 'john@email.com',
@@ -517,7 +515,7 @@ describe('RegisterComponent', () => {
                             expect(errors).toEqual({});
                         });
 
-                        it('should reject name longer than max length', async () => {
+                        it('should reject name longer than max length.', async () => {
                             await harness.setValues({
                                 name: 'X'.repeat(
                                     UserConfigs.NAME_MAX_LENGTH + 1,
@@ -535,7 +533,7 @@ describe('RegisterComponent', () => {
                         });
                     });
 
-                    describe('email', () => {
+                    describe('email.', () => {
                         it('should reject empty string.', async () => {
                             await harness.setValues({
                                 name: 'John Williams',
@@ -596,7 +594,7 @@ describe('RegisterComponent', () => {
                         });
                     });
 
-                    describe('password', () => {
+                    describe('password.', () => {
                         it('should accept valid value.', async () => {
                             await harness.setValues({
                                 name: 'John Williams',
@@ -761,7 +759,7 @@ describe('RegisterComponent', () => {
                         });
                     });
 
-                    describe('repeatPassword', () => {
+                    describe('repeatPassword.', () => {
                         it('should accept valid value.', async () => {
                             await harness.setValues({
                                 name: 'John Williams',
@@ -807,7 +805,7 @@ describe('RegisterComponent', () => {
                         });
                     });
 
-                    describe('acceptTerms', () => {
+                    describe('acceptTerms.', () => {
                         it('should accept when checked.', async () => {
                             await harness.setValues({
                                 name: 'John Williams',
@@ -838,7 +836,7 @@ describe('RegisterComponent', () => {
             });
 
             describe('on submit.', () => {
-                it('should handle local error during form submission.', async () => {
+                it('should handle local error.', async () => {
                     const location = TestBed.inject(Location);
                     await harness.setValues({
                         name: 'J',
@@ -872,7 +870,7 @@ describe('RegisterComponent', () => {
             });
         });
 
-        describe('remote errors', () => {
+        describe('remote errors.', () => {
             let routerSpy: jasmine.Spy<
                 (
                     commands: readonly any[],
@@ -885,8 +883,8 @@ describe('RegisterComponent', () => {
                 spyOn(router, 'navigateByUrl');
             });
 
-            it('should handle main remote error during registration', async () => {
-                const exception: any = new Error('Registration failed!');
+            it('should handle main remote error.', async () => {
+                const exception: any = new Error('Request failed!');
                 exception.error = {
                     error: ExceptionName.unprocessable_entity,
                     message: 'Algo deu errado!',
@@ -932,8 +930,8 @@ describe('RegisterComponent', () => {
                 expect(routerSpy).not.toHaveBeenCalled();
             });
 
-            it('should handle form fields remote errors during registration', async () => {
-                const exception: any = new Error('Registration failed!');
+            it('should handle form fields remote errors.', async () => {
+                const exception: any = new Error('Request failed!');
                 exception.error = {
                     error: ExceptionName.unprocessable_entity,
                     message: {

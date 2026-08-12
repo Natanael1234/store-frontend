@@ -16,7 +16,7 @@ import { UserFilterDialogComponent } from './user-filter-dialog/user-filter-dial
 import { UserFilterToolbarComponent } from './user-filter-toollbar/user-filter-toolbar.component';
 import { MockUserFilterToolbarComponent } from './user-filter-toollbar/user-filter-toolbar.component.mock';
 
-describe('ResponsiveUserFiltersComponent', () => {
+describe('ResponsiveUserFiltersComponent.', () => {
     let fixture: ComponentFixture<ResponsiveUserFiltersComponent>;
     let component: ResponsiveUserFiltersComponent;
     let textFilter: TextFilterComponent;

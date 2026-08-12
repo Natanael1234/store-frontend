@@ -22,7 +22,7 @@ import { LoginComponent } from '../login/login.component';
 import { RequestPasswordChangeLinkComponent } from './request-password-change-link.component';
 import { RequestPasswordLinkHarness } from './request-password-link.harness';
 
-describe('RequestPasswordChangeLinkComponent', () => {
+describe('RequestPasswordChangeLinkComponent.', () => {
     let fixture: ComponentFixture<RequestPasswordChangeLinkComponent>;
     let component: RequestPasswordChangeLinkComponent;
     let authServiceSpy: jasmine.SpyObj<AuthService>;
@@ -60,7 +60,7 @@ describe('RequestPasswordChangeLinkComponent', () => {
     }
 
     beforeEach(async () => {
-        const spy = jasmine.createSpyObj('AuthService', [
+        const spy = jasmine.createSpyObj('AuthService.', [
             'requestPasswordChangeLink',
         ]);
         await TestBed.configureTestingModule({
@@ -102,7 +102,7 @@ describe('RequestPasswordChangeLinkComponent', () => {
         );
     });
 
-    it('should create', async () => {
+    it('should create.', async () => {
         expect(component).toBeTruthy();
 
         const state = await harness.getState();
@@ -159,7 +159,7 @@ describe('RequestPasswordChangeLinkComponent', () => {
         expect(cancelButton.queryParamsHandling()).toBeUndefined();
     });
 
-    it('should cance and go to home page', async () => {
+    it('should cancel and go to home page.', async () => {
         const location = TestBed.inject(Location);
         const routerSpy = spyOn(component['router'], 'navigate');
 
@@ -177,32 +177,30 @@ describe('RequestPasswordChangeLinkComponent', () => {
         expect(errors).toEqual({});
     });
 
-    describe('password link request', () => {
-        it("should sucessfully call service's requestPasswordChangeLink method on submit", async () => {
-            // TODO: testar se está autenticado
-            const location = TestBed.inject(Location);
+    it("should sucessfully call service's requestPasswordChangeLink method on submit.", async () => {
+        // TODO: testar se está autenticado
+        const location = TestBed.inject(Location);
 
-            const routerSpy = spyOn(component['router'], 'navigate');
-            component['formGroup'].setValue({ email: 'john@example.com' });
-            authServiceSpy.requestPasswordChangeLink.and.returnValue(of(true));
-            await harness.clickRequestButton();
-            expect(location.path()).toBe('');
-            expect(
-                authServiceSpy.requestPasswordChangeLink,
-            ).toHaveBeenCalledOnceWith({ email: 'john@example.com' });
+        const routerSpy = spyOn(component['router'], 'navigate');
+        component['formGroup'].setValue({ email: 'john@example.com' });
+        authServiceSpy.requestPasswordChangeLink.and.returnValue(of(true));
+        await harness.clickRequestButton();
+        expect(location.path()).toBe('');
+        expect(
+            authServiceSpy.requestPasswordChangeLink,
+        ).toHaveBeenCalledOnceWith({ email: 'john@example.com' });
 
-            const values = await harness.getValues();
-            expect(values).toEqual({ email: '' });
+        const values = await harness.getValues();
+        expect(values).toEqual({ email: '' });
 
-            const errors = await harness.getErrors();
-            expect(errors).toEqual({});
+        const errors = await harness.getErrors();
+        expect(errors).toEqual({});
 
-            expect(routerSpy).toHaveBeenCalledWith(['/']);
-        });
+        expect(routerSpy).toHaveBeenCalledWith(['/']);
     });
 
-    describe('errors', () => {
-        describe('local errors', () => {
+    describe('errors.', () => {
+        describe('local errors.', () => {
             let routerSpy: jasmine.Spy<
                 (
                     commands: readonly any[],
@@ -218,8 +216,8 @@ describe('RequestPasswordChangeLinkComponent', () => {
                 spyOn(router, 'navigateByUrl');
             });
 
-            describe('on blur', () => {
-                it('should handle local error during name input blur.', async () => {
+            describe('on blur.', () => {
+                it('should handle local error.', async () => {
                     await harness.setValues({ email: 'john@' });
 
                     const location = TestBed.inject(Location);
@@ -240,7 +238,7 @@ describe('RequestPasswordChangeLinkComponent', () => {
                 });
 
                 describe('validations.', () => {
-                    describe('email', () => {
+                    describe('email.', () => {
                         it('should reject empty string.', async () => {
                             await harness.setValues({
                                 email: undefined as unknown as string,
@@ -286,7 +284,7 @@ describe('RequestPasswordChangeLinkComponent', () => {
             });
 
             describe('on submit.', () => {
-                it('should handle local error during form submission.', async () => {
+                it('should handle local error.', async () => {
                     const location = TestBed.inject(Location);
                     await harness.setValues({ email: 'john@' });
                     await harness.clickCancelButton();
@@ -304,7 +302,7 @@ describe('RequestPasswordChangeLinkComponent', () => {
             });
         });
 
-        describe('remote errors', () => {
+        describe('remote errors.', () => {
             let routerSpy: jasmine.Spy<
                 (
                     commands: readonly any[],
@@ -317,8 +315,8 @@ describe('RequestPasswordChangeLinkComponent', () => {
                 spyOn(router, 'navigateByUrl');
             });
 
-            it('should handle main remote error during registration', async () => {
-                const exception: any = new Error('Registration failed!');
+            it('should handle main remote error.', async () => {
+                const exception: any = new Error('Request failed!');
                 exception.error = {
                     error: ExceptionName.unprocessable_entity,
                     message: 'Algo deu errado!',
@@ -348,8 +346,8 @@ describe('RequestPasswordChangeLinkComponent', () => {
                 expect(routerSpy).not.toHaveBeenCalled();
             });
 
-            it('should handle form fields remote errors during registration', async () => {
-                const exception: any = new Error('Registration failed!');
+            it('should handle form fields remote errors.', async () => {
+                const exception: any = new Error('Request failed!');
                 exception.error = {
                     error: ExceptionName.unprocessable_entity,
                     message: { email: 'Error 1', password: 'Error 2' },

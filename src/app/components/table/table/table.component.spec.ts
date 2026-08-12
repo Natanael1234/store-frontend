@@ -14,7 +14,7 @@ import { TableComponent } from './table.component';
 import { _testTableHeadersComponent } from './test/fn/table-header-item-component.test';
 import { _testTableData } from './test/fn/user-table-data.test';
 
-describe('TableComponent', () => {
+describe('TableComponent.', () => {
     let tableComponent: TableComponent;
     let fixture: ComponentFixture<TableComponent>;
 

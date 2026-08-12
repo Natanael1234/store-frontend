@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { ResponsityService } from './responsivity.service';
 
-describe('ResponsivityService', () => {
+describe('ResponsivityService.', () => {
     let service: ResponsityService;
 
     beforeEach(() => {

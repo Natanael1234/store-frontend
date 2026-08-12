@@ -21,7 +21,7 @@ import { _getResponsiveUserListComponentTable } from './test/getters/get-respons
 import { MockListComponent } from './test/mocks/user-list.component.mock';
 import { _testResponsiveUsersListComponentList } from './test/tests/responsive-user-list-component-list.test';
 import { _testResponsiveUsersListComponentTable } from './test/tests/responsive-user-list-component-table.test';
-describe('ResponsiveUserListComponent', () => {
+describe('ResponsiveUserListComponent.', () => {
     let component: ResponsiveUserListComponent;
     let fixture: ComponentFixture<ResponsiveUserListComponent>;
 

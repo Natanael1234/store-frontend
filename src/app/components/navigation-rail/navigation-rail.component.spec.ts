@@ -10,7 +10,7 @@ import { PointerType } from '../../enums/pointer-type/pointer-type.enum';
 import { NavigationRailComponent } from './navigation-rail.component';
 import { NavigationRailItem } from './types/navigation-rail-item/navigation-rail-item.type';
 
-describe('SideMenuComponent', () => {
+describe('SideMenuComponent.', () => {
     let navigationRailComponent: NavigationRailComponent;
     let fixture: ComponentFixture<NavigationRailComponent>;
 
