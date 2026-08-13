@@ -19,7 +19,6 @@ enum RailClasses {
     transition = 'transition',
 }
 
-const paramsSubject = new BehaviorSubject({});
 @Component({
     selector: 'app-navigation-rail',
     imports: [
@@ -33,7 +32,7 @@ const paramsSubject = new BehaviorSubject({});
         {
             provide: ActivatedRoute,
             useValue: {
-                params: paramsSubject,
+                params: new BehaviorSubject({}),
             },
         },
     ],

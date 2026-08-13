@@ -241,7 +241,9 @@ describe('RegisterComponent.', () => {
         expect(acceptTermsCheckbox).toBeDefined();
         expect(acceptTermsCheckbox).not.toBeNull();
         expect(acceptTermsCheckbox.id()).toEqual('accept-terms-checkbox');
-        expect(acceptTermsCheckbox.label()).toEqual('Aceito os termos');
+        expect(acceptTermsCheckbox.label()).toEqual(
+            'Aceito os <a href="/terms-of-use" target="_blank" class="link-modern">termos de uso</a>.',
+        );
         expect(acceptTermsCheckbox.control()).toBeDefined();
         expect(acceptTermsCheckbox.control()).not.toBeNull();
         expect(acceptTermsCheckbox.control()?.disabled).toBeFalse();

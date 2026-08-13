@@ -1,61 +1,72 @@
-import { Routes } from '@angular/router';
-import routeConfig from './routes';
+import { AuthGuard } from '../../../guards/auth.guard';
 import { HomeComponent } from '../../../pages/home/home.component';
-import { RegisterComponent } from '../../../pages/register/register.component';
 import { LoginComponent } from '../../../pages/login/login.component';
 import { NewPasswordComponent } from '../../../pages/new-password/new-password.component';
-import { UpdateLoggedInUserPasswordComponent } from '../../../pages/update-logged-in-user-password/update-logged-in-user-password.component';
+import { RegisterComponent } from '../../../pages/register/register.component';
 import { RequestPasswordChangeLinkComponent } from '../../../pages/request-password-change-link/request-password-change-link.component';
-import { AuthGuard } from '../../../guards/auth.guard';
-import { UsersComponent } from '../../../pages/users/users.component';
+import { TermsOfUseComponent } from '../../../pages/terms-of-use/terms-of-use.component';
+import { TestComponent } from '../../../pages/test/test.component';
+import { UpdateLoggedInUserPasswordComponent } from '../../../pages/update-logged-in-user-password/update-logged-in-user-password.component';
 import { UserComponent } from '../../../pages/user/user.component';
+import { UsersComponent } from '../../../pages/users/users.component';
+import routeConfig from './routes';
 
 describe('routeConfig', () => {
-  it('should be defined', () => {
-    expect(routeConfig).toBeDefined();
-  });
+    it('should be defined', () => {
+        expect(routeConfig).toBeDefined();
+    });
 
-  it('should have valid keys and values', () => {
-    expect(routeConfig).toEqual([
-      { path: '', component: HomeComponent, title: 'Home Page' },
-      {
-        path: 'register',
-        component: RegisterComponent,
-        title: 'Register Page',
-      },
-      {
-        path: 'login',
-        component: LoginComponent,
-        title: 'Login Page',
-      },
-      {
-        path: 'new-password/:hash',
-        component: NewPasswordComponent,
-        title: 'New Password Page',
-      },
-      {
-        path: 'update-password',
-        component: UpdateLoggedInUserPasswordComponent,
-        title: 'Update Password Page',
-        canActivate: [AuthGuard],
-      },
-      {
-        path: 'request-password-change-link',
-        component: RequestPasswordChangeLinkComponent,
-        title: 'Request Password Change Link Page',
-      },
-      {
-        path: 'users',
-        component: UsersComponent,
-        title: 'Users',
-        canActivate: [AuthGuard],
-      },
-      {
-        path: 'user',
-        component: UserComponent,
-        title: 'User',
-        canActivate: [AuthGuard],
-      },
-    ]);
-  });
+    it('should have valid keys and values', () => {
+        expect(routeConfig).toEqual([
+            { path: '', component: HomeComponent, title: 'Home Page' },
+            {
+                path: 'register',
+                component: RegisterComponent,
+                title: 'Register Page',
+            },
+            {
+                path: 'login',
+                component: LoginComponent,
+                title: 'Login Page',
+            },
+            {
+                path: 'new-password/:hash',
+                component: NewPasswordComponent,
+                title: 'New Password Page',
+            },
+            {
+                path: 'update-password',
+                component: UpdateLoggedInUserPasswordComponent,
+                title: 'Update Password Page',
+                canActivate: [AuthGuard],
+            },
+            {
+                path: 'request-password-change-link',
+                component: RequestPasswordChangeLinkComponent,
+                title: 'Request Password Change Link Page',
+            },
+            {
+                path: 'users',
+                component: UsersComponent,
+                title: 'Users',
+                canActivate: [AuthGuard],
+            },
+            {
+                path: 'user',
+                component: UserComponent,
+                title: 'User',
+                canActivate: [AuthGuard],
+            },
+            {
+                path: 'test',
+                component: TestComponent,
+                title: 'Test',
+            },
+            {
+                path: 'terms-of-use',
+                component: TermsOfUseComponent,
+                title: 'Terms of Use',
+            },
+        ]);
+    });
 });

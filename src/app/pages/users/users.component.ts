@@ -23,7 +23,8 @@ import {
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { AlertComponent } from '../../components/alert/alert.component';
 import { UserTableRow } from '../../components/table/table/interfaces/user-table-row.interface';
 import { ActiveFilter } from '../../enums/active-filter/active-filter.enum';
@@ -65,6 +66,12 @@ import { userResponseToUserTableRow } from './utils/user-response-to-user-table/
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
         { provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl },
+        {
+            provide: ActivatedRoute,
+            useValue: {
+                params: new BehaviorSubject({}),
+            },
+        },
     ],
     templateUrl: './users.component.html',
     styleUrl: './users.component.scss',

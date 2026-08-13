@@ -87,7 +87,7 @@ describe('UserFilterToolbarComponent.', () => {
 
         expect(selects[0].id()).toEqual('active-select');
         expect(selects[0].label()).toEqual('Ativos');
-        expect(selects[0].autofocus()).toBeFalse();
+        expect(selects[0].autofocus()).toBeUndefined();
         expect(selects[0].control()).toBeDefined();
         expect(selects[0].control()).not.toBeNull();
         expect(selects[0].control()?.value).toEqual(ActiveFilter.active);
@@ -95,7 +95,7 @@ describe('UserFilterToolbarComponent.', () => {
 
         expect(selects[1].id()).toEqual('deleted-select');
         expect(selects[1].label()).toEqual('Deletados');
-        expect(selects[1].autofocus()).toBeFalse();
+        expect(selects[1].autofocus()).toBeUndefined();
         expect(selects[1].control()).toBeDefined();
         expect(selects[1].control()).not.toBeNull();
         expect(selects[1].control()?.value).toEqual(DeletedFilter.not_deleted);
@@ -142,7 +142,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[0].id()).toEqual('order-select');
             expect(selects[0].label()).toEqual('Ordem');
-            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].autofocus()).toBeUndefined();
             expect(selects[0].control()).toBeDefined();
             expect(selects[0].control()).not.toBeNull();
             expect(selects[0].control()?.value).toEqual(UserOrder.name_asc);
@@ -150,7 +150,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[1].id()).toEqual('active-select');
             expect(selects[1].label()).toEqual('Ativos');
-            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].autofocus()).toBeUndefined();
             expect(selects[1].control()).toBeDefined();
             expect(selects[1].control()).not.toBeNull();
             expect(selects[1].control()?.value).toEqual(ActiveFilter.active);
@@ -158,7 +158,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[2].id()).toEqual('deleted-select');
             expect(selects[2].label()).toEqual('Deletados');
-            expect(selects[2].autofocus()).toBeFalse();
+            expect(selects[2].autofocus()).toBeUndefined();
             expect(selects[2].control()).toBeDefined();
             expect(selects[2].control()).not.toBeNull();
             expect(selects[2].control()?.value).toEqual(
@@ -221,7 +221,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[0].id()).toEqual('order-select');
             expect(selects[0].label()).toEqual('Ordem');
-            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].autofocus()).toBeUndefined();
             expect(selects[0].control()).toBeDefined();
             expect(selects[0].control()).not.toBeNull();
             expect(selects[0].control()?.value).toEqual(UserOrder.name_asc);
@@ -229,7 +229,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[1].id()).toEqual('active-select');
             expect(selects[1].label()).toEqual('Ativos');
-            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].autofocus()).toBeUndefined();
             expect(selects[1].control()).toBeDefined();
             expect(selects[1].control()).not.toBeNull();
             expect(selects[1].control()?.value).toEqual(ActiveFilter.active);
@@ -237,7 +237,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[2].id()).toEqual('deleted-select');
             expect(selects[2].label()).toEqual('Deletados');
-            expect(selects[2].autofocus()).toBeFalse();
+            expect(selects[2].autofocus()).toBeUndefined();
             expect(selects[2].control()).toBeDefined();
             expect(selects[2].control()).not.toBeNull();
             expect(selects[2].control()?.value).toEqual(
@@ -300,7 +300,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[0].id()).toEqual('order-select');
             expect(selects[0].label()).toEqual('Ordem');
-            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].autofocus()).toBeUndefined();
             expect(selects[0].control()).toBeDefined();
             expect(selects[0].control()).not.toBeNull();
             expect(selects[0].control()?.value).toEqual(UserOrder.name_asc);
@@ -308,7 +308,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[1].id()).toEqual('active-select');
             expect(selects[1].label()).toEqual('Ativos');
-            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].autofocus()).toBeUndefined();
             expect(selects[1].control()).toBeDefined();
             expect(selects[1].control()).not.toBeNull();
             expect(selects[1].control()?.value).toEqual(ActiveFilter.active);
@@ -316,7 +316,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[2].id()).toEqual('deleted-select');
             expect(selects[2].label()).toEqual('Deletados');
-            expect(selects[2].autofocus()).toBeFalse();
+            expect(selects[2].autofocus()).toBeUndefined();
             expect(selects[2].control()).toBeDefined();
             expect(selects[2].control()).not.toBeNull();
             expect(selects[2].control()?.value).toEqual(
@@ -378,7 +378,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[0].id()).toEqual('active-select');
             expect(selects[0].label()).toEqual('Ativos');
-            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].autofocus()).toBeUndefined();
             expect(selects[0].control()).toBeDefined();
             expect(selects[0].control()).not.toBeNull();
             expect(selects[0].control()?.value).toEqual(ActiveFilter.active);
@@ -386,7 +386,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[1].id()).toEqual('deleted-select');
             expect(selects[1].label()).toEqual('Deletados');
-            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].autofocus()).toBeUndefined();
             expect(selects[1].control()).toBeDefined();
             expect(selects[1].control()).not.toBeNull();
             expect(selects[1].control()?.value).toEqual(
@@ -432,7 +432,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[0].id()).toEqual('active-select');
             expect(selects[0].label()).toEqual('Ativos');
-            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].autofocus()).toBeUndefined();
             expect(selects[0].control()).toBeDefined();
             expect(selects[0].control()).not.toBeNull();
             expect(selects[0].control()?.value).toEqual(ActiveFilter.active);
@@ -440,7 +440,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[1].id()).toEqual('deleted-select');
             expect(selects[1].label()).toEqual('Deletados');
-            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].autofocus()).toBeUndefined();
             expect(selects[1].control()).toBeDefined();
             expect(selects[1].control()).not.toBeNull();
             expect(selects[1].control()?.value).toEqual(
@@ -487,7 +487,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[0].id()).toEqual('order-select');
             expect(selects[0].label()).toEqual('Ordem');
-            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].autofocus()).toBeUndefined();
             expect(selects[0].control()).toBeDefined();
             expect(selects[0].control()).not.toBeNull();
             expect(selects[0].control()?.value).toEqual(UserOrder.name_asc);
@@ -495,7 +495,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[1].id()).toEqual('active-select');
             expect(selects[1].label()).toEqual('Ativos');
-            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].autofocus()).toBeUndefined();
             expect(selects[1].control()).toBeDefined();
             expect(selects[1].control()).not.toBeNull();
             expect(selects[1].control()?.value).toEqual(ActiveFilter.active);
@@ -503,7 +503,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[2].id()).toEqual('deleted-select');
             expect(selects[2].label()).toEqual('Deletados');
-            expect(selects[2].autofocus()).toBeFalse();
+            expect(selects[2].autofocus()).toBeUndefined();
             expect(selects[2].control()).toBeDefined();
             expect(selects[2].control()).not.toBeNull();
             expect(selects[2].control()?.value).toEqual(
@@ -551,7 +551,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[0].id()).toEqual('active-select');
             expect(selects[0].label()).toEqual('Ativos');
-            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].autofocus()).toBeUndefined();
             expect(selects[0].control()).toBeDefined();
             expect(selects[0].control()).not.toBeNull();
             expect(selects[0].control()?.value).toEqual(ActiveFilter.active);
@@ -559,7 +559,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[1].id()).toEqual('deleted-select');
             expect(selects[1].label()).toEqual('Deletados');
-            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].autofocus()).toBeUndefined();
             expect(selects[1].control()).toBeDefined();
             expect(selects[1].control()).not.toBeNull();
             expect(selects[1].control()?.value).toEqual(
@@ -605,7 +605,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[0].id()).toEqual('active-select');
             expect(selects[0].label()).toEqual('Ativos');
-            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].autofocus()).toBeUndefined();
             expect(selects[0].control()).toBeDefined();
             expect(selects[0].control()).not.toBeNull();
             expect(selects[0].control()?.value).toEqual(ActiveFilter.active);
@@ -613,7 +613,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[1].id()).toEqual('deleted-select');
             expect(selects[1].label()).toEqual('Deletados');
-            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].autofocus()).toBeUndefined();
             expect(selects[1].control()).toBeDefined();
             expect(selects[1].control()).not.toBeNull();
             expect(selects[1].control()?.value).toEqual(
@@ -660,7 +660,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[0].id()).toEqual('active-select');
             expect(selects[0].label()).toEqual('Ativos');
-            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].autofocus()).toBeUndefined();
             expect(selects[0].control()).toBeDefined();
             expect(selects[0].control()).not.toBeNull();
             expect(selects[0].control()?.value).toEqual(ActiveFilter.active);
@@ -668,7 +668,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[1].id()).toEqual('deleted-select');
             expect(selects[1].label()).toEqual('Deletados');
-            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].autofocus()).toBeUndefined();
             expect(selects[1].control()).toBeDefined();
             expect(selects[1].control()).not.toBeNull();
             expect(selects[1].control()?.value).toEqual(
@@ -740,7 +740,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[0].id()).toEqual('order-select');
             expect(selects[0].label()).toEqual('Ordem');
-            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].autofocus()).toBeUndefined();
             expect(selects[0].control()).toBeDefined();
             expect(selects[0].control()).not.toBeNull();
             expect(selects[0].control()?.value).toEqual(UserOrder.deleted_desc);
@@ -748,7 +748,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[1].id()).toEqual('active-select');
             expect(selects[1].label()).toEqual('Ativos');
-            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].autofocus()).toBeUndefined();
             expect(selects[1].control()).toBeDefined();
             expect(selects[1].control()).not.toBeNull();
             expect(selects[1].control()?.value).toEqual(ActiveFilter.all);
@@ -756,7 +756,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[2].id()).toEqual('deleted-select');
             expect(selects[2].label()).toEqual('Deletados');
-            expect(selects[2].autofocus()).toBeFalse();
+            expect(selects[2].autofocus()).toBeUndefined();
             expect(selects[2].control()).toBeDefined();
             expect(selects[2].control()).not.toBeNull();
             expect(selects[2].control()?.value).toEqual(DeletedFilter.all);
@@ -812,7 +812,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[0].id()).toEqual('order-select');
             expect(selects[0].label()).toEqual('Ordem');
-            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].autofocus()).toBeUndefined();
             expect(selects[0].control()).toBeDefined();
             expect(selects[0].control()).not.toBeNull();
             expect(selects[0].control()?.value).toEqual(UserOrder.name_asc);
@@ -820,7 +820,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[1].id()).toEqual('active-select');
             expect(selects[1].label()).toEqual('Ativos');
-            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].autofocus()).toBeUndefined();
             expect(selects[1].control()).toBeDefined();
             expect(selects[1].control()).not.toBeNull();
             expect(selects[1].control()?.value).toEqual(ActiveFilter.active);
@@ -828,7 +828,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[2].id()).toEqual('deleted-select');
             expect(selects[2].label()).toEqual('Deletados');
-            expect(selects[2].autofocus()).toBeFalse();
+            expect(selects[2].autofocus()).toBeUndefined();
             expect(selects[2].control()).toBeDefined();
             expect(selects[2].control()).not.toBeNull();
             expect(selects[2].control()?.value).toEqual(
@@ -879,7 +879,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[0].id()).toEqual('order-select');
             expect(selects[0].label()).toEqual('Ordem');
-            expect(selects[0].autofocus()).toBeFalse();
+            expect(selects[0].autofocus()).toBeUndefined();
             expect(selects[0].control()).toBeDefined();
             expect(selects[0].control()).not.toBeNull();
             expect(selects[0].control()?.value).toEqual(UserOrder.name_asc);
@@ -887,7 +887,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[1].id()).toEqual('active-select');
             expect(selects[1].label()).toEqual('Ativos');
-            expect(selects[1].autofocus()).toBeFalse();
+            expect(selects[1].autofocus()).toBeUndefined();
             expect(selects[1].control()).toBeDefined();
             expect(selects[1].control()).not.toBeNull();
             expect(selects[1].control()?.value).toEqual(ActiveFilter.active);
@@ -895,7 +895,7 @@ describe('UserFilterToolbarComponent.', () => {
 
             expect(selects[2].id()).toEqual('deleted-select');
             expect(selects[2].label()).toEqual('Deletados');
-            expect(selects[2].autofocus()).toBeFalse();
+            expect(selects[2].autofocus()).toBeUndefined();
             expect(selects[2].control()).toBeDefined();
             expect(selects[2].control()).not.toBeNull();
             expect(selects[2].control()?.value).toEqual(

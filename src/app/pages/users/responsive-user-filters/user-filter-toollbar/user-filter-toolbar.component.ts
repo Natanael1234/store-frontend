@@ -85,7 +85,7 @@ import { OnUserFilterMenuListCloseEvent } from './types/on-user-filter-menu-list
                         id="cancel-button"
                         label="Cancelar"
                         [type]="FormElementType.button"
-                        [appearance]="ButtonAppearance.filled"
+                        [appearance]="ButtonAppearance.text"
                         (onClick)="cancel()" />
                 </div>
             }

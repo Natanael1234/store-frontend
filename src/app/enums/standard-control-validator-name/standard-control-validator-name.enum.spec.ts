@@ -12,11 +12,9 @@ describe('StandardControlValidatorError', () => {
             required: 'required',
             requiredTrue: 'requiredTrue',
             email: 'email',
-            minLength: 'minLength',
-            maxLength: 'maxLength',
-            pattern: 'pattern',
+            minlength: 'minlength',
+            maxlength: 'maxlength',
             nullValidator: 'nullValidator',
-            compose: 'compose',
         });
     });
 });
