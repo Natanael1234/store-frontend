@@ -1,71 +1,73 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <!-- main error -->
-  @if (loading) {
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+<form [formGroup]="formGroup" class="grid">
+    <!-- loading progress TODO: mover para a barra principal? -->
 
-  } @if (mainError) {
-  <app-alert
-    [showCloseButton]="true"
-    type="danger"
-    icon="warning"
-    (onClose)="mainError = undefined"
-  >
-    {{ mainError }}
-  </app-alert>
+    @if (loading) {
+        <div [attr.col]="12">
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </div>
+    }
 
-  }
+    <!-- main error -->
 
-  <!-- email -->
-  <mat-form-field id="email-field" appearance="outline">
-    <mat-label>Email</mat-label>
-    <input
-      id="email-input"
-      formControlName="email"
-      matInput
-      type="email"
-      autoComplete="on"
-      [maxlength]="maxEmailLength"
-    />
-    <mat-error id="email-error">{{ getEmailErrorMessage() }}</mat-error>
-  </mat-form-field>
+    @if (mainError) {
+        <div [attr.col]="12">
+            <app-alert
+                [showCloseButton]="true"
+                type="danger"
+                icon="warning"
+                (onClose)="mainError = undefined">
+                {{ mainError }}
+            </app-alert>
+        </div>
+    }
 
-  <!-- password -->
-  <mat-form-field id="password-field" appearance="outline">
-    <mat-label>Senha</mat-label>
-    <input
-      id="password-input"
-      formControlName="password"
-      matInput
-      [type]="showPassword ? 'text' : 'password'"
-      autoComplete="off"
-      [maxlength]="maxPasswordLength"
-      class="material-icons-outlined"
-      autocomplete="on"
-    />
-    <mat-icon
-      id="show-password-icon"
-      matSuffix
-      (click)="togglePasswordVisibility($event)"
-      >{{ showPassword ? "visibility" : "visibility_off" }}</mat-icon
-    >
+    <!-- email  -->
 
-    <mat-error id="password-error">{{ getPasswordErrorMessage() }}</mat-error>
-  </mat-form-field>
+    <div [attr.col]="12">
+        <app-text-field
+            id="email-input"
+            [mask]="TextMask.email"
+            label="Email"
+            [inputMode]="InputMode.email"
+            [control]="formGroup.controls.email"
+            [format]="TextFormat.email"
+            [autocomplete]="AutoCompleteType.on"
+            [maxLength]="EmailConstants.MAX_LENGTH" />
+    </div>
 
-  <!-- login -->
-  <button mat-flat-button id="login" type="submit" [disabled]="loading">
-    Login
-  </button>
+    <!-- password -->
 
-  <!-- register -->
-  <button
-    mat-stroked-button
-    id="register"
-    type="button"
-    [disabled]="loading"
-    routerLink="/register"
-  >
-    Não tem tem uma conta? <b>Cadastre-se</b>
-  </button>
+    <div [attr.col]="12">
+        <app-password-field
+            id="password-input"
+            label="Senha"
+            [control]="formGroup.controls.password"
+            [autocomplete]="AutoCompleteType.current_password"
+            [minLength]="UserConfigs.PASSWORD_MIN_LENGTH"
+            [maxLength]="UserConfigs.PASSWORD_MAX_LENGTH" />
+    </div>
+
+    <!-- login button -->
+
+    <div [attr.col]="12">
+        <app-button
+            id="login-button"
+            [type]="FormElementType.button"
+            label="Login"
+            [appearance]="ButtonAppearance.filled"
+            [disabled]="!!loading"
+            (onClick)="onSubmit()" />
+    </div>
+
+    <!-- register button -->
+
+    <div [attr.col]="12">
+        <app-button
+            id="register-button"
+            [type]="FormElementType.button"
+            label="Não tem tem uma conta? <b>Cadastre-se</b>"
+            [appearance]="ButtonAppearance.outlined"
+            [disabled]="!!loading"
+            routerLink="/register" />
+    </div>
 </form>
-''

@@ -1,0 +1,33 @@
+#container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+}
+
+#left-column {
+    padding: 1em;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    align-content: center;
+    gap: 0.5em;
+}
+
+#right-column {
+    align-items: center;
+    // padding: 1em;
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+}
+
+#primary-text {
+    font-weight: 500;
+    font-size: medium;
+}
+
+#secondary-text {
+    font-size: small;
+}
+
+.mat-icon.disabled {
+    opacity: 0.05;
+}

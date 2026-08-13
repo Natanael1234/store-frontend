@@ -1,123 +1,106 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <!-- main error -->
-  @if (loading) {
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+<form [formGroup]="formGroup" class="grid">
+    <!-- loading progress TODO: mover para a barra principal? -->
 
-  } @if (mainError) {
-  <app-alert
-    [showCloseButton]="true"
-    type="danger"
-    icon="warning"
-    (onClose)="mainError = undefined"
-  >
-    {{ mainError }}
-  </app-alert>
+    @if (loading) {
+        <div [attr.col]="12">
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </div>
+    }
 
-  }
-  <!-- name -->
-  <mat-form-field id="name-field" appearance="outline">
-    <mat-label>Nome</mat-label>
-    <input
-      id="name-input"
-      formControlName="name"
-      matInput
-      type="text"
-      autoComplete="off"
-      [maxlength]="maxUsernameLength"
-      autofocus
-      autocomplete="off"
-    />
-    <mat-error id="name-error"> {{ getNameErrorMessage() }}</mat-error>
-  </mat-form-field>
+    <!-- main error -->
 
-  <!-- email -->
-  <mat-form-field id="email-field" appearance="outline">
-    <mat-label>Email</mat-label>
-    <input
-      id="email-input"
-      formControlName="email"
-      matInput
-      type="email"
-      autoComplete="off"
-      [maxlength]="maxEmailLength"
-    />
-    <mat-error id="email-error">{{ getEmailErrorMessage() }}</mat-error>
-  </mat-form-field>
+    @if (mainError) {
+        <div [attr.col]="12">
+            <app-alert
+                [showCloseButton]="true"
+                type="danger"
+                icon="warning"
+                (onClose)="mainError = undefined">
+                {{ mainError }}
+            </app-alert>
+        </div>
+    }
 
-  <!-- password -->
-  <mat-form-field id="password-field" appearance="outline">
-    <mat-label>Senha</mat-label>
-    <input
-      id="password-input"
-      formControlName="password"
-      matInput
-      [type]="showPassword ? 'text' : 'password'"
-      autoComplete="off"
-      [maxlength]="maxPasswordLength"
-      class="material-icons-outlined"
-      autocomplete="new-password"
-      (blur)="onPasswordBlur($event)"
-    />
-    <mat-icon
-      id="show-password-icon"
-      matSuffix
-      (click)="togglePasswordVisibility($event)"
-      >{{ showPassword ? "visibility" : "visibility_off" }}</mat-icon
-    >
+    <!-- name -->
 
-    <mat-error id="password-error">{{ getPasswordErrorMessage() }}</mat-error>
-  </mat-form-field>
+    <div [attr.col]="12">
+        <app-text-field
+            id="name-input"
+            label="Nome"
+            [control]="formGroup.controls.name"
+            [autofocus]="true"
+            [format]="TextFormat.text"
+            [minLength]="UserConfigs.NAME_MIN_LENGTH"
+            [maxLength]="UserConfigs.NAME_MAX_LENGTH" />
+    </div>
 
-  <!-- repeat password -->
-  <mat-form-field id="repeat-password-field" appearance="outline">
-    <mat-label>Repita a Senha</mat-label>
-    <input
-      id="repeat-password-input"
-      formControlName="repeatPassword"
-      matInput
-      [type]="showRepeatPassword ? 'text' : 'password'"
-      [maxlength]="maxPasswordLength"
-      class="material-icons-outlined"
-      autocomplete="off"
-      autoComplete="new-password"
-    />
-    <mat-icon
-      matSuffix
-      id="show-repeat-password-icon"
-      (click)="toggleRepeatPasswordVisibility($event)"
-      >{{ showRepeatPassword ? "visibility" : "visibility_off" }}</mat-icon
-    >
+    <!-- email  -->
 
-    <mat-error id="repeat-password-error">{{
-      getRepeatPasswordErrorMessage()
-    }}</mat-error>
-  </mat-form-field>
+    <div [attr.col]="12">
+        <app-text-field
+            id="email-input"
+            [mask]="TextMask.email"
+            label="Email"
+            [inputMode]="InputMode.email"
+            [control]="formGroup.controls.email"
+            [format]="TextFormat.email"
+            [maxLength]="EmailConstants.MAX_LENGTH" />
+    </div>
 
-  <!-- accept terms -->
-  <mat-checkbox
-    id="accept-terms-checkbox"
-    color="basic"
-    [classList]="[acceptTermsHasError ? 'invalid' : '']"
-    formControlName="acceptTerms"
-    (focus)="acceptTermsBlurred = false"
-    (blur)="acceptTermsBlurred = true"
-    >Aceito os Termos de Serviço *
-  </mat-checkbox>
+    <!-- password -->
 
-  <!-- login -->
-  <button mat-flat-button id="register" type="submit" [disabled]="loading">
-    Registrar
-  </button>
+    <div [attr.col]="12">
+        <app-password-field
+            id="password-input"
+            label="Senha"
+            [control]="formGroup.controls.password"
+            [autocomplete]="AutoCompleteType.new_password"
+            [minLength]="UserConfigs.PASSWORD_MIN_LENGTH"
+            [maxLength]="UserConfigs.PASSWORD_MAX_LENGTH"
+            (onBlur)="onPasswordBlur()" />
+    </div>
 
-  <!-- register -->
-  <button
-    mat-stroked-button
-    id="login"
-    type="button"
-    [disabled]="loading"
-    routerLink="/login"
-  >
-    Já tem uma conta? <b>Login</b>
-  </button>
+    <!-- repeat password -->
+
+    <div [attr.col]="12">
+        <app-password-field
+            id="repeat-password-input"
+            label="Repita a senha"
+            [control]="formGroup.controls.repeatPassword"
+            [minLength]="UserConfigs.PASSWORD_MIN_LENGTH"
+            [maxLength]="UserConfigs.PASSWORD_MAX_LENGTH" />
+    </div>
+
+    <!-- accept terms -->
+
+    <div [attr.col]="12">
+        <app-checkbox
+            id="accept-terms-checkbox"
+            [label]="acceptTermsLabel"
+            [control]="formGroup.controls.acceptTerms" />
+    </div>
+
+    <!-- register button -->
+
+    <div [attr.col]="12">
+        <app-button
+            id="register-button"
+            [type]="FormElementType.button"
+            label="Registrar"
+            [appearance]="ButtonAppearance.filled"
+            [disabled]="!!loading"
+            (onClick)="onSubmit()" />
+    </div>
+
+    <!-- login button -->
+
+    <div [attr.col]="12">
+        <app-button
+            id="login-button"
+            [type]="FormElementType.button"
+            label="Já tem uma conta? <b>Login</b>"
+            [appearance]="ButtonAppearance.outlined"
+            [disabled]="!!loading"
+            routerLink="/login" />
+    </div>
 </form>
-''

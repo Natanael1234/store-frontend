@@ -2,6 +2,19 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
+type PostParams = {
+  path: string;
+  data: any;
+  queryParams?: Record<string, any>;
+  authorization?: boolean;
+};
+
+type GetParams = {
+  path: string;
+  queryParams?: Record<string, any>;
+  authorization?: boolean;
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -10,7 +23,29 @@ export class HttpService {
 
   http: HttpClient = inject(HttpClient);
 
-  post<T>(path: string, data: any): Observable<any> {
+  post<T>(params: PostParams): Observable<any> {
+    const { path, data, queryParams, authorization } = params;
+    const url = this.getUrl(path, queryParams);
+    const headers = this.getHeaders(!!authorization);
+    return this.http.post<T>(url, data, { headers });
+  }
+
+  // TODO: test
+  patch<T>(params: PostParams): Observable<any> {
+    const { path, data, queryParams, authorization } = params;
+    const url = this.getUrl(path, queryParams);
+    const headers = this.getHeaders(!!authorization);
+    return this.http.patch<T>(url, data, { headers });
+  }
+
+  get<T>(params: GetParams): Observable<any> {
+    const { path, queryParams, authorization } = params;
+    const url = this.getUrl(path, queryParams);
+    const headers = this.getHeaders(!!authorization);
+    return this.http.get<T>(url, { headers });
+  }
+
+  private getUrl(path: string, params?: Record<string, any>) {
     if (!path) {
       throw new Error('Missing request path');
     }
@@ -18,7 +53,33 @@ export class HttpService {
     if (path.startsWith('/')) {
       path = path.substring(1);
     }
-    const url = `${this.apiUrl}/${path}`;
-    return this.http.post<T>(url, data);
+    const queryParams = this.toQueryParams(params);
+    const url = `${this.apiUrl}/${path}${queryParams}`;
+    return url;
+  }
+
+  private toQueryParams(params?: Record<string, any>): string {
+    const urlSearchParams = new URLSearchParams();
+
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          value.forEach((val) => urlSearchParams.append(key, String(val)));
+        } else if (value !== undefined && value !== null) {
+          urlSearchParams.append(key, String(value));
+        }
+      });
+    }
+
+    const str = urlSearchParams.size ? `?${urlSearchParams.toString()}` : '';
+    return str;
+  }
+
+  private getHeaders(authorization: boolean) {
+    let headers = new HttpHeaders();
+    if (authorization) {
+      headers = headers.set('Authorization', 'true');
+    }
+    return headers;
   }
 }

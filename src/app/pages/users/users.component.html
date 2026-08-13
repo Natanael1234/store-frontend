@@ -1,0 +1,43 @@
+<div class="container">
+    <!-- error -->
+    @if (error()) {
+        <app-alert
+            icon="error"
+            type="danger"
+            [showCloseButton]="true"
+            (onClose)="onCloseErrorAlert()">
+            {{ error() }}
+        </app-alert>
+    }
+
+    <!-- filters -->
+    <app-responsive-user-filters
+        [textQuery]="textQuery()"
+        [active]="active()"
+        [deleted]="deleted()"
+        [loading]="loading()"
+        [mobile]="mobile()"
+        [orderBy]="orderBy()"
+        (refresh)="refreshFilters($event)"></app-responsive-user-filters>
+
+    <!-- list/table -->
+    <app-responsive-user-list
+        [users]="userRows()"
+        [loading]="loading()"
+        [mobile]="mobile()"
+        [active]="active()"
+        [deleted]="deleted()"
+        (headerClick)="fireHeaderClickEvent()"
+        (itemClick)="onItemClick($event)"></app-responsive-user-list>
+
+    <!-- paginator -->
+    <mat-paginator
+        (page)="onPageEvent($event)"
+        [hidePageSize]="!!mobile()"
+        [disabled]="loading()"
+        [pageSizeOptions]="pageSizeOptions()"
+        [length]="length()"
+        [pageSize]="pageSize()"
+        showFirstLastButtons
+        aria-label="Selecione a página"></mat-paginator>
+</div>

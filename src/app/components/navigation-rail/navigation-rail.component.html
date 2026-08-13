@@ -1,0 +1,25 @@
+<div
+    (click)="fireOnCloseEvent($event)"
+    class="container"
+    [ngClass]="cssClasses()">
+    @for (item of items(); track item) {
+        <button
+            [id]="item.id"
+            mat-button
+            [routerLink]="item.route"
+            class="item"
+            [ngClass]="cssClasses()"
+            (click)="fireOnCloseEvent($event)">
+            <div class="button-content-wrapper" [ngClass]="cssClasses()">
+                <div class="icon-wrapper">
+                    <mat-icon class="icon" [ngClass]="cssClasses()">
+                        {{ item.icon }}
+                    </mat-icon>
+                </div>
+                <div class="label-wrapper" [ngClass]="cssClasses()">
+                    {{ item.label }}
+                </div>
+            </div>
+        </button>
+    }
+</div>

@@ -1,0 +1,13 @@
+@if (mobile()) {
+    <app-list
+        [data]="listData()"
+        [loading]="!!loading()"
+        (itemClick)="fireRowClickEvent($event)"></app-list>
+} @else {
+    <app-table
+        [columns]="columns()"
+        [data]="tableData()"
+        [loading]="loading()"
+        (headerClick)="fireHeaderClickEvent($event)"
+        (rowClick)="fireRowClickEvent($event)"></app-table>
+}

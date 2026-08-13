@@ -1,0 +1,12 @@
+$error-color: var(--mat-form-field-error-text-color, var(--mat-sys-error));
+
+mat-radio-group.ng-invalid.ng-touched,
+mat-radio-group.ng-invalid.ng-dirty {
+    mat-label,
+    .mdc-label {
+        color: $error-color !important;
+    }
+    .mdc-radio__outer-circle {
+        border-color: $error-color !important;
+    }
+}

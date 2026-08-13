@@ -1,0 +1,409 @@
+<form class="grid" [formGroup]="formGroup">
+    <!-- TEXT -->
+    <div [attr.col]="mobile ? 12 : 6">
+        <app-text-field
+            id="name"
+            label="Nome"
+            [format]="TextFormat.text"
+            placeholder="undefined"
+            [control]="formGroup.controls.name"
+            [focusable]="true"
+            [autofocus]="true"
+            [readOnly]="false"
+            [autocomplete]="AutoCompleteType.off"
+            [minLength]="3"
+            [maxLength]="7"
+            [prefix]="undefined"
+            [suffix]="undefined"
+            (onBlur)="onTextFieldBlur()" />
+    </div>
+
+    <!-- SPACER -->
+    @if (mobile) {
+        <!-- spacer -->
+        <div [attr.col]="12"></div>
+    }
+
+    <!-- EMAIL -->
+    <div [attr.col]="mobile ? 12 : 4">
+        <app-text-field
+            id="email"
+            label="Email"
+            [format]="TextFormat.email"
+            [inputMode]="InputMode.email"
+            placeholder="Insira um email"
+            [control]="formGroup.controls.email"
+            [focusable]="true"
+            [autofocus]="false"
+            [readOnly]="false"
+            [autocomplete]="AutoCompleteType.off"
+            [minLength]="undefined"
+            [maxLength]="200"
+            [prefix]="undefined"
+            [suffix]="undefined"
+            (onBlur)="onTextFieldBlur()" />
+    </div>
+
+    <!-- PASSWORD -->
+    <div [attr.col]="mobile ? 12 : 12">
+        <app-password-field
+            id="password"
+            label="Senha"
+            placeholder="Insira a senha"
+            [control]="formGroup.controls.password"
+            [focusable]="true"
+            [autofocus]="false"
+            [readOnly]="false"
+            [autocomplete]="AutoCompleteType.off"
+            [minLength]="undefined"
+            [maxLength]="12"
+            (onBlur)="(undefined)" />
+    </div>
+
+    <!-- PHONE -->
+    <div [attr.col]="mobile ? 12 : 4">
+        <app-text-field
+            id="phone"
+            label="Fone"
+            placeholder="Insira seu telefone"
+            [format]="TextFormat.phone"
+            [mask]="TextMask.phone"
+            [inputMode]="InputMode.tel"
+            [control]="formGroup.controls.phone"
+            [focusable]="false"
+            [autofocus]="false"
+            [readOnly]="false"
+            [autocomplete]="AutoCompleteType.off"
+            [minLength]="undefined"
+            [maxLength]="14"
+            [prefix]="undefined"
+            [suffix]="undefined"
+            (onBlur)="onTextFieldBlur()" />
+    </div>
+
+    <!-- ZIP CODE -->
+    <div [attr.col]="mobile ? 12 : 4">
+        <app-text-field
+            id="zip-code"
+            label="CEP"
+            [format]="TextFormat.zipCode"
+            [mask]="TextMask.zipCode"
+            placeholder="undefined"
+            [control]="formGroup.controls.zipCode"
+            [focusable]="true"
+            [autofocus]="false"
+            [readOnly]="false"
+            [autocomplete]="AutoCompleteType.off"
+            [minLength]="undefined"
+            [maxLength]="200"
+            [prefix]="undefined"
+            [suffix]="undefined"
+            (onBlur)="onTextFieldBlur()" />
+    </div>
+
+    <!-- SPACER -->
+    @if (mobile) {
+        <!-- spacer -->
+        <div [attr.col]="3"></div>
+    }
+
+    <!-- DATE -->
+    <div [attr.col]="mobile ? 12 : 3">
+        <app-text-field
+            id="date"
+            label="Data"
+            [format]="TextFormat.date"
+            placeholder="undefined"
+            [control]="formGroup.controls.date"
+            [focusable]="true"
+            [autofocus]="false"
+            [readOnly]="false"
+            [autocomplete]="AutoCompleteType.off"
+            [minLength]="undefined"
+            [maxLength]="undefined"
+            [prefix]="undefined"
+            [suffix]="undefined"
+            (onBlur)="onTextFieldBlur()" />
+    </div>
+
+    <!-- SPACER -->
+    @if (mobile) {
+        <!-- spacer -->
+        <div [attr.col]="12"></div>
+    }
+
+    <!-- TIME -->
+    <div [attr.col]="mobile ? 12 : 3">
+        <app-text-field
+            id="time"
+            label="Horário"
+            [format]="TextFormat.time"
+            placeholder="undefined"
+            [control]="formGroup.controls.time"
+            [focusable]="true"
+            [autofocus]="false"
+            [readOnly]="false"
+            [autocomplete]="AutoCompleteType.off"
+            [minLength]="undefined"
+            [maxLength]="undefined"
+            [prefix]="undefined"
+            [suffix]="undefined"
+            (onBlur)="onTextFieldBlur()" />
+    </div>
+
+    <!-- CNPJ -->
+    <div [attr.col]="mobile ? 12 : 5">
+        <app-text-field
+            id="cnpj"
+            label="CNPJ"
+            [format]="TextFormat.cnpj"
+            placeholder="undefined"
+            [control]="formGroup.controls.cnpj"
+            [focusable]="true"
+            [autofocus]="false"
+            [readOnly]="false"
+            [autocomplete]="AutoCompleteType.off"
+            [minLength]="undefined"
+            [maxLength]="undefined"
+            [prefix]="undefined"
+            [suffix]="undefined"
+            (onBlur)="onTextFieldBlur()" />
+    </div>
+
+    <!-- CPF -->
+    <div [attr.col]="mobile ? 12 : 5">
+        <app-text-field
+            id="cpf"
+            label="CPF"
+            [format]="TextFormat.cpf"
+            placeholder="undefined"
+            [control]="formGroup.controls.cpf"
+            [focusable]="true"
+            [autofocus]="false"
+            [readOnly]="false"
+            [autocomplete]="AutoCompleteType.off"
+            [minLength]="undefined"
+            [maxLength]="undefined"
+            [prefix]="undefined"
+            [suffix]="undefined"
+            (onBlur)="onTextFieldBlur()" />
+    </div>
+
+    <!-- NUMERIC -->
+    <div [attr.col]="mobile ? 12 : 12">
+        <app-numeric-field
+            id="amount"
+            label="Quantidade"
+            [control]="formGroup.controls.amount"
+            placeholder="undefined"
+            [focusable]="true"
+            [autofocus]="false"
+            [readOnly]="false"
+            [minLength]="undefined"
+            [maxLength]="undefined"
+            [min]="3"
+            [max]="300"
+            [step]="5"
+            prefix="R$"
+            suffix="reais"
+            [allowNegativeNumbers]="true"
+            [decimalPlaces]="undefined"
+            [leadZero]="undefined"
+            (onBlur)="(undefined)" />
+    </div>
+
+    <!-- NUMERIC -->
+    <div [attr.col]="mobile ? 12 : 12">
+        <app-numeric-field
+            id="price"
+            label="Preço"
+            [control]="formGroup.controls.price"
+            placeholder="undefined"
+            [focusable]="true"
+            [autofocus]="false"
+            [readOnly]="false"
+            [minLength]="undefined"
+            [maxLength]="undefined"
+            [min]="3"
+            [max]="300"
+            [step]="5"
+            prefix="undefined"
+            suffix=" %"
+            [allowNegativeNumbers]="false"
+            [decimalPlaces]="2"
+            [leadZero]="true"
+            (onBlur)="(undefined)" />
+    </div>
+
+    <!-- TEXT AREA -->
+    <div [attr.col]="mobile ? 12 : 12">
+        <app-text-area-field
+            id="description"
+            label="Descrição"
+            placeholder="Insira uma descrição"
+            [control]="formGroup.controls.description"
+            [focusable]="true"
+            [autofocus]="false"
+            [minLength]="undefined"
+            [maxLength]="200"
+            [autosizeMinRows]="2"
+            [autosizeMaxRows]="2"
+            (onBlur)="onTextAreaBlur()" />
+    </div>
+
+    <!-- TEXT AREA DISABLED -->
+    <div [attr.col]="mobile ? 12 : 12">
+        <app-text-area-field
+            id="disabled-description"
+            label="Área de texto desabilitada"
+            placeholder="Placeholder"
+            [control]="formGroup.controls.disabledDescription"
+            [focusable]="true"
+            [autofocus]="false"
+            [minLength]="undefined"
+            [maxLength]="200"
+            [autosizeMinRows]="2"
+            [autosizeMaxRows]="2"
+            (onBlur)="(undefined)" />
+    </div>
+
+    <!-- DIVIDER -->
+    <div [attr.col]="mobile ? 12 : 12">
+        <mat-divider class="app-divider" />
+    </div>
+
+    <!-- LABEL -->
+    <div [attr.col]="mobile ? 12 : 12">
+        <mat-label id="test-lavel">Label</mat-label>
+    </div>
+
+    <!-- SELECT -->
+    <div [attr.col]="mobile ? 12 : 7">
+        <app-select-field
+            id="gender"
+            label="Gênero"
+            [control]="this.formGroup.controls.gender"
+            [options]="[
+                { label: 'Masculino', value: 'M' },
+                { label: 'Feminino', value: 'F' },
+            ]"
+            [autofocus]="" />
+        <!-- [focusable]="false" -->
+    </div>
+
+    <!--RADIO GROUP -->
+    <div [attr.col]="mobile ? 12 : 12">
+        <app-radio-group
+            id="level"
+            label="Nível"
+            [control]="this.formGroup.controls.level"
+            [options]="[
+                { label: 'Begginer', value: 'B' },
+                { label: 'Intermmediate', value: 'I' },
+                { label: 'Advanced', value: 'A' },
+            ]"
+            [focusable]="true"
+            [autofocus]="false" />
+    </div>
+
+    <!--CHECKBOX -->
+    <div [attr.col]="4">
+        <app-checkbox
+            id="accept-terms"
+            [label]="acceptTermsLabel"
+            [control]="this.formGroup.controls.acceptTerms"
+            [focusable]="true"
+            [autofocus]="false" />
+    </div>
+
+    <!-- LABEL -->
+    <div [attr.col]="mobile ? 12 : 12">
+        <mat-label id="test-lavel-2">Test label</mat-label>
+    </div>
+
+    <!-- SPACER -->
+    @if (mobile) {
+        <!-- spacer -->
+        <div [attr.col]="2"></div>
+    }
+
+    <!-- FLAT BUTTON -->
+    <div [attr.col]="mobile ? 12 : 2">
+        <app-button
+            id="flat-button"
+            [type]="FormElementType.button"
+            [icon]="Icon.checked"
+            label="Botão plano"
+            [appearance]="ButtonAppearance.text"
+            [focusable]="true"
+            [autofocus]="false"
+            [routerLink]="undefined"
+            [queryParams]="undefined"
+            [queryParamsHandling]="undefined"
+            (onClick)="(undefined)" />
+    </div>
+
+    <!-- ELEVATED BUTTON -->
+    <div [attr.col]="mobile ? 12 : 2">
+        <app-button
+            id="elevated-button"
+            [type]="FormElementType.button"
+            [icon]="Icon.checked"
+            label="Botão elevado"
+            [appearance]="ButtonAppearance.elevated"
+            [focusable]="true"
+            [autofocus]="false"
+            [routerLink]="undefined"
+            [queryParams]="undefined"
+            [queryParamsHandling]="undefined"
+            (onClick)="(undefined)" />
+    </div>
+
+    <!-- FILLED BUTTON -->
+    <div [attr.col]="mobile ? 12 : 2">
+        <app-button
+            id="filled-button"
+            [type]="FormElementType.submit"
+            [icon]="Icon.checked"
+            label="Botão preenchido"
+            [appearance]="ButtonAppearance.filled"
+            [focusable]="true"
+            [autofocus]="false"
+            [routerLink]="undefined"
+            [queryParams]="undefined"
+            [queryParamsHandling]="undefined"
+            (onClick)="(undefined)" />
+    </div>
+
+    <!-- OUTLINED BUTTON -->
+    <div [attr.col]="mobile ? 12 : 2">
+        <app-button
+            id="outlined-button"
+            [type]="FormElementType.submit"
+            [icon]="Icon.checked"
+            label="Botão contornado"
+            [appearance]="ButtonAppearance.outlined"
+            [focusable]="true"
+            [autofocus]="false"
+            [routerLink]="undefined"
+            [queryParams]="undefined"
+            [queryParamsHandling]="undefined"
+            (onClick)="(undefined)" />
+    </div>
+
+    <!-- TONAL BUTTON -->
+    <div [attr.col]="mobile ? 12 : 2">
+        <app-button
+            id="tonal-button"
+            [type]="FormElementType.submit"
+            [icon]="Icon.checked"
+            label="Botão tonal"
+            [appearance]="ButtonAppearance.tonal"
+            [focusable]="true"
+            [autofocus]="false"
+            [routerLink]="undefined"
+            [queryParams]="undefined"
+            [queryParamsHandling]="undefined"
+            (onClick)="(undefined)" />
+    </div>
+</form>

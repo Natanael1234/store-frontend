@@ -1,0 +1,45 @@
+.link-modern {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #2563eb; /* Azul refinado */
+    font-weight: 500;
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 2px;
+    transition: color 0.2s ease;
+}
+
+/* Efeito de sublinhado animado */
+.link-modern::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #2563eb;
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+}
+
+.link-modern:hover {
+    color: #1d4ed8;
+}
+
+.link-modern:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+/* Ícone com leve movimento */
+.link-modern .icon {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s ease;
+}
+
+.link-modern:hover .icon {
+    transform: translateX(3px); /* Move o ícone levemente para a direita */
+}

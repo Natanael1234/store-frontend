@@ -1,5 +1,24 @@
-<main class="container">
-  <section class="content">
-    <router-outlet></router-outlet>
-  </section>
-</main>
+<app-toolbar
+    [theme]="this.themeService.darkMode ? 'light_mode' : 'dark_mode'"
+    (toggleMenu)="toggleMenu()"
+    (toggleTheme)="this.themeService.toggleTheme()" />
+
+<mat-sidenav-container
+    class="sidenav-container mat-elevation-z3"
+    [hasBackdrop]="hasBackdrop()">
+    <mat-sidenav #sidenav [class.sidenav]="true" [class.mobile]="mobile()">
+        <app-navigation-rail
+            [items]="railItems()"
+            [collapsed]="railCollapsed()"
+            [transition]="railTransition()"
+            (onClose)="closeMenu()" />
+    </mat-sidenav>
+
+    <mat-sidenav-content class="sidenav-content">
+        <main class="container">
+            <section class="content">
+                <router-outlet />
+            </section>
+        </main>
+    </mat-sidenav-content>
+</mat-sidenav-container>

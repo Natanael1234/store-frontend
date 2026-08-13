@@ -1,0 +1,18 @@
+<div id="container" (click)="fireOnSelectEvent($event)">
+    <span
+        id="label"
+        [class]="[this.disabled() || this.loading() ? 'disabled' : '']">
+        {{ label() }}
+    </span>
+
+    @if (sortable() !== false && loading() !== true) {
+        <mat-icon
+            id="arrow"
+            [class]="[
+                this.direction() || 'hidden',
+                this.disabled() || this.loading() ? 'disabled' : '',
+            ]">
+            arrow_downward
+        </mat-icon>
+    }
+</div>

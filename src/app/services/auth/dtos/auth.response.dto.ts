@@ -1,4 +1,4 @@
-import { User } from '../../user/user.response.dto';
+import { UserResponseDto } from '../../user/dtos/user.response/user.response.dto';
 
 export type AuthResponsePayload = {
   type: string;
@@ -7,7 +7,7 @@ export type AuthResponsePayload = {
 };
 
 export type AuthResponseData = {
-  user: User;
+  user: UserResponseDto;
   payload: AuthResponsePayload;
 };
 

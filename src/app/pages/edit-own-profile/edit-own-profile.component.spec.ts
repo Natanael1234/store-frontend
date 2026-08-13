@@ -1,368 +1,441 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { RouterTestingModule } from '@angular/router/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInput, MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { of, throwError } from 'rxjs';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { Location } from '@angular/common';
 import { HttpStatusCode } from '@angular/common/http';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatCardModule } from '@angular/material/card';
-import { EditOwnProfileComponent } from './edit-own-profile.component';
-import { AuthService } from '../../services/auth/auth.service';
-import { AlertComponent } from '../../components/alert/alert.component';
-import {
-  testButton,
-  testForm,
-  testFormField,
-} from '../../../test-utils/test-form-utils';
-import { UserConfigs } from '../../configs/user/user.configs';
-import { TextMessage } from '../../messages/text/text.messages';
-import { Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
-import { ExceptionName } from '../../utils/exception-names/exception-text.enum';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { NavigationExtras, provideRouter, Router } from '@angular/router';
+import { of, Subject, throwError } from 'rxjs';
+import { AlertComponent } from '../../components/alert/alert.component';
+import { ButtonComponent } from '../../components/form/components/button/button.component';
+import { ButtonAppearance } from '../../components/form/components/button/enum/appearance/button-appearance.enum';
+import { TextFieldComponent } from '../../components/form/components/text/text-field/text-field.component';
+import { TextFormat } from '../../components/form/enums/text-format/text-format.enum';
+import { UserConfigs } from '../../configs/user/user.configs';
+import { ExceptionName } from '../../enums/exception-names/exception-text.enum';
+import { AuthService } from '../../services/auth/auth.service';
+import { HomeComponent } from '../home/home.component';
+import { EditOwnProfileComponent } from './edit-own-profile.component';
+import { EditOwnProfileHarness } from './edit-own-profile.harness';
 
-type FormData = { name: string };
+describe('EditOwnProfileComponent.', () => {
+    let fixture: ComponentFixture<EditOwnProfileComponent>;
+    let component: EditOwnProfileComponent;
+    let authServiceSpy: jasmine.SpyObj<AuthService>;
+    let router: Router;
+    let harness: EditOwnProfileHarness;
 
-type FormErrors = { mainError?: string; name?: string };
-
-type ExceptionData = {
-  message: string;
-  name: string;
-  statusCode: HttpStatusCode.UnprocessableEntity;
-  statusText: string;
-  error: { error: string; message: { name?: string } | string };
-};
-
-type RemoteFormErrorData = {
-  formData: FormData;
-  expectedErrors: FormErrors;
-  exceptionData: ExceptionData;
-};
-
-describe('EditOwnProfileComponent', () => {
-  let fixture: ComponentFixture<EditOwnProfileComponent>;
-  let component: EditOwnProfileComponent;
-  let authServiceSpy: jasmine.SpyObj<AuthService>;
-  let router: Router;
-
-  beforeEach(async () => {
-    const spy = jasmine.createSpyObj('AuthService', ['editOwnProfile']);
-
-    await TestBed.configureTestingModule({
-      imports: [
-        EditOwnProfileComponent,
-        FormsModule,
-        ReactiveFormsModule,
-        MatIconModule,
-        MatInputModule,
-        MatFormFieldModule,
-        MatButtonModule,
-        MatCheckboxModule,
-
-        MatCardModule,
-        AlertComponent,
-        MatProgressBarModule,
-      ],
-      providers: [
-        provideAnimationsAsync(),
-        {
-          provide: AuthService,
-          useValue: spy,
-          RouterTestingModule,
-        },
-      ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(EditOwnProfileComponent);
-    authServiceSpy = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
-
-    component = fixture.componentInstance;
-    router = TestBed.inject(Router);
-
-    fixture.detectChanges();
-  });
-
-  function testFormFieldsValues(formData: FormData) {
-    // name
-    const nameInput: MatInput = fixture.nativeElement.querySelector(
-      'mat-form-field#name-field input#name-input'
-    );
-    expect(nameInput).not.toBeNull();
-    expect(nameInput).not.toBeUndefined();
-    const expectedName = formData.name ?? '';
-    expect(nameInput.value).toEqual(expectedName);
-
-    // TODO: test error
-  }
-
-  function testErrorMessages(expectedErrors: FormErrors) {
-    /* MAIN ERROR */
-
-    const mainErrorAlertComponent =
-      fixture.nativeElement.querySelector('app-alert .message');
-    if (expectedErrors.mainError) {
-      expect(mainErrorAlertComponent).not.toBeNull();
-      const text = mainErrorAlertComponent.textContent.trim();
-      expect(text).toEqual(expectedErrors.mainError);
-    } else {
-      expect(mainErrorAlertComponent).toBeDefined();
+    function getTextFieldComponents() {
+        return fixture.debugElement
+            .queryAll(By.directive(TextFieldComponent))
+            .map((field) => field.componentInstance) as TextFieldComponent[];
     }
 
-    /* FORM ERRORS */
-
-    const nameErrorComponent =
-      fixture.nativeElement.querySelector('#name-error');
-    const expectedNameError = expectedErrors.name ?? false;
-    if (expectedNameError) {
-      expect(nameErrorComponent).not.toBeNull();
-    } else {
-      expect(nameErrorComponent).toBeNull();
+    function getButtonComponents() {
+        return fixture.debugElement
+            .queryAll(By.directive(ButtonComponent))
+            .map((button) => button.componentInstance) as ButtonComponent[];
     }
 
-    const errors: any = { name: nameErrorComponent?.textContent?.trim() };
-
-    expect(errors).toEqual({ name: expectedErrors.name });
-  }
-
-  function testLocalValidationOnBlur(localFormErrorParams: {
-    formData: FormData;
-    expectedErrors?: FormErrors;
-  }) {
-    component.form.setValue(localFormErrorParams.formData);
-
-    // name
-
-    const nameInput = fixture.debugElement.query(By.css('#name-input'));
-    nameInput.triggerEventHandler('blur', {});
-
-    // test errors
-
-    fixture.detectChanges();
-
-    testFormFieldsValues(localFormErrorParams.formData);
-
-    if (!localFormErrorParams.expectedErrors) {
-      testErrorMessages({});
-    } else {
-      testErrorMessages(localFormErrorParams.expectedErrors);
+    function getNameFieldComponent() {
+        return getTextFieldComponents().find(
+            (field) => field.id() == 'name-input',
+        );
     }
-  }
 
-  function testLocalValidationOnSubmit(localFormErrorParams: {
-    formData: FormData;
-    expectedErrors?: FormErrors;
-  }) {
-    if (!localFormErrorParams.expectedErrors) {
-      spyOn(router, 'navigateByUrl');
-      const routerSpy = spyOn(component['router'], 'navigate');
-      component.form.setValue(localFormErrorParams.formData);
-      authServiceSpy.editOwnProfile.and.returnValue(of(true));
-      const submitButton = fixture.nativeElement.querySelector('button#save');
-      submitButton.click(new MouseEvent('click'));
-
-      expect(authServiceSpy.editOwnProfile).toHaveBeenCalledOnceWith(
-        localFormErrorParams.formData
-      );
-      testErrorMessages({});
-      testFormFieldsValues({ name: localFormErrorParams.formData.name });
-      expect(routerSpy).not.toHaveBeenCalled();
-    } else {
-      component.form.setValue(localFormErrorParams.formData);
-      const submitButton = fixture.nativeElement.querySelector('button#save');
-      submitButton.click();
-      fixture.detectChanges();
-      testFormFieldsValues(localFormErrorParams.formData);
-      testErrorMessages(localFormErrorParams.expectedErrors);
+    function getSaveButtonComponent() {
+        return getButtonComponents().find(
+            (button) => button.id() == 'save-button',
+        );
     }
-  }
 
-  function testRemoteValidationFail(remoteFormErrorData: RemoteFormErrorData) {
-    const exception: any = new Error('Registration failed!');
-    exception.error = remoteFormErrorData.exceptionData.error;
-    exception.message = remoteFormErrorData.exceptionData.message;
-    exception.name = remoteFormErrorData.exceptionData.name;
-    exception.status = remoteFormErrorData.exceptionData.statusCode;
-    authServiceSpy.editOwnProfile.and.returnValue(throwError(() => exception));
-    exception.statusText = remoteFormErrorData.exceptionData.statusText;
-    component.form.setValue(remoteFormErrorData.formData);
-    const submitButton = fixture.nativeElement.querySelector('button#save');
-    submitButton.click();
-    fixture.detectChanges();
-    testErrorMessages(remoteFormErrorData.expectedErrors);
-  }
+    function getCancelButtonComponent() {
+        return getButtonComponents().find(
+            (button) => button.id() == 'cancel-button',
+        );
+    }
 
-  it('should create', async () => {
-    expect(component).toBeTruthy();
-  });
+    // TODO: test loading
 
-  describe('registration request', () => {
-    it("should call service's editOwnProfile method on submit", () => {
-      testLocalValidationOnSubmit({ formData: { name: 'John Doe' } });
+    beforeEach(async () => {
+        const spy = jasmine.createSpyObj('AuthService', ['editOwnProfile']);
+
+        await TestBed.configureTestingModule({
+            imports: [
+                EditOwnProfileComponent,
+                FormsModule,
+                ReactiveFormsModule,
+                MatFormFieldModule,
+                MatProgressBarModule,
+                AlertComponent,
+                TextFieldComponent,
+                ButtonComponent,
+            ],
+            providers: [
+                provideAnimationsAsync(),
+                { provide: AuthService, useValue: spy },
+                provideRouter([
+                    {
+                        path: 'home',
+                        component: HomeComponent,
+                        title: 'Home Page',
+                    },
+                ]),
+            ],
+        }).compileComponents();
+        fixture = TestBed.createComponent(EditOwnProfileComponent);
+        authServiceSpy = TestBed.inject(
+            AuthService,
+        ) as jasmine.SpyObj<AuthService>;
+        component = fixture.componentInstance;
+        router = TestBed.inject(Router);
+        fixture.detectChanges();
+        harness = await TestbedHarnessEnvironment.harnessForFixture(
+            fixture,
+            EditOwnProfileHarness,
+        );
     });
 
-    describe('remote errors', () => {
-      it('should handle main remote error during registration', () => {
-        testRemoteValidationFail({
-          formData: { name: 'John Doe' },
-          expectedErrors: { mainError: 'Algo deu errado!' },
-          exceptionData: {
-            message: 'Some error',
-            name: 'HttpErrorResponse',
-            statusCode: HttpStatusCode.UnprocessableEntity,
-            statusText: 'Unprocessable Entity',
-            error: {
-              error: ExceptionName.UNPROCESSABLE_ENTITY,
-              message: 'Algo deu errado!',
-            },
-          },
-        });
-      });
+    it('should create.', async () => {
+        expect(component).toBeTruthy();
 
-      it('should handle form fields remote errors during registration', () => {
-        testRemoteValidationFail({
-          formData: { name: 'John Doe' },
-          expectedErrors: { name: 'Error 1' },
-          exceptionData: {
-            message: 'Algo deu errado!',
-            name: 'HttpErrorResponse',
-            statusCode: HttpStatusCode.UnprocessableEntity,
-            statusText: 'Unprocessable Entity',
-            error: {
-              error: ExceptionName.UNPROCESSABLE_ENTITY,
-              message: { name: 'Error 1' },
-            },
-          },
-        });
-      });
+        const state = await harness.getState();
+        expect(state).toEqual({ hasValidStructure: true });
+
+        const nameField = getNameFieldComponent()!;
+
+        expect(nameField).toBeDefined();
+        expect(nameField).not.toBeNull();
+        expect(nameField.id()).toEqual('name-input');
+        expect(nameField.label()).toEqual('Nome');
+        expect(nameField.format()).toEqual(TextFormat.text);
+        expect(nameField.placeholder()).toBeUndefined();
+        expect(nameField.control()).toBeDefined();
+        expect(nameField.control()).not.toBeNull();
+        expect(nameField.control()?.disabled).toBeFalse();
+        expect(nameField.focusable()).toBeUndefined();
+        expect(nameField.autofocus()).toBeTrue();
+        expect(nameField.readOnly()).toBeUndefined();
+        expect(nameField.autocomplete()).toBeUndefined();
+        expect(nameField.minLength()).toEqual(UserConfigs.NAME_MIN_LENGTH);
+        expect(nameField.maxLength()).toEqual(UserConfigs.NAME_MAX_LENGTH);
+        expect(nameField.prefix()).toBeUndefined();
+        expect(nameField.suffix()).toBeUndefined();
+
+        const saveButton = getSaveButtonComponent()!;
+
+        expect(saveButton).toBeDefined();
+        expect(saveButton).not.toBeNull();
+        expect(saveButton.id()).toEqual('save-button');
+        expect(saveButton.label()).toEqual('Salvar');
+        expect(saveButton.icon()).toBeUndefined();
+        expect(saveButton.appearance()).toEqual(ButtonAppearance.filled);
+        expect(saveButton.disabled()).toBeFalse();
+        expect(saveButton.focusable()).toBeUndefined();
+        expect(saveButton.autofocus()).toBeUndefined();
+        expect(saveButton.routerLink()).toBeUndefined();
+        expect(saveButton.queryParams()).toBeUndefined();
+        expect(saveButton.queryParamsHandling()).toBeUndefined();
+
+        const cancelButton = getCancelButtonComponent()!;
+
+        expect(cancelButton).toBeDefined();
+        expect(cancelButton).not.toBeNull();
+        expect(cancelButton.id()).toEqual('cancel-button');
+        expect(cancelButton.label()).toEqual('Cancelar');
+        expect(cancelButton.icon()).toBeUndefined();
+        expect(cancelButton.appearance()).toEqual(ButtonAppearance.outlined);
+        expect(cancelButton.disabled()).toBeFalse();
+        expect(cancelButton.focusable()).toBeUndefined();
+        expect(cancelButton.autofocus()).toBeUndefined();
+        expect(cancelButton.routerLink()).toEqual('/');
+        expect(cancelButton.queryParams()).toBeUndefined();
+        expect(cancelButton.queryParamsHandling()).toBeUndefined();
     });
 
-    describe('local errors', () => {
-      const NameMessage = new TextMessage({
-        minLength: UserConfigs.NAME_MIN_LENGTH,
-        maxLength: UserConfigs.NAME_MAX_LENGTH,
-      });
+    it('should go to home page.', async () => {
+        const location = TestBed.inject(Location);
+        const routerSpy = spyOn(component['router'], 'navigate');
 
-      describe('on submit', () => {
-        it('should handle local error during form submission', () => {
-          const error: any = new Error('Registration failed');
-          error.error = {
-            error: ExceptionName.UNPROCESSABLE_ENTITY,
-            message: { name: NameMessage.REQUIRED },
-          };
-          error.message = 'Algo deu errado!'; // TODO:
-          error.name = 'HttpErrorResponse'; // TODO:
-          error.status = 422;
-          authServiceSpy.editOwnProfile.and.returnValue(
-            throwError(() => error)
-          );
-          error.statusText = 'Unprocessable Entity'; // TODO:
+        authServiceSpy.editOwnProfile.and.returnValue(of(true));
 
-          component.form.setValue({ name: 'John Doe' });
+        await harness.clickCancelButton();
+        expect(location.path()).toBe('');
+        expect(routerSpy).not.toHaveBeenCalled();
+        expect(authServiceSpy.editOwnProfile).not.toHaveBeenCalled();
 
-          const submitButton =
-            fixture.nativeElement.querySelector('button#save');
-          submitButton.click();
+        const values = await harness.getValues();
 
-          testLocalValidationOnSubmit({
-            formData: { name: null as unknown as string },
-            expectedErrors: error.error.message,
-          });
+        expect(values).toEqual({
+            name: '',
         });
 
-        describe('should handle local name error on submit', () => {
-          it('name should not be null', () => {
-            testLocalValidationOnSubmit({
-              formData: { name: null as unknown as string },
-              expectedErrors: { name: NameMessage.REQUIRED },
-            });
-          });
-
-          it('name should not be empty', () => {
-            testLocalValidationOnSubmit({
-              formData: { name: '' },
-              expectedErrors: { name: NameMessage.REQUIRED },
-            });
-          });
-
-          it('name should not be made of spaces', () => {
-            testLocalValidationOnSubmit({
-              formData: { name: '      ' },
-              expectedErrors: { name: NameMessage.REQUIRED },
-            });
-          });
-
-          it('should not accept name shorter than allowed', () => {
-            testLocalValidationOnSubmit({
-              formData: { name: 'x'.repeat(UserConfigs.NAME_MIN_LENGTH - 1) },
-              expectedErrors: { name: NameMessage.MIN_LEN },
-            });
-          });
-
-          it('should accept the shortest name allowed', () => {
-            testLocalValidationOnSubmit({
-              formData: { name: 'x'.repeat(UserConfigs.NAME_MIN_LENGTH) },
-            });
-          });
-
-          it('should accept the longest name allowed', () => {
-            testLocalValidationOnSubmit({
-              formData: { name: 'x'.repeat(UserConfigs.NAME_MAX_LENGTH) },
-            });
-          });
-
-          it('should not accept name longer than allowed', () => {
-            testLocalValidationOnSubmit({
-              formData: { name: 'x'.repeat(UserConfigs.NAME_MAX_LENGTH + 1) },
-              expectedErrors: { name: NameMessage.MAX_LEN },
-            });
-          });
-        });
-      });
-
-      describe('on blur', () => {
-        it('should handle local error during name input blur', async () => {
-          testLocalValidationOnBlur({
-            formData: { name: 'x' },
-            expectedErrors: { name: NameMessage.MIN_LEN },
-          });
-        });
-      });
+        const errors = await harness.getErrors();
+        expect(errors).toEqual({});
     });
-  });
 
-  describe('template', () => {
-    it('should render the form element', async () => {
-      fixture.detectChanges();
+    it("should sucessfully call service's editOwnProfile method on submit.", async () => {
+        const location = TestBed.inject(Location);
+        const routerSpy = spyOn(component['router'], 'navigate');
+        component['formGroup'].setValue({ name: 'John Williams' });
+        authServiceSpy.editOwnProfile.and.returnValue(of(true));
 
-      const div = fixture.nativeElement as HTMLFormElement;
-      expect(div).toBeInstanceOf(HTMLDivElement);
-      expect(div.children).toHaveSize(1);
+        await harness.clickSaveButton();
+        expect(location.path()).toBe('');
+        expect(authServiceSpy.editOwnProfile).toHaveBeenCalledOnceWith({
+            name: 'John Williams',
+        });
 
-      const form = div.children[0] as HTMLFormElement;
-      testForm(form, 2);
+        const values = await harness.getValues();
+        expect(values).toEqual({ name: '' });
 
-      // name
+        const errors = await harness.getErrors();
+        expect(errors).toEqual({});
 
-      const nameField = form.children[0] as Element;
-      testFormField(nameField, {
-        label: 'Nome',
-        value: '',
-        type: 'text',
-        autocomplete: 'off',
-      });
-
-      const saveButton = form.children[1] as HTMLButtonElement;
-      testButton(saveButton, {
-        id: 'save',
-        label: ' Salvar ',
-        type: 'submit',
-        color: null,
-        style: 'flat',
-      });
+        expect(routerSpy).toHaveBeenCalledWith(['/']);
     });
-  });
+
+    describe('local errors.', () => {
+        let routerSpy: jasmine.Spy<
+            (
+                commands: readonly any[],
+                extras?: NavigationExtras,
+            ) => Promise<boolean>
+        >;
+
+        beforeEach(() => {
+            authServiceSpy.editOwnProfile.and.returnValue(of(true));
+            routerSpy = spyOn(component['router'], 'navigate');
+            spyOn(router, 'navigateByUrl');
+        });
+
+        describe('on blur.', () => {
+            it('should handle local error.', async () => {
+                await harness.setValues({ name: 'J' });
+
+                const location = TestBed.inject(Location);
+                expect(authServiceSpy.editOwnProfile).not.toHaveBeenCalled();
+                const errors = await harness.getErrors();
+                expect(errors).toEqual({
+                    name: 'O comprimento mínimo permitido é 6.',
+                });
+                const values = await harness.getValues();
+                expect(values).toEqual({ name: 'J' });
+
+                expect(location.path()).toBe('');
+                expect(routerSpy).not.toHaveBeenCalled();
+            });
+
+            describe('validations.', () => {
+                describe('name.', () => {
+                    it('should reject empty string', async () => {
+                        await harness.setValues({
+                            name: undefined as unknown as string,
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            name: 'O campo é obrigatório.',
+                        });
+                    });
+
+                    it('should accept name with min length', async () => {
+                        await harness.setValues({
+                            name: 'x'.repeat(UserConfigs.NAME_MIN_LENGTH),
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({});
+                    });
+
+                    it('should reject name shorter than min length', async () => {
+                        await harness.setValues({
+                            name: 'x'.repeat(UserConfigs.NAME_MIN_LENGTH - 1),
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            name: 'O comprimento mínimo permitido é 6.',
+                        });
+                    });
+
+                    it('should accept name with max length', async () => {
+                        await harness.setValues({
+                            name: 'X'.repeat(UserConfigs.NAME_MAX_LENGTH),
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({});
+                    });
+
+                    it('should reject name longer than max length', async () => {
+                        await harness.setValues({
+                            name: 'X'.repeat(UserConfigs.NAME_MAX_LENGTH + 1),
+                        });
+
+                        const errors = await harness.getErrors();
+                        expect(errors).toEqual({
+                            name: 'O comprimento máximo permitido é 60.',
+                        });
+                    });
+                });
+            });
+        });
+
+        describe('on submit.', () => {
+            it('should handle local error.', async () => {
+                const location = TestBed.inject(Location);
+                await harness.setValues({ name: 'J' });
+                await harness.clickSaveButton();
+
+                expect(authServiceSpy.editOwnProfile).not.toHaveBeenCalled();
+                expect(location.path()).toBe('');
+                expect(routerSpy).not.toHaveBeenCalled();
+                const errors = await harness.getErrors();
+                expect(errors).toEqual({
+                    name: 'O comprimento mínimo permitido é 6.',
+                });
+                const values = await harness.getValues();
+                expect(values).toEqual({ name: 'J' });
+            });
+        });
+    });
+
+    describe('remote errors.', () => {
+        let routerSpy: jasmine.Spy<
+            (
+                commands: readonly any[],
+                extras?: NavigationExtras,
+            ) => Promise<boolean>
+        >;
+
+        beforeEach(() => {
+            routerSpy = spyOn(component['router'], 'navigate');
+            spyOn(router, 'navigateByUrl');
+        });
+
+        it('should handle main remote error.', async () => {
+            const exception: any = new Error('Request failed!');
+            exception.error = {
+                error: ExceptionName.unprocessable_entity,
+                message: 'Algo deu errado!',
+            };
+            exception.message = 'Some error';
+            exception.name = 'HttpErrorResponse';
+            exception.status = HttpStatusCode.UnprocessableEntity;
+            exception.statusText = 'Unprocessable Entity';
+            const location = TestBed.inject(Location);
+            authServiceSpy.editOwnProfile.and.returnValue(
+                throwError(() => exception),
+            );
+            await harness.setValues({ name: 'John Williams' });
+            await harness.clickSaveButton();
+            fixture.detectChanges();
+
+            expect(authServiceSpy.editOwnProfile).toHaveBeenCalledWith({
+                name: 'John Williams',
+            });
+
+            const errors = await harness.getErrors();
+            expect(errors).toEqual({ main: 'Algo deu errado!' });
+            const values = await harness.getValues();
+            expect(values).toEqual({ name: 'John Williams' });
+
+            expect(location.path()).toBe('');
+            expect(routerSpy).not.toHaveBeenCalled();
+        });
+
+        it('should handle form fields remote errors.', async () => {
+            const exception: any = new Error('Request failed!');
+            exception.error = {
+                error: ExceptionName.unprocessable_entity,
+                message: { name: 'Error 1' },
+            };
+            exception.message = 'Algo deu errado!';
+            exception.name = 'HttpErrorResponse';
+            exception.status = HttpStatusCode.UnprocessableEntity;
+            exception.statusText = 'Unprocessable Entity';
+            const location = TestBed.inject(Location);
+            authServiceSpy.editOwnProfile.and.returnValue(
+                throwError(() => exception),
+            );
+            await harness.setValues({ name: 'John Williams' });
+            await harness.clickSaveButton();
+            fixture.detectChanges();
+
+            expect(location.path()).toBe('');
+            expect(authServiceSpy.editOwnProfile).toHaveBeenCalledWith({
+                name: 'John Williams',
+            });
+
+            const errors = await harness.getErrors();
+            expect(errors).toEqual({ name: 'Error 1' });
+            const values = await harness.getValues();
+            expect(values).toEqual({ name: 'John Williams' });
+
+            expect(routerSpy).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('loading.', () => {
+        it('should show loading while requesting.', async () => {
+            let subject = new Subject<any>();
+
+            component['formGroup'].setValue({ name: 'John Williams' });
+            authServiceSpy.editOwnProfile.and.returnValue(
+                subject.asObservable(),
+            );
+
+            fixture.detectChanges();
+
+            let progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeNull();
+
+            await harness.clickSaveButton();
+            fixture.detectChanges();
+
+            progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeDefined();
+            expect(progressBarHarness).not.toBeNull();
+
+            subject.next(true);
+
+            progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeDefined();
+            expect(progressBarHarness).not.toBeNull();
+
+            subject.complete();
+            fixture.detectChanges();
+
+            progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeNull();
+        });
+
+        it('should show stop to show loading after remote error.', async () => {
+            const exception: any = new Error('Request failed!');
+            exception.error = {
+                error: ExceptionName.unprocessable_entity,
+                message: 'Algo deu errado!',
+            };
+            exception.message = 'Some error';
+            exception.name = 'HttpErrorResponse';
+            exception.status = HttpStatusCode.UnprocessableEntity;
+            exception.statusText = 'Unprocessable Entity';
+
+            fixture.detectChanges();
+
+            authServiceSpy.editOwnProfile.and.returnValue(
+                throwError(() => exception),
+            );
+            await harness.setValues({ name: 'John Williams' });
+            await harness.clickSaveButton();
+            fixture.detectChanges();
+
+            let progressBarHarness = await harness.getProgressBarHarness();
+            expect(progressBarHarness).toBeNull();
+        });
+    });
 });
