@@ -1,11 +1,11 @@
 import { ComponentHarness } from '@angular/cdk/testing';
 import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatIconHarness } from '@angular/material/icon/testing';
-import { Icon } from '../../../../enums/icons/icons.enum';
-import { MouseButton } from '../../../../enums/mouse-button/mouse-button.enum';
-import { PointerType } from '../../../../enums/pointer-type/pointer-type.enum';
-import { FormElementType } from '../../enums/form-element-type/form-element-type.enum';
-import { ButtonAppearance } from './enum/appearance/button-appearance.enum';
+import { ButtonAppearance } from '@components/form/components/button/enum/appearance/button-appearance.enum';
+import { FormElementType } from '@components/form/enums/form-element-type/form-element-type.enum';
+import { Icon } from '@enums/icons/icons.enum';
+import { MouseButton } from '@enums/mouse-button/mouse-button.enum';
+import { PointerType } from '@enums/pointer-type/pointer-type.enum';
 
 type ButtonState = {
     id: string | null;

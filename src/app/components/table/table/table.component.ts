@@ -1,4 +1,3 @@
-
 import {
     Component,
     computed,
@@ -11,24 +10,25 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { sortToOrder } from '@components/table/table-utils/table-utils';
+import { HeaderItemComponent } from '@components/table/table/components/header-item/header-item.component';
+import { RowItemComponent } from '@components/table/table/components/row-item/row-item.component';
+import { Column } from '@components/table/table/model/column/column.model';
+import { Row } from '@components/table/table/model/row/row.model';
+import { Sort } from '@interfaces/sort.interface';
+import { leftMouseClickFilter } from '@utils/mouse-events/mouse-click-filter';
 import _ from 'lodash';
-import { Sort } from '../../../interfaces/sort.interface';
-import { leftMouseClickFilter } from '../../../utils/mouse-events/mouse-click-filter';
-import { sortToOrder } from '../table-utils/table-utils';
-import { HeaderItemComponent } from './components/header-item/header-item.component';
-import { RowItemComponent } from './components/row-item/row-item.component';
-import { Column } from './model/column/column.model';
-import { Row } from './model/row/row.model';
+
 @Component({
     selector: 'app-table',
     imports: [
-    MatIconModule,
-    MatTableModule,
-    MatSortModule,
-    MatTooltipModule,
-    HeaderItemComponent,
-    RowItemComponent
-],
+        MatIconModule,
+        MatTableModule,
+        MatSortModule,
+        MatTooltipModule,
+        HeaderItemComponent,
+        RowItemComponent,
+    ],
     templateUrl: './table.component.html',
     styleUrl: './table.component.scss',
 })

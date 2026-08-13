@@ -12,18 +12,18 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { TextFilterComponent } from '../../../components/alert/text-filter/text-filter.component';
-import { ActiveFilter } from '../../../enums/active-filter/active-filter.enum';
-import { DeletedFilter } from '../../../enums/deleted-filter/deleted-filter.enum';
-import { UserOrder } from '../../../services/user/enums/user-order/user-order.enum';
-import { UserFilterUserDialogData } from './user-filter-dialog/filter-dialog-data';
-import { UserFilterDialogComponent } from './user-filter-dialog/user-filter-dialog.component';
+import { TextFilterComponent } from '@components/alert/text-filter/text-filter.component';
+import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
+import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
+import { UserFilterUserDialogData } from '@pages/users/responsive-user-filters/user-filter-dialog/filter-dialog-data';
+import { UserFilterDialogComponent } from '@pages/users/responsive-user-filters/user-filter-dialog/user-filter-dialog.component';
 import {
     OnUserFilterEvent,
     OnUserFilterMenuListCloseEvent,
     OnUserFilterMenuListSubmitEvent,
-} from './user-filter-toollbar/types/on-user-filter-menu-list-close-event.type';
-import { UserFilterToolbarComponent } from './user-filter-toollbar/user-filter-toolbar.component';
+} from '@pages/users/responsive-user-filters/user-filter-toollbar/types/on-user-filter-menu-list-close-event.type';
+import { UserFilterToolbarComponent } from '@pages/users/responsive-user-filters/user-filter-toollbar/user-filter-toolbar.component';
+import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 
 @Component({
     selector: 'app-responsive-user-filters',

@@ -1,4 +1,4 @@
-import { SortDirection } from '../enums/direction/direction.enum';
+import { SortDirection } from '@enums/direction/direction.enum';
 
 /** The current sort state. */
 export interface Sort {

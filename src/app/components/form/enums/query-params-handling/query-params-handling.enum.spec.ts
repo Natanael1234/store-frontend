@@ -1,4 +1,4 @@
-import { QueryParamsHandling } from './query-params-handling.enum';
+import { QueryParamsHandling } from '@components/form/enums/query-params-handling/query-params-handling.enum';
 
 describe('QueryParamsHandling enum', () => {
     it('should be defined', () => {

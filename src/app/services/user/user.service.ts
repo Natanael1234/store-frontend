@@ -1,15 +1,15 @@
 import { Injectable, inject } from '@angular/core';
+import { AuthRequestRoutes } from '@services/auth/request-routes/auth.request-routes';
+import { PaginatedResponseDTO } from '@services/dtos/response/pagination/pagination.response.dto';
+import { HttpService } from '@services/http/http.service';
+import { TokenService } from '@services/token/token.service';
+import { FindUserRequestDTO } from '@services/user/dtos/find-user.request/find-user.request.dto';
+import { CreateUserRequestDto } from '@services/user/dtos/user.request/create-user.request.dto';
+import { UpdateUserRequestDto } from '@services/user/dtos/user.request/update-user.request.dto';
+import { UserResponseDto } from '@services/user/dtos/user.response/user.response.dto';
+import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
+import { normalizeException } from '@utils/exception-normalizer/exception-normalizer';
 import { Observable, Subscriber } from 'rxjs';
-import { normalizeException } from '../../utils/exception-normalizer/exception-normalizer';
-import { AuthRequestRoutes } from '../auth/request-routes/auth.request-routes';
-import { PaginatedResponseDTO } from '../dtos/response/pagination/pagination.response.dto';
-import { HttpService } from '../http/http.service';
-import { TokenService } from '../token/token.service';
-import { FindUserRequestDTO } from './dtos/find-user.request/find-user.request.dto';
-import { CreateUserRequestDto } from './dtos/user.request/create-user.request.dto';
-import { UpdateUserRequestDto } from './dtos/user.request/update-user.request.dto';
-import { UserResponseDto } from './dtos/user.response/user.response.dto';
-import { UserOrder } from './enums/user-order/user-order.enum';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {

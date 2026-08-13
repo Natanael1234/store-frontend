@@ -1,10 +1,10 @@
 import { ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { SortDirection } from '../../../../../../../enums/direction/direction.enum';
-import { MouseButton } from '../../../../../../../enums/mouse-button/mouse-button.enum';
-import { PointerType } from '../../../../../../../enums/pointer-type/pointer-type.enum';
-import { toggleSortDirecton } from '../../../../../table-utils/table-utils';
-import { HeaderItemComponent } from '../../header-item.component';
+import { toggleSortDirecton } from '@components/table/table-utils/table-utils';
+import { HeaderItemComponent } from '@components/table/table/components/header-item/header-item.component';
+import { SortDirection } from '@enums/direction/direction.enum';
+import { MouseButton } from '@enums/mouse-button/mouse-button.enum';
+import { PointerType } from '@enums/pointer-type/pointer-type.enum';
 
 export function _testHeaderItemComponent(
     fixture: ComponentFixture<HeaderItemComponent>,

@@ -10,12 +10,12 @@ import {
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { AutofocusDirective } from '@components/form/directives/autofocus/autofocus.directive';
+import { AutoCompleteType } from '@components/form/enums/auto-complete-type/auto-complete-type.enum';
+import { FormElementType } from '@components/form/enums/form-element-type/form-element-type.enum';
+import { InputMode } from '@components/form/enums/input-mode/input-mode.enum';
+import { FirstErrorMessagePipe } from '@pipes/first-error-message.pipe';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
-import { FirstErrorMessagePipe } from '../../../../../pipes/first-error-message.pipe';
-import { AutofocusDirective } from '../../../directives/autofocus/autofocus.directive';
-import { AutoCompleteType } from '../../../enums/auto-complete-type/auto-complete-type.enum';
-import { FormElementType } from '../../../enums/form-element-type/form-element-type.enum';
-import { InputMode } from '../../../enums/input-mode/input-mode.enum';
 
 @Component({
     selector: 'app-numeric-field',

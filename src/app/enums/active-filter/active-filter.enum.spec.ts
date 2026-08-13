@@ -1,4 +1,4 @@
-import { ActiveFilter } from './active-filter.enum';
+import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
 
 describe('ActiveFilter', () => {
     it('should be defined', () => {

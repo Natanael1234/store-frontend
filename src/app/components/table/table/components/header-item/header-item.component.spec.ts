@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { By } from '@angular/platform-browser';
-import { SortDirection } from '../../../../../enums/direction/direction.enum';
-import { MouseButton } from '../../../../../enums/mouse-button/mouse-button.enum';
-import { PointerType } from '../../../../../enums/pointer-type/pointer-type.enum';
-import { HeaderItemComponent } from './header-item.component';
-import { _testHeaderItemComponent } from './test/fn/header-item.test';
+import { HeaderItemComponent } from '@components/table/table/components/header-item/header-item.component';
+import { _testHeaderItemComponent } from '@components/table/table/components/header-item/test/fn/header-item.test';
+import { SortDirection } from '@enums/direction/direction.enum';
+import { MouseButton } from '@enums/mouse-button/mouse-button.enum';
+import { PointerType } from '@enums/pointer-type/pointer-type.enum';
 
 describe('HeaderItemComponent.', () => {
     let component: HeaderItemComponent;

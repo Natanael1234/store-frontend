@@ -13,20 +13,20 @@ import {
     provideRouter,
     Router,
 } from '@angular/router';
+import { AlertComponent } from '@components/alert/alert.component';
+import { ButtonComponent } from '@components/form/components/button/button.component';
+import { ButtonAppearance } from '@components/form/components/button/enum/appearance/button-appearance.enum';
+import { PasswordFieldComponent } from '@components/form/components/text/password-field/password-field.component';
+import { AutoCompleteType } from '@components/form/enums/auto-complete-type/auto-complete-type.enum';
+import { UserConfigs } from '@configs/user/user.configs';
+import { ExceptionName } from '@enums/exception-names/exception-text.enum';
+import { HomeComponent } from '@pages/home/home.component';
+import { LoginComponent } from '@pages/login/login.component';
+import { NewPasswordComponent } from '@pages/new-password/new-password.component';
+import { NewPasswordHarness } from '@pages/new-password/new-password.harness';
+import { AuthService } from '@services/auth/auth.service';
+import { Role } from '@services/user/dtos/role/role.enum';
 import { BehaviorSubject, of, Subject, throwError } from 'rxjs';
-import { AlertComponent } from '../../components/alert/alert.component';
-import { ButtonComponent } from '../../components/form/components/button/button.component';
-import { ButtonAppearance } from '../../components/form/components/button/enum/appearance/button-appearance.enum';
-import { PasswordFieldComponent } from '../../components/form/components/text/password-field/password-field.component';
-import { AutoCompleteType } from '../../components/form/enums/auto-complete-type/auto-complete-type.enum';
-import { UserConfigs } from '../../configs/user/user.configs';
-import { ExceptionName } from '../../enums/exception-names/exception-text.enum';
-import { AuthService } from '../../services/auth/auth.service';
-import { Role } from '../../services/user/dtos/role/role.enum';
-import { HomeComponent } from '../home/home.component';
-import { LoginComponent } from '../login/login.component';
-import { NewPasswordComponent } from './new-password.component';
-import { NewPasswordHarness } from './new-password.harness';
 
 describe('NewPasswordComponent.', () => {
     let fixture: ComponentFixture<NewPasswordComponent>;

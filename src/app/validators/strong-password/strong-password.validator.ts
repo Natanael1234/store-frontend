@@ -4,12 +4,12 @@ import {
     ValidatorFn,
     Validators,
 } from '@angular/forms';
-import { UserConfigs } from '../../configs/user/user.configs';
-import { PasswordConstants } from '../../constants/password/password.constants';
-import { PasswordMessage } from '../../messages/password/password.messages';
-import { maxLengthValidator } from '../max-length/max-length.validator';
-import { minLengthValidator } from '../min-length/min-length.validator';
-import { requiredValidator } from '../required/required.validator';
+import { UserConfigs } from '@configs/user/user.configs';
+import { PasswordConstants } from '@constants/password/password.constants';
+import { PasswordMessage } from '@messages/password/password.messages';
+import { maxLengthValidator } from '@validators/max-length/max-length.validator';
+import { minLengthValidator } from '@validators/min-length/min-length.validator';
+import { requiredValidator } from '@validators/required/required.validator';
 
 const _PasswordMessage = new PasswordMessage({
     minLength: UserConfigs.PASSWORD_MIN_LENGTH,

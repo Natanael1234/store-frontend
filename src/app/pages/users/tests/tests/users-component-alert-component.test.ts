@@ -1,8 +1,8 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { AlertComponent } from '../../../../components/alert/alert.component';
-import { UsersComponent } from '../../users.component';
+import { AlertComponent } from '@components/alert/alert.component';
+import { UsersComponent } from '@pages/users/users.component';
 
 export function _testUsersComponentAlertComponent(
     fixture: ComponentFixture<UsersComponent>,

@@ -2,15 +2,15 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
+import { ButtonAppearance } from '@components/form/components/button/enum/appearance/button-appearance.enum';
+import { AutoCompleteType } from '@components/form/enums/auto-complete-type/auto-complete-type.enum';
+import { FormElementType } from '@components/form/enums/form-element-type/form-element-type.enum';
+import { InputMode } from '@components/form/enums/input-mode/input-mode.enum';
+import { TextFormat } from '@components/form/enums/text-format/text-format.enum';
+import { TextMask } from '@components/form/enums/text-mask/text-mask.enum';
+import { UserConfigs } from '@configs/user/user.configs';
+import { EmailConstants } from '@constants/email/email.constants';
 import { Observable } from 'rxjs';
-import { ButtonAppearance } from '../components/form/components/button/enum/appearance/button-appearance.enum';
-import { AutoCompleteType } from '../components/form/enums/auto-complete-type/auto-complete-type.enum';
-import { FormElementType } from '../components/form/enums/form-element-type/form-element-type.enum';
-import { InputMode } from '../components/form/enums/input-mode/input-mode.enum';
-import { TextFormat } from '../components/form/enums/text-format/text-format.enum';
-import { TextMask } from '../components/form/enums/text-mask/text-mask.enum';
-import { UserConfigs } from '../configs/user/user.configs';
-import { EmailConstants } from '../constants/email/email.constants';
 
 export abstract class AbstractFormComponent<FormDataDto, RequestResponseDto> {
     protected abstract formGroup: FormGroup;

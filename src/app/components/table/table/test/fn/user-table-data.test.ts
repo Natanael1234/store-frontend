@@ -1,9 +1,9 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { RowItemComponent } from '../../components/row-item/row-item.component';
-import { TableComponent } from '../../table.component';
-import { ExpectedTableRowItem } from '../types/expected-table-row-item.type.test';
+import { RowItemComponent } from '@components/table/table/components/row-item/row-item.component';
+import { TableComponent } from '@components/table/table/table.component';
+import { ExpectedTableRowItem } from '@components/table/table/test/types/expected-table-row-item.type.test';
 
 export function _testTableData(
     fixture: ComponentFixture<TableComponent>,

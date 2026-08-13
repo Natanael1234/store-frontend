@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { requiredTrueValidator } from './required-true.validator';
+import { requiredTrueValidator } from '@validators/required-true/required-true.validator';
 
 describe('requiredTrueValidator', () => {
     const validator = requiredTrueValidator();

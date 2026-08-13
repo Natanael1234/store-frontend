@@ -1,4 +1,4 @@
-import { Role } from './role.enum';
+import { Role } from '@services/user/dtos/role/role.enum';
 
 describe('RefreshTokenMessage', () => {
     it('should be defined', () => {

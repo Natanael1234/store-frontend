@@ -1,7 +1,7 @@
 import { ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ListComponent } from '../../../../../components/list/list.component';
-import { ResponsiveUserListComponent } from '../../responsive-user-list.component';
+import { ListComponent } from '@components/list/list.component';
+import { ResponsiveUserListComponent } from '@pages/users/responsive-user-list/responsive-user-list.component';
 
 export function _getResponsiveUserListComponentList(
     fixture: ComponentFixture<ResponsiveUserListComponent>,

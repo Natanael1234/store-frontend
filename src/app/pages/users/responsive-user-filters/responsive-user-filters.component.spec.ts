@@ -4,17 +4,17 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { MatDialog } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
+import { MockTextFilterComponent } from '@components/alert/text-filter/test/mock/text-filter.component.mock';
+import { TextFilterComponent } from '@components/alert/text-filter/text-filter.component';
+import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
+import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
+import { ResponsiveUserFiltersComponent } from '@pages/users/responsive-user-filters/responsive-user-filters.component';
+import { ResponsiveUserFiltersHarness } from '@pages/users/responsive-user-filters/responsive-user-filters.harness';
+import { UserFilterDialogComponent } from '@pages/users/responsive-user-filters/user-filter-dialog/user-filter-dialog.component';
+import { UserFilterToolbarComponent } from '@pages/users/responsive-user-filters/user-filter-toollbar/user-filter-toolbar.component';
+import { MockUserFilterToolbarComponent } from '@pages/users/responsive-user-filters/user-filter-toollbar/user-filter-toolbar.component.mock';
+import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 import { of } from 'rxjs';
-import { MockTextFilterComponent } from '../../../components/alert/text-filter/test/mock/text-filter.component.mock';
-import { TextFilterComponent } from '../../../components/alert/text-filter/text-filter.component';
-import { ActiveFilter } from '../../../enums/active-filter/active-filter.enum';
-import { DeletedFilter } from '../../../enums/deleted-filter/deleted-filter.enum';
-import { UserOrder } from '../../../services/user/enums/user-order/user-order.enum';
-import { ResponsiveUserFiltersComponent } from './responsive-user-filters.component';
-import { ResponsiveUserFiltersHarness } from './responsive-user-filters.harness';
-import { UserFilterDialogComponent } from './user-filter-dialog/user-filter-dialog.component';
-import { UserFilterToolbarComponent } from './user-filter-toollbar/user-filter-toolbar.component';
-import { MockUserFilterToolbarComponent } from './user-filter-toollbar/user-filter-toolbar.component.mock';
 
 describe('ResponsiveUserFiltersComponent.', () => {
     let fixture: ComponentFixture<ResponsiveUserFiltersComponent>;

@@ -1,10 +1,9 @@
-
 import { Component, EventEmitter, model, Output } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
-import { leftMouseClickFilter } from '../../utils/mouse-events/mouse-click-filter';
-import { ListItemComponent } from './components/list-item/list-item.component';
-import { ListItem } from './types/list-item.model';
+import { ListItemComponent } from '@components/list/components/list-item/list-item.component';
+import { ListItem } from '@components/list/types/list-item.model';
+import { leftMouseClickFilter } from '@utils/mouse-events/mouse-click-filter';
 
 @Component({
     selector: 'app-list',

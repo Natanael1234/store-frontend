@@ -8,18 +8,18 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterModule } from '@angular/router';
-import { AlertComponent } from '../../components/alert/alert.component';
-import { ButtonComponent } from '../../components/form/components/button/button.component';
-import { TextFieldComponent } from '../../components/form/components/text/text-field/text-field.component';
-import { UserConfigs } from '../../configs/user/user.configs';
-import { AuthService } from '../../services/auth/auth.service';
-import { EditOwnProfileRequestDto } from '../../services/auth/dtos/edit-own-profile.request.dto';
-import { nameValidator } from '../../validators/name/name.validator';
+import { AlertComponent } from '@components/alert/alert.component';
+import { ButtonComponent } from '@components/form/components/button/button.component';
+import { TextFieldComponent } from '@components/form/components/text/text-field/text-field.component';
+import { UserConfigs } from '@configs/user/user.configs';
+import { AbstractFormComponent } from '@pages/abstract-form.component';
+import { AuthService } from '@services/auth/auth.service';
+import { EditOwnProfileRequestDto } from '@services/auth/dtos/edit-own-profile.request.dto';
+import { nameValidator } from '@validators/name/name.validator';
 import {
     RemoteValidationContext,
     remoteValidator,
-} from '../../validators/remote/remote.validator';
-import { AbstractFormComponent } from '../abstract-form.component';
+} from '@validators/remote/remote.validator';
 
 @Component({
     selector: 'app-edit-own-profile',

@@ -3,7 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
-import { leftMouseClickFilter } from '../../utils/mouse-events/mouse-click-filter';
+import { leftMouseClickFilter } from '@utils/mouse-events/mouse-click-filter';
 
 @Component({
     selector: 'app-toolbar',

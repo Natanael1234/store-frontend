@@ -1,5 +1,5 @@
 import { FormControl, FormGroup } from '@angular/forms';
-import { matchingPasswordValidator } from './matching-password.validator';
+import { matchingPasswordValidator } from '@validators/matching-password/matching-password.validator';
 
 describe('Matching Passwords Validator.', () => {
     describe('use validator directly.', () => {

@@ -1,4 +1,4 @@
-import { ColumnData } from './column-data.model';
+import { ColumnData } from '@components/table/table/model/column-data/column-data.model';
 
 describe('ColumnData', () => {
     it('must create an instance with all the given values', () => {

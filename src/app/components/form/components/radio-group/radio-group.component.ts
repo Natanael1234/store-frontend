@@ -3,7 +3,7 @@ import { Component, computed, model } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatRadioModule } from '@angular/material/radio';
-import { AutofocusDirective } from '../../directives/autofocus/autofocus.directive';
+import { AutofocusDirective } from '@components/form/directives/autofocus/autofocus.directive';
 
 @Component({
     selector: 'app-radio-group',

@@ -1,4 +1,4 @@
-import { TextMessage } from '../text/text.messages';
+import { TextMessage } from '@messages/text/text.messages';
 
 export class PasswordMessage extends TextMessage {
     STRONG?: string;

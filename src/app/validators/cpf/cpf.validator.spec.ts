@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { cpfValidator } from './cpf.validator';
+import { cpfValidator } from '@validators/cpf/cpf.validator';
 
 describe('CPF Validator', () => {
     const validator = cpfValidator();

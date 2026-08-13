@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, model } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ItemIcon } from '../../../models/item-icon/item-icon.model';
-import { ItemLabel } from '../../../models/item-label/item-label.model';
+import { ItemIcon } from '@components/models/item-icon/item-icon.model';
+import { ItemLabel } from '@components/models/item-label/item-label.model';
 @Component({
     selector: 'app-list-item',
     imports: [CommonModule, MatIconModule, MatTooltipModule],

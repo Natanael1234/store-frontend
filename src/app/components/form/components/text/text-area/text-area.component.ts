@@ -10,9 +10,9 @@ import {
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { AutofocusDirective } from '@components/form/directives/autofocus/autofocus.directive';
+import { FirstErrorMessagePipe } from '@pipes/first-error-message.pipe';
 import { provideNgxMask } from 'ngx-mask';
-import { FirstErrorMessagePipe } from '../../../../../pipes/first-error-message.pipe';
-import { AutofocusDirective } from '../../../directives/autofocus/autofocus.directive';
 
 @Component({
     selector: 'app-text-area-field',

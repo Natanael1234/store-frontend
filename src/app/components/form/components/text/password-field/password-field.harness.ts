@@ -6,10 +6,10 @@ import {
 } from '@angular/material/form-field/testing';
 import { MatIconHarness } from '@angular/material/icon/testing';
 import { MatInputHarness } from '@angular/material/input/testing';
-import { Icon } from '../../../../../enums/icons/icons.enum';
-import { AutoCompleteType } from '../../../enums/auto-complete-type/auto-complete-type.enum';
-import { FormElementType } from '../../../enums/form-element-type/form-element-type.enum';
-import { InputType } from '../../../enums/input-type/input-type.enum';
+import { AutoCompleteType } from '@components/form/enums/auto-complete-type/auto-complete-type.enum';
+import { FormElementType } from '@components/form/enums/form-element-type/form-element-type.enum';
+import { InputType } from '@components/form/enums/input-type/input-type.enum';
+import { Icon } from '@enums/icons/icons.enum';
 
 type TextFieldState = {
     id: string;

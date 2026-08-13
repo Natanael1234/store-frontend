@@ -1,6 +1,5 @@
-import { UserConfigs } from '../../configs/user/user.configs';
-
-import { PasswordMessage } from './password.messages';
+import { UserConfigs } from '@configs/user/user.configs';
+import { PasswordMessage } from '@messages/password/password.messages';
 
 describe('PasswordMessage', () => {
     it('should be defined', () => {

@@ -1,9 +1,9 @@
 import { Component, EventEmitter, model, Output } from '@angular/core';
-import { SortDirection } from '../../../../../../../enums/direction/direction.enum';
-import { Sort } from '../../../../../../../interfaces/sort.interface';
-import { OnUserFilterMenuListCloseEvent } from '../../../../../../../pages/users/responsive-user-filters/user-filter-toollbar/types/on-user-filter-menu-list-close-event.type';
-import { UserColumnId } from '../../../../../../../pages/users/types/user-column-id/user-column-id.enum';
-import { HeaderItemComponent } from '../../header-item.component';
+import { HeaderItemComponent } from '@components/table/table/components/header-item/header-item.component';
+import { SortDirection } from '@enums/direction/direction.enum';
+import { Sort } from '@interfaces/sort.interface';
+import { OnUserFilterMenuListCloseEvent } from '@pages/users/responsive-user-filters/user-filter-toollbar/types/on-user-filter-menu-list-close-event.type';
+import { UserColumnId } from '@pages/users/types/user-column-id/user-column-id.enum';
 
 @Component({
     selector: 'app-header-item',

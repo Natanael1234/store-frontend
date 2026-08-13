@@ -1,6 +1,7 @@
-import { SortDirection } from '../../../../../enums/direction/direction.enum';
-
 // TODO: transform into class
+
+import { SortDirection } from '@enums/direction/direction.enum';
+
 /** Table column. */
 export class Column {
     /** Column id. */

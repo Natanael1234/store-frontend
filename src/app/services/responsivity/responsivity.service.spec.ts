@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ResponsityService } from './responsivity.service';
+import { ResponsityService } from '@services/responsivity/responsivity.service';
 
 describe('ResponsivityService.', () => {
     let service: ResponsityService;

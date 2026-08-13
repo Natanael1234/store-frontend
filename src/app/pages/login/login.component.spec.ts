@@ -1,29 +1,28 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { Location } from '@angular/common';
 import { HttpStatusCode } from '@angular/common/http';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { By } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { NavigationExtras, provideRouter, Router } from '@angular/router';
+import { AlertComponent } from '@components/alert/alert.component';
+import { ButtonComponent } from '@components/form/components/button/button.component';
+import { ButtonAppearance } from '@components/form/components/button/enum/appearance/button-appearance.enum';
+import { PasswordFieldComponent } from '@components/form/components/text/password-field/password-field.component';
+import { TextFieldComponent } from '@components/form/components/text/text-field/text-field.component';
+import { AutoCompleteType } from '@components/form/enums/auto-complete-type/auto-complete-type.enum';
+import { TextFormat } from '@components/form/enums/text-format/text-format.enum';
+import { UserConfigs } from '@configs/user/user.configs';
+import { EmailConstants } from '@constants/email/email.constants';
+import { ExceptionName } from '@enums/exception-names/exception-text.enum';
+import { LoginComponent } from '@pages/login/login.component';
+import { LoginHarness } from '@pages/login/login.harness';
+import { RegisterComponent } from '@pages/register/register.component';
+import { AuthService } from '@services/auth/auth.service';
+import { Role } from '@services/user/dtos/role/role.enum';
 import { of, Subject, throwError } from 'rxjs';
-import { AlertComponent } from '../../components/alert/alert.component';
-import { ButtonComponent } from '../../components/form/components/button/button.component';
-import { ButtonAppearance } from '../../components/form/components/button/enum/appearance/button-appearance.enum';
-import { PasswordFieldComponent } from '../../components/form/components/text/password-field/password-field.component';
-import { TextFieldComponent } from '../../components/form/components/text/text-field/text-field.component';
-import { AutoCompleteType } from '../../components/form/enums/auto-complete-type/auto-complete-type.enum';
-import { TextFormat } from '../../components/form/enums/text-format/text-format.enum';
-import { UserConfigs } from '../../configs/user/user.configs';
-import { EmailConstants } from '../../constants/email/email.constants';
-import { ExceptionName } from '../../enums/exception-names/exception-text.enum';
-import { AuthService } from '../../services/auth/auth.service';
-import { Role } from '../../services/user/dtos/role/role.enum';
-import { RegisterComponent } from '../register/register.component';
-import { LoginComponent } from './login.component';
-import { LoginHarness } from './login.harness';
 
 describe('LoginComponent.', () => {
     let fixture: ComponentFixture<LoginComponent>;

@@ -2,7 +2,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture } from '@angular/core/testing';
 import { MatTooltip } from '@angular/material/tooltip';
 import { By } from '@angular/platform-browser';
-import { ListItemComponent } from '../../list-item.component';
+import { ListItemComponent } from '@components/list/components/list-item/list-item.component';
 
 type ExpectedContainer = { loading: boolean };
 type ExpectedColumn = { id: string };

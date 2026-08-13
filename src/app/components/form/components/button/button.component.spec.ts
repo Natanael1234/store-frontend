@@ -7,14 +7,14 @@ import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { provideRouter, Router, Routes } from '@angular/router';
-import { Icon } from '../../../../enums/icons/icons.enum';
-import { MouseButton } from '../../../../enums/mouse-button/mouse-button.enum';
-import { PointerType } from '../../../../enums/pointer-type/pointer-type.enum';
-import { FormElementType } from '../../enums/form-element-type/form-element-type.enum';
-import { QueryParamsHandling } from '../../enums/query-params-handling/query-params-handling.enum';
-import { ButtonComponent } from './button.component';
-import { ButtonHarness } from './button.harness';
-import { ButtonAppearance } from './enum/appearance/button-appearance.enum';
+import { ButtonComponent } from '@components/form/components/button/button.component';
+import { ButtonHarness } from '@components/form/components/button/button.harness';
+import { ButtonAppearance } from '@components/form/components/button/enum/appearance/button-appearance.enum';
+import { FormElementType } from '@components/form/enums/form-element-type/form-element-type.enum';
+import { QueryParamsHandling } from '@components/form/enums/query-params-handling/query-params-handling.enum';
+import { Icon } from '@enums/icons/icons.enum';
+import { MouseButton } from '@enums/mouse-button/mouse-button.enum';
+import { PointerType } from '@enums/pointer-type/pointer-type.enum';
 
 describe('ButtonComponent.', () => {
     let component: ButtonComponent;

@@ -1,4 +1,4 @@
-import { UserTableRow } from '../../../../components/table/table/interfaces/user-table-row.interface';
+import { UserTableRow } from '@components/table/table/interfaces/user-table-row.interface';
 
 export const _usersComponentRowsData: UserTableRow[] = [
     {

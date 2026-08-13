@@ -1,4 +1,4 @@
-import { UserColumnLabel } from './user-column-label.enum';
+import { UserColumnLabel } from '@components/table/table/enums/user-column-name/user-column-label.enum';
 
 describe('UserColumnLabel', () => {
     it('should be defined', () => {

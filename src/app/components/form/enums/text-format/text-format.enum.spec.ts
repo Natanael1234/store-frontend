@@ -1,4 +1,4 @@
-import { TextFormat } from './text-format.enum';
+import { TextFormat } from '@components/form/enums/text-format/text-format.enum';
 
 describe('TextFormat enum', () => {
     it('should be defined', () => {

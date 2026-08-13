@@ -1,15 +1,15 @@
 import { Routes } from '@angular/router';
-import { AuthGuard } from '../../../guards/auth.guard';
-import { HomeComponent } from '../../../pages/home/home.component';
-import { LoginComponent } from '../../../pages/login/login.component';
-import { NewPasswordComponent } from '../../../pages/new-password/new-password.component';
-import { RegisterComponent } from '../../../pages/register/register.component';
-import { RequestPasswordChangeLinkComponent } from '../../../pages/request-password-change-link/request-password-change-link.component';
-import { TermsOfUseComponent } from '../../../pages/terms-of-use/terms-of-use.component';
-import { TestComponent } from '../../../pages/test/test.component';
-import { UpdateLoggedInUserPasswordComponent } from '../../../pages/update-logged-in-user-password/update-logged-in-user-password.component';
-import { UserComponent } from '../../../pages/user/user.component';
-import { UsersComponent } from '../../../pages/users/users.component';
+import { AuthGuard } from '@guards/auth.guard';
+import { HomeComponent } from '@pages/home/home.component';
+import { LoginComponent } from '@pages/login/login.component';
+import { NewPasswordComponent } from '@pages/new-password/new-password.component';
+import { RegisterComponent } from '@pages/register/register.component';
+import { RequestPasswordChangeLinkComponent } from '@pages/request-password-change-link/request-password-change-link.component';
+import { TermsOfUseComponent } from '@pages/terms-of-use/terms-of-use.component';
+import { TestComponent } from '@pages/test/test.component';
+import { UpdateLoggedInUserPasswordComponent } from '@pages/update-logged-in-user-password/update-logged-in-user-password.component';
+import { UserComponent } from '@pages/user/user.component';
+import { UsersComponent } from '@pages/users/users.component';
 
 const routeConfig: Routes = [
     { path: '', component: HomeComponent, title: 'Home Page' },

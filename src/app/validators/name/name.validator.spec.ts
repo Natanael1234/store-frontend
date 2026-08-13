@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { nameValidator } from './name.validator';
+import { nameValidator } from '@validators/name/name.validator';
 
 describe('Name Validator', () => {
     describe('required', () => {

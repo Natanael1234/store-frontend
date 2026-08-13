@@ -1,5 +1,5 @@
-import { DeletedFilter } from '../../enums/deleted-filter/deleted-filter.enum';
-import { DeletedFilterOptions } from './deleted-filter-options';
+import { DeletedFilterOptions } from '@constants/deleted-filter-options/deleted-filter-options';
+import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
 
 describe('DeletedFilterOptions', () => {
     it('should be defined', () => {

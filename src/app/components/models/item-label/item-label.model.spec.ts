@@ -1,4 +1,4 @@
-import { ItemLabel } from './item-label.model';
+import { ItemLabel } from '@components/models/item-label/item-label.model';
 
 describe('ItemLabel model', () => {
     it('should be defined', () => {

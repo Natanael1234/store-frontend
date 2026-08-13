@@ -9,23 +9,23 @@ import {
     model,
     Output,
 } from '@angular/core';
-import { ListComponent } from '../../../components/list/list.component';
-import { ListItem } from '../../../components/list/types/list-item.model';
-import { ItemIcon } from '../../../components/models/item-icon/item-icon.model';
-import { ItemLabel } from '../../../components/models/item-label/item-label.model';
-import { UserColumnLabel } from '../../../components/table/table/enums/user-column-name/user-column-label.enum';
-import { UserTableRow } from '../../../components/table/table/interfaces/user-table-row.interface';
-import { ColumnData } from '../../../components/table/table/model/column-data/column-data.model';
-import { Column } from '../../../components/table/table/model/column/column.model';
-import { Row } from '../../../components/table/table/model/row/row.model';
-import { TableSorter } from '../../../components/table/table/sorter/table-sorter';
-import { TableComponent } from '../../../components/table/table/table.component';
-import { ActiveFilter } from '../../../enums/active-filter/active-filter.enum';
-import { DeletedFilter } from '../../../enums/deleted-filter/deleted-filter.enum';
-import { SortDirection } from '../../../enums/direction/direction.enum';
-import { UserOrder } from '../../../services/user/enums/user-order/user-order.enum';
-import { UserColumnId } from '../types/user-column-id/user-column-id.enum';
-import { UserOrderParam } from '../types/user-order-param.type';
+import { ListComponent } from '@components/list/list.component';
+import { ListItem } from '@components/list/types/list-item.model';
+import { ItemIcon } from '@components/models/item-icon/item-icon.model';
+import { ItemLabel } from '@components/models/item-label/item-label.model';
+import { UserColumnLabel } from '@components/table/table/enums/user-column-name/user-column-label.enum';
+import { UserTableRow } from '@components/table/table/interfaces/user-table-row.interface';
+import { ColumnData } from '@components/table/table/model/column-data/column-data.model';
+import { Column } from '@components/table/table/model/column/column.model';
+import { Row } from '@components/table/table/model/row/row.model';
+import { TableSorter } from '@components/table/table/sorter/table-sorter';
+import { TableComponent } from '@components/table/table/table.component';
+import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
+import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
+import { SortDirection } from '@enums/direction/direction.enum';
+import { UserColumnId } from '@pages/users/types/user-column-id/user-column-id.enum';
+import { UserOrderParam } from '@pages/users/types/user-order-param.type';
+import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 
 @Component({
     selector: 'app-responsive-user-list',

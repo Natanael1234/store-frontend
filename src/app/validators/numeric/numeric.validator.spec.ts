@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { numericValidator } from './numeric.validator';
+import { numericValidator } from '@validators/numeric/numeric.validator';
 
 describe('Numeric Validator.', () => {
     describe('args.required.', () => {

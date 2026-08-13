@@ -1,7 +1,7 @@
-import { ActiveFilter } from '../../../../enums/active-filter/active-filter.enum';
-import { DeletedFilter } from '../../../../enums/deleted-filter/deleted-filter.enum';
-import { FindUserRequestDTO } from '../../../../services/user/dtos/find-user.request/find-user.request.dto';
-import { UserOrder } from '../../../../services/user/enums/user-order/user-order.enum';
+import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
+import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
+import { FindUserRequestDTO } from '@services/user/dtos/find-user.request/find-user.request.dto';
+import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 
 export const _usersComponentPayloadsData: FindUserRequestDTO[] = [
     {

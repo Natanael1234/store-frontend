@@ -1,4 +1,4 @@
-import { DeletedFilter } from './deleted-filter.enum';
+import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
 
 describe('DeletedFilter', () => {
     it('should be defined', () => {

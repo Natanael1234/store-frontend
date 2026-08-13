@@ -1,5 +1,5 @@
-import { Role } from '../../../../services/user/dtos/role/role.enum';
-import { UserOrder } from '../../../../services/user/enums/user-order/user-order.enum';
+import { Role } from '@services/user/dtos/role/role.enum';
+import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 
 export const _usersComponentResponsesData = [
     {

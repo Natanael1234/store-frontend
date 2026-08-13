@@ -1,6 +1,6 @@
-import { ActiveFilter } from '../../../../enums/active-filter/active-filter.enum';
-import { DeletedFilter } from '../../../../enums/deleted-filter/deleted-filter.enum';
-import { UserOrder } from '../../enums/user-order/user-order.enum';
+import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
+import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
+import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 
 export type FindUserRequestDTO = {
     textQuery?: string;

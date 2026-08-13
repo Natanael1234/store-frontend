@@ -1,4 +1,4 @@
-import { SortDirection } from '../../../../../enums/direction/direction.enum';
+import { SortDirection } from '@enums/direction/direction.enum';
 
 export type _ExpectedTableHeaderItem = {
     id: string;

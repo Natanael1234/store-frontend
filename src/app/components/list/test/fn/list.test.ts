@@ -2,9 +2,9 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture } from '@angular/core/testing';
 import { MatList } from '@angular/material/list';
 import { By } from '@angular/platform-browser';
-import { ListItemComponent } from '../../components/list-item/list-item.component';
-import { ListComponent } from '../../list.component';
-import { ListItem } from '../../types/list-item.model';
+import { ListItemComponent } from '@components/list/components/list-item/list-item.component';
+import { ListComponent } from '@components/list/list.component';
+import { ListItem } from '@components/list/types/list-item.model';
 
 export function _testListComponent(
     fixture: ComponentFixture<ListComponent>,

@@ -9,9 +9,9 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { NavigationRailItem } from '@components/navigation-rail/types/navigation-rail-item/navigation-rail-item.type';
+import { leftMouseClickFilter } from '@utils/mouse-events/mouse-click-filter';
 import { BehaviorSubject } from 'rxjs';
-import { leftMouseClickFilter } from '../../utils/mouse-events/mouse-click-filter';
-import { NavigationRailItem } from './types/navigation-rail-item/navigation-rail-item.type';
 
 enum RailClasses {
     collapsed = 'collapsed',

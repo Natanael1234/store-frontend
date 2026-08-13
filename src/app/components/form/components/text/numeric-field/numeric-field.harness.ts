@@ -4,7 +4,8 @@ import {
     MatFormFieldHarness,
 } from '@angular/material/form-field/testing';
 import { MatInputHarness } from '@angular/material/input/testing';
-import { AutoCompleteType } from '../../../enums/auto-complete-type/auto-complete-type.enum';
+import { AutoCompleteType } from '@components/form/enums/auto-complete-type/auto-complete-type.enum';
+
 type NumericFieldState = {
     id: string;
     type: string;

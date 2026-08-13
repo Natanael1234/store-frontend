@@ -1,6 +1,6 @@
+import { FindUserRequestDTO } from '@services/user/dtos/find-user.request/find-user.request.dto';
+import { UserService } from '@services/user/user.service';
 import { _testMethodCalls } from '../../../../../test-utils/method-calls.test';
-import { FindUserRequestDTO } from '../../../../services/user/dtos/find-user.request/find-user.request.dto';
-import { UserService } from '../../../../services/user/user.service';
 
 export function _testUserscomponentGetUsersCalls(
     userServiceSpy: jasmine.SpyObj<UserService>,

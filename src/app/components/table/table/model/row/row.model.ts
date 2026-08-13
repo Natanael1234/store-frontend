@@ -1,4 +1,4 @@
-import { ColumnData } from '../column-data/column-data.model';
+import { ColumnData } from '@components/table/table/model/column-data/column-data.model';
 
 export class Row {
     public id: string;

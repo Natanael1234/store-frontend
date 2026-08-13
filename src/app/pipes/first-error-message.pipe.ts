@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { StandardControlValidatorError } from '../enums/standard-control-validator-name/standard-control-validator-name.enum';
+import { StandardControlValidatorError } from '@enums/standard-control-validator-name/standard-control-validator-name.enum';
 
 @Pipe({
     name: 'firstErrorMessage',

@@ -1,4 +1,4 @@
-import { InputType } from './input-type.enum';
+import { InputType } from '@components/form/enums/input-type/input-type.enum';
 
 describe('FormElementType enum', () => {
     it('should be defined', () => {

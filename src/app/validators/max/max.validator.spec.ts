@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { maxValidator } from './max.validator';
+import { maxValidator } from '@validators/max/max.validator';
 
 describe('maxValidator', () => {
     it('should return null if control value is empty', () => {

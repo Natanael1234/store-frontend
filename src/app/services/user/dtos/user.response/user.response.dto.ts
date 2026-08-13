@@ -1,4 +1,4 @@
-import { Role } from '../role/role.enum';
+import { Role } from '@services/user/dtos/role/role.enum';
 
 export type UserResponseDto = {
     id: string;

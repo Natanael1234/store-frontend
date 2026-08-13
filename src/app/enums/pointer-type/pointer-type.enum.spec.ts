@@ -1,4 +1,4 @@
-import { PointerType } from './pointer-type.enum';
+import { PointerType } from '@enums/pointer-type/pointer-type.enum';
 
 describe('PointerType', () => {
     it('should be defined', () => {

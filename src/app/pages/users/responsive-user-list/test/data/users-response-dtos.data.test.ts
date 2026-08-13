@@ -1,5 +1,5 @@
-import { Role } from '../../../../../services/user/dtos/role/role.enum';
-import { UserResponseDto } from '../../../../../services/user/dtos/user.response/user.response.dto';
+import { Role } from '@services/user/dtos/role/role.enum';
+import { UserResponseDto } from '@services/user/dtos/user.response/user.response.dto';
 
 export const _usersResponseDtos: UserResponseDto[] = [
     {

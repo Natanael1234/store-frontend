@@ -1,9 +1,7 @@
 /// <reference types="jasmine" />
-
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { Component, DebugElement } from '@angular/core';
-import { AlertComponent } from './alert.component';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AlertComponent } from '@components/alert/alert.component';
 
 @Component({
     template: `

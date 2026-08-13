@@ -1,10 +1,10 @@
 import { ComponentHarness } from '@angular/cdk/testing';
 import { MatProgressBarHarness } from '@angular/material/progress-bar/testing';
+import { AlertHarness } from '@components/alert/alert.harness';
+import { ButtonHarness } from '@components/form/components/button/button.harness';
+import { PasswordFieldHarness } from '@components/form/components/text/password-field/password-field.harness';
+import { TextFieldHarness } from '@components/form/components/text/text-field/text-field.harness';
 import { isEqual } from 'lodash';
-import { AlertHarness } from '../../components/alert/alert.harness';
-import { ButtonHarness } from '../../components/form/components/button/button.harness';
-import { PasswordFieldHarness } from '../../components/form/components/text/password-field/password-field.harness';
-import { TextFieldHarness } from '../../components/form/components/text/text-field/text-field.harness';
 
 type TextFieldState = {
     hasValidStructure: boolean | { [key: string]: string };

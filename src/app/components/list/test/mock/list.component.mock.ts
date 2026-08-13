@@ -1,6 +1,6 @@
 import { Component, EventEmitter, model, Output } from '@angular/core';
-import { ListComponent } from '../../list.component';
-import { ListItem } from '../../types/list-item.model';
+import { ListComponent } from '@components/list/list.component';
+import { ListItem } from '@components/list/types/list-item.model';
 
 @Component({
     selector: 'app-list',

@@ -1,7 +1,7 @@
-import { TextMessage } from '../text/text.messages';
+import { TextMessage } from '@messages/text/text.messages';
 
 export class EmailMessage extends TextMessage {
-  constructor(options?: { minLength?: number; maxLength?: number }) {
-    super(options);
-  }
+    constructor(options?: { minLength?: number; maxLength?: number }) {
+        super(options);
+    }
 }

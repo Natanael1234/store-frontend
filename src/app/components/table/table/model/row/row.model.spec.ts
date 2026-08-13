@@ -1,5 +1,5 @@
-import { ColumnData } from '../column-data/column-data.model';
-import { Row } from './row.model';
+import { ColumnData } from '@components/table/table/model/column-data/column-data.model';
+import { Row } from '@components/table/table/model/row/row.model';
 
 describe('RowData', () => {
     it('should create an instance with provided values', () => {

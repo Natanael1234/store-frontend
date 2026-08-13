@@ -4,9 +4,9 @@ import {
     MatDialogModule,
     MatDialogRef,
 } from '@angular/material/dialog';
-import { OnUserFilterMenuListCloseEvent } from '../user-filter-toollbar/types/on-user-filter-menu-list-close-event.type';
-import { UserFilterToolbarComponent } from '../user-filter-toollbar/user-filter-toolbar.component';
-import { UserFilterUserDialogData } from './filter-dialog-data';
+import { UserFilterUserDialogData } from '@pages/users/responsive-user-filters/user-filter-dialog/filter-dialog-data';
+import { OnUserFilterMenuListCloseEvent } from '@pages/users/responsive-user-filters/user-filter-toollbar/types/on-user-filter-menu-list-close-event.type';
+import { UserFilterToolbarComponent } from '@pages/users/responsive-user-filters/user-filter-toollbar/user-filter-toolbar.component';
 
 @Component({
     selector: 'app-user-filter-dialog',

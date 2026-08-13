@@ -1,7 +1,7 @@
 import { Component, model } from '@angular/core';
-import { ItemIcon } from '../../../../../models/item-icon/item-icon.model';
-import { ItemLabel } from '../../../../../models/item-label/item-label.model';
-import { ListItemComponent } from '../../list-item.component';
+import { ListItemComponent } from '@components/list/components/list-item/list-item.component';
+import { ItemIcon } from '@components/models/item-icon/item-icon.model';
+import { ItemLabel } from '@components/models/item-label/item-label.model';
 
 @Component({
     selector: 'app-list-item',

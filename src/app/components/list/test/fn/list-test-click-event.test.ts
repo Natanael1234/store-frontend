@@ -1,7 +1,7 @@
 import { DebugElement } from '@angular/core';
-import { MouseButton } from '../../../../enums/mouse-button/mouse-button.enum';
-import { PointerType } from '../../../../enums/pointer-type/pointer-type.enum';
-import { ListComponent } from '../../list.component';
+import { ListComponent } from '@components/list/list.component';
+import { MouseButton } from '@enums/mouse-button/mouse-button.enum';
+import { PointerType } from '@enums/pointer-type/pointer-type.enum';
 
 export function _testListClickEvent(
     component: ListComponent,

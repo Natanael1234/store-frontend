@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { AuthResponseDto } from '../auth/dtos/auth.response.dto';
-import { HttpService } from '../http/http.service';
-import { testCreateMockedTokenService } from '../token/test-token-service.utils';
-import { TokenService } from '../token/token.service';
-import { Role } from './dtos/role/role.enum';
-import { UserService } from './user.service';
+import { AuthResponseDto } from '@services/auth/dtos/auth.response.dto';
+import { HttpService } from '@services/http/http.service';
+import { testCreateMockedTokenService } from '@services/token/test-token-service.utils';
+import { TokenService } from '@services/token/token.service';
+import { Role } from '@services/user/dtos/role/role.enum';
+import { UserService } from '@services/user/user.service';
 
 /** mocks JWT token */
 const SECRET_KEY = 'SECRET_KEY';

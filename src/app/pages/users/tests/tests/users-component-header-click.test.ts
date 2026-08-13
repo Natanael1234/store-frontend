@@ -1,10 +1,10 @@
 import { ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { ResponsiveUserFiltersComponent } from '@pages/users/responsive-user-filters/responsive-user-filters.component';
+import { ResponsiveUserListComponent } from '@pages/users/responsive-user-list/responsive-user-list.component';
+import { UsersComponent } from '@pages/users/users.component';
+import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 import { _testMethodCalls } from '../../../../../test-utils/method-calls.test';
-import { UserOrder } from '../../../../services/user/enums/user-order/user-order.enum';
-import { ResponsiveUserFiltersComponent } from '../../responsive-user-filters/responsive-user-filters.component';
-import { ResponsiveUserListComponent } from '../../responsive-user-list/responsive-user-list.component';
-import { UsersComponent } from '../../users.component';
 
 export function _testUsersComponentHeaderClickEvent(
     fixture: ComponentFixture<UsersComponent>,

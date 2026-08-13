@@ -8,14 +8,14 @@ import {
     ReactiveFormsModule,
     Validators,
 } from '@angular/forms';
+import { TextFieldComponent } from '@components/form/components/text/text-field/text-field.component';
+import { TextFieldHarness } from '@components/form/components/text/text-field/text-field.harness';
+import { AutoCompleteType } from '@components/form/enums/auto-complete-type/auto-complete-type.enum';
+import { FormElementType } from '@components/form/enums/form-element-type/form-element-type.enum';
+import { InputMode } from '@components/form/enums/input-mode/input-mode.enum';
+import { TextFormat } from '@components/form/enums/text-format/text-format.enum';
+import { TextMask } from '@components/form/enums/text-mask/text-mask.enum';
 import { NgxMaskDirective } from 'ngx-mask';
-import { AutoCompleteType } from '../../../enums/auto-complete-type/auto-complete-type.enum';
-import { FormElementType } from '../../../enums/form-element-type/form-element-type.enum';
-import { InputMode } from '../../../enums/input-mode/input-mode.enum';
-import { TextFormat } from '../../../enums/text-format/text-format.enum';
-import { TextMask } from '../../../enums/text-mask/text-mask.enum';
-import { TextFieldComponent } from './text-field.component';
-import { TextFieldHarness } from './text-field.harness';
 
 describe('TextFieldComponent.', () => {
     let component: TextFieldComponent;
