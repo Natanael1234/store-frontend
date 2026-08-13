@@ -1,6 +1,6 @@
-import { MouseButton } from '../../enums/mouse-button/mouse-button.enum';
-import { PointerType } from '../../enums/pointer-type/pointer-type.enum';
-import { leftMouseClickFilter } from './mouse-click-filter';
+import { MouseButton } from '@enums/mouse-button/mouse-button.enum';
+import { PointerType } from '@enums/pointer-type/pointer-type.enum';
+import { leftMouseClickFilter } from '@utils/mouse-events/mouse-click-filter';
 
 describe('leftMouseClickFilter', () => {
     it('should return true for left mouse click', () => {

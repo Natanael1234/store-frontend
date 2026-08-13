@@ -5,9 +5,9 @@ import {
     ValidatorFn,
     Validators,
 } from '@angular/forms';
-import { UserConfigs } from '../../configs/user/user.configs';
-import { PasswordMessage } from '../../messages/password/password.messages';
-import { requiredValidator } from '../required/required.validator';
+import { UserConfigs } from '@configs/user/user.configs';
+import { PasswordMessage } from '@messages/password/password.messages';
+import { requiredValidator } from '@validators/required/required.validator';
 
 const _PasswordMessage = new PasswordMessage({
     minLength: UserConfigs.PASSWORD_MIN_LENGTH,

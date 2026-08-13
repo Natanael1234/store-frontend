@@ -1,4 +1,4 @@
-import { InputMode } from './input-mode.enum';
+import { InputMode } from '@components/form/enums/input-mode/input-mode.enum';
 
 describe('SortDirection enum', () => {
     it('should be defined', () => {

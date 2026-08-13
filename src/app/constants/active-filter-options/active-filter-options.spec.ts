@@ -1,5 +1,5 @@
-import { ActiveFilter } from '../../enums/active-filter/active-filter.enum';
-import { ActiveFilterOptions } from './active-filter-options';
+import { ActiveFilterOptions } from '@constants/active-filter-options/active-filter-options';
+import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
 
 describe('ActiveFilterOptions', () => {
     it('should be defined', () => {

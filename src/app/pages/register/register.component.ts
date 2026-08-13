@@ -8,25 +8,25 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterModule } from '@angular/router';
-import { AlertComponent } from '../../components/alert/alert.component';
-import { ButtonComponent } from '../../components/form/components/button/button.component';
-import { CheckboxComponent } from '../../components/form/components/checkbox/checkbox.component';
-import { PasswordFieldComponent } from '../../components/form/components/text/password-field/password-field.component';
-import { TextFieldComponent } from '../../components/form/components/text/text-field/text-field.component';
-import { UserConfigs } from '../../configs/user/user.configs';
-import { AuthService } from '../../services/auth/auth.service';
-import { AuthResponseDto } from '../../services/auth/dtos/auth.response.dto';
-import { RegisterRequestDto } from '../../services/auth/dtos/register.request.dto';
-import { emailValidator } from '../../validators/email/email.validator';
-import { matchingPasswordValidator } from '../../validators/matching-password/matching-password.validator';
-import { nameValidator } from '../../validators/name/name.validator';
+import { AlertComponent } from '@components/alert/alert.component';
+import { ButtonComponent } from '@components/form/components/button/button.component';
+import { CheckboxComponent } from '@components/form/components/checkbox/checkbox.component';
+import { PasswordFieldComponent } from '@components/form/components/text/password-field/password-field.component';
+import { TextFieldComponent } from '@components/form/components/text/text-field/text-field.component';
+import { UserConfigs } from '@configs/user/user.configs';
+import { AbstractFormComponent } from '@pages/abstract-form.component';
+import { AuthService } from '@services/auth/auth.service';
+import { AuthResponseDto } from '@services/auth/dtos/auth.response.dto';
+import { RegisterRequestDto } from '@services/auth/dtos/register.request.dto';
+import { emailValidator } from '@validators/email/email.validator';
+import { matchingPasswordValidator } from '@validators/matching-password/matching-password.validator';
+import { nameValidator } from '@validators/name/name.validator';
 import {
     RemoteValidationContext,
     remoteValidator,
-} from '../../validators/remote/remote.validator';
-import { requiredTrueValidator } from '../../validators/required-true/required-true.validator';
-import { strongPasswordValidator } from '../../validators/strong-password/strong-password.validator';
-import { AbstractFormComponent } from '../abstract-form.component';
+} from '@validators/remote/remote.validator';
+import { requiredTrueValidator } from '@validators/required-true/required-true.validator';
+import { strongPasswordValidator } from '@validators/strong-password/strong-password.validator';
 
 @Component({
     selector: 'app-register',

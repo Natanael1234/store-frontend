@@ -10,16 +10,16 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
-import { AuthService } from '../../services/auth/auth.service';
-import { AuthResponseDto } from '../../services/auth/dtos/auth.response.dto';
+import { AuthInterceptor } from '@interceptors/auth/auth.interceptor';
+import { AuthService } from '@services/auth/auth.service';
+import { AuthResponseDto } from '@services/auth/dtos/auth.response.dto';
 import {
     testCreateMockedTokenService,
     testTokenServiceCalls,
-} from '../../services/token/test-token-service.utils';
-import { TokenService } from '../../services/token/token.service';
-import { Role } from '../../services/user/dtos/role/role.enum';
-import { AuthInterceptor } from './auth.interceptor';
+} from '@services/token/test-token-service.utils';
+import { TokenService } from '@services/token/token.service';
+import { Role } from '@services/user/dtos/role/role.enum';
+import { of, throwError } from 'rxjs';
 
 const URL = 'test/url';
 const GET = 'get';

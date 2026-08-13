@@ -4,8 +4,8 @@ import { ComponentHarness } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { SelectFieldComponent } from './select-field.component';
-import { SelectFieldHarness } from './select-field.harness';
+import { SelectFieldComponent } from '@components/form/components/select/select-field.component';
+import { SelectFieldHarness } from '@components/form/components/select/select-field.harness';
 
 describe('SelectFieldComponent.', () => {
     let component: SelectFieldComponent;

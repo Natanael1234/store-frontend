@@ -1,6 +1,6 @@
 import { FormControl } from '@angular/forms';
-import { EmailConstants } from '../../constants/email/email.constants';
-import { emailValidator } from './email.validator';
+import { EmailConstants } from '@constants/email/email.constants';
+import { emailValidator } from '@validators/email/email.validator';
 
 function generateEmail(options: {
     localPartLength: number;

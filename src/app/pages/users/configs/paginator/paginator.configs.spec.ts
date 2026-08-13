@@ -1,4 +1,4 @@
-import { PaginatorConfigs } from './paginator.configs';
+import { PaginatorConfigs } from '@pages/users/configs/paginator/paginator.configs';
 
 // TODO: check if all parameters matches
 describe('PaginatorConfigs', () => {

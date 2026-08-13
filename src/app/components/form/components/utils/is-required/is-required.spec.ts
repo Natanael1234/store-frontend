@@ -1,5 +1,5 @@
 import { FormControl, Validators } from '@angular/forms';
-import { isRequired } from './is-required';
+import { isRequired } from '@components/form/components/utils/is-required/is-required';
 
 describe('isRequired', () => {
     it('should return false if no element is provided', () => {

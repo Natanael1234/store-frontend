@@ -1,8 +1,8 @@
 import { Component, EventEmitter, model, Output } from '@angular/core';
-import { ActiveFilter } from '../../../../enums/active-filter/active-filter.enum';
-import { DeletedFilter } from '../../../../enums/deleted-filter/deleted-filter.enum';
-import { UserOrder } from '../../../../services/user/enums/user-order/user-order.enum';
-import { OnUserFilterMenuListCloseEvent } from './types/on-user-filter-menu-list-close-event.type';
+import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
+import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
+import { OnUserFilterMenuListCloseEvent } from '@pages/users/responsive-user-filters/user-filter-toollbar/types/on-user-filter-menu-list-close-event.type';
+import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 
 @Component({ selector: 'app-user-filter-toolbar', template: '' })
 export class MockUserFilterToolbarComponent {

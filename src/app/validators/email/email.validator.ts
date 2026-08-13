@@ -4,8 +4,8 @@ import {
     ValidatorFn,
     Validators,
 } from '@angular/forms';
-import { EmailConstants } from '../../constants/email/email.constants';
-import { requiredValidator } from '../required/required.validator';
+import { EmailConstants } from '@constants/email/email.constants';
+import { requiredValidator } from '@validators/required/required.validator';
 
 function _basicEmailValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {

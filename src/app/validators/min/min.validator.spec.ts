@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { minValidator } from './min.validator';
+import { minValidator } from '@validators/min/min.validator';
 
 describe('minValidator', () => {
     it('should return null if control value is empty', () => {

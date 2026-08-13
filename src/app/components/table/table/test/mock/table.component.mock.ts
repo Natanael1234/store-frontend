@@ -1,7 +1,7 @@
 import { Component, EventEmitter, model, Output } from '@angular/core';
-import { Column } from '../../model/column/column.model';
-import { Row } from '../../model/row/row.model';
-import { TableComponent } from '../../table.component';
+import { Column } from '@components/table/table/model/column/column.model';
+import { Row } from '@components/table/table/model/row/row.model';
+import { TableComponent } from '@components/table/table/table.component';
 
 // TODO: remover
 @Component({

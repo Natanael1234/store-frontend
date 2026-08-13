@@ -1,5 +1,5 @@
-import { Role } from '../../../../services/user/dtos/role/role.enum';
-import { userResponseToUserTableRow } from './user-response-to-user-table';
+import { userResponseToUserTableRow } from '@pages/users/utils/user-response-to-user-table/user-response-to-user-table';
+import { Role } from '@services/user/dtos/role/role.enum';
 
 describe('userResponseToUserTableRow', () => {
     it('should adapt user empty response to empty buser table row', () => {

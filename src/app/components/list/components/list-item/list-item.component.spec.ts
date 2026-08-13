@@ -1,10 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ListItemComponent } from './list-item.component';
-import { _testListItem } from './test/fn/list-item.test';
-import { _testSetComponentData } from './test/fn/set-list-item.test';
+import { ListItemComponent } from '@components/list/components/list-item/list-item.component';
+import { _testListItem } from '@components/list/components/list-item/test/fn/list-item.test';
+import { _testSetComponentData } from '@components/list/components/list-item/test/fn/set-list-item.test';
 
 describe('ListItemComponent.', () => {
     let component: ListItemComponent;

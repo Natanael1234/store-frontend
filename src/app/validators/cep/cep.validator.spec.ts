@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { cepValidator } from './cep.validator';
+import { cepValidator } from '@validators/cep/cep.validator';
 
 describe('CEP Validator', () => {
     const validator = cepValidator();

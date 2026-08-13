@@ -4,9 +4,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ComponentHarness } from '@angular/cdk/testing';
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { AutofocusDirective } from '../../directives/autofocus/autofocus.directive';
-import { RadioGroupComponent } from './radio-group.component';
-import { RadioGroupHarness } from './radio-group.harness';
+import { RadioGroupComponent } from '@components/form/components/radio-group/radio-group.component';
+import { RadioGroupHarness } from '@components/form/components/radio-group/radio-group.harness';
 
 describe('RadioGroupComponent.', () => {
     let component: RadioGroupComponent;
@@ -443,7 +442,7 @@ describe('autofocus.', () => {
     /** As the first focusable element is automatically focused creates a scenario where the field is the second focusable element. */
     @Component({
         selector: 'autofocus-test',
-        imports: [RadioGroupComponent, AutofocusDirective],
+        imports: [RadioGroupComponent],
         template: `
             <!-- button is focused by default -->
             <button>Test</button>

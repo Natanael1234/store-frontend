@@ -1,4 +1,4 @@
-import { UserOrder } from '../../../../../services/user/enums/user-order/user-order.enum';
+import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 
 /** TODO: test  */
 export const UserOrderOptions = [

@@ -13,12 +13,12 @@ import { MatIconButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { AutofocusDirective } from '@components/form/directives/autofocus/autofocus.directive';
+import { AutoCompleteType } from '@components/form/enums/auto-complete-type/auto-complete-type.enum';
+import { FormElementType } from '@components/form/enums/form-element-type/form-element-type.enum';
+import { Icon } from '@enums/icons/icons.enum';
+import { FirstErrorMessagePipe } from '@pipes/first-error-message.pipe';
 import { provideNgxMask } from 'ngx-mask';
-import { Icon } from '../../../../../enums/icons/icons.enum';
-import { FirstErrorMessagePipe } from '../../../../../pipes/first-error-message.pipe';
-import { AutofocusDirective } from '../../../directives/autofocus/autofocus.directive';
-import { AutoCompleteType } from '../../../enums/auto-complete-type/auto-complete-type.enum';
-import { FormElementType } from '../../../enums/form-element-type/form-element-type.enum';
 
 @Component({
     selector: 'app-password-field',

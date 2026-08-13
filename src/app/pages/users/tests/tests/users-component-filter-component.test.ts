@@ -1,11 +1,11 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ActiveFilter } from '../../../../enums/active-filter/active-filter.enum';
-import { DeletedFilter } from '../../../../enums/deleted-filter/deleted-filter.enum';
-import { UserOrder } from '../../../../services/user/enums/user-order/user-order.enum';
-import { ResponsiveUserFiltersComponent } from '../../responsive-user-filters/responsive-user-filters.component';
-import { UsersComponent } from '../../users.component';
+import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
+import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
+import { ResponsiveUserFiltersComponent } from '@pages/users/responsive-user-filters/responsive-user-filters.component';
+import { UsersComponent } from '@pages/users/users.component';
+import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 
 export function _testUsersComponentFilterComponent(
     fixture: ComponentFixture<UsersComponent>,

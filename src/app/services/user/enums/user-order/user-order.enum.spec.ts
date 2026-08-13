@@ -1,4 +1,4 @@
-import { UserOrder } from './user-order.enum';
+import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 
 describe('UserOrder enum', () => {
     it('should be defined', () => {

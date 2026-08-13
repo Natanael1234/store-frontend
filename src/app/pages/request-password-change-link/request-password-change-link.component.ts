@@ -8,17 +8,17 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterModule } from '@angular/router';
-import { AlertComponent } from '../../components/alert/alert.component';
-import { ButtonComponent } from '../../components/form/components/button/button.component';
-import { TextFieldComponent } from '../../components/form/components/text/text-field/text-field.component';
-import { AuthService } from '../../services/auth/auth.service';
-import { RequestPasswordChangeLinkRequestDto } from '../../services/auth/dtos/request-password-creation-link.request.dto';
-import { emailValidator } from '../../validators/email/email.validator';
+import { AlertComponent } from '@components/alert/alert.component';
+import { ButtonComponent } from '@components/form/components/button/button.component';
+import { TextFieldComponent } from '@components/form/components/text/text-field/text-field.component';
+import { AbstractFormComponent } from '@pages/abstract-form.component';
+import { AuthService } from '@services/auth/auth.service';
+import { RequestPasswordChangeLinkRequestDto } from '@services/auth/dtos/request-password-creation-link.request.dto';
+import { emailValidator } from '@validators/email/email.validator';
 import {
     RemoteValidationContext,
     remoteValidator,
-} from '../../validators/remote/remote.validator';
-import { AbstractFormComponent } from '../abstract-form.component';
+} from '@validators/remote/remote.validator';
 
 @Component({
     selector: 'app-request-password-change',

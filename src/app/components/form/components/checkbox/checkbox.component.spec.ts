@@ -4,8 +4,8 @@ import { ComponentHarness } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { CheckboxComponent } from './checkbox.component';
-import { CheckboxHarness } from './checkbox.harness';
+import { CheckboxComponent } from '@components/form/components/checkbox/checkbox.component';
+import { CheckboxHarness } from '@components/form/components/checkbox/checkbox.harness';
 
 describe('CheckboxFormElement.', () => {
     let component: CheckboxComponent;

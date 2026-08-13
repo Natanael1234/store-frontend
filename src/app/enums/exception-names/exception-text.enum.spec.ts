@@ -1,4 +1,4 @@
-import { ExceptionName } from './exception-text.enum';
+import { ExceptionName } from '@enums/exception-names/exception-text.enum';
 
 describe('ExceptionText', () => {
     it('should be defined', () => {

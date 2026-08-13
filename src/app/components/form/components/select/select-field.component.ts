@@ -5,7 +5,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { AutofocusDirective } from '../../directives/autofocus/autofocus.directive';
+import { AutofocusDirective } from '@components/form/directives/autofocus/autofocus.directive';
 
 @Component({
     selector: 'app-select-field',

@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { timeValidator } from './time.validator';
+import { timeValidator } from '@validators/time/time.validator';
 
 describe('Time Validator', () => {
     const validator = timeValidator();

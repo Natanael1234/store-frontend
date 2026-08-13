@@ -5,10 +5,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { By } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
-import { MouseButton } from '../../enums/mouse-button/mouse-button.enum';
-import { PointerType } from '../../enums/pointer-type/pointer-type.enum';
-import { NavigationRailComponent } from './navigation-rail.component';
-import { NavigationRailItem } from './types/navigation-rail-item/navigation-rail-item.type';
+import { NavigationRailComponent } from '@components/navigation-rail/navigation-rail.component';
+import { NavigationRailItem } from '@components/navigation-rail/types/navigation-rail-item/navigation-rail-item.type';
+import { MouseButton } from '@enums/mouse-button/mouse-button.enum';
+import { PointerType } from '@enums/pointer-type/pointer-type.enum';
 
 describe('SideMenuComponent.', () => {
     let navigationRailComponent: NavigationRailComponent;

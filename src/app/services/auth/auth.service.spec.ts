@@ -1,22 +1,22 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
-import { HttpService } from '../http/http.service';
+import { AuthService } from '@services/auth/auth.service';
+import { AuthResponseDto } from '@services/auth/dtos/auth.response.dto';
+import { EditOwnProfileRequestDto } from '@services/auth/dtos/edit-own-profile.request.dto';
+import { LoginRequestDto } from '@services/auth/dtos/login.request.dto';
+import { NewPasswordRequestDto } from '@services/auth/dtos/new-password.request.dto';
+import { RegisterRequestDto } from '@services/auth/dtos/register.request.dto';
+import { RequestPasswordChangeLinkRequestDto } from '@services/auth/dtos/request-password-creation-link.request.dto';
+import { UpdateLoggedInUserPasswordRequestDto } from '@services/auth/dtos/update-logged-in-user-password.request.dto';
+import { AuthRequestRoutes } from '@services/auth/request-routes/auth.request-routes';
+import { HttpService } from '@services/http/http.service';
 import {
     testCreateMockedTokenService,
     testTokenServiceCalls,
-} from '../token/test-token-service.utils';
-import { TokenService } from '../token/token.service';
-import { Role } from '../user/dtos/role/role.enum';
-import { AuthService } from './auth.service';
-import { AuthResponseDto } from './dtos/auth.response.dto';
-import { EditOwnProfileRequestDto } from './dtos/edit-own-profile.request.dto';
-import { LoginRequestDto } from './dtos/login.request.dto';
-import { NewPasswordRequestDto } from './dtos/new-password.request.dto';
-import { RegisterRequestDto } from './dtos/register.request.dto';
-import { RequestPasswordChangeLinkRequestDto } from './dtos/request-password-creation-link.request.dto';
-import { UpdateLoggedInUserPasswordRequestDto } from './dtos/update-logged-in-user-password.request.dto';
-import { AuthRequestRoutes } from './request-routes/auth.request-routes';
+} from '@services/token/test-token-service.utils';
+import { TokenService } from '@services/token/token.service';
+import { Role } from '@services/user/dtos/role/role.enum';
+import { of, throwError } from 'rxjs';
 
 /** mocks JWT token */
 const SECRET_KEY = 'SECRET_KEY';

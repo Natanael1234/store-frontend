@@ -1,20 +1,19 @@
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
-
 import { ComponentHarness } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { Component } from '@angular/core';
+import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import {
     FormControl,
     FormsModule,
     ReactiveFormsModule,
     Validators,
 } from '@angular/forms';
+import { NumericFieldComponent } from '@components/form/components/text/numeric-field/numeric-field.component';
+import { NumericFieldHarness } from '@components/form/components/text/numeric-field/numeric-field.harness';
+import { AutoCompleteType } from '@components/form/enums/auto-complete-type/auto-complete-type.enum';
+import { FormElementType } from '@components/form/enums/form-element-type/form-element-type.enum';
+import { maxLengthValidator } from '@validators/max-length/max-length.validator';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
-import { maxLengthValidator } from '../../../../../validators/max-length/max-length.validator';
-import { AutoCompleteType } from '../../../enums/auto-complete-type/auto-complete-type.enum';
-import { FormElementType } from '../../../enums/form-element-type/form-element-type.enum';
-import { NumericFieldComponent } from './numeric-field.component';
-import { NumericFieldHarness } from './numeric-field.harness';
 
 describe('NumericFieldComponent.', () => {
     let component: NumericFieldComponent;

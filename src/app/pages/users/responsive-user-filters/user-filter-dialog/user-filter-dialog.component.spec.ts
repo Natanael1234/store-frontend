@@ -17,12 +17,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { By } from '@angular/platform-browser';
-import { ActiveFilter } from '../../../../enums/active-filter/active-filter.enum';
-import { DeletedFilter } from '../../../../enums/deleted-filter/deleted-filter.enum';
-import { UserOrder } from '../../../../services/user/enums/user-order/user-order.enum';
-import { UserFilterToolbarComponent } from '../user-filter-toollbar/user-filter-toolbar.component';
-import { MockUserFilterToolbarComponent } from '../user-filter-toollbar/user-filter-toolbar.component.mock';
-import { UserFilterDialogComponent } from './user-filter-dialog.component';
+import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
+import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
+import { UserFilterDialogComponent } from '@pages/users/responsive-user-filters/user-filter-dialog/user-filter-dialog.component';
+import { UserFilterToolbarComponent } from '@pages/users/responsive-user-filters/user-filter-toollbar/user-filter-toolbar.component';
+import { MockUserFilterToolbarComponent } from '@pages/users/responsive-user-filters/user-filter-toollbar/user-filter-toolbar.component.mock';
+import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 
 describe('UserFilterDialogComponent.', () => {
     let component: UserFilterDialogComponent;

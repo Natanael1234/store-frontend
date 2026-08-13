@@ -13,11 +13,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { QueryParamsHandling } from '@angular/router';
 import { ɵɵRouterLink as RouterLink } from '@angular/router/testing';
-import { Icon } from '../../../../enums/icons/icons.enum';
-import { leftMouseClickFilter } from '../../../../utils/mouse-events/mouse-click-filter';
-import { AutofocusDirective } from '../../directives/autofocus/autofocus.directive';
-import { FormElementType } from '../../enums/form-element-type/form-element-type.enum';
-import { ButtonAppearance } from './enum/appearance/button-appearance.enum';
+import { ButtonAppearance } from '@components/form/components/button/enum/appearance/button-appearance.enum';
+import { AutofocusDirective } from '@components/form/directives/autofocus/autofocus.directive';
+import { FormElementType } from '@components/form/enums/form-element-type/form-element-type.enum';
+import { Icon } from '@enums/icons/icons.enum';
+import { leftMouseClickFilter } from '@utils/mouse-events/mouse-click-filter';
 
 @Component({
     selector: 'app-button',

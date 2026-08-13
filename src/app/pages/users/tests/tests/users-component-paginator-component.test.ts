@@ -2,7 +2,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture } from '@angular/core/testing';
 import { MatPaginator } from '@angular/material/paginator';
 import { By } from '@angular/platform-browser';
-import { UsersComponent } from '../../users.component';
+import { UsersComponent } from '@pages/users/users.component';
 
 export function _testUsersComponentPaginatorComponent(
     fixture: ComponentFixture<UsersComponent>,

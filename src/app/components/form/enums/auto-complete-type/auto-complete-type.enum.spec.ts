@@ -1,4 +1,4 @@
-import { AutoCompleteType } from './auto-complete-type.enum';
+import { AutoCompleteType } from '@components/form/enums/auto-complete-type/auto-complete-type.enum';
 
 describe('AutoCompleteType enum', () => {
     it('should be defined', () => {

@@ -1,5 +1,8 @@
 import { FormControl } from '@angular/forms';
-import { RemoteValidationContext, remoteValidator } from './remote.validator';
+import {
+    RemoteValidationContext,
+    remoteValidator,
+} from '@validators/remote/remote.validator';
 
 describe('Remote Validator', () => {
     it('should validate when remote error message is null', () => {

@@ -1,4 +1,4 @@
-import { Icon } from './icons.enum';
+import { Icon } from '@enums/icons/icons.enum';
 
 describe('Icon enum', () => {
     it('should be defined', () => {

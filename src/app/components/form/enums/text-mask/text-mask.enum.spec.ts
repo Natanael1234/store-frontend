@@ -1,4 +1,4 @@
-import { TextMask } from './text-mask.enum';
+import { TextMask } from '@components/form/enums/text-mask/text-mask.enum';
 
 describe('TextMask enum', () => {
     it('should be defined', () => {

@@ -1,10 +1,10 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { UserColumnId } from '../../../../../pages/users/types/user-column-id/user-column-id.enum';
-import { HeaderItemComponent } from '../../components/header-item/header-item.component';
-import { TableComponent } from '../../table.component';
-import { _ExpectedTableHeaderItem } from '../types/expected-table-header-item.type.test';
+import { HeaderItemComponent } from '@components/table/table/components/header-item/header-item.component';
+import { TableComponent } from '@components/table/table/table.component';
+import { _ExpectedTableHeaderItem } from '@components/table/table/test/types/expected-table-header-item.type.test';
+import { UserColumnId } from '@pages/users/types/user-column-id/user-column-id.enum';
 
 export function _testTableHeadersComponent(
     fixture: ComponentFixture<TableComponent>,

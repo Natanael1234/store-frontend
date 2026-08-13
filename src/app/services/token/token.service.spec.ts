@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { TokenService } from './token.service';
+import { TokenService } from '@services/token/token.service';
 
 let store: { [key: string]: string } = {};
 

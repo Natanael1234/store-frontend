@@ -1,9 +1,9 @@
 import { Component, EventEmitter, model, Output } from '@angular/core';
-import { UserTableRow } from '../../../../../components/table/table/interfaces/user-table-row.interface';
-import { ActiveFilter } from '../../../../../enums/active-filter/active-filter.enum';
-import { DeletedFilter } from '../../../../../enums/deleted-filter/deleted-filter.enum';
-import { UserOrder } from '../../../../../services/user/enums/user-order/user-order.enum';
-import { UserOrderParam } from '../../../types/user-order-param.type';
+import { UserTableRow } from '@components/table/table/interfaces/user-table-row.interface';
+import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
+import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
+import { UserOrderParam } from '@pages/users/types/user-order-param.type';
+import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 
 @Component({ selector: 'app-responsive-user-list', template: '' })
 export class MockUserResponsiveListComponent {

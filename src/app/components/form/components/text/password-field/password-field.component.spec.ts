@@ -8,11 +8,11 @@ import {
     ReactiveFormsModule,
     Validators,
 } from '@angular/forms';
+import { PasswordFieldComponent } from '@components/form/components/text/password-field/password-field.component';
+import { PasswordFieldHarness } from '@components/form/components/text/password-field/password-field.harness';
+import { AutoCompleteType } from '@components/form/enums/auto-complete-type/auto-complete-type.enum';
+import { FormElementType } from '@components/form/enums/form-element-type/form-element-type.enum';
 import { NgxMaskDirective } from 'ngx-mask';
-import { AutoCompleteType } from '../../../enums/auto-complete-type/auto-complete-type.enum';
-import { FormElementType } from '../../../enums/form-element-type/form-element-type.enum';
-import { PasswordFieldComponent } from './password-field.component';
-import { PasswordFieldHarness } from './password-field.harness';
 
 describe('PasswordFieldComponent.', () => {
     let component: PasswordFieldComponent;

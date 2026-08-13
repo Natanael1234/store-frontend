@@ -1,4 +1,4 @@
-import { UserColumnId } from './user-column-id.enum';
+import { UserColumnId } from '@pages/users/types/user-column-id/user-column-id.enum';
 
 describe('UserColumnId', () => {
     it('should be defined', () => {

@@ -1,9 +1,9 @@
 import { Component, EventEmitter, model, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { SortDirection } from '../../../../../enums/direction/direction.enum';
-import { Sort } from '../../../../../interfaces/sort.interface';
-import { leftMouseClickFilter } from '../../../../../utils/mouse-events/mouse-click-filter';
-import { toggleSortDirecton } from '../../../table-utils/table-utils';
+import { toggleSortDirecton } from '@components/table/table-utils/table-utils';
+import { SortDirection } from '@enums/direction/direction.enum';
+import { Sort } from '@interfaces/sort.interface';
+import { leftMouseClickFilter } from '@utils/mouse-events/mouse-click-filter';
 
 @Component({
     selector: 'app-header-item',

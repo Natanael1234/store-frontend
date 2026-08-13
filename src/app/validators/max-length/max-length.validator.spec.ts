@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { maxLengthValidator } from './max-length.validator';
+import { maxLengthValidator } from '@validators/max-length/max-length.validator';
 
 describe('maxLengthValidator', () => {
     it('should return null for null value', () => {

@@ -1,4 +1,4 @@
-import { Display } from './display.enum';
+import { Display } from '@enums/display/display.enum';
 
 describe('Display enum', () => {
     it('should be defined', () => {

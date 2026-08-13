@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { cnpjValidator } from './cnpj.validator';
+import { cnpjValidator } from '@validators/cnpj/cnpj.validator';
 
 describe('CNPJ Validator', () => {
     const validator = cnpjValidator();

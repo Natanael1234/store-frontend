@@ -9,22 +9,22 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterModule } from '@angular/router';
-import { AlertComponent } from '../../components/alert/alert.component';
-import { ButtonComponent } from '../../components/form/components/button/button.component';
-import { PasswordFieldComponent } from '../../components/form/components/text/password-field/password-field.component';
-import { UserConfigs } from '../../configs/user/user.configs';
-import { AuthInterceptor } from '../../interceptors/auth/auth.interceptor';
-import { PasswordMessage } from '../../messages/password/password.messages';
-import { AuthService } from '../../services/auth/auth.service';
-import { AuthResponseDto } from '../../services/auth/dtos/auth.response.dto';
-import { UpdateLoggedInUserPasswordRequestDto } from '../../services/auth/dtos/update-logged-in-user-password.request.dto';
-import { matchingPasswordValidator } from '../../validators/matching-password/matching-password.validator';
+import { AlertComponent } from '@components/alert/alert.component';
+import { ButtonComponent } from '@components/form/components/button/button.component';
+import { PasswordFieldComponent } from '@components/form/components/text/password-field/password-field.component';
+import { UserConfigs } from '@configs/user/user.configs';
+import { AuthInterceptor } from '@interceptors/auth/auth.interceptor';
+import { PasswordMessage } from '@messages/password/password.messages';
+import { AbstractFormComponent } from '@pages/abstract-form.component';
+import { AuthService } from '@services/auth/auth.service';
+import { AuthResponseDto } from '@services/auth/dtos/auth.response.dto';
+import { UpdateLoggedInUserPasswordRequestDto } from '@services/auth/dtos/update-logged-in-user-password.request.dto';
+import { matchingPasswordValidator } from '@validators/matching-password/matching-password.validator';
 import {
     RemoteValidationContext,
     remoteValidator,
-} from '../../validators/remote/remote.validator';
-import { strongPasswordValidator } from '../../validators/strong-password/strong-password.validator';
-import { AbstractFormComponent } from '../abstract-form.component';
+} from '@validators/remote/remote.validator';
+import { strongPasswordValidator } from '@validators/strong-password/strong-password.validator';
 
 const _PasswordMessage = new PasswordMessage({
     minLength: UserConfigs.PASSWORD_MIN_LENGTH,

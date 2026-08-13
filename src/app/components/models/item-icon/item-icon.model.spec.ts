@@ -1,4 +1,4 @@
-import { ItemIcon } from './item-icon.model';
+import { ItemIcon } from '@components/models/item-icon/item-icon.model';
 
 describe('ItemLabel model', () => {
     it('should be defined', () => {

@@ -1,4 +1,4 @@
-import { normalizeException } from './exception-normalizer';
+import { normalizeException } from '@utils/exception-normalizer/exception-normalizer';
 
 describe('normalizeException', () => {
     it('should be defined', () => {

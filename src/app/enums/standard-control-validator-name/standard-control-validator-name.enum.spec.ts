@@ -1,4 +1,4 @@
-import { StandardControlValidatorError } from './standard-control-validator-name.enum';
+import { StandardControlValidatorError } from '@enums/standard-control-validator-name/standard-control-validator-name.enum';
 
 describe('StandardControlValidatorError', () => {
     it('should be defined', () => {

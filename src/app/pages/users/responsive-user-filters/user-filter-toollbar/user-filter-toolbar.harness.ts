@@ -1,8 +1,8 @@
 import { ComponentHarness } from '@angular/cdk/testing';
+import { SelectFieldHarness } from '@components/form/components/select/select-field.harness';
+import { MouseButton } from '@enums/mouse-button/mouse-button.enum';
+import { PointerType } from '@enums/pointer-type/pointer-type.enum';
 import { isEqual } from 'lodash';
-import { SelectFieldHarness } from '../../../../components/form/components/select/select-field.harness';
-import { MouseButton } from '../../../../enums/mouse-button/mouse-button.enum';
-import { PointerType } from '../../../../enums/pointer-type/pointer-type.enum';
 
 type UserFilterChildrenData = { col: number; childTagName: string };
 type UserFilterToolbarState = {

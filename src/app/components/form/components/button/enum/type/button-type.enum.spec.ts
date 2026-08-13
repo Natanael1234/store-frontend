@@ -1,4 +1,4 @@
-import { ButtonType } from './button-type.enum';
+import { ButtonType } from '@components/form/components/button/enum/type/button-type.enum';
 
 describe('ButtonType enum.', () => {
     it('should be defined.', () => {

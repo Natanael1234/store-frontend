@@ -10,9 +10,9 @@ import {
     HttpTestingController,
     provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { AuthInterceptor } from '../../interceptors/auth/auth.interceptor';
-import { TokenService } from '../token/token.service';
-import { HttpService } from './http.service';
+import { AuthInterceptor } from '@interceptors/auth/auth.interceptor';
+import { HttpService } from '@services/http/http.service';
+import { TokenService } from '@services/token/token.service';
 
 const testPath = 'some_path/test';
 const testUrl = `http://localhost:3000/api/${testPath}`;

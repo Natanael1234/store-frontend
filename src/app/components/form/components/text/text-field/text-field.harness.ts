@@ -4,8 +4,8 @@ import {
     MatFormFieldHarness,
 } from '@angular/material/form-field/testing';
 import { MatInputHarness } from '@angular/material/input/testing';
-import { AutoCompleteType } from '../../../enums/auto-complete-type/auto-complete-type.enum';
-import { InputMode } from '../../../enums/input-mode/input-mode.enum';
+import { AutoCompleteType } from '@components/form/enums/auto-complete-type/auto-complete-type.enum';
+import { InputMode } from '@components/form/enums/input-mode/input-mode.enum';
 
 type TextFieldState = {
     id: string;

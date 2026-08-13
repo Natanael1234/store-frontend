@@ -1,4 +1,4 @@
-import { DrawerMode } from './drawer-mode';
+import { DrawerMode } from '@enums/drawer-mode/drawer-mode';
 
 describe('DrawerMode enum', () => {
     it('should be defined', () => {

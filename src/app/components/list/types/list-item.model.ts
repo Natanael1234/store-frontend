@@ -1,5 +1,5 @@
-import { ItemIcon } from '../../models/item-icon/item-icon.model';
-import { ItemLabel } from '../../models/item-label/item-label.model';
+import { ItemIcon } from '@components/models/item-icon/item-icon.model';
+import { ItemLabel } from '@components/models/item-label/item-label.model';
 
 // TODO: test
 export class ListItem {

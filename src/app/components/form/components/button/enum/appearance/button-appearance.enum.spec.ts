@@ -1,4 +1,4 @@
-import { ButtonAppearance } from './button-appearance.enum';
+import { ButtonAppearance } from '@components/form/components/button/enum/appearance/button-appearance.enum';
 
 describe('ButtonAppearance enum.', () => {
     it('should be defined.', () => {

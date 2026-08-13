@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { UserDialogComponent } from './user-dialog.component';
+import { UserDialogComponent } from '@pages/users/dialogs/user-dialog/user-dialog.component';
 
 describe('UserDialogComponent.', () => {
     let component: UserDialogComponent;

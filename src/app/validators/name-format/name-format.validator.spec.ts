@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { nameFormatValidator } from './name-format.validator';
+import { nameFormatValidator } from '@validators/name-format/name-format.validator';
 
 describe('nameFormatValidator', () => {
     const validator = nameFormatValidator();

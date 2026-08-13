@@ -1,4 +1,4 @@
-import { ActiveFilter } from '../../enums/active-filter/active-filter.enum';
+import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
 
 export const ActiveFilterOptions = [
     { label: 'Ativos', value: ActiveFilter.active },

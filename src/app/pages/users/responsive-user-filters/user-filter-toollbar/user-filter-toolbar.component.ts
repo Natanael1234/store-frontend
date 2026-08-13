@@ -15,17 +15,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ButtonComponent } from '../../../../components/form/components/button/button.component';
-import { ButtonAppearance } from '../../../../components/form/components/button/enum/appearance/button-appearance.enum';
-import { SelectFieldComponent } from '../../../../components/form/components/select/select-field.component';
-import { FormElementType } from '../../../../components/form/enums/form-element-type/form-element-type.enum';
-import { ActiveFilterOptions } from '../../../../constants/active-filter-options/active-filter-options';
-import { DeletedFilterOptions } from '../../../../constants/deleted-filter-options/deleted-filter-options';
-import { ActiveFilter } from '../../../../enums/active-filter/active-filter.enum';
-import { DeletedFilter } from '../../../../enums/deleted-filter/deleted-filter.enum';
-import { UserOrder } from '../../../../services/user/enums/user-order/user-order.enum';
-import { UserOrderOptions } from './order-options/user-order.options';
-import { OnUserFilterMenuListCloseEvent } from './types/on-user-filter-menu-list-close-event.type';
+import { ButtonComponent } from '@components/form/components/button/button.component';
+import { ButtonAppearance } from '@components/form/components/button/enum/appearance/button-appearance.enum';
+import { SelectFieldComponent } from '@components/form/components/select/select-field.component';
+import { FormElementType } from '@components/form/enums/form-element-type/form-element-type.enum';
+import { ActiveFilterOptions } from '@constants/active-filter-options/active-filter-options';
+import { DeletedFilterOptions } from '@constants/deleted-filter-options/deleted-filter-options';
+import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
+import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
+import { UserOrderOptions } from '@pages/users/responsive-user-filters/user-filter-toollbar/order-options/user-order.options';
+import { OnUserFilterMenuListCloseEvent } from '@pages/users/responsive-user-filters/user-filter-toollbar/types/on-user-filter-menu-list-close-event.type';
+import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 
 @Component({
     selector: 'app-user-filter-toolbar',

@@ -3,8 +3,8 @@ import { Component, computed, model } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
-import { AutofocusDirective } from '../../directives/autofocus/autofocus.directive';
-import { isRequired } from '../utils/is-required/is-required';
+import { isRequired } from '@components/form/components/utils/is-required/is-required';
+import { AutofocusDirective } from '@components/form/directives/autofocus/autofocus.directive';
 
 @Component({
     selector: 'app-checkbox',

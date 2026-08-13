@@ -1,6 +1,6 @@
-import { SortDirection } from '../../../../enums/direction/direction.enum';
-import { Column } from '../model/column/column.model';
-import { TableSorter } from './table-sorter';
+import { Column } from '@components/table/table/model/column/column.model';
+import { TableSorter } from '@components/table/table/sorter/table-sorter';
+import { SortDirection } from '@enums/direction/direction.enum';
 
 describe('Table Sorter', () => {
     let columns: Column[];

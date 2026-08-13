@@ -1,10 +1,10 @@
-import { SortDirection } from '../../../enums/direction/direction.enum';
 import {
     orderToSort,
     sortToOrder,
     splitOrderData,
     toggleSortDirecton,
-} from './table-utils';
+} from '@components/table/table-utils/table-utils';
+import { SortDirection } from '@enums/direction/direction.enum';
 
 enum ProductColumnId {
     name = 'name',

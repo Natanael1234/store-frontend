@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { minLengthValidator } from './min-length.validator';
+import { minLengthValidator } from '@validators/min-length/min-length.validator';
 
 describe('minLengthValidator', () => {
     it('should return error for empty value', () => {

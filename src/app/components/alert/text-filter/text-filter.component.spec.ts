@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { TextFilterComponent } from './text-filter.component';
+import { TextFilterComponent } from '@components/alert/text-filter/text-filter.component';
 
 describe('TextFilterComponent.', () => {
     let component: TextFilterComponent;

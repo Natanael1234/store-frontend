@@ -4,15 +4,15 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { By } from '@angular/platform-browser';
-import { SortDirection } from '../../../enums/direction/direction.enum';
-import { MouseButton } from '../../../enums/mouse-button/mouse-button.enum';
-import { PointerType } from '../../../enums/pointer-type/pointer-type.enum';
-import { HeaderItemComponent } from './components/header-item/header-item.component';
-import { MockHeaderItemComponent } from './components/header-item/test/mock/header-item-component.mock';
-import { Column } from './model/column/column.model';
-import { TableComponent } from './table.component';
-import { _testTableHeadersComponent } from './test/fn/table-header-item-component.test';
-import { _testTableData } from './test/fn/user-table-data.test';
+import { HeaderItemComponent } from '@components/table/table/components/header-item/header-item.component';
+import { MockHeaderItemComponent } from '@components/table/table/components/header-item/test/mock/header-item-component.mock';
+import { Column } from '@components/table/table/model/column/column.model';
+import { TableComponent } from '@components/table/table/table.component';
+import { _testTableHeadersComponent } from '@components/table/table/test/fn/table-header-item-component.test';
+import { _testTableData } from '@components/table/table/test/fn/user-table-data.test';
+import { SortDirection } from '@enums/direction/direction.enum';
+import { MouseButton } from '@enums/mouse-button/mouse-button.enum';
+import { PointerType } from '@enums/pointer-type/pointer-type.enum';
 
 describe('TableComponent.', () => {
     let tableComponent: TableComponent;

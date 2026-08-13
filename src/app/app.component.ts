@@ -13,13 +13,13 @@ import { MatListModule } from '@angular/material/list';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule, RouterOutlet } from '@angular/router';
+import { NavigationRailComponent } from '@components/navigation-rail/navigation-rail.component';
+import { NavigationRailItem } from '@components/navigation-rail/types/navigation-rail-item/navigation-rail-item.type';
+import { ToolbarComponent } from '@components/toolbar/toolbar.component';
+import { DrawerMode } from '@enums/drawer-mode/drawer-mode';
+import { ResponsityService } from '@services/responsivity/responsivity.service';
+import { ThemeService } from '@services/theme/theme.service';
 import { Subscription } from 'rxjs';
-import { NavigationRailComponent } from './components/navigation-rail/navigation-rail.component';
-import { NavigationRailItem } from './components/navigation-rail/types/navigation-rail-item/navigation-rail-item.type';
-import { ToolbarComponent } from './components/toolbar/toolbar.component';
-import { DrawerMode } from './enums/drawer-mode/drawer-mode';
-import { ResponsityService } from './services/responsivity/responsivity.service';
-import { ThemeService } from './services/theme/theme.service';
 
 @Component({
     selector: 'app-root',

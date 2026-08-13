@@ -1,4 +1,4 @@
-import { MouseButton } from './mouse-button.enum';
+import { MouseButton } from '@enums/mouse-button/mouse-button.enum';
 
 describe('MouseButton', () => {
     it('should be defined', () => {

@@ -1,5 +1,5 @@
-import { SortDirection } from '../../../enums/direction/direction.enum';
-import { Sort } from '../../../interfaces/sort.interface';
+import { SortDirection } from '@enums/direction/direction.enum';
+import { Sort } from '@interfaces/sort.interface';
 
 /**
  * Converts an sort object into an order string.

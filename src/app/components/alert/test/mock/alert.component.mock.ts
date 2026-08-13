@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AlertType } from '../../alert.component';
+import { AlertType } from '@components/alert/alert.component';
 
 @Component({ selector: 'app-alert', template: '' })
 export class MockAlertComponent {

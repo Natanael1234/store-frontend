@@ -4,7 +4,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatTooltip, MatTooltipModule } from '@angular/material/tooltip';
 import { By } from '@angular/platform-browser';
-import { RowItemComponent } from './row-item.component';
+import { RowItemComponent } from '@components/table/table/components/row-item/row-item.component';
 
 // TODO: test
 describe('IconRowItemComponent.', () => {

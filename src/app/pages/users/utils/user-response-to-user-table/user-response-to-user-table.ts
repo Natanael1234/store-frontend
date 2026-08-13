@@ -1,5 +1,5 @@
-import { UserTableRow } from '../../../../components/table/table/interfaces/user-table-row.interface';
-import { UserResponseDto } from '../../../../services/user/dtos/user.response/user.response.dto';
+import { UserTableRow } from '@components/table/table/interfaces/user-table-row.interface';
+import { UserResponseDto } from '@services/user/dtos/user.response/user.response.dto';
 
 export function userResponseToUserTableRow(
     users: UserResponseDto[],

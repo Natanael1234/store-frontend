@@ -1,8 +1,8 @@
 import { ValidatorFn, Validators } from '@angular/forms';
-import { maxLengthValidator } from '../max-length/max-length.validator';
-import { minLengthValidator } from '../min-length/min-length.validator';
-import { nameFormatValidator } from '../name-format/name-format.validator';
-import { requiredValidator } from '../required/required.validator';
+import { maxLengthValidator } from '@validators/max-length/max-length.validator';
+import { minLengthValidator } from '@validators/min-length/min-length.validator';
+import { nameFormatValidator } from '@validators/name-format/name-format.validator';
+import { requiredValidator } from '@validators/required/required.validator';
 
 export function nameValidator(args?: {
     required?: boolean;

@@ -4,12 +4,12 @@ import {
     ValidatorFn,
     Validators,
 } from '@angular/forms';
-import { maxLengthValidator } from '../max-length/max-length.validator';
-import { maxValidator } from '../max/max.validator';
-import { minLengthValidator } from '../min-length/min-length.validator';
-import { minValidator } from '../min/min.validator';
-import { nameFormatValidator } from '../name-format/name-format.validator';
-import { requiredValidator } from '../required/required.validator';
+import { maxLengthValidator } from '@validators/max-length/max-length.validator';
+import { maxValidator } from '@validators/max/max.validator';
+import { minLengthValidator } from '@validators/min-length/min-length.validator';
+import { minValidator } from '@validators/min/min.validator';
+import { nameFormatValidator } from '@validators/name-format/name-format.validator';
+import { requiredValidator } from '@validators/required/required.validator';
 
 /**
  * Gera uma RegExp para validar números com as regras pedidas.

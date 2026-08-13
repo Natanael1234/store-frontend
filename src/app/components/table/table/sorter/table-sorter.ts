@@ -1,12 +1,12 @@
-import { SortDirection } from '../../../../enums/direction/direction.enum';
-import { Sort } from '../../../../interfaces/sort.interface';
 import {
     orderToSort,
     sortToOrder,
     splitOrderData,
     toggleSortDirecton,
-} from '../../table-utils/table-utils';
-import { Column } from '../model/column/column.model';
+} from '@components/table/table-utils/table-utils';
+import { Column } from '@components/table/table/model/column/column.model';
+import { SortDirection } from '@enums/direction/direction.enum';
+import { Sort } from '@interfaces/sort.interface';
 
 /**
  * ColumnIdType enum. @example UserColumnId.

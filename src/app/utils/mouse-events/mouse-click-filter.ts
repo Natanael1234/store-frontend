@@ -1,5 +1,5 @@
-import { MouseButton } from '../../enums/mouse-button/mouse-button.enum';
-import { PointerType } from '../../enums/pointer-type/pointer-type.enum';
+import { MouseButton } from '@enums/mouse-button/mouse-button.enum';
+import { PointerType } from '@enums/pointer-type/pointer-type.enum';
 
 export function leftMouseClickFilter(event: any) {
     if (event.pointerType == PointerType.pen) {

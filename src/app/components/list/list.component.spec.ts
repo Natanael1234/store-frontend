@@ -5,12 +5,12 @@ import { DebugElement } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { By } from '@angular/platform-browser';
-import { ListItemComponent } from './components/list-item/list-item.component';
-import { MockListItemComponent } from './components/list-item/test/mock/list-item.component.mock';
-import { ListComponent } from './list.component';
-import { _testListClickEvent } from './test/fn/list-test-click-event.test';
-import { _testListComponent } from './test/fn/list.test';
-import { ListItem } from './types/list-item.model';
+import { ListItemComponent } from '@components/list/components/list-item/list-item.component';
+import { MockListItemComponent } from '@components/list/components/list-item/test/mock/list-item.component.mock';
+import { ListComponent } from '@components/list/list.component';
+import { _testListClickEvent } from '@components/list/test/fn/list-test-click-event.test';
+import { _testListComponent } from '@components/list/test/fn/list.test';
+import { ListItem } from '@components/list/types/list-item.model';
 
 describe('ListComponent.', () => {
     let component: ListComponent;

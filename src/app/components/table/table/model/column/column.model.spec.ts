@@ -1,5 +1,5 @@
-import { SortDirection } from '../../../../../enums/direction/direction.enum';
-import { Column } from './column.model';
+import { Column } from '@components/table/table/model/column/column.model';
+import { SortDirection } from '@enums/direction/direction.enum';
 
 describe('Column', () => {
     it('should create a column with required properties', () => {

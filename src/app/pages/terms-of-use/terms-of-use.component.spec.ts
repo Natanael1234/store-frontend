@@ -1,23 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { TermsOfUseComponent } from './terms-of-use.component';
+import { TermsOfUseComponent } from '@pages/terms-of-use/terms-of-use.component';
 
 describe('TermsOfUseComponent', () => {
-  let component: TermsOfUseComponent;
-  let fixture: ComponentFixture<TermsOfUseComponent>;
+    let component: TermsOfUseComponent;
+    let fixture: ComponentFixture<TermsOfUseComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [TermsOfUseComponent]
-    })
-    .compileComponents();
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [TermsOfUseComponent],
+        }).compileComponents();
 
-    fixture = TestBed.createComponent(TermsOfUseComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        fixture = TestBed.createComponent(TermsOfUseComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

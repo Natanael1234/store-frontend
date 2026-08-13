@@ -1,4 +1,4 @@
-import { SortDirection } from './direction.enum';
+import { SortDirection } from '@enums/direction/direction.enum';
 
 describe('SortDirection enum', () => {
     it('should be defined', () => {
