@@ -23,6 +23,7 @@ import { TableComponent } from '@components/table/table/table.component';
 import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
 import { SortDirection } from '@enums/direction/direction.enum';
+import { Icon } from '@enums/icons/icons.enum';
 import { UserColumnId } from '@pages/users/types/user-column-id/user-column-id.enum';
 import { UserOrderParam } from '@pages/users/types/user-order-param.type';
 import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
@@ -93,24 +94,24 @@ export class ResponsiveUserListComponent implements AfterViewInit {
                 id: user.id,
                 labels: [
                     new ItemLabel({
-                        text: this.loading() ? '' : user.name,
+                        text: this.loading() ? undefined : user.name,
                         tooltip: this.loading() ? undefined : user.name,
                         disabled: false,
                     }),
                     new ItemLabel({
-                        text: this.loading() ? '' : user.email,
+                        text: this.loading() ? undefined : user.email,
                         tooltip: this.loading() ? undefined : user.email,
                         disabled: false,
                     }),
                 ],
                 icons: [
                     new ItemIcon({
-                        icon: this.loading() ? '' : 'checked',
+                        name: this.loading() ? undefined : Icon.checked,
                         tooltip: user.active ? 'Ativo' : undefined,
                         disabled: user.active ? false : true,
                     }),
                     new ItemIcon({
-                        icon: this.loading() ? '' : 'checked',
+                        name: this.loading() ? undefined : Icon.checked,
                         tooltip: user.deleted ? 'Deletado' : undefined,
                         disabled: user.deleted ? false : true,
                     }),
@@ -136,13 +137,13 @@ export class ResponsiveUserListComponent implements AfterViewInit {
                         disabled: false,
                     }),
                     active: new ColumnData({
-                        icon: 'checked',
+                        icon: Icon.checked,
                         label: undefined,
                         tooltip: user.active ? 'Ativo' : undefined,
                         disabled: user.active ? false : true,
                     }),
                     deleted: new ColumnData({
-                        icon: 'checked',
+                        icon: Icon.checked,
                         label: undefined,
                         tooltip: user.deleted ? 'Deletado' : undefined,
                         disabled: user.deleted ? false : true,

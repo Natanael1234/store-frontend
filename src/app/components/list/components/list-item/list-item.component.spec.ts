@@ -1,13 +1,15 @@
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ListItemComponent } from '@components/list/components/list-item/list-item.component';
-import { _testListItem } from '@components/list/components/list-item/test/fn/list-item.test';
-import { _testSetComponentData } from '@components/list/components/list-item/test/fn/set-list-item.test';
+import { ListItemHarness } from '@components/list/components/list-item/list-item.harness';
+import { Icon } from '@enums/icons/icons.enum';
 
 describe('ListItemComponent.', () => {
     let component: ListItemComponent;
     let fixture: ComponentFixture<ListItemComponent>;
+    let harness: ListItemHarness;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -17,151 +19,102 @@ describe('ListItemComponent.', () => {
         fixture = TestBed.createComponent(ListItemComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
+
+        harness = await TestbedHarnessEnvironment.harnessForFixture(
+            fixture,
+            ListItemHarness,
+        );
     });
 
-    it('should create', () => {
+    it('should rebder list item without labels and icons ant not loading by default', async () => {
         expect(component).toBeTruthy();
-    });
 
-    it('should render list item not loading by default', () => {
-        _testSetComponentData(component, {
-            labels: [
-                { text: 'Label 1', tooltip: 'Tooltip 1', disabled: false },
-                { text: 'Label 2', tooltip: 'Tooltip 2', disabled: true },
-            ],
-            icons: [
-                { icon: 'checked', tooltip: 'Tooltip 1', disabled: false },
-                { icon: 'home', tooltip: 'Tooltip 2', disabled: true },
-            ],
-        });
-
-        _testListItem(fixture, {
-            labels: [
-                {
-                    text: 'Label 1',
-                    tooltip: 'Tooltip 1',
-                    classes: [{ class: 'skeleton-loader', contains: false }],
-                },
-                {
-                    text: 'Label 2',
-                    tooltip: 'Tooltip 2',
-                    classes: [{ class: 'skeleton-loader', contains: false }],
-                },
-            ],
-            icons: [
-                {
-                    icon: 'checked',
-                    tooltip: 'Tooltip 1',
-                    classes: [
-                        { class: 'skeleton-loader', contains: false },
-                        { class: 'disabled', contains: false },
-                    ],
-                },
-                {
-                    icon: 'home',
-                    tooltip: 'Tooltip 2',
-                    classes: [
-                        { class: 'skeleton-loader', contains: false },
-                        { class: 'disabled', contains: true },
-                    ],
-                },
-            ],
+        const state = await harness.getState();
+        expect(state).toEqual({
+            hasValidStructure: true,
             loading: false,
+            labels: [],
+            icons: [],
         });
     });
 
-    it('should render list item not loading when loading is false', () => {
-        _testSetComponentData(
-            component,
-            {
-                labels: [
-                    { text: 'Label 1', tooltip: 'Tooltip 1', disabled: false },
-                    { text: 'Label 2', tooltip: 'Tooltip 2', disabled: true },
-                ],
-                icons: [
-                    { icon: 'checked', tooltip: 'Tooltip 1', disabled: false },
-                    { icon: 'home', tooltip: 'Tooltip 2', disabled: true },
-                ],
-            },
-            false,
-        );
-        _testListItem(fixture, {
-            labels: [
-                {
-                    text: 'Label 1',
-                    tooltip: 'Tooltip 1',
-                    classes: [{ class: 'skeleton-loader', contains: false }],
-                },
-                {
-                    text: 'Label 2',
-                    tooltip: 'Tooltip 2',
-                    classes: [{ class: 'skeleton-loader', contains: false }],
-                },
-            ],
-            icons: [
-                {
-                    icon: 'checked',
-                    tooltip: 'Tooltip 1',
-                    classes: [{ class: 'skeleton-loader', contains: false }],
-                },
-                {
-                    icon: 'home',
-                    tooltip: 'Tooltip 2',
-                    classes: [{ class: 'disabled', contains: true }],
-                },
-            ],
+    it('should render list item not loading by default', async () => {
+        component.labels.set([
+            { text: 'Label 1', tooltip: 'Tooltip 1', disabled: false },
+            { text: 'Label 2', tooltip: 'Tooltip 2', disabled: true },
+        ]);
+        component.icons.set([
+            { name: Icon.checked, tooltip: 'Tooltip 1', disabled: true },
+            { name: Icon.home, tooltip: 'Tooltip 2', disabled: false },
+        ]);
+        fixture.detectChanges();
+
+        const state = await harness.getState();
+        expect(state).toEqual({
+            hasValidStructure: true,
             loading: false,
+            labels: [
+                { text: 'Label 1', loading: false, disabled: false },
+                { text: 'Label 2', loading: false, disabled: true },
+            ],
+            icons: [
+                { name: Icon.checked, loading: false, disabled: true },
+                { name: Icon.home, loading: false, disabled: false },
+            ],
         });
     });
 
-    it('should render loading list item when loading is true', () => {
-        _testSetComponentData(
-            component,
-            {
-                labels: [
-                    { text: 'Label 1', tooltip: 'Tooltip 1', disabled: false },
-                    { text: 'Label 2', tooltip: 'Tooltip 2', disabled: true },
-                ],
-                icons: [
-                    { icon: 'checked', tooltip: 'Tooltip 1', disabled: false },
-                    { icon: 'home', tooltip: 'Tooltip 2', disabled: true },
-                ],
-            },
-            true,
-        );
+    it('should render list item not loading when loading is false', async () => {
+        component.loading.set(false);
+        component.labels.set([
+            { text: 'Label 1', tooltip: 'Tooltip 1', disabled: false },
+            { text: 'Label 2', tooltip: 'Tooltip 2', disabled: true },
+        ]);
+        component.icons.set([
+            { name: Icon.checked, tooltip: 'Tooltip 1', disabled: true },
+            { name: Icon.home, tooltip: 'Tooltip 2', disabled: false },
+        ]);
+        fixture.detectChanges();
 
-        _testListItem(fixture, {
+        const state = await harness.getState();
+        expect(state).toEqual({
+            hasValidStructure: true,
+            loading: false,
             labels: [
-                {
-                    text: '',
-                    tooltip: 'Tooltip 1',
-                    classes: [{ class: 'skeleton-loader', contains: true }],
-                },
-                {
-                    text: '',
-                    tooltip: 'Tooltip 2',
-                    classes: [{ class: 'skeleton-loader', contains: true }],
-                },
+                { text: 'Label 1', loading: false, disabled: false },
+                { text: 'Label 2', loading: false, disabled: true },
             ],
             icons: [
-                {
-                    icon: '',
-                    tooltip: 'Tooltip 1',
-                    classes: [
-                        { class: 'skeleton-loader', contains: true },
-                        { class: 'disabled', contains: false },
-                    ],
-                },
-                {
-                    icon: '',
-                    tooltip: 'Tooltip 2',
-                    classes: [
-                        { class: 'skeleton-loader', contains: true },
-                        { class: 'disabled', contains: true },
-                    ],
-                },
+                { name: Icon.checked, loading: false, disabled: true },
+                { name: Icon.home, loading: false, disabled: false },
             ],
+        });
+    });
+
+    it('should render loading list item when loading is true', async () => {
+        component.loading.set(true);
+        component.labels.set([
+            { text: 'Label 1', tooltip: 'Tooltip 1', disabled: false },
+            { text: 'Label 2', tooltip: 'Tooltip 2', disabled: true },
+        ]);
+        component.icons.set([
+            { name: Icon.checked, tooltip: 'Tooltip 1', disabled: true },
+            { name: Icon.home, tooltip: 'Tooltip 2', disabled: false },
+        ]);
+        fixture.detectChanges();
+
+        const state = await harness.getState();
+        expect(state).toEqual({
+            hasValidStructure: true,
             loading: true,
+            labels: [
+                { text: '', loading: true, disabled: false },
+                { text: '', loading: true, disabled: true },
+            ],
+            icons: [
+                { name: '', loading: true, disabled: true },
+                { name: '', loading: true, disabled: false },
+            ],
         });
     });
 });

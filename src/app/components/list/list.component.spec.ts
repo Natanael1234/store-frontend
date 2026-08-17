@@ -11,6 +11,7 @@ import { ListComponent } from '@components/list/list.component';
 import { _testListClickEvent } from '@components/list/test/fn/list-test-click-event.test';
 import { _testListComponent } from '@components/list/test/fn/list.test';
 import { ListItem } from '@components/list/types/list-item.model';
+import { Icon } from '@enums/icons/icons.enum';
 
 describe('ListComponent.', () => {
     let component: ListComponent;
@@ -70,12 +71,12 @@ describe('ListComponent.', () => {
                     ],
                     icons: [
                         {
-                            icon: 'checked',
+                            name: Icon.checked,
                             tooltip: 'Tooltip 1',
                             disabled: false,
                         },
                         {
-                            icon: 'home',
+                            name: Icon.home,
                             tooltip: 'Tooltip 2',
                             disabled: true,
                         },
@@ -108,12 +109,12 @@ describe('ListComponent.', () => {
                         ],
                         icons: [
                             {
-                                icon: 'checked',
+                                name: Icon.checked,
                                 tooltip: 'Tooltip 1',
                                 disabled: false,
                             },
                             {
-                                icon: 'home',
+                                name: Icon.home,
                                 tooltip: 'Tooltip 2',
                                 disabled: true,
                             },
@@ -158,12 +159,12 @@ describe('ListComponent.', () => {
                     ],
                     icons: [
                         {
-                            icon: 'checked',
+                            name: Icon.checked,
                             tooltip: 'Tooltip 1',
                             disabled: false,
                         },
                         {
-                            icon: 'home',
+                            name: Icon.home,
                             tooltip: 'Tooltip 2',
                             disabled: true,
                         },
@@ -196,12 +197,12 @@ describe('ListComponent.', () => {
                         ],
                         icons: [
                             {
-                                icon: 'checked',
+                                name: Icon.checked,
                                 tooltip: 'Tooltip 1',
                                 disabled: false,
                             },
                             {
-                                icon: 'home',
+                                name: Icon.home,
                                 tooltip: 'Tooltip 2',
                                 disabled: true,
                             },

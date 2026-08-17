@@ -14,6 +14,7 @@ import { MockTableComponent } from '@components/table/table/test/mock/table.comp
 import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
 import { SortDirection } from '@enums/direction/direction.enum';
+import { Icon } from '@enums/icons/icons.enum';
 import { ResponsiveUserListComponent } from '@pages/users/responsive-user-list/responsive-user-list.component';
 import { _getResponsiveUserListComponentList } from '@pages/users/responsive-user-list/test/getters/get-responsive-user-list-component-list.test';
 import { _getResponsiveUserListComponentTable } from '@pages/users/responsive-user-list/test/getters/get-responsive-user-list-component-table.test';
@@ -337,12 +338,12 @@ describe('ResponsiveUserListComponent.', () => {
                         id: '891db31e-dfb5-42ed-b912-48b98463b004',
                         icons: [
                             new ItemIcon({
-                                icon: 'checked',
+                                name: Icon.checked,
                                 tooltip: 'Ativo',
                                 disabled: false,
                             }),
                             new ItemIcon({
-                                icon: 'checked',
+                                name: Icon.checked,
                                 tooltip: undefined,
                                 disabled: true,
                             }),
@@ -364,12 +365,12 @@ describe('ResponsiveUserListComponent.', () => {
                         id: '891db31e-dfb5-42ed-b912-48b98463b005',
                         icons: [
                             new ItemIcon({
-                                icon: 'checked',
+                                name: Icon.checked,
                                 tooltip: undefined,
                                 disabled: true,
                             }),
                             new ItemIcon({
-                                icon: 'checked',
+                                name: Icon.checked,
                                 tooltip: 'Deletado',
                                 disabled: false,
                             }),
@@ -470,13 +471,13 @@ describe('ResponsiveUserListComponent.', () => {
                                 disabled: false,
                             }),
                             active: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: 'Ativo',
                                 disabled: false,
                             }),
                             deleted: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: undefined,
                                 disabled: true,
@@ -499,13 +500,13 @@ describe('ResponsiveUserListComponent.', () => {
                                 disabled: false,
                             }),
                             active: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: undefined,
                                 disabled: true,
                             }),
                             deleted: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: 'Deletado',
                                 disabled: false,
@@ -596,13 +597,13 @@ describe('ResponsiveUserListComponent.', () => {
                                 disabled: false,
                             }),
                             active: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: 'Ativo',
                                 disabled: false,
                             }),
                             deleted: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: undefined,
                                 disabled: true,
@@ -625,13 +626,13 @@ describe('ResponsiveUserListComponent.', () => {
                                 disabled: false,
                             }),
                             active: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: undefined,
                                 disabled: true,
                             }),
                             deleted: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: 'Deletado',
                                 disabled: false,
@@ -721,13 +722,13 @@ describe('ResponsiveUserListComponent.', () => {
                                 disabled: false,
                             }),
                             active: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: 'Ativo',
                                 disabled: false,
                             }),
                             deleted: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: undefined,
                                 disabled: true,
@@ -750,13 +751,13 @@ describe('ResponsiveUserListComponent.', () => {
                                 disabled: false,
                             }),
                             active: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: undefined,
                                 disabled: true,
                             }),
                             deleted: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: 'Deletado',
                                 disabled: false,
@@ -846,13 +847,13 @@ describe('ResponsiveUserListComponent.', () => {
                                 disabled: false,
                             }),
                             active: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: 'Ativo',
                                 disabled: false,
                             }),
                             deleted: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: undefined,
                                 disabled: true,
@@ -875,13 +876,13 @@ describe('ResponsiveUserListComponent.', () => {
                                 disabled: false,
                             }),
                             active: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: undefined,
                                 disabled: true,
                             }),
                             deleted: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: 'Deletado',
                                 disabled: false,
@@ -971,13 +972,13 @@ describe('ResponsiveUserListComponent.', () => {
                                 disabled: false,
                             }),
                             active: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: 'Ativo',
                                 disabled: false,
                             }),
                             deleted: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: undefined,
                                 disabled: true,
@@ -1000,13 +1001,13 @@ describe('ResponsiveUserListComponent.', () => {
                                 disabled: false,
                             }),
                             active: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: undefined,
                                 disabled: true,
                             }),
                             deleted: new ColumnData({
-                                icon: 'checked',
+                                icon: Icon.checked,
                                 label: undefined,
                                 tooltip: 'Deletado',
                                 disabled: false,
@@ -1467,12 +1468,12 @@ describe('ResponsiveUserListComponent.', () => {
                             id: '891db31e-dfb5-42ed-b912-48b98463b004',
                             icons: [
                                 new ItemIcon({
-                                    icon: 'checked',
+                                    name: Icon.checked,
                                     tooltip: 'Ativo',
                                     disabled: false,
                                 }),
                                 new ItemIcon({
-                                    icon: 'checked',
+                                    name: Icon.checked,
                                     tooltip: undefined,
                                     disabled: true,
                                 }),
@@ -1494,12 +1495,12 @@ describe('ResponsiveUserListComponent.', () => {
                             id: '891db31e-dfb5-42ed-b912-48b98463b005',
                             icons: [
                                 new ItemIcon({
-                                    icon: 'checked',
+                                    name: Icon.checked,
                                     tooltip: undefined,
                                     disabled: true,
                                 }),
                                 new ItemIcon({
-                                    icon: 'checked',
+                                    name: Icon.checked,
                                     tooltip: 'Deletado',
                                     disabled: false,
                                 }),
@@ -1611,13 +1612,13 @@ describe('ResponsiveUserListComponent.', () => {
                                     disabled: false,
                                 }),
                                 active: new ColumnData({
-                                    icon: 'checked',
+                                    icon: Icon.checked,
                                     label: undefined,
                                     tooltip: 'Ativo',
                                     disabled: false,
                                 }),
                                 deleted: new ColumnData({
-                                    icon: 'checked',
+                                    icon: Icon.checked,
                                     label: undefined,
                                     tooltip: undefined,
                                     disabled: true,
@@ -1640,13 +1641,13 @@ describe('ResponsiveUserListComponent.', () => {
                                     disabled: false,
                                 }),
                                 active: new ColumnData({
-                                    icon: 'checked',
+                                    icon: Icon.checked,
                                     label: undefined,
                                     tooltip: undefined,
                                     disabled: true,
                                 }),
                                 deleted: new ColumnData({
-                                    icon: 'checked',
+                                    icon: Icon.checked,
                                     label: undefined,
                                     tooltip: 'Deletado',
                                     disabled: false,
@@ -1744,13 +1745,13 @@ describe('ResponsiveUserListComponent.', () => {
                                     disabled: false,
                                 }),
                                 active: new ColumnData({
-                                    icon: 'checked',
+                                    icon: Icon.checked,
                                     label: undefined,
                                     tooltip: 'Ativo',
                                     disabled: false,
                                 }),
                                 deleted: new ColumnData({
-                                    icon: 'checked',
+                                    icon: Icon.checked,
                                     label: undefined,
                                     tooltip: undefined,
                                     disabled: true,
@@ -1773,13 +1774,13 @@ describe('ResponsiveUserListComponent.', () => {
                                     disabled: false,
                                 }),
                                 active: new ColumnData({
-                                    icon: 'checked',
+                                    icon: Icon.checked,
                                     label: undefined,
                                     tooltip: undefined,
                                     disabled: true,
                                 }),
                                 deleted: new ColumnData({
-                                    icon: 'checked',
+                                    icon: Icon.checked,
                                     label: undefined,
                                     tooltip: 'Deletado',
                                     disabled: false,
