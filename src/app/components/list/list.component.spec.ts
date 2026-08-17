@@ -41,12 +41,6 @@ describe('ListComponent.', () => {
         return _items;
     }
 
-    function getListItem(idx: number) {
-        return fixture.debugElement.queryAll(By.directive(ListItemComponent))[
-            idx
-        ];
-    }
-
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [
