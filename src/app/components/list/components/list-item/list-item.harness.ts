@@ -83,9 +83,14 @@ export class ListItemHarness extends ComponentHarness {
         const hostChildren = await this.hostChildren();
         if ((await hostChildren).length != 1) {
             errors['hostChildrenCount'] =
-                `Host has invalis child count. Expected 1. Found ${hostChildren.length}.`;
+                `Host has invalid child count. Expected 1. Found ${hostChildren.length}.`;
         }
-        expect(await hostChildren[0].getProperty('tagName')).toEqual('DIV');
+
+        const hostChildTagName = await hostChildren[0].getProperty('tagName');
+        if (hostChildTagName != 'DIV') {
+            errors['hostChildTagName'] =
+                `Host child should be a div. Found ${hostChildTagName}.`;
+        }
 
         const containerChildren = await this.containerChildren();
         if (containerChildren.length != 2) {
@@ -163,11 +168,16 @@ export class ListItemHarness extends ComponentHarness {
         return Object.keys(errors).length == 0 ? true : errors;
     }
 
+    async getData() {
+        return {
+            loading: await this.containerIsLoadng(),
+            labels: await this.getLabels(),
+            icons: await this.getIcons(),
+        };
+    }
+
     async getState() {
-        const loading = await this.containerIsLoadng();
-        const labels = await this.getLabels();
-        const icons = await this.getIcons();
         const hasValidStructure = await this.hasValidStructure();
-        return { hasValidStructure, loading, labels, icons };
+        return { hasValidStructure, ...(await this.getData()) };
     }
 }
