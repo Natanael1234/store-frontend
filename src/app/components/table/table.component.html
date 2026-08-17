@@ -1,0 +1,41 @@
+<table mat-table [dataSource]="dataSource()" matSort>
+    @for (column of columns(); track $index) {
+        <ng-container [matColumnDef]="column.id">
+            <th
+                mat-header-cell
+                *matHeaderCellDef
+                [attr.shrink]="!!column.shrink">
+                <app-header-item
+                    [id]="column.id"
+                    [label]="column.label"
+                    [direction]="column.direction"
+                    [disabled]="!!column.disabled"
+                    [sortable]="!!column.sortable"
+                    (onSelect)="fireHeaderClickEvent($event!)" />
+            </th>
+
+            <td
+                mat-cell
+                *matCellDef="let data"
+                [matTooltip]="data.tooltip"
+                [attr.shrink]="!!column.shrink">
+                @let cellData = data.columns[column.id];
+
+                <app-row-item
+                    [icon]="cellData.icon"
+                    [loading]="!!loading()"
+                    [label]="cellData.label"
+                    [toolTip]="cellData.tooltip"
+                    [disabled]="cellData.disabled" />
+            </td>
+        </ng-container>
+    }
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+
+    <tr
+        mat-row
+        class="mat-row"
+        *matRowDef="let row; columns: displayedColumns"
+        (click)="fireRowClickEvent($event, row.id)"></tr>
+</table>

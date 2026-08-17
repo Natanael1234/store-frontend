@@ -1,6 +1,6 @@
 import { ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { TableComponent } from '@components/table/table/table.component';
+import { TableComponent } from '@components/table/table.component';
 import { ResponsiveUserListComponent } from '@pages/users/responsive-user-list/responsive-user-list.component';
 
 export function _getResponsiveUserListComponentTable(

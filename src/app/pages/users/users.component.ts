@@ -25,7 +25,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { ActivatedRoute } from '@angular/router';
 import { AlertComponent } from '@components/alert/alert.component';
-import { UserTableRow } from '@components/table/table/interfaces/user-table-row.interface';
+import { UserTableRow } from '@components/table/interfaces/user-table-row.interface';
 import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
 import { MyCustomPaginatorIntl } from '@i18n/paginator.intl';

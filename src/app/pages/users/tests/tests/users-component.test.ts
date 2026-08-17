@@ -1,5 +1,5 @@
 import { ComponentFixture } from '@angular/core/testing';
-import { UserTableRow } from '@components/table/table/interfaces/user-table-row.interface';
+import { UserTableRow } from '@components/table/interfaces/user-table-row.interface';
 import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
 import { _testUsersComponentAlertComponent as testAlert } from '@pages/users/tests/tests/users-component-alert-component.test';

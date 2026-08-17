@@ -1,8 +1,8 @@
 import { ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { Column } from '@components/table/table/model/column/column.model';
-import { Row } from '@components/table/table/model/row/row.model';
-import { TableComponent } from '@components/table/table/table.component';
+import { Column } from '@components/table/model/column/column.model';
+import { Row } from '@components/table/model/row/row.model';
+import { TableComponent } from '@components/table/table.component';
 import { ResponsiveUserListComponent } from '@pages/users/responsive-user-list/responsive-user-list.component';
 
 export function _testResponsiveUsersListComponentTable(
