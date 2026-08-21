@@ -62,7 +62,10 @@ import { leftMouseClickFilter } from '@utils/mouse-events/mouse-click-filter';
         }
     `,
     template: `
-        <div id="container" (click)="fireOnSelectEvent($event)">
+        <div
+            id="container"
+            (click)="fireOnSelectEvent($event)"
+            (pointerdown)="fireOnSelectEvent($event)">
             <span id="label" [class.disabled]="_hasDisabledClass()">
                 {{ label() }}
             </span>
@@ -70,7 +73,9 @@ import { leftMouseClickFilter } from '@utils/mouse-events/mouse-click-filter';
             @if (this.isArrowIconVissible()) {
                 <mat-icon
                     id="arrow"
-                    [class]="_directionClass()"
+                    [class.asc]="isAsc()"
+                    [class.desc]="isDesc()"
+                    [class.hidden]="isHidden()"
                     [class.disabled]="_hasDisabledClass()">
                     arrow_downward
                 </mat-icon>
@@ -111,11 +116,17 @@ export class HeaderItemComponent {
         return this.disabled() || this.loading();
     }
 
-    protected _directionClass() {
-        return this.direction() || 'hidden';
+    protected isArrowIconVissible() {
+        return this.sortable() != false && this.loading() != true;
     }
 
-    protected isArrowIconVissible() {
-        return this.sortable() !== false && this.loading() !== true;
+    protected isAsc() {
+        return this.direction() == SortDirection.asc;
+    }
+    protected isDesc() {
+        return this.direction() == SortDirection.desc;
+    }
+    protected isHidden() {
+        return !this.direction();
     }
 }

@@ -29,8 +29,101 @@ import _ from 'lodash';
         HeaderItemComponent,
         RowItemComponent,
     ],
-    templateUrl: './table.component.html',
-    styleUrl: './table.component.scss',
+    styles: `
+        table {
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+
+        thead,
+        tbody {
+            width: 100%;
+        }
+
+        th,
+        td {
+            padding: 0;
+            width: auto !important;
+            white-space: nowrap;
+        }
+
+        th {
+            padding: 0;
+        }
+
+        [shrink='true'] {
+            // background-color: yellow;
+            width: 87px !important;
+            justify-content: center;
+            align-content: center;
+            justify-items: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .mat-row:hover {
+            background-color: rgba(
+                135,
+                135,
+                135,
+                0.275
+            ); /* Cor de fundo ao passar o mouse */
+            cursor: pointer;
+        }
+
+        .mat-row {
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .mat-row:hover {
+            background-color: rgba(97, 97, 97, 0.12);
+        }
+    `,
+    template: `
+        <table mat-table [dataSource]="dataSource()" matSort>
+            @for (column of columns(); track $index) {
+                <ng-container [matColumnDef]="column.id">
+                    <th
+                        mat-header-cell
+                        *matHeaderCellDef
+                        [attr.shrink]="!!column.shrink">
+                        <app-header-item
+                            [id]="column.id"
+                            [label]="column.label"
+                            [direction]="column.direction"
+                            [disabled]="!!column.disabled"
+                            [sortable]="!!column.sortable"
+                            (onSelect)="fireHeaderClickEvent($event!)" />
+                    </th>
+
+                    <td
+                        mat-cell
+                        *matCellDef="let data"
+                        [matTooltip]="data.tooltip"
+                        [attr.shrink]="!!column.shrink">
+                        @let cellData = data.columns[column.id];
+
+                        <app-row-item
+                            [icon]="cellData.icon"
+                            [loading]="!!loading()"
+                            [label]="cellData.label"
+                            [toolTip]="cellData.tooltip"
+                            [disabled]="cellData.disabled" />
+                    </td>
+                </ng-container>
+            }
+
+            <tr
+                mat-header-row
+                *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+
+            <tr
+                mat-row
+                class="mat-row"
+                *matRowDef="let row; columns: displayedColumns"
+                (click)="fireRowClickEvent($event, row.id)"></tr>
+        </table>
+    `,
 })
 export class TableComponent {
     public columns = model<Column[]>([]);

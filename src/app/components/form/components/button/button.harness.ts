@@ -43,7 +43,7 @@ export class ButtonHarness extends ComponentHarness {
     private innerButtonLabels = this.locatorForAll(
         ':scope > button > .mdc-button__label > mat-label',
     );
-    private natButtonHarness = this.locatorFor(MatButtonHarness);
+    private matButtonHarness = this.locatorFor(MatButtonHarness);
 
     async getHostChildrenCount() {
         return (await this.hostChildrenElements()).length;
@@ -200,7 +200,7 @@ export class ButtonHarness extends ComponentHarness {
     }
 
     async click() {
-        const button = await this.natButtonHarness();
+        const button = await this.matButtonHarness();
         const host = await button.host();
         await host.dispatchEvent('click', {
             pointerType: PointerType.mouse,

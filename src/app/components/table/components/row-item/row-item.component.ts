@@ -27,18 +27,26 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     template: `
         <div
             id="container"
-            [ngClass]="containerClasses()"
+            [class.icon]="showIcon()"
+            [class.label]="showLabel()"
+            [class.disabled]="innerDisabled()"
             [matTooltip]="toolTip()">
             <!-- icon -->
             @if (showIcon()) {
-                <mat-icon id="icon" [ngClass]="iconClasses()">
+                <mat-icon
+                    id="icon"
+                    [class.skeleton-loader]="loading()"
+                    [class.disabled]="innerDisabled()">
                     {{ innerIcon() }}
                 </mat-icon>
             }
 
             <!-- label -->
             @if (showLabel()) {
-                <span id="label" [ngClass]="labelClasses()">
+                <span
+                    id="label"
+                    [class.skeleton-loader]="loading()"
+                    [class.disabled]="innerDisabled()">
                     {{ innerLabel() }}
                 </span>
             }
@@ -60,20 +68,4 @@ export class RowItemComponent {
 
     protected showLabel = computed(() => this.label() !== undefined);
     protected innerLabel = computed(() => (this.loading() ? '' : this.label()));
-
-    protected containerClasses = computed(() => ({
-        icon: this.showIcon(),
-        label: this.showLabel(),
-        disabled: this.innerDisabled(),
-    }));
-
-    protected iconClasses = computed(() => ({
-        'skeleton-loader': this.loading(),
-        disabled: this.innerDisabled(),
-    }));
-
-    protected labelClasses = computed(() => ({
-        'skeleton-loader': this.loading(),
-        disabled: this.innerDisabled(),
-    }));
 }

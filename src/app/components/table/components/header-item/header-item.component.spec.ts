@@ -1,15 +1,25 @@
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
-import { By } from '@angular/platform-browser';
 import { HeaderItemComponent } from '@components/table/components/header-item/header-item.component';
-import { _testHeaderItemComponent } from '@components/table/components/header-item/test/fn/header-item.test';
+import { HeaderItemHarness } from '@components/table/components/header-item/header-item.harness';
 import { SortDirection } from '@enums/direction/direction.enum';
-import { MouseButton } from '@enums/mouse-button/mouse-button.enum';
-import { PointerType } from '@enums/pointer-type/pointer-type.enum';
 
 describe('HeaderItemComponent.', () => {
     let component: HeaderItemComponent;
     let fixture: ComponentFixture<HeaderItemComponent>;
+    let harness: HeaderItemHarness;
+
+    function getcomponentData() {
+        return {
+            id: component.id(),
+            label: component.label(),
+            direction: component.direction(),
+            sortable: component.sortable(),
+            disabled: component.disabled(),
+            loading: component.loading(),
+        };
+    }
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -20,6 +30,11 @@ describe('HeaderItemComponent.', () => {
         fixture = TestBed.createComponent(HeaderItemComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
+
+        harness = await TestbedHarnessEnvironment.harnessForFixture(
+            fixture,
+            HeaderItemHarness,
+        );
     });
 
     it('should create', () => {
@@ -27,31 +42,84 @@ describe('HeaderItemComponent.', () => {
     });
 
     describe('label', () => {
-        it('should display label based on label model', () => {
+        it('should display label based on label model', async () => {
             spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
             component.sortable.set(true);
             component.disabled.set(false);
-            // component.loading.set(false);
+            // component.set(false);
 
             fixture.detectChanges();
-            const containterElement = fixture.debugElement.query(
-                By.css('div#container'),
-            );
-            const labelElements = containterElement.queryAll(
-                By.css('span#label'),
-            );
-            expect(labelElements.length).toEqual(1);
-            expect(labelElements[0].nativeElement.textContent.trim()).toEqual(
-                'Column 1',
-            );
+
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'asc', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.asc,
+                sortable: true,
+                disabled: false,
+                loading: false,
+            });
         });
     });
 
     describe('direction', () => {
-        it('should be sortable by default', () => {
+        it('should be sortable by default', async () => {
+            spyOn(component.onSelect, 'emit');
+            component.id.set('col1');
+            component.label.set('Column 1');
+            component.direction.set(SortDirection.asc);
+            // component.sortable.set(true);
+            component.disabled.set(false);
+
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'asc', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.asc,
+                sortable: true,
+                disabled: false,
+                loading: false,
+            });
+
+            await harness.triggerLeftClick();
+
+            expect(component.onSelect.emit)
+                .withContext('onSelect event fired')
+                .toHaveBeenCalledOnceWith({
+                    columnId: 'col1',
+                    direction: SortDirection.desc,
+                });
+
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'desc', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.desc,
+                sortable: true,
+                disabled: false,
+                loading: false,
+            });
+        });
+
+        it('should be sortable when sortable is true', async () => {
             spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
@@ -60,36 +128,47 @@ describe('HeaderItemComponent.', () => {
             component.disabled.set(false);
             fixture.detectChanges();
 
-            _testHeaderItemComponent(fixture, component, {
-                columnId: 'col1',
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'asc', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
                 label: 'Column 1',
                 direction: SortDirection.asc,
-                disabled: false,
                 sortable: true,
+                disabled: false,
+                loading: false,
+            });
+
+            await harness.triggerLeftClick();
+
+            expect(component.onSelect.emit)
+                .withContext('onSelect event fired')
+                .toHaveBeenCalledOnceWith({
+                    columnId: 'col1',
+                    direction: SortDirection.desc,
+                });
+
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'desc', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.desc,
+                sortable: true,
+                disabled: false,
                 loading: false,
             });
         });
 
-        it('should be sortable when sortable is true', () => {
-            spyOn(component.onSelect, 'emit');
-            component.id.set('col1');
-            component.label.set('Column 1');
-            component.direction.set(SortDirection.asc);
-            component.sortable.set(true);
-            component.disabled.set(false);
-            fixture.detectChanges();
-
-            _testHeaderItemComponent(fixture, component, {
-                columnId: 'col1',
-                label: 'Column 1',
-                direction: SortDirection.asc,
-                disabled: false,
-                sortable: true,
-                loading: false,
-            });
-        });
-
-        it('should be not sortable when sortable is false', () => {
+        it('should be not sortable when sortable is false', async () => {
             spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
@@ -98,17 +177,42 @@ describe('HeaderItemComponent.', () => {
             component.disabled.set(false);
             fixture.detectChanges();
 
-            _testHeaderItemComponent(fixture, component, {
-                columnId: 'col1',
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
                 label: 'Column 1',
                 direction: SortDirection.asc,
-                disabled: false,
                 sortable: false,
+                disabled: false,
+                loading: false,
+            });
+
+            await harness.triggerLeftClick();
+
+            expect(component.onSelect.emit)
+                .withContext('onSelect event fired')
+                .not.toHaveBeenCalled();
+
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.asc,
+                sortable: false,
+                disabled: false,
                 loading: false,
             });
         });
 
-        it('should update icon based on direction model', () => {
+        it('should update icon based on direction model', async () => {
             spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
@@ -116,43 +220,76 @@ describe('HeaderItemComponent.', () => {
             component.sortable.set(true);
             fixture.detectChanges();
 
-            const iconElement = fixture.debugElement.query(By.css('mat-icon'));
-            expect(iconElement.nativeElement.textContent.trim()).toEqual(
-                'arrow_downward',
-            );
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'asc', disabled: false },
+            });
 
-            component.direction.set(SortDirection.asc);
-            fixture.detectChanges();
-            expect(
-                iconElement.nativeElement.classList.contains(SortDirection.asc),
-            ).toBeTrue();
-            expect(iconElement.nativeElement.textContent.trim()).toEqual(
-                'arrow_downward',
-            );
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.asc,
+                sortable: true,
+                disabled: false,
+                loading: false,
+            });
 
             component.direction.set(SortDirection.desc);
-            fixture.detectChanges();
-            expect(
-                iconElement.nativeElement.classList.contains(
-                    SortDirection.desc,
-                ),
-            ).toBeTrue();
-            expect(iconElement.nativeElement.textContent.trim()).toEqual(
-                'arrow_downward',
-            );
+
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'desc', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.desc,
+                sortable: true,
+                disabled: false,
+                loading: false,
+            });
 
             component.direction.set(SortDirection.none);
-            fixture.detectChanges();
-            expect(
-                iconElement.nativeElement.classList.contains('hidden'),
-            ).toBeTrue();
-            expect(iconElement.nativeElement.textContent.trim()).toEqual(
-                'arrow_downward',
-            );
+
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'hidden', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.none,
+                sortable: true,
+                disabled: false,
+                loading: false,
+            });
+
+            component.direction.set(SortDirection.asc);
+
             expect(component.onSelect.emit).not.toHaveBeenCalled();
+
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'asc', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.asc,
+                sortable: true,
+                disabled: false,
+                loading: false,
+            });
         });
 
-        it('should update direction model on left mouse button click', () => {
+        it('should update direction model on left mouse button click', async () => {
             spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
@@ -160,161 +297,173 @@ describe('HeaderItemComponent.', () => {
             component.sortable.set(true);
             fixture.detectChanges();
 
+            expect(component.onSelect.emit).not.toHaveBeenCalled();
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'asc', disabled: false },
+            });
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.asc,
+                sortable: true,
+                disabled: false,
+                loading: false,
+            });
+
             // first click: 'asc' to 'desc'
-            const containterElement = fixture.debugElement.query(
-                By.css('div#container'),
-            );
-            expect(component.direction()).toBe(SortDirection.asc);
-            containterElement.triggerEventHandler(
-                'click',
-                new PointerEvent('click', {
-                    button: MouseButton.left,
-                    pointerType: PointerType.mouse,
-                }),
-            );
-            fixture.detectChanges();
-            expect(component.direction()).toBe(SortDirection.desc);
+            await harness.triggerLeftClick();
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'desc', disabled: false },
+            });
             expect(component.onSelect.emit).toHaveBeenCalledWith({
                 columnId: 'col1',
                 direction: SortDirection.desc,
             });
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.desc,
+                sortable: true,
+                disabled: false,
+                loading: false,
+            });
 
             // second click: 'desc' to ''
-            containterElement.triggerEventHandler(
-                'click',
-                new PointerEvent('click', {
-                    button: MouseButton.left,
-                    pointerType: PointerType.mouse,
-                }),
-            );
-            fixture.detectChanges();
-            expect(component.direction()).toBe(SortDirection.none);
+            await harness.triggerLeftClick();
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'hidden', disabled: false },
+            });
             expect(component.onSelect.emit).toHaveBeenCalledWith({
                 columnId: 'col1',
                 direction: SortDirection.none,
             });
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.none,
+                sortable: true,
+                disabled: false,
+                loading: false,
+            });
 
             // third click: '' to 'asc'
-            containterElement.triggerEventHandler(
-                'click',
-                new PointerEvent('click', {
-                    button: MouseButton.left,
-                    pointerType: PointerType.mouse,
-                }),
-            );
-            fixture.detectChanges();
-            expect(component.direction()).toBe(SortDirection.asc);
+            await harness.triggerLeftClick();
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'asc', disabled: false },
+            });
             expect(component.onSelect.emit).toHaveBeenCalledWith({
                 columnId: 'col1',
                 direction: SortDirection.asc,
+            });
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.asc,
+                sortable: true,
+                disabled: false,
+                loading: false,
             });
 
             expect(component.onSelect.emit).toHaveBeenCalledTimes(3);
         });
 
-        it('should toggle sort direction on left mouse button click', () => {
+        it('should toggle sort direction on touch', async () => {
             spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
             component.sortable.set(true);
-            component.disabled.set(false);
             fixture.detectChanges();
 
-            const containterElement = fixture.debugElement.query(
-                By.css('div#container'),
-            );
-            expect(component.direction()).toBe(SortDirection.asc);
-            containterElement.triggerEventHandler(
-                'click',
-                new PointerEvent('click', {
-                    button: MouseButton.left,
-                    pointerType: PointerType.mouse,
-                }),
-            );
-            fixture.detectChanges();
-            expect(component.direction()).toBe(SortDirection.desc);
-            expect(component.onSelect.emit).toHaveBeenCalledOnceWith({
-                columnId: 'col1',
-                direction: SortDirection.desc,
-            });
-        });
-
-        it('should toggle sort direction on touch', () => {
-            spyOn(component.onSelect, 'emit');
-            component.id.set('col1');
-            component.label.set('Column 1');
-            component.direction.set(SortDirection.asc);
-            component.sortable.set(true);
-            component.disabled.set(false);
-            fixture.detectChanges();
-
-            const containterElement = fixture.debugElement.query(
-                By.css('div#container'),
-            );
-            expect(component.direction()).toBe(SortDirection.asc);
-            containterElement.triggerEventHandler(
-                'click',
-                new PointerEvent('click', { pointerType: PointerType.touch }),
-            );
-            fixture.detectChanges();
-            expect(component.direction()).toBe(SortDirection.desc);
-            expect(component.onSelect.emit).toHaveBeenCalledOnceWith({
-                columnId: 'col1',
-                direction: SortDirection.desc,
-            });
-        });
-
-        it('should toggle sort direction on pen touch', () => {
-            spyOn(component.onSelect, 'emit');
-            component.id.set('col1');
-            component.label.set('Column 1');
-            component.direction.set(SortDirection.asc);
-            component.sortable.set(true);
-            component.disabled.set(false);
-            fixture.detectChanges();
-
-            const containterElement = fixture.debugElement.query(
-                By.css('div#container'),
-            );
-            expect(component.direction()).toBe(SortDirection.asc);
-            containterElement.triggerEventHandler(
-                'click',
-                new PointerEvent('click', { pointerType: PointerType.pen }),
-            );
-            fixture.detectChanges();
-            expect(component.onSelect.emit).toHaveBeenCalledOnceWith({
-                columnId: 'col1',
-                direction: SortDirection.desc,
-            });
-        });
-
-        it('should not toggle sort direction on middle mouse button click', () => {
-            spyOn(component.onSelect, 'emit');
-            component.id.set('col1');
-            component.label.set('Column 1');
-            component.direction.set(SortDirection.asc);
-            component.sortable.set(true);
-            component.disabled.set(false);
-            fixture.detectChanges();
-
-            const containterElement = fixture.debugElement.query(
-                By.css('div#container'),
-            );
-            expect(component.direction()).toBe(SortDirection.asc);
-            containterElement.triggerEventHandler(
-                'click',
-                new PointerEvent('click', {
-                    button: MouseButton.middle,
-                    pointerType: PointerType.mouse,
-                }),
-            );
-            fixture.detectChanges();
-            expect(component.direction()).toBe(SortDirection.asc);
             expect(component.onSelect.emit).not.toHaveBeenCalled();
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'asc', disabled: false },
+            });
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.asc,
+                sortable: true,
+                disabled: false,
+                loading: false,
+            });
+
+            // first click: 'asc' to 'desc'
+            await harness.triggerTouch();
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'desc', disabled: false },
+            });
+            expect(component.onSelect.emit).toHaveBeenCalledWith({
+                columnId: 'col1',
+                direction: SortDirection.desc,
+            });
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.desc,
+                sortable: true,
+                disabled: false,
+                loading: false,
+            });
         });
 
-        it('should not toggle sort direction on right mouse button click', () => {
+        it('should toggle sort direction on pen touch', async () => {
+            spyOn(component.onSelect, 'emit');
+            component.id.set('col1');
+            component.label.set('Column 1');
+            component.direction.set(SortDirection.asc);
+            component.sortable.set(true);
+            fixture.detectChanges();
+
+            expect(component.onSelect.emit).not.toHaveBeenCalled();
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'asc', disabled: false },
+            });
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.asc,
+                sortable: true,
+                disabled: false,
+                loading: false,
+            });
+
+            // first click: 'asc' to 'desc'
+            await harness.triggerPenClick();
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'desc', disabled: false },
+            });
+            expect(component.onSelect.emit).toHaveBeenCalledWith({
+                columnId: 'col1',
+                direction: SortDirection.desc,
+            });
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.desc,
+                sortable: true,
+                disabled: false,
+                loading: false,
+            });
+        });
+
+        it('should not toggle sort direction on middle mouse button click', async () => {
             spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
@@ -323,25 +472,84 @@ describe('HeaderItemComponent.', () => {
             component.disabled.set(false);
             fixture.detectChanges();
 
-            const containterElement = fixture.debugElement.query(
-                By.css('div#container'),
-            );
-            expect(component.direction()).toBe(SortDirection.asc);
-            containterElement.triggerEventHandler(
-                'click',
-                new PointerEvent('click', {
-                    button: MouseButton.right,
-                    pointerType: PointerType.mouse,
-                }),
-            );
-            fixture.detectChanges();
-            expect(component.direction()).toBe(SortDirection.asc);
             expect(component.onSelect.emit).not.toHaveBeenCalled();
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'asc', disabled: false },
+            });
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.asc,
+                sortable: true,
+                disabled: false,
+                loading: false,
+            });
+
+            // first click: 'asc' to 'desc'
+            await harness.triggerMiddleClick();
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'asc', disabled: false },
+            });
+            expect(component.onSelect.emit).not.toHaveBeenCalled();
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.asc,
+                sortable: true,
+                disabled: false,
+                loading: false,
+            });
+        });
+
+        it('should not toggle sort direction on right mouse button click', async () => {
+            spyOn(component.onSelect, 'emit');
+            component.id.set('col1');
+            component.label.set('Column 1');
+            component.direction.set(SortDirection.asc);
+            component.sortable.set(true);
+            component.disabled.set(false);
+            fixture.detectChanges();
+
+            expect(component.onSelect.emit).not.toHaveBeenCalled();
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'asc', disabled: false },
+            });
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.asc,
+                sortable: true,
+                disabled: false,
+                loading: false,
+            });
+
+            // first click: 'asc' to 'desc'
+            await harness.triggerRightClick();
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'asc', disabled: false },
+            });
+            expect(component.onSelect.emit).not.toHaveBeenCalled();
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.asc,
+                sortable: true,
+                disabled: false,
+                loading: false,
+            });
         });
     });
 
     describe('disabled', () => {
-        it('should be not disabled by default', () => {
+        it('should be not disabled by default', async () => {
             spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
@@ -349,17 +557,47 @@ describe('HeaderItemComponent.', () => {
             component.sortable.set(true);
             fixture.detectChanges();
 
-            _testHeaderItemComponent(fixture, component, {
-                columnId: 'col1',
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'asc', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
                 label: 'Column 1',
                 direction: SortDirection.asc,
-                disabled: false,
                 sortable: true,
+                disabled: false,
+                loading: false,
+            });
+
+            await harness.triggerLeftClick();
+
+            expect(component.onSelect.emit)
+                .withContext('onSelect event fired')
+                .toHaveBeenCalledOnceWith({
+                    columnId: 'col1',
+                    direction: SortDirection.desc,
+                });
+
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'desc', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.desc,
+                sortable: true,
+                disabled: false,
                 loading: false,
             });
         });
 
-        it('should be not disabled when disable is false', () => {
+        it('should be not disabled when disable is false', async () => {
             spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
@@ -368,17 +606,47 @@ describe('HeaderItemComponent.', () => {
             component.disabled.set(false);
             fixture.detectChanges();
 
-            _testHeaderItemComponent(fixture, component, {
-                columnId: 'col1',
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'asc', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
                 label: 'Column 1',
                 direction: SortDirection.asc,
-                disabled: false,
                 sortable: true,
+                disabled: false,
+                loading: false,
+            });
+
+            await harness.triggerLeftClick();
+
+            expect(component.onSelect.emit)
+                .withContext('onSelect event fired')
+                .toHaveBeenCalledOnceWith({
+                    columnId: 'col1',
+                    direction: SortDirection.desc,
+                });
+
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'desc', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.desc,
+                sortable: true,
+                disabled: false,
                 loading: false,
             });
         });
 
-        it('should be disabled when disable is true', () => {
+        it('should be disabled when disable is true', async () => {
             spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
@@ -387,36 +655,93 @@ describe('HeaderItemComponent.', () => {
             component.disabled.set(true);
             fixture.detectChanges();
 
-            _testHeaderItemComponent(fixture, component, {
-                columnId: 'col1',
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: true },
+                icon: { direction: 'asc', disabled: true },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
                 label: 'Column 1',
                 direction: SortDirection.asc,
-                disabled: true,
                 sortable: true,
+                disabled: true,
+                loading: false,
+            });
+
+            await harness.triggerLeftClick();
+
+            expect(component.onSelect.emit)
+                .withContext('onSelect event fired')
+                .not.toHaveBeenCalled();
+
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: true },
+                icon: { direction: 'asc', disabled: true },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.asc,
+                sortable: true,
+                disabled: true,
                 loading: false,
             });
         });
     });
 
     describe('sortable', () => {
-        it('should be sortable by default', () => {
+        it('should be sortable by default', async () => {
             spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
             fixture.detectChanges();
 
-            _testHeaderItemComponent(fixture, component, {
-                columnId: 'col1',
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'asc', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
                 label: 'Column 1',
                 direction: SortDirection.asc,
-                disabled: false,
                 sortable: true,
+                disabled: false,
+                loading: false,
+            });
+
+            await harness.triggerLeftClick();
+
+            expect(component.onSelect.emit)
+                .withContext('onSelect event fired')
+                .toHaveBeenCalledOnceWith({
+                    columnId: 'col1',
+                    direction: SortDirection.desc,
+                });
+
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'desc', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.desc,
+                sortable: true,
+                disabled: false,
                 loading: false,
             });
         });
 
-        it('should be sortable when sortable is true', () => {
+        it('should be sortable when sortable is true', async () => {
             spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
@@ -424,17 +749,47 @@ describe('HeaderItemComponent.', () => {
             component.sortable.set(true);
             fixture.detectChanges();
 
-            _testHeaderItemComponent(fixture, component, {
-                columnId: 'col1',
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'asc', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
                 label: 'Column 1',
                 direction: SortDirection.asc,
-                disabled: false,
                 sortable: true,
+                disabled: false,
+                loading: false,
+            });
+
+            await harness.triggerLeftClick();
+
+            expect(component.onSelect.emit)
+                .withContext('onSelect event fired')
+                .toHaveBeenCalledOnceWith({
+                    columnId: 'col1',
+                    direction: SortDirection.desc,
+                });
+
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'desc', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.desc,
+                sortable: true,
+                disabled: false,
                 loading: false,
             });
         });
 
-        it('should be not sortable when sortable is false', () => {
+        it('should be not sortable when sortable is false', async () => {
             spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
@@ -443,36 +798,67 @@ describe('HeaderItemComponent.', () => {
             component.disabled.set(false);
             fixture.detectChanges();
 
-            _testHeaderItemComponent(fixture, component, {
-                columnId: 'col1',
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
                 label: 'Column 1',
                 direction: SortDirection.asc,
-                disabled: false,
                 sortable: false,
+                disabled: false,
+                loading: false,
+            });
+
+            await harness.triggerLeftClick();
+
+            expect(component.onSelect.emit)
+                .withContext('onSelect event fired')
+                .not.toHaveBeenCalled();
+
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
+                label: 'Column 1',
+                direction: SortDirection.asc,
+                sortable: false,
+                disabled: false,
                 loading: false,
             });
         });
     });
 
     describe('loading', () => {
-        it('should be not loading by default', () => {
+        it('should be not loading by default', async () => {
             spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
             fixture.detectChanges();
 
-            _testHeaderItemComponent(fixture, component, {
-                columnId: 'col1',
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'asc', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
                 label: 'Column 1',
                 direction: SortDirection.asc,
-                disabled: false,
                 sortable: true,
+                disabled: false,
                 loading: false,
             });
         });
 
-        it('should be not loading when loading is false', () => {
+        it('should be not loading when loading is false', async () => {
             spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
@@ -482,17 +868,23 @@ describe('HeaderItemComponent.', () => {
             component.loading.set(false);
             fixture.detectChanges();
 
-            _testHeaderItemComponent(fixture, component, {
-                columnId: 'col1',
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: false },
+                icon: { direction: 'asc', disabled: false },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
                 label: 'Column 1',
                 direction: SortDirection.asc,
-                disabled: false,
                 sortable: true,
+                disabled: false,
                 loading: false,
             });
         });
 
-        it('should be loading when loading is true', () => {
+        it('should be loading when loading is true', async () => {
             spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
@@ -502,12 +894,17 @@ describe('HeaderItemComponent.', () => {
             component.loading.set(true);
             fixture.detectChanges();
 
-            _testHeaderItemComponent(fixture, component, {
-                columnId: 'col1',
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                label: { text: 'Column 1', disabled: true },
+            });
+
+            expect(getcomponentData()).toEqual({
+                id: 'col1',
                 label: 'Column 1',
                 direction: SortDirection.asc,
-                disabled: false,
                 sortable: true,
+                disabled: false,
                 loading: true,
             });
         });

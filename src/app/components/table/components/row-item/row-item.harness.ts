@@ -7,17 +7,12 @@ export class RowItemHarness extends ComponentHarness {
     private readonly childElement = this.locatorFor(':scope > *');
     private readonly childElements = this.locatorForAll(':scope > *');
 
-    private readonly containerElement = this.locatorForAll(
-        ':scope > id#container',
-    );
+    private readonly containerElement = this.locatorForAll('#container');
 
-    private readonly containerChildElements = this.locatorForAll(
-        ':scope > id#container > *',
-    );
+    private readonly containerChildElements =
+        this.locatorForAll('#container > *');
 
-    private readonly iconElement = this.locatorForAll(
-        ':scope > id#container > mat-icon',
-    );
+    private readonly iconElement = this.locatorForAll('#container > mat-icon');
 
     private readonly iconHarnesses = this.locatorForAll(MatIconHarness);
 
@@ -69,7 +64,7 @@ export class RowItemHarness extends ComponentHarness {
         return container;
     }
 
-    async getContainesClasses() {
+    async getContainersClasses() {
         const childElements = await this.childElements();
         if (childElements.length != 1) return false;
         if ((await childElements[0].getProperty('tagName')) != 'DIV') {
