@@ -27,27 +27,27 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     template: `
         <div
             id="container"
-            [class.icon]="showIcon()"
-            [class.label]="showLabel()"
-            [class.disabled]="innerDisabled()"
-            [matTooltip]="toolTip()">
+            [class.icon]="_showIcon()"
+            [class.label]="_showLabel()"
+            [class.disabled]="_disabled()"
+            [matTooltip]="tooltip()">
             <!-- icon -->
-            @if (showIcon()) {
+            @if (_showIcon()) {
                 <mat-icon
                     id="icon"
                     [class.skeleton-loader]="loading()"
-                    [class.disabled]="innerDisabled()">
-                    {{ innerIcon() }}
+                    [class.disabled]="_disabled()">
+                    {{ _icon() }}
                 </mat-icon>
             }
 
             <!-- label -->
-            @if (showLabel()) {
+            @if (_showLabel()) {
                 <span
                     id="label"
                     [class.skeleton-loader]="loading()"
-                    [class.disabled]="innerDisabled()">
-                    {{ innerLabel() }}
+                    [class.disabled]="_disabled()">
+                    {{ _label() }}
                 </span>
             }
         </div>
@@ -59,13 +59,11 @@ export class RowItemComponent {
     public icon = model<string | undefined>(undefined);
     public label = model<string | undefined>(undefined);
     // public ariaLabel = model<string | undefined>(undefined); // TODO:
-    public toolTip = model<string | undefined>(undefined);
+    public tooltip = model<string | undefined>(undefined);
 
-    protected innerDisabled = computed(() => this.loading() || this.disabled());
-
-    protected showIcon = computed(() => this.icon() !== undefined);
-    protected innerIcon = computed(() => (this.loading() ? '' : this.icon()));
-
-    protected showLabel = computed(() => this.label() !== undefined);
-    protected innerLabel = computed(() => (this.loading() ? '' : this.label()));
+    protected _disabled = computed(() => this.loading() || this.disabled());
+    protected _showIcon = computed(() => this.icon() !== undefined);
+    protected _icon = computed(() => (this.loading() ? '' : this.icon()));
+    protected _showLabel = computed(() => this.label() !== undefined);
+    protected _label = computed(() => (this.loading() ? '' : this.label()));
 }

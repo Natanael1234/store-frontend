@@ -1,10 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { MatIconModule } from '@angular/material/icon';
 import { MatTooltip, MatTooltipModule } from '@angular/material/tooltip';
 import { By } from '@angular/platform-browser';
 import { RowItemComponent } from '@components/table/components/row-item/row-item.component';
+import { RowItemHarness } from '@components/table/components/row-item/row-item.harness';
 
 // TODO: test
 describe('IconRowItemComponent.', () => {
@@ -12,6 +14,24 @@ describe('IconRowItemComponent.', () => {
     let fixture: ComponentFixture<RowItemComponent>;
     let overlayContainer: OverlayContainer;
     let overlayElement: HTMLElement;
+    let harness: RowItemHarness;
+
+    function getcomponentData() {
+        return {
+            label: component.label(),
+            icon: component.icon(),
+            disabled: component.disabled(),
+            loading: component.loading(),
+            tooltip: component.tooltip(),
+        };
+    }
+
+    function getMattotipMessage() {
+        const container = fixture.debugElement.query(By.css('#container'));
+        fixture.detectChanges();
+        const tooltipInstance = container.injector.get(MatTooltip);
+        return tooltipInstance.message;
+    }
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -23,181 +43,273 @@ describe('IconRowItemComponent.', () => {
         overlayContainer = TestBed.inject(OverlayContainer);
         overlayElement = overlayContainer.getContainerElement();
         fixture.detectChanges();
+        harness = await TestbedHarnessEnvironment.harnessForFixture(
+            fixture,
+            RowItemHarness,
+        );
     });
 
-    it('should create', () => {
+    it('should create', async () => {
         expect(component).toBeTruthy();
+
+        expect(await harness.getState()).toEqual({
+            hasValidStructure: true,
+        });
+        expect(getcomponentData()).toEqual({
+            label: undefined,
+            icon: undefined,
+            disabled: false,
+            loading: false,
+            tooltip: undefined,
+        });
     });
 
     describe('container', () => {
-        it('container should be defined', () => {
+        it('container should be defined', async () => {
             component.icon.set('visibility');
             component.label.set('Test label');
             component.loading.set(false);
             component.disabled.set(false);
-            component.toolTip.set('Test tooltip');
+            component.tooltip.set('Test tooltip');
             fixture.detectChanges();
 
-            const containterElement = fixture.debugElement.queryAll(
-                By.css('div#container'),
-            );
-
-            expect(containterElement.length).toEqual(1);
+            expect(await harness.getState()).toEqual({
+                hasValidStructure: true,
+                icon: { direction: undefined, disabled: false },
+                label: { text: 'Test label', disabled: false },
+            });
+            expect(getcomponentData()).toEqual({
+                label: 'Test label',
+                icon: 'visibility',
+                disabled: false,
+                loading: false,
+                tooltip: 'Test tooltip',
+            });
         });
 
         describe('disabled', () => {
-            it('container should be disabled when disabled model is true', () => {
+            it('container should be disabled when disabled model is true', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(true);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const iconElements = containterElement.queryAll(
-                    By.directive(MatIcon),
-                );
-                expect(iconElements[0].classes['disabled']).toBeTrue();
+
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: true },
+                    label: { text: 'Test label', disabled: true },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: true,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
 
-            it('container should not be disabled when disabled model is false', () => {
+            it('container should not be disabled when disabled model is false', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const iconElements = containterElement.queryAll(
-                    By.directive(MatIcon),
-                );
-                expect(iconElements[0].classes['disabled']).toBeUndefined();
+
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: false,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
 
-            it('container should not be disabled when disabled model is undefined', () => {
+            it('container should not be disabled when disabled model is undefined', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(undefined);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const iconElements = containterElement.queryAll(
-                    By.directive(MatIcon),
-                );
-                expect(iconElements[0].classes['disabled']).toBeUndefined();
+
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: undefined,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
         });
 
         describe('icon', () => {
-            it('container should show icon when icon model is defined', () => {
+            it('container should show icon when icon model is defined', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                expect(containterElement.classes['icon']).toBeTrue();
+
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: false,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
 
-            it('container should not show icon when icon model is not defined', () => {
+            it('container should not show icon when icon model is not defined', async () => {
                 component.icon.set(undefined);
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                expect(containterElement.classes['icon']).toBeUndefined();
+
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: undefined,
+                    disabled: false,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
         });
 
         describe('label', () => {
-            it('container should show label when label model is defined', () => {
+            it('container should show label when label model is defined', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                expect(containterElement.classes['label']).toBeTrue();
+
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: false,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
 
-            it('container should not show label when label model is not defined', () => {
+            it('container should not show label when label model is not defined', async () => {
                 component.icon.set('visibility');
                 component.label.set(undefined);
                 component.loading.set(false);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                expect(containterElement.classes['label']).toBeUndefined();
+
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: undefined,
+                    icon: 'visibility',
+                    disabled: false,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
         });
 
         describe('disabled', () => {
-            it('container should be disabled when disabled model is true', () => {
+            it('container should be disabled when disabled model is true', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(true);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const iconElements = containterElement.queryAll(
-                    By.directive(MatIcon),
-                );
-                expect(iconElements[0].classes['disabled']).toBeTrue();
+
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: true },
+                    label: { text: 'Test label', disabled: true },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: true,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
 
-            it('container should not be disabled when disabled model is false', () => {
+            it('container should not be disabled when disabled model is false', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const iconElements = containterElement.queryAll(
-                    By.directive(MatIcon),
-                );
-                expect(iconElements[0].classes['disabled']).toBeUndefined();
+
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: false,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
 
-            it('container should not be disabled when disabled model is undefined', () => {
+            it('container should not be disabled when disabled model is undefined', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(undefined);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const iconElements = containterElement.queryAll(
-                    By.directive(MatIcon),
-                );
-                expect(iconElements[0].classes['disabled']).toBeUndefined();
+
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: undefined,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
         });
 
@@ -207,406 +319,458 @@ describe('IconRowItemComponent.', () => {
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 const container = fixture.debugElement.query(
                     By.css('#container'),
                 );
                 fixture.detectChanges();
-                const tooltipInstance = container.injector.get(MatTooltip);
 
-                expect(tooltipInstance).not.toBeNull();
-                expect(tooltipInstance.message).toEqual('Test tooltip');
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: false,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
+                expect(getMattotipMessage()).toEqual('Test tooltip');
             });
 
-            it('container should not have matTooltip when toolTip model is undefined', () => {
+            it('container should not have matTooltip when toolTip model is undefined', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(false);
-                component.toolTip.set(undefined);
-                const container = fixture.debugElement.query(
-                    By.css('#container'),
-                );
+                component.tooltip.set(undefined);
                 fixture.detectChanges();
-                const tooltipInstance = container.injector.get(MatTooltip);
 
-                expect(tooltipInstance).not.toBeNull();
-                expect(tooltipInstance.message).toEqual('');
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: false,
+                    loading: false,
+                    tooltip: undefined,
+                });
+                expect(getMattotipMessage()).toEqual('');
             });
         });
     });
 
     describe('icon', () => {
         describe('icon', () => {
-            it('should display icon based on icon model', () => {
+            it('should display icon based on icon model', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
 
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const iconElements = containterElement.queryAll(
-                    By.directive(MatIcon),
-                );
-
-                expect(iconElements.length).toEqual(1);
-                expect(iconElements[0].nativeElement.textContent).toEqual(
-                    ' visibility ',
-                );
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: false,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
 
-            it('should not show icon when icon model is undefined', () => {
+            it('should not show icon when icon model is undefined', async () => {
                 component.icon.set(undefined);
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
 
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const iconElements = containterElement.queryAll(
-                    By.directive(MatIcon),
-                );
-                expect(iconElements.length).toEqual(0);
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: undefined,
+                    disabled: false,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
         });
 
         describe('loading', () => {
-            it('icon should be blank when loading model is true', () => {
+            it('icon should be loading when loading model is true', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(true);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
 
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const iconElements = containterElement.queryAll(
-                    By.directive(MatIcon),
-                );
-
-                expect(iconElements.length).toEqual(1);
-                expect(iconElements[0].nativeElement.textContent).toEqual('  ');
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: true },
+                    label: { text: '', disabled: true },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: false,
+                    loading: true,
+                    tooltip: 'Test tooltip',
+                });
             });
 
-            it('icon should be loading when loading model is true', () => {
-                component.icon.set('visibility');
-                component.label.set('Test label');
-                component.loading.set(true);
-                component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
-                fixture.detectChanges();
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const iconElements = containterElement.queryAll(
-                    By.directive(MatIcon),
-                );
-                expect(iconElements[0].classes['skeleton-loader']).toBeTrue();
-            });
-
-            it('icon should not be loading when loading model is false', () => {
+            it('icon should not be loading when loading model is false', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
 
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const iconElements = containterElement.queryAll(
-                    By.directive(MatIcon),
-                );
-
-                expect(iconElements[0].classes['skeleton-loader']).toBeFalsy();
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: false,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
 
-            it('icon should not be loading when loading model is undefined', () => {
+            it('icon should not be loading when loading model is undefined', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(undefined);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
 
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const iconElements = containterElement.queryAll(
-                    By.directive(MatIcon),
-                );
-
-                expect(iconElements[0].classes['skeleton-loader']).toBeFalsy();
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: false,
+                    loading: undefined,
+                    tooltip: 'Test tooltip',
+                });
             });
         });
 
         describe('disabled', () => {
-            it('icon should be disabled when disabled model is true', () => {
+            it('icon should be disabled when disabled model is true', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(true);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const iconElements = containterElement.queryAll(
-                    By.directive(MatIcon),
-                );
-                expect(iconElements[0].classes['disabled']).toBeTrue();
+
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: true },
+                    label: { text: 'Test label', disabled: true },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: true,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
 
-            it('icon should not be disabled when disabled model false', () => {
+            it('icon should not be disabled when disabled model false', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
 
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const iconElements = containterElement.queryAll(
-                    By.directive(MatIcon),
-                );
-
-                expect(iconElements[0].classes['skeleton-loader']).toBeFalsy();
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: false,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
 
-            it('icon should not be disabled when disabled model undefined', () => {
+            it('icon should not be disabled when disabled model undefined', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
 
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const iconElements = containterElement.queryAll(
-                    By.directive(MatIcon),
-                );
-
-                expect(iconElements[0].classes['skeleton-loader']).toBeFalsy();
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: false,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
 
-            it('icon should not be disabled when both disabled and loading models are true', () => {
+            it('icon should be disabled when both disabled and loading models are true', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(true);
                 component.disabled.set(true);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
 
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const iconElements = containterElement.queryAll(
-                    By.directive(MatIcon),
-                );
-
-                expect(iconElements[0].classes['disabled']).toBeTrue();
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: true },
+                    label: { text: '', disabled: true },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: true,
+                    loading: true,
+                    tooltip: 'Test tooltip',
+                });
             });
         });
     });
 
     describe('label', () => {
         describe('label', () => {
-            it('should display label based on label model', () => {
+            it('should display label based on label model', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
 
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const labelElements = containterElement.queryAll(
-                    By.css('span#label'),
-                );
-
-                expect(labelElements.length).toEqual(1);
-                expect(
-                    labelElements[0].nativeElement.textContent.trim(),
-                ).toEqual('Test label');
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: false,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
 
-            it('should not show label when label model is undefined', () => {
+            it('should not show label when label model is undefined', async () => {
                 component.icon.set('visibility');
                 component.label.set(undefined);
                 component.loading.set(false);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
 
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const labelElements = containterElement.queryAll(
-                    By.css('span#label'),
-                );
-                expect(labelElements.length).toEqual(0);
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: undefined,
+                    icon: 'visibility',
+                    disabled: false,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
         });
 
         describe('loading', () => {
-            it('label should be blank when loading model is true', () => {
+            it('should be loading when loading model is true', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(true);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
 
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const labelElements = containterElement.queryAll(
-                    By.css('span#label'),
-                );
-
-                expect(labelElements.length).toEqual(1);
-                expect(
-                    labelElements[0].nativeElement.textContent.trim(),
-                ).toEqual('');
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: true },
+                    label: { text: '', disabled: true },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: false,
+                    loading: true,
+                    tooltip: 'Test tooltip',
+                });
             });
 
-            it('label should be loading when loading model is true', () => {
-                component.icon.set('visibility');
-                component.label.set('Test label');
-                component.loading.set(true);
-                component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
-                fixture.detectChanges();
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const labelElements = containterElement.queryAll(
-                    By.css('span#label'),
-                );
-                expect(labelElements[0].classes['skeleton-loader']).toBeTrue();
-            });
-
-            it('label should not be loading when loading model is false', () => {
+            it('should not be loading when loading model is false', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
 
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const labelElements = containterElement.queryAll(
-                    By.css('span#label'),
-                );
-
-                expect(labelElements[0].classes['skeleton-loader']).toBeFalsy();
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: false,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
 
-            it('label should not be loading when loading model is undefined', () => {
+            it('should not be loading when loading model is undefined', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(undefined);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
 
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const labelElements = containterElement.queryAll(
-                    By.css('span#label'),
-                );
-
-                expect(labelElements[0].classes['skeleton-loader']).toBeFalsy();
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: false,
+                    loading: undefined,
+                    tooltip: 'Test tooltip',
+                });
             });
         });
 
         describe('disabled', () => {
-            it('label should be disabled when disabled model is true', () => {
+            it('should be disabled when disabled model is true', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(true);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const labelElements = containterElement.queryAll(
-                    By.css('span#label'),
-                );
-                expect(labelElements[0].classes['disabled']).toBeTrue();
+
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: true },
+                    label: { text: 'Test label', disabled: true },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: true,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
 
-            it('should not be disabled when disabled model is false', () => {
+            it('should not be disabled when disabled model is false', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(false);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
 
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const labelElements = containterElement.queryAll(
-                    By.css('span#label'),
-                );
-
-                expect(labelElements[0].classes['skeleton-loader']).toBeFalsy();
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: false,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
 
-            it('should not be disabled when disabled model is undefined', () => {
+            it('should not be disabled when disabled model is undefined', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(false);
                 component.disabled.set(undefined);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
 
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const labelElements = containterElement.queryAll(
-                    By.css('span#label'),
-                );
-
-                expect(labelElements[0].classes['skeleton-loader']).toBeFalsy();
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: false },
+                    label: { text: 'Test label', disabled: false },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: undefined,
+                    loading: false,
+                    tooltip: 'Test tooltip',
+                });
             });
 
-            it('should not be disabled when both disabled and loading models are true', () => {
+            it('should be disabled when both disabled and loading models are true', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(true);
                 component.disabled.set(true);
-                component.toolTip.set('Test tooltip');
+                component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
 
-                const containterElement = fixture.debugElement.query(
-                    By.css('div#container'),
-                );
-                const labelElements = containterElement.queryAll(
-                    By.css('span#label'),
-                );
-                expect(labelElements[0].classes['disabled']).toBeTrue();
+                expect(await harness.getState()).toEqual({
+                    hasValidStructure: true,
+                    icon: { direction: undefined, disabled: true },
+                    label: { text: '', disabled: true },
+                });
+                expect(getcomponentData()).toEqual({
+                    label: 'Test label',
+                    icon: 'visibility',
+                    disabled: true,
+                    loading: true,
+                    tooltip: 'Test tooltip',
+                });
             });
         });
     });

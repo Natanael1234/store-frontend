@@ -1,5 +1,4 @@
 import { ComponentHarness, TestElement } from '@angular/cdk/testing';
-import { MatIconHarness } from '@angular/material/icon/testing';
 import { MouseButton } from '@enums/mouse-button/mouse-button.enum';
 import { PointerType } from '@enums/pointer-type/pointer-type.enum';
 
@@ -14,8 +13,6 @@ export class HeaderItemHarness extends ComponentHarness {
     private readonly containerElement = this.locatorFor('#container');
     private readonly labelElement = this.locatorFor('#label');
     private readonly iconElement = this.locatorForOptional('#arrow');
-
-    private readonly iconHarnesses = this.locatorForAll(MatIconHarness);
 
     async getLabel() {
         const label = await this.labelElement();
@@ -218,7 +215,7 @@ export class HeaderItemHarness extends ComponentHarness {
             const iconName = await secondContainerChild.text();
             if (iconName != 'arrow_downward') {
                 errors['invalidIconName'] =
-                    `Inalid icon name. Expected arrow_downward. Found ${iconName}`;
+                    `Invalid icon name. Expected arrow_downward. Found ${iconName}`;
             }
         }
 

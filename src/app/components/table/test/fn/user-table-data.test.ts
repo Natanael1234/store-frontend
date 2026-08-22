@@ -54,7 +54,7 @@ export function _testTableData(
             expect(item.label())
                 .withContext(colCtx + ' - label')
                 .toEqual(expectedCol.label);
-            expect(item.toolTip())
+            expect(item.tooltip())
                 .withContext(colCtx + ' - tooltip')
                 .toEqual(expectedCol.tooltip);
             expect(item.loading())
