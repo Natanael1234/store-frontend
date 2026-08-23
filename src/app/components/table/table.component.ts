@@ -107,7 +107,7 @@ import _ from 'lodash';
                             [icon]="cellData.icon"
                             [loading]="!!loading()"
                             [label]="cellData.label"
-                            [toolTip]="cellData.tooltip"
+                            [tooltip]="cellData.tooltip"
                             [disabled]="cellData.disabled" />
                     </td>
                 </ng-container>
