@@ -54,7 +54,6 @@ describe('HeaderItemComponent.', () => {
             fixture.detectChanges();
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'asc', disabled: false },
             });
@@ -80,7 +79,6 @@ describe('HeaderItemComponent.', () => {
             component.disabled.set(false);
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'asc', disabled: false },
             });
@@ -104,7 +102,6 @@ describe('HeaderItemComponent.', () => {
                 });
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'desc', disabled: false },
             });
@@ -129,7 +126,6 @@ describe('HeaderItemComponent.', () => {
             fixture.detectChanges();
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'asc', disabled: false },
             });
@@ -153,7 +149,6 @@ describe('HeaderItemComponent.', () => {
                 });
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'desc', disabled: false },
             });
@@ -178,7 +173,6 @@ describe('HeaderItemComponent.', () => {
             fixture.detectChanges();
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
             });
 
@@ -198,7 +192,6 @@ describe('HeaderItemComponent.', () => {
                 .not.toHaveBeenCalled();
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
             });
 
@@ -221,7 +214,6 @@ describe('HeaderItemComponent.', () => {
             fixture.detectChanges();
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'asc', disabled: false },
             });
@@ -238,7 +230,6 @@ describe('HeaderItemComponent.', () => {
             component.direction.set(SortDirection.desc);
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'desc', disabled: false },
             });
@@ -255,7 +246,6 @@ describe('HeaderItemComponent.', () => {
             component.direction.set(SortDirection.none);
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'hidden', disabled: false },
             });
@@ -274,7 +264,6 @@ describe('HeaderItemComponent.', () => {
             expect(component.onSelect.emit).not.toHaveBeenCalled();
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'asc', disabled: false },
             });
@@ -299,7 +288,6 @@ describe('HeaderItemComponent.', () => {
 
             expect(component.onSelect.emit).not.toHaveBeenCalled();
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'asc', disabled: false },
             });
@@ -315,7 +303,6 @@ describe('HeaderItemComponent.', () => {
             // first click: 'asc' to 'desc'
             await harness.triggerLeftClick();
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'desc', disabled: false },
             });
@@ -335,7 +322,6 @@ describe('HeaderItemComponent.', () => {
             // second click: 'desc' to ''
             await harness.triggerLeftClick();
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'hidden', disabled: false },
             });
@@ -355,7 +341,6 @@ describe('HeaderItemComponent.', () => {
             // third click: '' to 'asc'
             await harness.triggerLeftClick();
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'asc', disabled: false },
             });
@@ -385,7 +370,6 @@ describe('HeaderItemComponent.', () => {
 
             expect(component.onSelect.emit).not.toHaveBeenCalled();
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'asc', disabled: false },
             });
@@ -401,7 +385,6 @@ describe('HeaderItemComponent.', () => {
             // first click: 'asc' to 'desc'
             await harness.triggerTouch();
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'desc', disabled: false },
             });
@@ -429,7 +412,6 @@ describe('HeaderItemComponent.', () => {
 
             expect(component.onSelect.emit).not.toHaveBeenCalled();
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'asc', disabled: false },
             });
@@ -445,7 +427,6 @@ describe('HeaderItemComponent.', () => {
             // first click: 'asc' to 'desc'
             await harness.triggerPenClick();
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'desc', disabled: false },
             });
@@ -474,7 +455,6 @@ describe('HeaderItemComponent.', () => {
 
             expect(component.onSelect.emit).not.toHaveBeenCalled();
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'asc', disabled: false },
             });
@@ -490,7 +470,6 @@ describe('HeaderItemComponent.', () => {
             // first click: 'asc' to 'desc'
             await harness.triggerMiddleClick();
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'asc', disabled: false },
             });
@@ -516,7 +495,6 @@ describe('HeaderItemComponent.', () => {
 
             expect(component.onSelect.emit).not.toHaveBeenCalled();
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'asc', disabled: false },
             });
@@ -532,7 +510,6 @@ describe('HeaderItemComponent.', () => {
             // first click: 'asc' to 'desc'
             await harness.triggerRightClick();
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'asc', disabled: false },
             });
@@ -558,7 +535,6 @@ describe('HeaderItemComponent.', () => {
             fixture.detectChanges();
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'asc', disabled: false },
             });
@@ -582,7 +558,6 @@ describe('HeaderItemComponent.', () => {
                 });
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'desc', disabled: false },
             });
@@ -607,7 +582,6 @@ describe('HeaderItemComponent.', () => {
             fixture.detectChanges();
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'asc', disabled: false },
             });
@@ -631,7 +605,6 @@ describe('HeaderItemComponent.', () => {
                 });
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'desc', disabled: false },
             });
@@ -656,7 +629,6 @@ describe('HeaderItemComponent.', () => {
             fixture.detectChanges();
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: true },
                 icon: { direction: 'asc', disabled: true },
             });
@@ -677,7 +649,6 @@ describe('HeaderItemComponent.', () => {
                 .not.toHaveBeenCalled();
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: true },
                 icon: { direction: 'asc', disabled: true },
             });
@@ -702,7 +673,6 @@ describe('HeaderItemComponent.', () => {
             fixture.detectChanges();
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'asc', disabled: false },
             });
@@ -726,7 +696,6 @@ describe('HeaderItemComponent.', () => {
                 });
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'desc', disabled: false },
             });
@@ -750,7 +719,6 @@ describe('HeaderItemComponent.', () => {
             fixture.detectChanges();
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'asc', disabled: false },
             });
@@ -774,7 +742,6 @@ describe('HeaderItemComponent.', () => {
                 });
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'desc', disabled: false },
             });
@@ -799,7 +766,6 @@ describe('HeaderItemComponent.', () => {
             fixture.detectChanges();
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
             });
 
@@ -819,7 +785,6 @@ describe('HeaderItemComponent.', () => {
                 .not.toHaveBeenCalled();
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
             });
 
@@ -843,7 +808,6 @@ describe('HeaderItemComponent.', () => {
             fixture.detectChanges();
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'asc', disabled: false },
             });
@@ -869,7 +833,6 @@ describe('HeaderItemComponent.', () => {
             fixture.detectChanges();
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: false },
                 icon: { direction: 'asc', disabled: false },
             });
@@ -895,7 +858,6 @@ describe('HeaderItemComponent.', () => {
             fixture.detectChanges();
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
                 label: { text: 'Column 1', disabled: true },
             });
 

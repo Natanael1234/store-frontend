@@ -3,7 +3,7 @@ import { MouseButton } from '@enums/mouse-button/mouse-button.enum';
 import { PointerType } from '@enums/pointer-type/pointer-type.enum';
 
 export class HeaderItemHarness extends ComponentHarness {
-    static hostSelector = 'app-row-item';
+    static hostSelector = 'app-header-item';
 
     private readonly hostChildElements = this.locatorForAll(':scope > *');
     private readonly containerChildElements =
@@ -145,36 +145,38 @@ export class HeaderItemHarness extends ComponentHarness {
         return container;
     }
 
-    async hasValidStructure(): Promise<boolean | { [key: string]: string }> {
-        const errors: any = {};
+    async getErrors() {
+        const errors: string[] = [];
 
         // container
 
         const hostChildren = await this.hostChildElements();
         if (hostChildren.length != 1) {
-            errors['hostChlidCount'] =
-                `Host should have 1 child. Found ${hostChildren.length}.`;
+            errors.push(
+                `APP-TABLE-HEADER HOST should have 1 child. Found ${hostChildren.length}.`,
+            );
         }
 
         const hostChildTagName = await hostChildren[0].getProperty('tagName');
         if (hostChildTagName != 'DIV') {
-            errors['hostChildType'] =
-                `Host child should be a DIV. Found ${hostChildTagName}.`;
+            errors.push(
+                `Invalid APP-TABLE-HEADER HOST child. Expected DIV. Found ${hostChildTagName}.`,
+            );
         }
 
         const hostChildId = await hostChildren[0].getProperty('id');
         if (hostChildId != 'container') {
-            errors['hostChildId'] =
-                `Host child should have id "container". Found "${hostChildId}".`;
+            errors.push(
+                `Invalid APP-TABLE-HEADER HOST child id. Expected "container". Found "${hostChildId}".`,
+            );
         }
 
         const containerChildren = await this.containerChildElements();
         if (containerChildren.length == 0) {
-            errors['emptyContainer'] = `Container is empty.`;
+            errors.push(`TABLE-HEADER container is empty.`);
         }
         if (containerChildren.length > 2) {
-            errors['invalidContainerChildCount'] =
-                `Container have more than two children.`;
+            errors.push(`TABLE-HEADER container have more than two children.`);
         }
 
         // label
@@ -182,18 +184,20 @@ export class HeaderItemHarness extends ComponentHarness {
         const firstContainerChildTagName =
             await firstContainerChild.getProperty('tagName');
         if (firstContainerChildTagName != 'SPAN') {
-            errors['invalidFirstContainerChild'] =
-                `First container child should be a SPAN. Found ${firstContainerChildTagName}`;
+            errors.push(
+                `Invalid APP-TABLE-HEADER first container child. Expected SPAN. Found ${firstContainerChildTagName}`,
+            );
         }
         const firstContainerChildId =
             await firstContainerChild.getProperty('id');
         if (firstContainerChildId != 'label') {
-            errors['invalidSecondContainerChildId'] =
-                `Second container child should have id "label". Found "${firstContainerChildId}".`;
+            errors.push(
+                `Invalid APP-TABLE-HEADER second container child id. Expected "label". Found "${firstContainerChildId}".`,
+            );
         }
         const labelChildren = await this.labelChildElements();
         if (labelChildren.length) {
-            errors['invalidLabelChildren'] = 'Label should not have children.';
+            errors.push('APP-TABLE-HEADER label should not have children.');
         }
 
         // icon
@@ -202,33 +206,48 @@ export class HeaderItemHarness extends ComponentHarness {
             const secondContainerChildTagName =
                 await secondContainerChild.getProperty('tagName');
             if (secondContainerChildTagName != 'MAT-ICON') {
-                errors['invalidSecondContainerChild'] =
-                    `Second container child should be a MAT-ICON. $Found ${secondContainerChildTagName}.`;
+                errors.push(
+                    `invalid APP-TABLE-HEADER second container child. Expected MAT-ICON. $Found ${secondContainerChildTagName}.`,
+                );
             }
             const secondContainerChildId =
                 await secondContainerChild.getProperty('id');
             if (secondContainerChildId != 'arrow') {
-                errors['invalidSecondContainerChildId'] =
-                    `Second container child should have id "arrow". Found "${secondContainerChildId}".`;
+                errors.push(
+                    `Invalid APP-TABLE-HEADER second container child id. Expected "arrow". Found "${secondContainerChildId}".`,
+                );
             }
 
             const iconName = await secondContainerChild.text();
             if (iconName != 'arrow_downward') {
-                errors['invalidIconName'] =
-                    `Invalid icon name. Expected arrow_downward. Found ${iconName}`;
+                errors.push(
+                    `Invalid APP-TABLE-HEADER icon name. Expected arrow_downward. Found ${iconName}`,
+                );
             }
         }
 
-        return Object.keys(errors).length == 0 ? true : errors;
+        return errors;
     }
 
-    async getState() {
-        const hasValidStructure = await this.hasValidStructure();
+    async getState(): Promise<{
+        errors?: string[];
+        label: { text: string; disabled: boolean };
+        icon?: {
+            disabled: boolean;
+            direction: 'asc' | 'desc' | 'hidden' | undefined;
+        };
+    }> {
+        const errors = await this.getErrors();
         const label = await this.getLabel();
         const icon = await this.getIcon();
-        if (icon) {
-            return { hasValidStructure, label, icon };
+        const state: any = {};
+        if (errors.length) {
+            state.errors = errors;
         }
-        return { hasValidStructure, label };
+        state.label = label;
+        if (icon) {
+            state.icon = icon;
+        }
+        return state;
     }
 }
