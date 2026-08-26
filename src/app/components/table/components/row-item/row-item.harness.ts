@@ -35,15 +35,8 @@ export class RowItemHarness extends ComponentHarness {
         const icon = await this.iconElement();
         if (!icon) return undefined;
         const disabled = await icon.hasClass('disabled');
-        let direction: 'asc' | 'desc' | 'hidden' | undefined;
-        if (await icon.hasClass('asc')) {
-            direction = 'asc';
-        } else if (await icon.hasClass('desc')) {
-            direction = 'desc';
-        } else if (await icon.hasClass('hidden')) {
-            direction = 'hidden';
-        }
-        return { direction, disabled };
+        const loading = await icon.hasClass('skeleton-loader');
+        return { loading, disabled };
     }
 
     async triggerLeftClick() {
@@ -147,27 +140,30 @@ export class RowItemHarness extends ComponentHarness {
         return host.text();
     }
 
-    async hasValidStructure(): Promise<boolean | { [key: string]: string }> {
-        const errors: any = {};
+    async getErrors() {
+        const errors: string[] = [];
 
         // container
 
         const hostChildren = await this.hostChildElements();
         if (hostChildren.length != 1) {
-            errors['hostChlidCount'] =
-                `Host should have 1 child. Found ${hostChildren.length}.`;
+            errors.push(
+                `APP-ROW-ITEM Host should have 1 child. Found ${hostChildren.length}.`,
+            );
         }
 
         const hostChildTagName = await hostChildren[0].getProperty('tagName');
         if (hostChildTagName != 'DIV') {
-            errors['hostChildType'] =
-                `Host child should be a DIV. Found ${hostChildTagName}.`;
+            errors.push(
+                `Invalid APP-ROW-ITEM host child. Expected DIV. Found ${hostChildTagName}.`,
+            );
         }
 
         const hostChildId = await hostChildren[0].getProperty('id');
         if (hostChildId != 'container') {
-            errors['hostChildId'] =
-                `Host child should have id "container". Found "${hostChildId}".`;
+            errors.push(
+                `Invalid APP-ROW-ITEM host child id. Expected "container". Found "${hostChildId}".`,
+            );
         }
 
         // container children
@@ -177,18 +173,21 @@ export class RowItemHarness extends ComponentHarness {
         const containerChildren = await this.containerChildElements();
         if (showIcon && showLabel) {
             if (containerChildren.length != 2) {
-                errors['invalidContainerChildCount'] =
-                    `Container should have two children.`;
+                errors.push(
+                    `APP-ROW-ITEM container should have 2 children. Found ${containerChildren.length}`,
+                );
             }
         } else if (showIcon || showLabel) {
             if (containerChildren.length != 1) {
-                errors['invalidContainerChildCount'] =
-                    `Container should contain 1 child. Found ${containerChildren.length}.`;
+                errors.push(
+                    `APP-ROW-ITEM container should contain 1 child. Found ${containerChildren.length}.`,
+                );
             }
         } else {
             if (containerChildren.length) {
-                errors['invalidContainerChildCount'] =
-                    `Container should contain 0 children. Found ${containerChildren.length}.`;
+                errors.push(
+                    `APP-ROW-ITEM container should contain 0 children. Found ${containerChildren.length}.`,
+                );
             }
         }
 
@@ -199,59 +198,72 @@ export class RowItemHarness extends ComponentHarness {
             const secondContainerChildTagName =
                 await secondContainerChild.getProperty('tagName');
             if (secondContainerChildTagName != 'MAT-ICON') {
-                errors['invalidSecondContainerChild'] =
-                    `Second container child should be a MAT-ICON. $Found ${secondContainerChildTagName}.`;
+                errors.push(
+                    `Invalid APP-ROW-ITEM second container child. Expected MAT-ICON. $Found ${secondContainerChildTagName}.`,
+                );
             }
 
             const secondContainerChildId =
                 await secondContainerChild.getProperty('id');
             if (secondContainerChildId != 'icon') {
-                errors['invalidSecondContainerChildId'] =
-                    `Second container child should have id "arrow". Found "${secondContainerChildId}".`;
+                errors.push(
+                    `Invalid APP-ROW-ITEM second container child id. Expected "arrow". Found "${secondContainerChildId}".`,
+                );
             }
-            const iconName = await secondContainerChild.text();
+            const iconName = await secondContainerChild.text(); // TODO: ?
         }
 
         // label
 
         if (showLabel) {
             const firstContainerChild = containerChildren[showIcon ? 1 : 0];
-
             const firstContainerChildTagName =
                 await firstContainerChild.getProperty('tagName');
             if (firstContainerChildTagName != 'SPAN') {
-                errors['invalidFirstContainerChild'] =
-                    `First container child should be a SPAN. Found ${firstContainerChildTagName}`;
+                errors.push(
+                    `Invalid APP-ROW-ITEM first container child. Expected SPAN. Found ${firstContainerChildTagName}`,
+                );
             }
             const firstContainerChildId =
                 await firstContainerChild.getProperty('id');
             if (firstContainerChildId != 'label') {
-                errors['invalidSecondContainerChildId'] =
-                    `Second container child should have id "label". Found "${firstContainerChildId}".`;
+                errors.push(
+                    `Invalid APP-ROW-ITEM container child id. Expected "label". Found "${firstContainerChildId}".`,
+                );
             }
             const labelChildren = await this.labelChildElements();
             if (labelChildren.length) {
-                errors['invalidLabelChildren'] =
-                    'Label should not have children.';
+                errors.push('APP-ROW-ITEM label should not have children.');
             }
         }
 
-        return Object.keys(errors).length == 0 ? true : errors;
+        return errors;
     }
 
-    async getState() {
-        const hasValidStructure = await this.hasValidStructure();
+    async getState(): Promise<{
+        errors?: string[];
+
+        icon?: {
+            loading: boolean;
+            disabled: boolean;
+        };
+        label?: { text: string; disabled: boolean };
+    }> {
+        const container = await this.containerElement();
+
+        const errors = await this.getErrors();
         const label = await this.getLabel();
         const icon = await this.getIcon();
-        if (icon) {
-            if (label) {
-                return { hasValidStructure, icon, label };
-            } else {
-                return { hasValidStructure, icon };
-            }
-        } else if (label) {
-            return { hasValidStructure, label };
+        const result: any = {};
+        if (errors.length) {
+            result.errors = errors;
         }
-        return { hasValidStructure };
+        if (icon) {
+            result.icon = icon;
+        }
+        if (label) {
+            result.label = label;
+        }
+        return result;
     }
 }

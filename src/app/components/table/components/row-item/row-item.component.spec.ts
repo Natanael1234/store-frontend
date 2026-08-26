@@ -52,9 +52,7 @@ describe('IconRowItemComponent.', () => {
     it('should create', async () => {
         expect(component).toBeTruthy();
 
-        expect(await harness.getState()).toEqual({
-            hasValidStructure: true,
-        });
+        expect(await harness.getState()).toEqual({});
         expect(getcomponentData()).toEqual({
             label: undefined,
             icon: undefined,
@@ -74,8 +72,7 @@ describe('IconRowItemComponent.', () => {
             fixture.detectChanges();
 
             expect(await harness.getState()).toEqual({
-                hasValidStructure: true,
-                icon: { direction: undefined, disabled: false },
+                icon: { loading: false, disabled: false },
                 label: { text: 'Test label', disabled: false },
             });
             expect(getcomponentData()).toEqual({
@@ -97,8 +94,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: true },
+                    icon: { loading: false, disabled: true },
                     label: { text: 'Test label', disabled: true },
                 });
                 expect(getcomponentData()).toEqual({
@@ -119,8 +115,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -141,8 +136,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -165,8 +159,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -187,7 +180,6 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -210,8 +202,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -232,8 +223,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
                     label: undefined,
@@ -255,8 +245,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: true },
+                    icon: { loading: false, disabled: true },
                     label: { text: 'Test label', disabled: true },
                 });
                 expect(getcomponentData()).toEqual({
@@ -277,8 +266,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -299,8 +287,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -326,8 +313,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -349,8 +335,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -376,8 +361,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -398,7 +382,6 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -421,8 +404,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: true },
+                    icon: { loading: true, disabled: true },
                     label: { text: '', disabled: true },
                 });
                 expect(getcomponentData()).toEqual({
@@ -443,8 +425,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -465,8 +446,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -489,8 +469,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: true },
+                    icon: { loading: false, disabled: true },
                     label: { text: 'Test label', disabled: true },
                 });
                 expect(getcomponentData()).toEqual({
@@ -511,8 +490,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -533,8 +511,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -555,8 +532,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: true },
+                    icon: { loading: true, disabled: true },
                     label: { text: '', disabled: true },
                 });
                 expect(getcomponentData()).toEqual({
@@ -581,8 +557,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -603,8 +578,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
                     label: undefined,
@@ -626,8 +600,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: true },
+                    icon: { loading: true, disabled: true },
                     label: { text: '', disabled: true },
                 });
                 expect(getcomponentData()).toEqual({
@@ -648,8 +621,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -670,8 +642,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -694,8 +665,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: true },
+                    icon: { loading: false, disabled: true },
                     label: { text: 'Test label', disabled: true },
                 });
                 expect(getcomponentData()).toEqual({
@@ -716,8 +686,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -738,8 +707,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: false },
+                    icon: { loading: false, disabled: false },
                     label: { text: 'Test label', disabled: false },
                 });
                 expect(getcomponentData()).toEqual({
@@ -760,8 +728,7 @@ describe('IconRowItemComponent.', () => {
                 fixture.detectChanges();
 
                 expect(await harness.getState()).toEqual({
-                    hasValidStructure: true,
-                    icon: { direction: undefined, disabled: true },
+                    icon: { loading: true, disabled: true },
                     label: { text: '', disabled: true },
                 });
                 expect(getcomponentData()).toEqual({
