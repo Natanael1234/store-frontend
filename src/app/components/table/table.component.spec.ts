@@ -1,3 +1,4 @@
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSortModule } from '@angular/material/sort';
@@ -5,9 +6,10 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { By } from '@angular/platform-browser';
 import { HeaderItemComponent } from '@components/table/components/header-item/header-item.component';
-import { MockHeaderItemComponent } from '@components/table/components/header-item/test/mock/header-item-component.mock';
+import { RowItemComponent } from '@components/table/components/row-item/row-item.component';
 import { Column } from '@components/table/model/column/column.model';
 import { TableComponent } from '@components/table/table.component';
+import { TableComponentHarness } from '@components/table/table.component.harness';
 import { _testTableHeadersComponent } from '@components/table/test/fn/table-header-item-component.test';
 import { _testTableData } from '@components/table/test/fn/user-table-data.test';
 import { SortDirection } from '@enums/direction/direction.enum';
@@ -17,6 +19,7 @@ import { PointerType } from '@enums/pointer-type/pointer-type.enum';
 describe('TableComponent.', () => {
     let tableComponent: TableComponent;
     let fixture: ComponentFixture<TableComponent>;
+    let harness: TableComponentHarness;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -27,11 +30,9 @@ describe('TableComponent.', () => {
                 MatIconModule,
                 MatTooltipModule,
                 TableComponent,
-                MockHeaderItemComponent,
+                HeaderItemComponent,
+                RowItemComponent,
             ],
-        }).overrideComponent(TableComponent, {
-            remove: { imports: [HeaderItemComponent] },
-            add: { imports: [MockHeaderItemComponent] },
         });
         fixture = TestBed.createComponent(TableComponent);
         tableComponent = fixture.componentInstance;
@@ -39,6 +40,10 @@ describe('TableComponent.', () => {
 
         spyOn(tableComponent.headerClick, 'emit');
         spyOn(tableComponent.rowClick, 'emit');
+        harness = await TestbedHarnessEnvironment.harnessForFixture(
+            fixture,
+            TableComponentHarness,
+        );
     });
 
     it('should create', () => {
@@ -46,7 +51,7 @@ describe('TableComponent.', () => {
     });
 
     describe('headers', () => {
-        it('should render table headers', () => {
+        it('should render table headers', async () => {
             tableComponent.columns.set([
                 new Column({
                     id: 'col1',
@@ -86,6 +91,7 @@ describe('TableComponent.', () => {
                 }),
             ]);
             fixture.detectChanges();
+
             _testTableHeadersComponent(fixture, [
                 {
                     id: 'col1',
@@ -120,7 +126,7 @@ describe('TableComponent.', () => {
     });
 
     describe('rows', () => {
-        it('should render not loading table rows when loading is not defined', () => {
+        it('should render not loading table rows when loading is not defined', async () => {
             tableComponent.columns.set([
                 new Column({
                     id: 'col1',
@@ -222,6 +228,79 @@ describe('TableComponent.', () => {
             ]);
             fixture.detectChanges();
 
+            const state = await harness.getState();
+            console.log('STATE', JSON.stringify(state, null, 4));
+            expect(state).toEqual({
+                headers: [
+                    {
+                        label: { text: 'Column 1', disabled: false },
+                        icon: { disabled: false, direction: 'asc' },
+                        shrink: false,
+                    },
+                    {
+                        label: { text: 'Column 2', disabled: false },
+                        icon: { disabled: false, direction: 'asc' },
+                        shrink: false,
+                    },
+                    {
+                        label: { text: 'Column 3', disabled: false },
+                        icon: { disabled: false, direction: 'asc' },
+                        shrink: false,
+                    },
+                    {
+                        label: { text: 'Column 4', disabled: false },
+                        icon: { disabled: false, direction: 'desc' },
+                        shrink: false,
+                    },
+                ],
+                rows: [
+                    [
+                        {
+                            icon: { disabled: true },
+                            label: { text: 'Column 1a', disabled: true },
+                            shrink: false,
+                        },
+                        {
+                            icon: { disabled: true },
+                            label: { text: 'Column 2a', disabled: true },
+                            shrink: false,
+                        },
+                        {
+                            icon: { disabled: false },
+                            label: { text: 'Column 3a', disabled: false },
+                            shrink: false,
+                        },
+                        {
+                            icon: { disabled: false },
+                            label: { text: 'Column 4a', disabled: false },
+                            shrink: false,
+                        },
+                    ],
+                    [
+                        {
+                            icon: { disabled: false },
+                            label: { text: 'Column 1b', disabled: false },
+                            shrink: false,
+                        },
+                        {
+                            icon: { disabled: false },
+                            label: { text: 'Column 2b', disabled: false },
+                            shrink: false,
+                        },
+                        {
+                            icon: { disabled: true },
+                            label: { text: 'Column 3b', disabled: true },
+                            shrink: false,
+                        },
+                        {
+                            icon: { disabled: true },
+                            label: { text: 'Column 4b', disabled: true },
+                            shrink: false,
+                        },
+                    ],
+                ],
+            });
+
             _testTableData(
                 fixture,
                 [
@@ -300,7 +379,7 @@ describe('TableComponent.', () => {
             );
         });
 
-        it('should render not loading table rows when loading = false', () => {
+        it('should render not loading table rows when loading = false', async () => {
             tableComponent.columns.set([
                 new Column({
                     id: 'col1',
@@ -825,10 +904,10 @@ describe('TableComponent.', () => {
             fixture.detectChanges();
 
             // header click
-            const header = fixture.debugElement.query(
+            const headerItem = fixture.debugElement.query(
                 By.directive(HeaderItemComponent),
             ).componentInstance as HeaderItemComponent;
-            header.onSelect.emit({
+            headerItem.onSelect.emit({
                 columnId: 'name',
                 direction: SortDirection.asc,
             });
@@ -923,10 +1002,10 @@ describe('TableComponent.', () => {
             fixture.detectChanges();
 
             // header click
-            const header = fixture.debugElement.query(
+            const headerItem = fixture.debugElement.query(
                 By.directive(HeaderItemComponent),
             ).componentInstance as HeaderItemComponent;
-            header.onSelect.emit({
+            headerItem.onSelect.emit({
                 columnId: 'name',
                 direction: SortDirection.asc,
             });

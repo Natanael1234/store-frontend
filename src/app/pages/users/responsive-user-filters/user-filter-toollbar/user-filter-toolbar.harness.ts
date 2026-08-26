@@ -273,7 +273,7 @@ export class UserFilterToolbarHarness extends ComponentHarness {
         ) {
             if (!isEqual([12, 12, 6, 6], wrapperCols)) {
                 errors['invalidWrapperCols'] =
-                    `Invaid form wrapper cols. Found ${JSON.stringify(wrapperCols)}.`;
+                    `Invalid form wrapper cols. Found ${JSON.stringify(wrapperCols)}.`;
             }
         } else if (
             isEqual(
