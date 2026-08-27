@@ -71,7 +71,21 @@ export class TableHarness extends ComponentHarness {
         return errors;
     }
 
-    async getState() {
+    async getState(): Promise<{
+        headers: {
+            label: { text: string; disabled: boolean };
+            icon?: {
+                disabled: boolean;
+                direction: 'asc' | 'desc' | 'hidden' | undefined;
+            };
+            shrink: boolean;
+        }[][];
+        rows: {
+            icon?: { name: string; loading: boolean; disabled: boolean };
+            label: { text: string; loading: boolean; disabled: boolean };
+            shrink: boolean;
+        }[][];
+    }> {
         const treads = await this.theads();
         const tbodies = await this.tbodies();
         const headers = await treads[0].getState();

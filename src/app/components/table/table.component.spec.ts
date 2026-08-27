@@ -122,6 +122,57 @@ describe('TableComponent.', () => {
                     disabled: false,
                 },
             ]);
+
+            const state = await harness.getState();
+            expect(state).toEqual({
+                headers: [
+                    {
+                        label: {
+                            text: 'Column 1',
+                            disabled: false,
+                        },
+                        icon: {
+                            disabled: false,
+                            direction: 'asc',
+                        },
+                        shrink: false,
+                    },
+                    {
+                        label: {
+                            text: 'Column 2',
+                            disabled: false,
+                        },
+                        icon: {
+                            disabled: false,
+                            direction: 'asc',
+                        },
+                        shrink: false,
+                    },
+                    {
+                        label: {
+                            text: 'Column 3',
+                            disabled: false,
+                        },
+                        icon: {
+                            disabled: false,
+                            direction: 'asc',
+                        },
+                        shrink: false,
+                    },
+                    {
+                        label: {
+                            text: 'Column 4',
+                            disabled: false,
+                        },
+                        icon: {
+                            disabled: false,
+                            direction: 'desc',
+                        },
+                        shrink: false,
+                    },
+                ],
+                rows: [],
+            });
         });
     });
 
@@ -228,79 +279,6 @@ describe('TableComponent.', () => {
             ]);
             fixture.detectChanges();
 
-            const state = await harness.getState();
-            console.log('STATE', JSON.stringify(state, null, 4));
-            expect(state).toEqual({
-                headers: [
-                    {
-                        label: { text: 'Column 1', disabled: false },
-                        icon: { disabled: false, direction: 'asc' },
-                        shrink: false,
-                    },
-                    {
-                        label: { text: 'Column 2', disabled: false },
-                        icon: { disabled: false, direction: 'asc' },
-                        shrink: false,
-                    },
-                    {
-                        label: { text: 'Column 3', disabled: false },
-                        icon: { disabled: false, direction: 'asc' },
-                        shrink: false,
-                    },
-                    {
-                        label: { text: 'Column 4', disabled: false },
-                        icon: { disabled: false, direction: 'desc' },
-                        shrink: false,
-                    },
-                ],
-                rows: [
-                    [
-                        {
-                            icon: { disabled: true },
-                            label: { text: 'Column 1a', disabled: true },
-                            shrink: false,
-                        },
-                        {
-                            icon: { disabled: true },
-                            label: { text: 'Column 2a', disabled: true },
-                            shrink: false,
-                        },
-                        {
-                            icon: { disabled: false },
-                            label: { text: 'Column 3a', disabled: false },
-                            shrink: false,
-                        },
-                        {
-                            icon: { disabled: false },
-                            label: { text: 'Column 4a', disabled: false },
-                            shrink: false,
-                        },
-                    ],
-                    [
-                        {
-                            icon: { disabled: false },
-                            label: { text: 'Column 1b', disabled: false },
-                            shrink: false,
-                        },
-                        {
-                            icon: { disabled: false },
-                            label: { text: 'Column 2b', disabled: false },
-                            shrink: false,
-                        },
-                        {
-                            icon: { disabled: true },
-                            label: { text: 'Column 3b', disabled: true },
-                            shrink: false,
-                        },
-                        {
-                            icon: { disabled: true },
-                            label: { text: 'Column 4b', disabled: true },
-                            shrink: false,
-                        },
-                    ],
-                ],
-            });
-
             _testTableData(
                 fixture,
                 [
@@ -377,6 +355,78 @@ describe('TableComponent.', () => {
                 ],
                 false,
             );
+
+            const state = await harness.getState();
+            expect(state).toEqual({
+                headers: [
+                    {
+                        label: { text: 'Column 1', disabled: false },
+                        icon: { disabled: false, direction: 'asc' },
+                        shrink: false,
+                    },
+                    {
+                        label: { text: 'Column 2', disabled: false },
+                        icon: { disabled: false, direction: 'asc' },
+                        shrink: false,
+                    },
+                    {
+                        label: { text: 'Column 3', disabled: false },
+                        icon: { disabled: false, direction: 'asc' },
+                        shrink: false,
+                    },
+                    {
+                        label: { text: 'Column 4', disabled: false },
+                        icon: { disabled: false, direction: 'desc' },
+                        shrink: false,
+                    },
+                ],
+                rows: [
+                    [
+                        {
+                            icon: { loading: false, disabled: true },
+                            label: { text: 'Column 1a', disabled: true },
+                            shrink: false,
+                        },
+                        {
+                            icon: { loading: false, disabled: true },
+                            label: { text: 'Column 2a', disabled: true },
+                            shrink: false,
+                        },
+                        {
+                            icon: { loading: false, disabled: false },
+                            label: { text: 'Column 3a', disabled: false },
+                            shrink: false,
+                        },
+                        {
+                            icon: { loading: false, disabled: false },
+                            label: { text: 'Column 4a', disabled: false },
+                            shrink: false,
+                        },
+                    ],
+                    [
+                        {
+                            icon: { loading: false, disabled: false },
+                            label: { text: 'Column 1b', disabled: false },
+                            shrink: false,
+                        },
+                        {
+                            icon: { loading: false, disabled: false },
+                            label: { text: 'Column 2b', disabled: false },
+                            shrink: false,
+                        },
+                        {
+                            icon: { loading: false, disabled: true },
+                            label: { text: 'Column 3b', disabled: true },
+                            shrink: false,
+                        },
+                        {
+                            icon: { loading: false, disabled: true },
+                            label: { text: 'Column 4b', disabled: true },
+                            shrink: false,
+                        },
+                    ],
+                ],
+            });
         });
 
         it('should render not loading table rows when loading = false', async () => {
@@ -558,9 +608,81 @@ describe('TableComponent.', () => {
                 ],
                 false,
             );
+
+            const state = await harness.getState();
+            expect(state).toEqual({
+                headers: [
+                    {
+                        label: { text: 'Column 1', disabled: false },
+                        icon: { disabled: false, direction: 'asc' },
+                        shrink: false,
+                    },
+                    {
+                        label: { text: 'Column 2', disabled: false },
+                        icon: { disabled: false, direction: 'asc' },
+                        shrink: false,
+                    },
+                    {
+                        label: { text: 'Column 3', disabled: false },
+                        icon: { disabled: false, direction: 'asc' },
+                        shrink: false,
+                    },
+                    {
+                        label: { text: 'Column 4', disabled: false },
+                        icon: { disabled: false, direction: 'desc' },
+                        shrink: false,
+                    },
+                ],
+                rows: [
+                    [
+                        {
+                            icon: { loading: false, disabled: true },
+                            label: { text: 'Column 1a', disabled: true },
+                            shrink: false,
+                        },
+                        {
+                            icon: { loading: false, disabled: true },
+                            label: { text: 'Column 2a', disabled: true },
+                            shrink: false,
+                        },
+                        {
+                            icon: { loading: false, disabled: false },
+                            label: { text: 'Column 3a', disabled: false },
+                            shrink: false,
+                        },
+                        {
+                            icon: { loading: false, disabled: false },
+                            label: { text: 'Column 4a', disabled: false },
+                            shrink: false,
+                        },
+                    ],
+                    [
+                        {
+                            icon: { loading: false, disabled: false },
+                            label: { text: 'Column 1b', disabled: false },
+                            shrink: false,
+                        },
+                        {
+                            icon: { loading: false, disabled: false },
+                            label: { text: 'Column 2b', disabled: false },
+                            shrink: false,
+                        },
+                        {
+                            icon: { loading: false, disabled: true },
+                            label: { text: 'Column 3b', disabled: true },
+                            shrink: false,
+                        },
+                        {
+                            icon: { loading: false, disabled: true },
+                            label: { text: 'Column 4b', disabled: true },
+                            shrink: false,
+                        },
+                    ],
+                ],
+            });
         });
 
-        it('should render loading table rows while loading', () => {
+        it('should render loading table rows while loading', async () => {
             tableComponent.columns.set([
                 new Column({
                     id: 'col1',
@@ -739,6 +861,150 @@ describe('TableComponent.', () => {
                 ],
                 true,
             );
+
+            const state = await harness.getState();
+            expect(state).toEqual({
+                headers: [
+                    {
+                        label: {
+                            text: 'Column 1',
+                            disabled: false,
+                        },
+                        icon: {
+                            disabled: false,
+                            direction: 'asc',
+                        },
+                        shrink: false,
+                    },
+                    {
+                        label: {
+                            text: 'Column 2',
+                            disabled: false,
+                        },
+                        icon: {
+                            disabled: false,
+                            direction: 'asc',
+                        },
+                        shrink: false,
+                    },
+                    {
+                        label: {
+                            text: 'Column 3',
+                            disabled: false,
+                        },
+                        icon: {
+                            disabled: false,
+                            direction: 'asc',
+                        },
+                        shrink: false,
+                    },
+                    {
+                        label: {
+                            text: 'Column 4',
+                            disabled: false,
+                        },
+                        icon: {
+                            disabled: false,
+                            direction: 'desc',
+                        },
+                        shrink: false,
+                    },
+                ],
+                rows: [
+                    [
+                        {
+                            icon: {
+                                loading: true,
+                                disabled: true,
+                            },
+                            label: {
+                                text: '',
+                                disabled: true,
+                            },
+                            shrink: false,
+                        },
+                        {
+                            icon: {
+                                loading: true,
+                                disabled: true,
+                            },
+                            label: {
+                                text: '',
+                                disabled: true,
+                            },
+                            shrink: false,
+                        },
+                        {
+                            icon: {
+                                loading: true,
+                                disabled: true,
+                            },
+                            label: {
+                                text: '',
+                                disabled: true,
+                            },
+                            shrink: false,
+                        },
+                        {
+                            icon: {
+                                loading: true,
+                                disabled: true,
+                            },
+                            label: {
+                                text: '',
+                                disabled: true,
+                            },
+                            shrink: false,
+                        },
+                    ],
+                    [
+                        {
+                            icon: {
+                                loading: true,
+                                disabled: true,
+                            },
+                            label: {
+                                text: '',
+                                disabled: true,
+                            },
+                            shrink: false,
+                        },
+                        {
+                            icon: {
+                                loading: true,
+                                disabled: true,
+                            },
+                            label: {
+                                text: '',
+                                disabled: true,
+                            },
+                            shrink: false,
+                        },
+                        {
+                            icon: {
+                                loading: true,
+                                disabled: true,
+                            },
+                            label: {
+                                text: '',
+                                disabled: true,
+                            },
+                            shrink: false,
+                        },
+                        {
+                            icon: {
+                                loading: true,
+                                disabled: true,
+                            },
+                            label: {
+                                text: '',
+                                disabled: true,
+                            },
+                            shrink: false,
+                        },
+                    ],
+                ],
+            });
         });
 
         it('should fire row click event', () => {

@@ -29,11 +29,8 @@ export class TBodyTrHarness extends ComponentHarness {
     async getState() {
         const tds = await this.tds();
         const headers: {
-            icon?: {
-                loading: boolean;
-                disabled: boolean;
-            };
-            label?: { text: string; disabled: boolean };
+            icon?: { name: string; loading: boolean; disabled: boolean };
+            label?: { text: string; loading: boolean; disabled: boolean };
             shrink: boolean;
         }[] = [];
         for (const th of tds) {

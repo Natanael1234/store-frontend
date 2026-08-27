@@ -28,11 +28,8 @@ export class TBodyHarness extends ComponentHarness {
 
     async getState(): Promise<
         {
-            icon?: {
-                direction: 'asc' | 'desc' | 'hidden' | undefined;
-                disabled: boolean;
-            };
-            label?: { text: string; disabled: boolean };
+            icon?: { name: string; loading: boolean; disabled: boolean };
+            label?: { text: string; loading: boolean; disabled: boolean };
             shrink: boolean;
         }[][]
     > {
