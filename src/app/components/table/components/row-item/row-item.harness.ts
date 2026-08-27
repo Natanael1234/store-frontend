@@ -27,8 +27,9 @@ export class RowItemHarness extends ComponentHarness {
         const label = await this.labelElement();
         if (!label) return undefined;
         const disabled = await label.hasClass('disabled');
+        const loading = await label.hasClass('skeleton-loader');
         const text = await label.text();
-        return { text, disabled };
+        return { text, loading, disabled };
     }
 
     async getIcon() {
@@ -36,7 +37,8 @@ export class RowItemHarness extends ComponentHarness {
         if (!icon) return undefined;
         const disabled = await icon.hasClass('disabled');
         const loading = await icon.hasClass('skeleton-loader');
-        return { loading, disabled };
+        const name = await icon.getProperty('innerText');
+        return { name, loading, disabled };
     }
 
     async triggerLeftClick() {
@@ -242,18 +244,12 @@ export class RowItemHarness extends ComponentHarness {
 
     async getState(): Promise<{
         errors?: string[];
-
-        icon?: {
-            loading: boolean;
-            disabled: boolean;
-        };
-        label?: { text: string; disabled: boolean };
+        icon?: { name: string; loading: boolean; disabled: boolean };
+        label?: { text: string; loading: boolean; disabled: boolean };
     }> {
-        const container = await this.containerElement();
-
         const errors = await this.getErrors();
-        const label = await this.getLabel();
         const icon = await this.getIcon();
+        const label = await this.getLabel();
         const result: any = {};
         if (errors.length) {
             result.errors = errors;
