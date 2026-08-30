@@ -16,7 +16,7 @@ describe('IconRowItemComponent.', () => {
     let overlayElement: HTMLElement;
     let harness: RowItemHarness;
 
-    function getcomponentData() {
+    function getComponentInputData() {
         return {
             label: component.label(),
             icon: component.icon(),
@@ -54,7 +54,7 @@ describe('IconRowItemComponent.', () => {
 
         expect(await harness.getState()).toEqual({});
 
-        expect(getcomponentData()).toEqual({
+        expect(getComponentInputData()).toEqual({
             label: undefined,
             icon: undefined,
             disabled: false,
@@ -76,7 +76,7 @@ describe('IconRowItemComponent.', () => {
                 icon: { name: 'visibility', loading: false, disabled: false },
                 label: { text: 'Test label', loading: false, disabled: false },
             });
-            expect(getcomponentData()).toEqual({
+            expect(getComponentInputData()).toEqual({
                 label: 'Test label',
                 icon: 'visibility',
                 disabled: false,
@@ -106,7 +106,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: true,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: true,
@@ -135,7 +135,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: false,
@@ -164,7 +164,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: undefined,
@@ -195,7 +195,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: false,
@@ -219,7 +219,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: undefined,
                     disabled: false,
@@ -250,7 +250,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: false,
@@ -274,7 +274,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: undefined,
                     icon: 'visibility',
                     disabled: false,
@@ -305,7 +305,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: true,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: true,
@@ -334,7 +334,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: false,
@@ -363,7 +363,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: undefined,
@@ -394,7 +394,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: false,
@@ -424,7 +424,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: false,
@@ -458,7 +458,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: false,
@@ -482,7 +482,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: undefined,
                     disabled: false,
@@ -513,7 +513,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: true,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: false,
@@ -542,7 +542,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: false,
@@ -571,7 +571,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: false,
@@ -602,7 +602,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: true,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: true,
@@ -631,7 +631,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: false,
@@ -660,7 +660,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: false,
@@ -691,7 +691,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: true,
@@ -724,7 +724,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: false,
@@ -748,7 +748,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: undefined,
                     icon: 'visibility',
                     disabled: false,
@@ -779,7 +779,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: true,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: false,
@@ -808,7 +808,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: false,
@@ -837,7 +837,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: false,
@@ -868,7 +868,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: true,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: true,
@@ -897,7 +897,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: false,
@@ -926,7 +926,7 @@ describe('IconRowItemComponent.', () => {
                         disabled: false,
                     },
                 });
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: undefined,
@@ -956,7 +956,7 @@ describe('IconRowItemComponent.', () => {
                     },
                 });
 
-                expect(getcomponentData()).toEqual({
+                expect(getComponentInputData()).toEqual({
                     label: 'Test label',
                     icon: 'visibility',
                     disabled: true,

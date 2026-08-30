@@ -121,7 +121,8 @@ import _ from 'lodash';
                 mat-row
                 class="mat-row"
                 *matRowDef="let row; columns: displayedColumns"
-                (click)="fireRowClickEvent($event, row.id)"></tr>
+                (click)="fireRowClickEvent($event, row.id)"
+                (pointerdown)="fireRowClickEvent($event, row.id)"></tr>
         </table>
     `,
 })

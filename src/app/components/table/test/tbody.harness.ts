@@ -41,4 +41,34 @@ export class TBodyHarness extends ComponentHarness {
         }
         return state;
     }
+
+    async triggerLeftClick(row: number, column?: number | undefined) {
+        const trs = await this.trs();
+        const tr = trs[row];
+        await tr.triggerLeftClick(column);
+    }
+
+    async triggerMiddleClick(row: number, column?: number | undefined) {
+        const trs = await this.trs();
+        const tr = trs[row];
+        await tr.triggerMiddleClick(column);
+    }
+
+    async triggerRightClick(row: number, column?: number | undefined) {
+        const trs = await this.trs();
+        const tr = trs[row];
+        await tr.triggerRightClick(column);
+    }
+
+    async triggerTouch(row: number, column?: number | undefined) {
+        const trs = await this.trs();
+        const tr = trs[row];
+        await tr.triggerTouch(column);
+    }
+
+    async triggerPenClick(row: number, column?: number | undefined) {
+        const trs = await this.trs();
+        const tr = trs[row];
+        await tr.triggerPenClick(column);
+    }
 }

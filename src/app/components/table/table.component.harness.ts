@@ -9,6 +9,36 @@ export class TableComponentHarness extends ComponentHarness {
     private readonly hostChildren = this.locatorForAll(':scope > *');
     private readonly tableChildren = this.locatorForAll('table > *');
 
+    async triggerHeaderLeftClick(column?: number) {
+        const table = await this.table();
+        await table.triggerHeaderLeftClick(column);
+    }
+
+    async triggerRowLeftClick(row: number, column?: number) {
+        const table = await this.table();
+        await table.triggerRowLeftClick(row, column);
+    }
+
+    async triggerRowMiddleClick(row: number, column?: number | undefined) {
+        const table = await this.table();
+        await table.triggerRowMiddleClick(row, column);
+    }
+
+    async triggerRowRightClick(row: number, column?: number | undefined) {
+        const table = await this.table();
+        await table.triggerRowRightClick(row, column);
+    }
+
+    async triggerRowTouch(row: number, column?: number | undefined) {
+        const table = await this.table();
+        await table.triggerRowTouch(row, column);
+    }
+
+    async triggerRowPenClick(row: number, column?: number | undefined) {
+        const table = await this.table();
+        await table.triggerRowPenClick(row, column);
+    }
+
     async getHostChildTagNames(): Promise<string[]> {
         const childElements = await this.hostChildren();
         const tagNames: string[] = [];

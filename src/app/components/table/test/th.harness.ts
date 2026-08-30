@@ -1,5 +1,7 @@
 import { ComponentHarness } from '@angular/cdk/testing';
 import { HeaderItemHarness } from '@components/table/components/header-item/header-item.harness';
+import { MouseButton } from '@enums/mouse-button/mouse-button.enum';
+import { PointerType } from '@enums/pointer-type/pointer-type.enum';
 
 export class ThHarness extends ComponentHarness {
     static hostSelector = 'th';
@@ -7,6 +9,46 @@ export class ThHarness extends ComponentHarness {
     private readonly hostChildren = this.locatorForAll(':scope > *');
     private readonly headerItemElement = this.locatorFor('app-header-item');
     private readonly headerItem = this.locatorFor(HeaderItemHarness);
+
+    async triggerLeftClick() {
+        const td = await this.host();
+        await td.dispatchEvent('click', {
+            pointerType: PointerType.mouse,
+            button: MouseButton.left,
+        });
+    }
+
+    async triggerMiddleClick() {
+        const host = await this.host();
+        await host.dispatchEvent('click', {
+            pointerType: PointerType.mouse,
+            button: MouseButton.middle,
+        });
+    }
+
+    async triggerRightClick() {
+        const host = await this.host();
+        await host.dispatchEvent('click', {
+            pointerType: PointerType.mouse,
+            button: MouseButton.right,
+        });
+    }
+
+    async triggerTouch() {
+        const host = await this.host();
+        await host.dispatchEvent('pointerdown', {
+            pointerType: PointerType.touch,
+            button: MouseButton.left,
+        });
+    }
+
+    async triggerPenClick(): Promise<void> {
+        const host = await this.host();
+        await host.dispatchEvent('click', {
+            pointerType: PointerType.pen,
+            button: MouseButton.left,
+        } as any);
+    }
 
     async getErrors() {
         const errors: string[] = [];

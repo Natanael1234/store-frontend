@@ -66,6 +66,13 @@ export class RowItemHarness extends ComponentHarness {
             button: MouseButton.right,
         });
     }
+    async triggerTouch() {
+        const container = await this.getContainer();
+        await container.dispatchEvent('pointerdown', {
+            pointerType: 'touch',
+            button: 0,
+        });
+    }
 
     async getHostChildTagNames(): Promise<string[]> {
         const childElements = await this.hostChildElements();

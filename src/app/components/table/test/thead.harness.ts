@@ -7,6 +7,31 @@ export class THeadHarness extends ComponentHarness {
     private readonly tr = this.locatorFor(THeadTRHarness);
     private readonly hostChildren = this.locatorForAll(':scope > *');
 
+    async triggerLeftClick(column?: number | undefined) {
+        const tr = await this.tr();
+        await tr.triggerLeftClick(column);
+    }
+
+    async triggerMiddleClick(column?: number | undefined) {
+        const tr = await this.tr();
+        await tr.triggerMiddleClick(column);
+    }
+
+    async triggerRightClick(column?: number | undefined) {
+        const tr = await this.tr();
+        await tr.triggerRightClick(column);
+    }
+
+    async triggerTouch(column?: number | undefined) {
+        const tr = await this.tr();
+        await tr.triggerTouch(column);
+    }
+
+    async triggerPenClick(column?: number | undefined) {
+        const tr = await this.tr();
+        await tr.triggerPenClick(column);
+    }
+
     async getErrors() {
         const errors: string[] = [];
         const children = await this.hostChildren();

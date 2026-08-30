@@ -67,7 +67,7 @@ export class HeaderItemHarness extends ComponentHarness {
         const container = await this.getContainer();
         await container.dispatchEvent('pointerdown', {
             pointerType: 'touch',
-            button: 0,
+            button: MouseButton.left,
         });
     }
 
@@ -75,18 +75,19 @@ export class HeaderItemHarness extends ComponentHarness {
     async triggerPenClick(): Promise<void> {
         const container = await this.getContainer();
 
+        // TODO: remover?
         // Cria o PointerEvent de 'click' com pointerType 'pen'
-        const penEvent = new PointerEvent('click', {
-            bubbles: true,
-            cancelable: true,
-            pointerType: 'pen',
-            button: 0,
-        });
+        // const penEvent = new PointerEvent('click', {
+        //     bubbles: true,
+        //     cancelable: true,
+        //     pointerType: 'pen',
+        //     button: MouseButton.left,
+        // });
 
         // Dispara no elemento
         await container.dispatchEvent('click', {
             pointerType: 'pen',
-            button: 0,
+            button: MouseButton.left,
         } as any);
     }
 

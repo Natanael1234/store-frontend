@@ -11,6 +11,56 @@ export class TableHarness extends ComponentHarness {
     private readonly tbodies = this.locatorForAll(TBodyHarness);
     private readonly tfoots = this.locatorForAll(TFootHarness);
 
+    async triggerHeaderLeftClick(column: number | undefined) {
+        const headers = await this.theads();
+        await headers[0].triggerLeftClick(column);
+    }
+
+    async triggerHeaderMiddleClick(column: number | undefined) {
+        const headers = await this.theads();
+        await headers[0].triggerMiddleClick(column);
+    }
+
+    async triggerHeaderRightClick(column?: number | undefined) {
+        const headers = await this.theads();
+        await headers[0].triggerRightClick(column);
+    }
+
+    async triggerHeaderTouch(column?: number | undefined) {
+        const headers = await this.theads();
+        await headers[0].triggerTouch(column);
+    }
+
+    async triggerHeaderPenClick(column?: number | undefined) {
+        const headers = await this.theads();
+        await headers[0].triggerPenClick(column);
+    }
+
+    async triggerRowLeftClick(row: number, column: number | undefined) {
+        const body = await this.tbodies();
+        await body[0].triggerLeftClick(row, column);
+    }
+
+    async triggerRowMiddleClick(row: number, column: number | undefined) {
+        const body = await this.tbodies();
+        await body[0].triggerMiddleClick(row, column);
+    }
+
+    async triggerRowRightClick(row: number, column?: number | undefined) {
+        const body = await this.tbodies();
+        await body[0].triggerRightClick(row, column);
+    }
+
+    async triggerRowTouch(row: number, column?: number | undefined) {
+        const body = await this.tbodies();
+        await body[0].triggerTouch(row, column);
+    }
+
+    async triggerRowPenClick(row: number, column?: number | undefined) {
+        const body = await this.tbodies();
+        await body[0].triggerPenClick(row, column);
+    }
+
     async getErrors() {
         const errors: string[] = [];
         const hostChildren = await this.hostChildren();
