@@ -66,7 +66,6 @@ export class TdHarness extends ComponentHarness {
 
     async triggerPenClick(): Promise<void> {
         const host = await this.host();
-        // Dispara no elemento
         await host.dispatchEvent('click', {
             pointerType: PointerType.pen,
             button: MouseButton.left,
