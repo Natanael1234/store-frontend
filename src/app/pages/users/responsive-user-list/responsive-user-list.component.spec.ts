@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { ListComponent } from '@components/list/list.component';
 import { MockListComponent } from '@components/list/test/mock/list.component.mock';
@@ -16,16 +17,51 @@ import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
 import { SortDirection } from '@enums/direction/direction.enum';
 import { Icon } from '@enums/icons/icons.enum';
 import { ResponsiveUserListComponent } from '@pages/users/responsive-user-list/responsive-user-list.component';
-import { _getResponsiveUserListComponentList } from '@pages/users/responsive-user-list/test/getters/get-responsive-user-list-component-list.test';
-import { _getResponsiveUserListComponentTable } from '@pages/users/responsive-user-list/test/getters/get-responsive-user-list-component-table.test';
-import { _testResponsiveUsersListComponentList } from '@pages/users/responsive-user-list/test/tests/responsive-user-list-component-list.test';
-import { _testResponsiveUsersListComponentTable } from '@pages/users/responsive-user-list/test/tests/responsive-user-list-component-table.test';
 import { UserColumnId } from '@pages/users/types/user-column-id/user-column-id.enum';
 import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 
 describe('ResponsiveUserListComponent.', () => {
     let component: ResponsiveUserListComponent;
     let fixture: ComponentFixture<ResponsiveUserListComponent>;
+
+    function getList() {
+        const debugElements = fixture.debugElement.queryAll(
+            By.directive(ListComponent),
+        );
+        if (!debugElements.length) {
+            return null;
+        }
+        return debugElements[0].componentInstance as unknown as ListComponent;
+    }
+
+    function getTable() {
+        const debugElements = fixture.debugElement.queryAll(
+            By.directive(TableComponent),
+        );
+        if (!debugElements.length) {
+            return null;
+        }
+        return debugElements[0].componentInstance as unknown as TableComponent;
+    }
+
+    function getListData() {
+        const list = getList();
+        if (!list) return null;
+        return {
+            data: list.data(),
+            loading: list.loading(),
+        };
+    }
+
+    function getTableData() {
+        const table = getTable();
+        if (!table) return null;
+        return {
+            columns: table.columns(),
+            data: table.data(),
+            loading: table.loading(),
+        };
+    }
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -61,30 +97,24 @@ describe('ResponsiveUserListComponent.', () => {
             component.mobile.set(true);
             fixture.detectChanges();
 
-            _testResponsiveUsersListComponentList(fixture, {
-                loading: false,
-                data: [],
-            });
-            _testResponsiveUsersListComponentTable(fixture, false);
+            expect(getListData()).toEqual({ loading: false, data: [] });
+            expect(getTableData()).toBeNull();
         });
 
         it('should show list in mobile mode when mobile is true', () => {
             component.mobile.set(true);
             fixture.detectChanges();
 
-            _testResponsiveUsersListComponentList(fixture, {
-                loading: false,
-                data: [],
-            });
-            _testResponsiveUsersListComponentTable(fixture, false);
+            expect(getListData()).toEqual({ loading: false, data: [] });
+            expect(getTableData()).toBeNull();
         });
 
         it('should show table in non mobile mode when mobile is false', () => {
             component.mobile.set(false);
             fixture.detectChanges();
 
-            _testResponsiveUsersListComponentList(fixture, false);
-            _testResponsiveUsersListComponentTable(fixture, {
+            expect(getList()).toBeNull();
+            expect(getTableData()).toEqual({
                 loading: false,
                 columns: [
                     new Column({
@@ -133,40 +163,35 @@ describe('ResponsiveUserListComponent.', () => {
         it('should not be loading by default in mobile mode', () => {
             component.mobile.set(true);
             fixture.detectChanges();
-            _testResponsiveUsersListComponentList(fixture, {
-                loading: false,
-                data: [],
-            });
-            _testResponsiveUsersListComponentTable(fixture, false);
+
+            expect(getListData()).toEqual({ loading: false, data: [] });
+            expect(getTableData()).toBeNull();
         });
 
         it('should set not loading in mobile mode when loading is false', () => {
             component.loading.set(false);
             component.mobile.set(true);
             fixture.detectChanges();
-            _testResponsiveUsersListComponentList(fixture, {
-                loading: false,
-                data: [],
-            });
-            _testResponsiveUsersListComponentTable(fixture, false);
+
+            expect(getListData()).toEqual({ loading: false, data: [] });
+            expect(getTableData()).toBeNull();
         });
 
         it('should set loading in mobile mode when loading is true', () => {
             component.loading.set(true);
             component.mobile.set(true);
             fixture.detectChanges();
-            _testResponsiveUsersListComponentList(fixture, {
-                loading: true,
-                data: [],
-            });
-            _testResponsiveUsersListComponentTable(fixture, false);
+
+            expect(getListData()).toEqual({ loading: true, data: [] });
+            expect(getTableData()).toBeNull();
         });
 
         it('should be not loading by default in non mobile mode by default', () => {
             component.mobile.set(false);
             fixture.detectChanges();
-            _testResponsiveUsersListComponentList(fixture, false);
-            _testResponsiveUsersListComponentTable(fixture, {
+
+            expect(getListData()).toBeNull();
+            expect(getTableData()).toEqual({
                 loading: false,
                 columns: [
                     new Column({
@@ -215,8 +240,8 @@ describe('ResponsiveUserListComponent.', () => {
             component.loading.set(false);
             fixture.detectChanges();
 
-            _testResponsiveUsersListComponentList(fixture, false);
-            _testResponsiveUsersListComponentTable(fixture, {
+            expect(getListData()).toBeNull();
+            expect(getTableData()).toEqual({
                 loading: false,
                 columns: [
                     new Column({
@@ -265,8 +290,8 @@ describe('ResponsiveUserListComponent.', () => {
             component.loading.set(true);
             fixture.detectChanges();
 
-            _testResponsiveUsersListComponentList(fixture, false);
-            _testResponsiveUsersListComponentTable(fixture, {
+            expect(getListData()).toBeNull();
+            expect(getTableData()).toEqual({
                 loading: true,
                 columns: [
                     new Column({
@@ -331,7 +356,7 @@ describe('ResponsiveUserListComponent.', () => {
             ]);
             fixture.detectChanges();
 
-            _testResponsiveUsersListComponentList(fixture, {
+            expect(getListData()).toEqual({
                 loading: false,
                 data: [
                     new ListItem({
@@ -390,7 +415,7 @@ describe('ResponsiveUserListComponent.', () => {
                     }),
                 ],
             });
-            _testResponsiveUsersListComponentTable(fixture, false);
+            expect(getTableData()).toBeNull();
         });
 
         it('should pass data to the table', () => {
@@ -413,8 +438,8 @@ describe('ResponsiveUserListComponent.', () => {
             ]);
             fixture.detectChanges();
 
-            _testResponsiveUsersListComponentList(fixture, false);
-            _testResponsiveUsersListComponentTable(fixture, {
+            expect(getListData()).toBeNull();
+            expect(getTableData()).toEqual({
                 loading: false,
                 columns: [
                     new Column({
@@ -539,8 +564,9 @@ describe('ResponsiveUserListComponent.', () => {
             ]);
             component.updateSort(UserOrder.active_asc);
             fixture.detectChanges();
-            _testResponsiveUsersListComponentList(fixture, false);
-            _testResponsiveUsersListComponentTable(fixture, {
+
+            expect(getListData()).toBeNull();
+            expect(getTableData()).toEqual({
                 loading: false,
                 columns: [
                     new Column({
@@ -664,8 +690,9 @@ describe('ResponsiveUserListComponent.', () => {
             fixture.detectChanges();
             component.updateSort([UserOrder.active_asc, UserOrder.name_desc]);
             fixture.detectChanges();
-            _testResponsiveUsersListComponentList(fixture, false);
-            _testResponsiveUsersListComponentTable(fixture, {
+
+            expect(getListData()).toBeNull();
+            expect(getTableData()).toEqual({
                 loading: false,
                 columns: [
                     new Column({
@@ -789,8 +816,9 @@ describe('ResponsiveUserListComponent.', () => {
             fixture.detectChanges();
             component.updateSort(UserColumnId.email);
             fixture.detectChanges();
-            _testResponsiveUsersListComponentList(fixture, false);
-            _testResponsiveUsersListComponentTable(fixture, {
+
+            expect(getListData()).toBeNull();
+            expect(getTableData()).toEqual({
                 loading: false,
                 columns: [
                     new Column({
@@ -914,8 +942,9 @@ describe('ResponsiveUserListComponent.', () => {
             fixture.detectChanges();
             component.updateSort(undefined);
             fixture.detectChanges();
-            _testResponsiveUsersListComponentList(fixture, false);
-            _testResponsiveUsersListComponentTable(fixture, {
+
+            expect(getListData()).toBeNull();
+            expect(getTableData()).toEqual({
                 loading: false,
                 columns: [
                     new Column({
@@ -1025,8 +1054,8 @@ describe('ResponsiveUserListComponent.', () => {
                 component.mobile.set(false);
                 fixture.detectChanges();
 
-                _testResponsiveUsersListComponentList(fixture, false);
-                _testResponsiveUsersListComponentTable(fixture, {
+                expect(getListData()).toBeNull();
+                expect(getTableData()).toEqual({
                     loading: false,
                     columns: [
                         new Column({
@@ -1075,8 +1104,8 @@ describe('ResponsiveUserListComponent.', () => {
                 component.active.set(ActiveFilter.active);
                 fixture.detectChanges();
 
-                _testResponsiveUsersListComponentList(fixture, false);
-                _testResponsiveUsersListComponentTable(fixture, {
+                expect(getListData()).toBeNull();
+                expect(getTableData()).toEqual({
                     loading: false,
                     columns: [
                         new Column({
@@ -1125,8 +1154,8 @@ describe('ResponsiveUserListComponent.', () => {
                 component.active.set(ActiveFilter.inactive);
                 fixture.detectChanges();
 
-                _testResponsiveUsersListComponentList(fixture, false);
-                _testResponsiveUsersListComponentTable(fixture, {
+                expect(getListData()).toBeNull();
+                expect(getTableData()).toEqual({
                     loading: false,
                     columns: [
                         new Column({
@@ -1175,8 +1204,8 @@ describe('ResponsiveUserListComponent.', () => {
                 component.active.set(ActiveFilter.all);
                 fixture.detectChanges();
 
-                _testResponsiveUsersListComponentList(fixture, false);
-                _testResponsiveUsersListComponentTable(fixture, {
+                expect(getListData()).toBeNull();
+                expect(getTableData()).toEqual({
                     loading: false,
                     columns: [
                         new Column({
@@ -1226,8 +1255,8 @@ describe('ResponsiveUserListComponent.', () => {
                 component.mobile.set(false);
                 fixture.detectChanges();
 
-                _testResponsiveUsersListComponentList(fixture, false);
-                _testResponsiveUsersListComponentTable(fixture, {
+                expect(getListData()).toBeNull();
+                expect(getTableData()).toEqual({
                     loading: false,
                     columns: [
                         new Column({
@@ -1276,8 +1305,8 @@ describe('ResponsiveUserListComponent.', () => {
                 component.deleted.set(DeletedFilter.deleted);
                 fixture.detectChanges();
 
-                _testResponsiveUsersListComponentList(fixture, false);
-                _testResponsiveUsersListComponentTable(fixture, {
+                expect(getListData()).toBeNull();
+                expect(getTableData()).toEqual({
                     loading: false,
                     columns: [
                         new Column({
@@ -1326,8 +1355,8 @@ describe('ResponsiveUserListComponent.', () => {
                 component.deleted.set(DeletedFilter.not_deleted);
                 fixture.detectChanges();
 
-                _testResponsiveUsersListComponentList(fixture, false);
-                _testResponsiveUsersListComponentTable(fixture, {
+                expect(getListData()).toBeNull();
+                expect(getTableData()).toEqual({
                     loading: false,
                     columns: [
                         new Column({
@@ -1376,8 +1405,8 @@ describe('ResponsiveUserListComponent.', () => {
                 component.deleted.set(DeletedFilter.all);
                 fixture.detectChanges();
 
-                _testResponsiveUsersListComponentList(fixture, false);
-                _testResponsiveUsersListComponentTable(fixture, {
+                expect(getListData()).toBeNull();
+                expect(getTableData()).toEqual({
                     loading: false,
                     columns: [
                         new Column({
@@ -1450,7 +1479,7 @@ describe('ResponsiveUserListComponent.', () => {
                 ]);
                 fixture.detectChanges();
 
-                const list = _getResponsiveUserListComponentList(fixture);
+                const list = getList()!;
                 list.itemClick.emit('891db31e-dfb5-42ed-b912-48b98463b004');
                 fixture.detectChanges();
                 expect(component.itemClick.emit)
@@ -1461,7 +1490,7 @@ describe('ResponsiveUserListComponent.', () => {
 
                 fixture.detectChanges();
 
-                _testResponsiveUsersListComponentList(fixture, {
+                expect(getListData()).toEqual({
                     loading: false,
                     data: [
                         new ListItem({
@@ -1520,7 +1549,7 @@ describe('ResponsiveUserListComponent.', () => {
                         }),
                     ],
                 });
-                _testResponsiveUsersListComponentTable(fixture, false);
+                expect(getTableData()).toBeNull();
             });
         });
 
@@ -1545,7 +1574,7 @@ describe('ResponsiveUserListComponent.', () => {
                 ]);
                 fixture.detectChanges();
 
-                const table = _getResponsiveUserListComponentTable(fixture);
+                const table = getTable()!;
                 table.headerClick.emit('name_asc');
                 fixture.detectChanges();
                 expect(component.headerClick.emit)
@@ -1554,8 +1583,8 @@ describe('ResponsiveUserListComponent.', () => {
 
                 fixture.detectChanges();
 
-                _testResponsiveUsersListComponentList(fixture, false);
-                _testResponsiveUsersListComponentTable(fixture, {
+                expect(getListData()).toBeNull();
+                expect(getTableData()).toEqual({
                     loading: false,
                     columns: [
                         new Column({
@@ -1678,7 +1707,7 @@ describe('ResponsiveUserListComponent.', () => {
                 ]);
                 fixture.detectChanges();
 
-                const table = _getResponsiveUserListComponentTable(fixture);
+                const table = getTable()!;
                 table.rowClick.emit(UserOrder.active_desc);
                 fixture.detectChanges();
                 expect(component.itemClick.emit)
@@ -1687,8 +1716,8 @@ describe('ResponsiveUserListComponent.', () => {
 
                 fixture.detectChanges();
 
-                _testResponsiveUsersListComponentList(fixture, false);
-                _testResponsiveUsersListComponentTable(fixture, {
+                expect(getListData()).toBeNull();
+                expect(getTableData()).toEqual({
                     loading: false,
                     columns: [
                         new Column({

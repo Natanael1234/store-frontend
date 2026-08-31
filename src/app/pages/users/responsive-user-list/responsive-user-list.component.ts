@@ -31,8 +31,22 @@ import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 @Component({
     selector: 'app-responsive-user-list',
     imports: [TableComponent, ListComponent, A11yModule],
-    templateUrl: './responsive-user-list.component.html',
-    styleUrl: './responsive-user-list.component.scss',
+    styles: [],
+    template: `
+        @if (mobile()) {
+            <app-list
+                [data]="listData()"
+                [loading]="!!loading()"
+                (itemClick)="fireRowClickEvent($event)"></app-list>
+        } @else {
+            <app-table
+                [columns]="columns()"
+                [data]="tableData()"
+                [loading]="loading()"
+                (headerClick)="fireHeaderClickEvent($event)"
+                (rowClick)="fireRowClickEvent($event)"></app-table>
+        }
+    `,
 })
 export class ResponsiveUserListComponent implements AfterViewInit {
     public mobile = model<boolean>(true);
