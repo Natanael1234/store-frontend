@@ -1,5 +1,6 @@
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { HttpErrorResponse } from '@angular/common/http';
+import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,20 +17,14 @@ import { AlertComponent } from '@components/alert/alert.component';
 import { MockAlertComponent } from '@components/alert/test/mock/alert.component.mock';
 import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
+import { Icon } from '@enums/icons/icons.enum';
 import { ResponsiveUserFiltersComponent } from '@pages/users/responsive-user-filters/responsive-user-filters.component';
 import { MockResponsiveUserFiltersComponent } from '@pages/users/responsive-user-filters/test/mock/responsive-users-filter.component.mock';
 import { ResponsiveUserListComponent } from '@pages/users/responsive-user-list/responsive-user-list.component';
 import { MockUserResponsiveListComponent } from '@pages/users/responsive-user-list/test/mocks/user-responsive-list.component.mock';
-import { _usersComponentPayloadsData } from '@pages/users/tests/data/payloads.data';
 import { _usersComponentResponsesData } from '@pages/users/tests/data/responses.data';
-import { _usersComponentRowsData } from '@pages/users/tests/data/rows.data';
-import { _usersComponentUsersData } from '@pages/users/tests/data/users.data';
-import { _testUserscomponentGetUsersCalls } from '@pages/users/tests/tests/get-users-calls.test';
-import { _testUsersComponentHeaderClickEvent } from '@pages/users/tests/tests/users-component-header-click.test';
-import { _testUsersComponentItemClickEvent } from '@pages/users/tests/tests/users-component-item-click-event.test';
-import { _testUsersComponentRefreshFilter } from '@pages/users/tests/tests/users-component-item-refresh-filter.test';
-import { _testUsersComponent } from '@pages/users/tests/tests/users-component.test';
 import { UsersComponent } from '@pages/users/users.component';
+import { FindUserRequestDTO } from '@services/user/dtos/find-user.request/find-user.request.dto';
 import { Role } from '@services/user/dtos/role/role.enum';
 import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 import { UserService } from '@services/user/user.service';
@@ -46,6 +41,148 @@ describe('UsersComponent.', () => {
     let listMock: ResponsiveUserListComponent;
     let filtersMock: ResponsiveUserFiltersComponent;
     let paginator: MatPaginator;
+
+    function getAlertTextContent() {
+        const alerts: DebugElement[] = fixture.debugElement.queryAll(
+            By.directive(AlertComponent),
+        );
+        if (alerts.length === 0) {
+            return null;
+        }
+        const text =
+            alerts[0].nativeElement.children[0]?.children[0]?.children[1]?.textContent.trim();
+        return text ?? null;
+    }
+
+    function getAlert() {
+        const debugElement = fixture.debugElement.query(
+            By.directive(AlertComponent),
+        );
+        if (!debugElement) {
+            return null;
+        }
+        return debugElement.componentInstance as AlertComponent;
+    }
+
+    function getFilters() {
+        return fixture.debugElement.query(
+            By.directive(ResponsiveUserFiltersComponent),
+        ).componentInstance as ResponsiveUserFiltersComponent;
+    }
+
+    function getList() {
+        return fixture.debugElement.query(
+            By.directive(ResponsiveUserListComponent),
+        ).componentInstance as ResponsiveUserListComponent;
+    }
+
+    function getPaginator() {
+        return fixture.debugElement.query(By.directive(MatPaginator))
+            .componentInstance as MatPaginator;
+    }
+
+    function getAlertData() {
+        const alert = getAlert();
+        if (!alert) return null;
+        const text = getAlertTextContent();
+        return {
+            text,
+            type: alert.type(),
+            icon: alert.icon(),
+            showCloseButton: alert.showCloseButton(),
+        };
+    }
+
+    function getFiltersData() {
+        const filters = getFilters();
+        return {
+            textQuery: filters.textQuery(),
+            orderBy: filters.orderBy(),
+            active: filters.active(),
+            deleted: filters.deleted(),
+            loading: filters.loading(),
+            mobile: filters.mobile(),
+        };
+    }
+
+    function getListData() {
+        const list = getList();
+        return {
+            users: list.users(),
+            active: list.active(),
+            deleted: list.deleted(),
+            loading: list.loading(),
+            mobile: list.mobile(),
+        };
+    }
+
+    function getPaginatorData() {
+        const paginator = getPaginator();
+        return {
+            pageIndex: paginator.pageIndex,
+            length: paginator.length,
+            pageSize: paginator.pageSize,
+            hidePageSize: paginator.hidePageSize,
+            pageSizeOptions: paginator.pageSizeOptions,
+            showFirstLastButtons: paginator.showFirstLastButtons,
+            disabled: paginator.disabled,
+        };
+    }
+
+    function getComponentData() {
+        return {
+            alert: getAlertData(),
+            filters: getFiltersData(),
+            list: getListData(),
+            paginator: getPaginatorData(),
+        };
+    }
+
+    function getUsersCallsData() {
+        const calls = userServiceSpy.getUsers.calls.allArgs();
+        const _calls: FindUserRequestDTO[][] = [];
+        for (let i = 0; i < calls.length; i++) {
+            const _call: any[] = [];
+            _calls.push(_call);
+            for (let j = 0; j < calls[i].length; j++) {
+                const arg = calls[i][j];
+                _call.push(arg);
+            }
+        }
+        return _calls;
+    }
+
+    function getFireHeaderClickCallsData() {
+        const list = fixture.debugElement.query(
+            By.directive(ResponsiveUserListComponent),
+        ).componentInstance;
+        const calls = list.headerClick.emit.calls.all();
+        const _calls: UserOrder[][][] = [];
+        for (let i = 0; i < calls.length; i++) {
+            const _call: any[] = [];
+            _calls.push(_call);
+            for (let j = 0; j < calls[i].args.length; j++) {
+                _call.push(calls[i].args[j]);
+            }
+        }
+        return _calls;
+    }
+
+    function getFireItemClickCallsData() {
+        const list = fixture.debugElement.query(
+            By.directive(ResponsiveUserListComponent),
+        ).componentInstance;
+        const calls = list.itemClick.emit.calls.all();
+        const _calls: string[][] = [];
+        for (let i = 0; i < calls.length; i++) {
+            const _call: any[] = [];
+            _calls.push(_call);
+            for (let j = 0; j < calls[i].args.length; j++) {
+                _call.push(calls[i].args[j]);
+            }
+        }
+        return _calls;
+    }
 
     beforeEach(async () => {
         const spy = jasmine.createSpyObj('UserService', [
@@ -83,10 +220,7 @@ describe('UsersComponent.', () => {
             ],
             providers: [
                 provideAnimationsAsync(),
-                {
-                    provide: UserService,
-                    useValue: spy,
-                },
+                { provide: UserService, useValue: spy },
                 {
                     provide: BreakpointObserver,
                     useValue: mockBreakpointObserver,
@@ -148,18 +282,60 @@ describe('UsersComponent.', () => {
                 .and.returnValue(paginatedResponse);
 
             fixture.detectChanges();
-            _testUsersComponent(fixture, {
-                error: undefined,
-                mobile: true,
-                loading: false,
-                pageIndex: _usersComponentPayloadsData[0].page! - 1,
-                pageSize: _usersComponentPayloadsData[0].pageSize!,
-                rows: _usersComponentRowsData,
-                textQuery: _usersComponentPayloadsData[0].textQuery!,
-                orderBy: _usersComponentPayloadsData[0].orderBy!,
-                active: _usersComponentPayloadsData[0].active!,
-                deleted: _usersComponentPayloadsData[0].deleted!,
-                length: _usersComponentUsersData.length,
+
+            expect(getComponentData()).toEqual({
+                alert: null,
+                filters: {
+                    textQuery: '',
+                    orderBy: [
+                        UserOrder.name_asc,
+                        UserOrder.email_asc,
+                        UserOrder.active_asc,
+                        UserOrder.deleted_desc,
+                    ],
+                    active: ActiveFilter.active,
+                    deleted: DeletedFilter.not_deleted,
+                    loading: false,
+                    mobile: true,
+                },
+                list: {
+                    users: [
+                        {
+                            id: '891db31e-dfb5-42ed-b912-48b98463b004',
+                            name: 'User 1',
+                            email: 'user1@email.com',
+                            active: true,
+                            deleted: false,
+                        },
+                        {
+                            id: '891db31e-dfb5-42ed-b912-48b98463b005',
+                            name: 'User 2',
+                            email: 'user2@email.com',
+                            active: true,
+                            deleted: true,
+                        },
+                        {
+                            id: '891db31e-dfb5-42ed-b912-48b98463b006',
+                            name: 'User 3',
+                            email: 'user3@email.com',
+                            active: false,
+                            deleted: false,
+                        },
+                    ],
+                    active: ActiveFilter.active,
+                    deleted: DeletedFilter.not_deleted,
+                    loading: false,
+                    mobile: true,
+                },
+                paginator: {
+                    pageIndex: 0,
+                    length: 3,
+                    pageSize: 12,
+                    hidePageSize: true,
+                    pageSizeOptions: [6, 12, 24],
+                    showFirstLastButtons: true,
+                    disabled: false,
+                },
             });
 
             expect();
@@ -179,18 +355,42 @@ describe('UsersComponent.', () => {
             breakpointSubject.next({ matches: true, breakpoints: {} });
             fixture.detectChanges();
 
-            _testUsersComponent(fixture, {
-                error: 'Erro ao buscar usuários close',
-                mobile: true,
-                loading: false,
-                pageIndex: _usersComponentPayloadsData[0].page! - 1,
-                pageSize: _usersComponentPayloadsData[0].pageSize!,
-                rows: [],
-                textQuery: _usersComponentPayloadsData[0].textQuery!,
-                orderBy: _usersComponentPayloadsData[0].orderBy!,
-                active: _usersComponentPayloadsData[0].active!,
-                deleted: _usersComponentPayloadsData[0].deleted!,
-                length: 0,
+            expect(getComponentData()).toEqual({
+                alert: {
+                    text: 'Erro ao buscar usuários.',
+                    type: 'danger',
+                    icon: Icon.error,
+                    showCloseButton: true,
+                },
+                filters: {
+                    textQuery: '',
+                    orderBy: [
+                        UserOrder.name_asc,
+                        UserOrder.email_asc,
+                        UserOrder.active_asc,
+                        UserOrder.deleted_desc,
+                    ],
+                    active: ActiveFilter.active,
+                    deleted: DeletedFilter.not_deleted,
+                    loading: false,
+                    mobile: true,
+                },
+                list: {
+                    users: [],
+                    active: ActiveFilter.active,
+                    deleted: DeletedFilter.not_deleted,
+                    loading: false,
+                    mobile: true,
+                },
+                paginator: {
+                    pageIndex: 0,
+                    length: 0,
+                    pageSize: 12,
+                    hidePageSize: true,
+                    pageSizeOptions: [6, 12, 24],
+                    showFirstLastButtons: true,
+                    disabled: false,
+                },
             });
         });
     });
@@ -203,23 +403,59 @@ describe('UsersComponent.', () => {
             breakpointSubject.next({ matches: false, breakpoints: {} });
             fixture.detectChanges();
 
-            _testUsersComponent(fixture, {
-                error: undefined,
-                mobile: false,
-                loading: false,
-                pageIndex: 0,
-                pageSize: 12,
-                rows: _usersComponentRowsData,
-                textQuery: '',
-                orderBy: [
-                    UserOrder.name_asc,
-                    UserOrder.email_asc,
-                    UserOrder.active_asc,
-                    UserOrder.deleted_desc,
-                ],
-                active: ActiveFilter.active,
-                deleted: DeletedFilter.not_deleted,
-                length: _usersComponentUsersData.length,
+            expect(getComponentData()).toEqual({
+                alert: null,
+                filters: {
+                    textQuery: '',
+                    orderBy: [
+                        UserOrder.name_asc,
+                        UserOrder.email_asc,
+                        UserOrder.active_asc,
+                        UserOrder.deleted_desc,
+                    ],
+                    active: ActiveFilter.active,
+                    deleted: DeletedFilter.not_deleted,
+                    loading: false,
+                    mobile: false,
+                },
+                list: {
+                    users: [
+                        {
+                            id: '891db31e-dfb5-42ed-b912-48b98463b004',
+                            name: 'User 1',
+                            email: 'user1@email.com',
+                            active: true,
+                            deleted: false,
+                        },
+                        {
+                            id: '891db31e-dfb5-42ed-b912-48b98463b005',
+                            name: 'User 2',
+                            email: 'user2@email.com',
+                            active: true,
+                            deleted: true,
+                        },
+                        {
+                            id: '891db31e-dfb5-42ed-b912-48b98463b006',
+                            name: 'User 3',
+                            email: 'user3@email.com',
+                            active: false,
+                            deleted: false,
+                        },
+                    ],
+                    active: ActiveFilter.active,
+                    deleted: DeletedFilter.not_deleted,
+                    loading: false,
+                    mobile: false,
+                },
+                paginator: {
+                    pageIndex: 0,
+                    length: 3,
+                    pageSize: 12,
+                    hidePageSize: false,
+                    pageSizeOptions: [6, 12, 24],
+                    showFirstLastButtons: true,
+                    disabled: false,
+                },
             });
         });
 
@@ -238,23 +474,42 @@ describe('UsersComponent.', () => {
             breakpointSubject.next({ matches: false, breakpoints: {} });
             fixture.detectChanges();
 
-            _testUsersComponent(fixture, {
-                error: 'Erro ao buscar usuários close',
-                mobile: false,
-                loading: false,
-                pageIndex: 0,
-                pageSize: 12,
-                rows: [],
-                textQuery: '',
-                orderBy: [
-                    UserOrder.name_asc,
-                    UserOrder.email_asc,
-                    UserOrder.active_asc,
-                    UserOrder.deleted_desc,
-                ],
-                active: ActiveFilter.active,
-                deleted: DeletedFilter.not_deleted,
-                length: 0,
+            expect(getComponentData()).toEqual({
+                alert: {
+                    text: 'Erro ao buscar usuários.',
+                    type: 'danger',
+                    icon: Icon.error,
+                    showCloseButton: true,
+                },
+                filters: {
+                    textQuery: '',
+                    orderBy: [
+                        UserOrder.name_asc,
+                        UserOrder.email_asc,
+                        UserOrder.active_asc,
+                        UserOrder.deleted_desc,
+                    ],
+                    active: ActiveFilter.active,
+                    deleted: DeletedFilter.not_deleted,
+                    loading: false,
+                    mobile: false,
+                },
+                list: {
+                    users: [],
+                    active: ActiveFilter.active,
+                    deleted: DeletedFilter.not_deleted,
+                    loading: false,
+                    mobile: false,
+                },
+                paginator: {
+                    pageIndex: 0,
+                    length: 0,
+                    pageSize: 12,
+                    hidePageSize: false,
+                    pageSizeOptions: [6, 12, 24],
+                    showFirstLastButtons: true,
+                    disabled: false,
+                },
             });
         });
     });
@@ -288,23 +543,37 @@ describe('UsersComponent.', () => {
                 alert.onClose.emit();
                 fixture.detectChanges();
 
-                _testUsersComponent(fixture, {
-                    error: undefined,
-                    mobile: false,
-                    loading: false,
-                    pageIndex: 0,
-                    pageSize: 12,
-                    rows: [],
-                    textQuery: '',
-                    orderBy: [
-                        UserOrder.name_asc,
-                        UserOrder.email_asc,
-                        UserOrder.active_asc,
-                        UserOrder.deleted_desc,
-                    ],
-                    active: ActiveFilter.active,
-                    deleted: DeletedFilter.not_deleted,
-                    length: 0,
+                expect(getComponentData()).toEqual({
+                    alert: null,
+                    filters: {
+                        textQuery: '',
+                        orderBy: [
+                            UserOrder.name_asc,
+                            UserOrder.email_asc,
+                            UserOrder.active_asc,
+                            UserOrder.deleted_desc,
+                        ],
+                        active: ActiveFilter.active,
+                        deleted: DeletedFilter.not_deleted,
+                        loading: false,
+                        mobile: false,
+                    },
+                    list: {
+                        users: [],
+                        active: ActiveFilter.active,
+                        deleted: DeletedFilter.not_deleted,
+                        loading: false,
+                        mobile: false,
+                    },
+                    paginator: {
+                        pageIndex: 0,
+                        length: 0,
+                        pageSize: 12,
+                        hidePageSize: false,
+                        pageSizeOptions: [6, 12, 24],
+                        showFirstLastButtons: true,
+                        disabled: false,
+                    },
                 });
             });
         });
@@ -394,45 +663,78 @@ describe('UsersComponent.', () => {
                 });
                 fixture.detectChanges();
 
-                _testUsersComponentRefreshFilter(fixture, {
-                    textQuery: 'test',
-                    orderBy: [
-                        UserOrder.active_desc,
-                        UserOrder.name_asc,
-                        UserOrder.email_asc,
-                        UserOrder.deleted_desc,
-                    ],
-                    active: ActiveFilter.all,
-                    deleted: DeletedFilter.all,
-                });
-
-                _testUserscomponentGetUsersCalls(userServiceSpy, [
-                    {
-                        textQuery: '',
-                        active: ActiveFilter.active,
-                        deleted: DeletedFilter.not_deleted,
-                        orderBy: [
-                            UserOrder.name_asc,
-                            UserOrder.email_asc,
-                            UserOrder.active_asc,
-                            UserOrder.deleted_desc,
-                        ],
-                        page: 1,
-                        pageSize: 12,
-                    },
-                    {
+                expect(getComponentData()).toEqual({
+                    alert: null,
+                    filters: {
                         textQuery: 'test',
-                        active: ActiveFilter.all,
-                        deleted: DeletedFilter.all,
                         orderBy: [
                             UserOrder.active_desc,
                             UserOrder.name_asc,
                             UserOrder.email_asc,
                             UserOrder.deleted_desc,
                         ],
-                        page: 2,
-                        pageSize: 2,
+                        active: ActiveFilter.all,
+                        deleted: DeletedFilter.all,
+                        loading: false,
+                        mobile: true,
                     },
+                    list: {
+                        users: [
+                            {
+                                id: '891db31e-dfb5-42ed-b912-48b98463b005',
+                                name: 'User 2',
+                                email: 'user2@email.com',
+                                active: true,
+                                deleted: true,
+                            },
+                        ],
+                        active: ActiveFilter.all,
+                        deleted: DeletedFilter.all,
+                        loading: false,
+                        mobile: true,
+                    },
+                    paginator: {
+                        pageIndex: 0,
+                        length: 1,
+                        pageSize: 2,
+                        hidePageSize: true,
+                        pageSizeOptions: [6, 12, 24],
+                        showFirstLastButtons: true,
+                        disabled: false,
+                    },
+                });
+
+                expect(getUsersCallsData()).toEqual([
+                    [
+                        {
+                            textQuery: '',
+                            active: ActiveFilter.active,
+                            deleted: DeletedFilter.not_deleted,
+                            orderBy: [
+                                UserOrder.name_asc,
+                                UserOrder.email_asc,
+                                UserOrder.active_asc,
+                                UserOrder.deleted_desc,
+                            ],
+                            page: 1,
+                            pageSize: 12,
+                        },
+                    ],
+                    [
+                        {
+                            textQuery: 'test',
+                            active: ActiveFilter.all,
+                            deleted: DeletedFilter.all,
+                            orderBy: [
+                                UserOrder.active_desc,
+                                UserOrder.name_asc,
+                                UserOrder.email_asc,
+                                UserOrder.deleted_desc,
+                            ],
+                            page: 2,
+                            pageSize: 2,
+                        },
+                    ],
                 ]);
             });
 
@@ -489,33 +791,77 @@ describe('UsersComponent.', () => {
                 filtersMock.refresh.emit(false);
                 fixture.detectChanges();
 
-                _testUserscomponentGetUsersCalls(userServiceSpy, [
-                    {
+                expect(getUsersCallsData()).toEqual([
+                    [
+                        {
+                            textQuery: '',
+                            active: ActiveFilter.active,
+                            deleted: DeletedFilter.not_deleted,
+                            orderBy: [
+                                UserOrder.name_asc,
+                                UserOrder.email_asc,
+                                UserOrder.active_asc,
+                                UserOrder.deleted_desc,
+                            ],
+                            page: 1,
+                            pageSize: 12,
+                        },
+                    ],
+                ]);
+
+                expect(getComponentData()).toEqual({
+                    alert: null,
+                    filters: {
                         textQuery: '',
-                        active: ActiveFilter.active,
-                        deleted: DeletedFilter.not_deleted,
                         orderBy: [
                             UserOrder.name_asc,
                             UserOrder.email_asc,
                             UserOrder.active_asc,
                             UserOrder.deleted_desc,
                         ],
-                        page: 1,
-                        pageSize: 12,
+                        active: ActiveFilter.active,
+                        deleted: DeletedFilter.not_deleted,
+                        loading: false,
+                        mobile: true,
                     },
-                ]);
-
-                // default values
-                _testUsersComponentRefreshFilter(fixture, {
-                    textQuery: '',
-                    active: ActiveFilter.active,
-                    deleted: DeletedFilter.not_deleted,
-                    orderBy: [
-                        UserOrder.name_asc,
-                        UserOrder.email_asc,
-                        UserOrder.active_asc,
-                        UserOrder.deleted_desc,
-                    ],
+                    list: {
+                        users: [
+                            {
+                                id: '891db31e-dfb5-42ed-b912-48b98463b004',
+                                name: 'User 1',
+                                email: 'user1@email.com',
+                                active: true,
+                                deleted: false,
+                            },
+                            {
+                                id: '891db31e-dfb5-42ed-b912-48b98463b005',
+                                name: 'User 2',
+                                email: 'user2@email.com',
+                                active: true,
+                                deleted: true,
+                            },
+                            {
+                                id: '891db31e-dfb5-42ed-b912-48b98463b006',
+                                name: 'User 3',
+                                email: 'user3@email.com',
+                                active: false,
+                                deleted: false,
+                            },
+                        ],
+                        active: ActiveFilter.active,
+                        deleted: DeletedFilter.not_deleted,
+                        loading: false,
+                        mobile: true,
+                    },
+                    paginator: {
+                        pageIndex: 0,
+                        length: 3,
+                        pageSize: 12,
+                        hidePageSize: true,
+                        pageSizeOptions: [6, 12, 24],
+                        showFirstLastButtons: true,
+                        disabled: false,
+                    },
                 });
             });
         });
@@ -605,8 +951,7 @@ describe('UsersComponent.', () => {
                 ]);
                 fixture.detectChanges();
 
-                _testUsersComponentHeaderClickEvent(
-                    fixture,
+                expect(getFireHeaderClickCallsData()).toEqual([
                     [
                         [
                             UserOrder.active_desc,
@@ -615,13 +960,40 @@ describe('UsersComponent.', () => {
                             UserOrder.deleted_desc,
                         ],
                     ],
+                ]);
+
+                expect(getUsersCallsData()).toEqual([
                     [
-                        UserOrder.active_desc,
-                        UserOrder.name_asc,
-                        UserOrder.email_asc,
-                        UserOrder.deleted_desc,
+                        {
+                            textQuery: '',
+                            active: ActiveFilter.active,
+                            deleted: DeletedFilter.not_deleted,
+                            orderBy: [
+                                UserOrder.name_asc,
+                                UserOrder.email_asc,
+                                UserOrder.active_asc,
+                                UserOrder.deleted_desc,
+                            ],
+                            page: 1,
+                            pageSize: 12,
+                        },
                     ],
-                );
+                    [
+                        {
+                            textQuery: 'test',
+                            active: ActiveFilter.active,
+                            deleted: DeletedFilter.not_deleted,
+                            orderBy: [
+                                UserOrder.active_desc,
+                                UserOrder.name_asc,
+                                UserOrder.email_asc,
+                                UserOrder.deleted_desc,
+                            ],
+                            page: 2,
+                            pageSize: 2,
+                        },
+                    ],
+                ]);
             });
         });
 
@@ -667,9 +1039,57 @@ describe('UsersComponent.', () => {
                 listMock.itemClick.emit('891db31e-dfb5-42ed-b912-48b98463b004');
                 fixture.detectChanges();
 
-                _testUsersComponentItemClickEvent(fixture, [
-                    { userId: '891db31e-dfb5-42ed-b912-48b98463b004' },
+                expect(getFireItemClickCallsData()).toEqual([
+                    ['891db31e-dfb5-42ed-b912-48b98463b004'],
                 ]);
+
+                expect(getComponentData()).toEqual({
+                    alert: null,
+                    filters: {
+                        textQuery: '',
+                        orderBy: [
+                            UserOrder.name_asc,
+                            UserOrder.email_asc,
+                            UserOrder.active_asc,
+                            UserOrder.deleted_desc,
+                        ],
+                        active: ActiveFilter.active,
+                        deleted: DeletedFilter.not_deleted,
+                        loading: false,
+                        mobile: true,
+                    },
+                    list: {
+                        users: [
+                            {
+                                id: '891db31e-dfb5-42ed-b912-48b98463b004',
+                                name: 'User 1',
+                                email: 'user1@email.com',
+                                active: true,
+                                deleted: false,
+                            },
+                            {
+                                id: '891db31e-dfb5-42ed-b912-48b98463b005',
+                                name: 'User 2',
+                                email: 'user2@email.com',
+                                active: true,
+                                deleted: true,
+                            },
+                        ],
+                        active: ActiveFilter.active,
+                        deleted: DeletedFilter.not_deleted,
+                        loading: false,
+                        mobile: true,
+                    },
+                    paginator: {
+                        pageIndex: 0,
+                        length: 3,
+                        pageSize: 2,
+                        hidePageSize: true,
+                        pageSizeOptions: [6, 12, 24],
+                        showFirstLastButtons: true,
+                        disabled: false,
+                    },
+                });
             });
         });
 
@@ -748,33 +1168,79 @@ describe('UsersComponent.', () => {
                 paginator.page.emit(pageEvent);
                 fixture.detectChanges();
 
-                _testUserscomponentGetUsersCalls(userServiceSpy, [
-                    {
+                expect(getComponentData()).toEqual({
+                    alert: null,
+                    filters: {
                         textQuery: '',
-                        active: ActiveFilter.active,
-                        deleted: DeletedFilter.not_deleted,
                         orderBy: [
                             UserOrder.name_asc,
                             UserOrder.email_asc,
                             UserOrder.active_asc,
                             UserOrder.deleted_desc,
                         ],
-                        page: 1,
-                        pageSize: 12,
-                    },
-                    {
-                        textQuery: '',
                         active: ActiveFilter.active,
                         deleted: DeletedFilter.not_deleted,
-                        orderBy: [
-                            UserOrder.name_asc,
-                            UserOrder.email_asc,
-                            UserOrder.active_asc,
-                            UserOrder.deleted_desc,
-                        ],
-                        page: 2,
-                        pageSize: 12,
+                        loading: false,
+                        mobile: true,
                     },
+                    list: {
+                        users: [
+                            {
+                                id: '891db31e-dfb5-42ed-b912-48b98463b006',
+                                name: 'User 3',
+                                email: 'user3@email.com',
+                                active: false,
+                                deleted: false,
+                            },
+                        ],
+                        active: ActiveFilter.active,
+                        deleted: DeletedFilter.not_deleted,
+                        loading: false,
+                        mobile: true,
+                    },
+                    paginator: {
+                        pageIndex: 0,
+                        length: 3,
+                        pageSize: 12,
+                        hidePageSize: true,
+                        pageSizeOptions: [6, 12, 24],
+                        showFirstLastButtons: true,
+                        disabled: false,
+                    },
+                });
+
+                expect(getUsersCallsData()).toEqual([
+                    [
+                        {
+                            textQuery: '',
+                            active: ActiveFilter.active,
+                            deleted: DeletedFilter.not_deleted,
+                            orderBy: [
+                                UserOrder.name_asc,
+                                UserOrder.email_asc,
+                                UserOrder.active_asc,
+                                UserOrder.deleted_desc,
+                            ],
+                            page: 1,
+                            pageSize: 12,
+                        },
+                    ],
+
+                    [
+                        {
+                            textQuery: '',
+                            active: ActiveFilter.active,
+                            deleted: DeletedFilter.not_deleted,
+                            orderBy: [
+                                UserOrder.name_asc,
+                                UserOrder.email_asc,
+                                UserOrder.active_asc,
+                                UserOrder.deleted_desc,
+                            ],
+                            page: 2,
+                            pageSize: 12,
+                        },
+                    ],
                 ]);
             });
         });

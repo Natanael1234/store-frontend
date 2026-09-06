@@ -5,4 +5,5 @@ export enum Icon {
     checked = 'checked',
     home = 'home',
     person = 'person',
+    error = 'error',
 }

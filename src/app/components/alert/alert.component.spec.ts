@@ -2,6 +2,7 @@
 import { Component, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AlertComponent } from '@components/alert/alert.component';
+import { Icon } from '@enums/icons/icons.enum';
 
 @Component({
     template: `
@@ -43,8 +44,8 @@ describe('AlertComponent.', () => {
     });
 
     it('should render corret alert structure.', () => {
-        alertComponent.type = 'success';
-        alertComponent.icon = 'a';
+        alertComponent.type.set('success');
+        alertComponent.icon.set('a' as Icon);
         alertFixture.detectChanges();
         const container =
             alertDebugElement.nativeElement.querySelector('.container');
@@ -53,7 +54,7 @@ describe('AlertComponent.', () => {
 
     describe('type.', () => {
         it('should render success alert when "success" type is provided.', () => {
-            alertComponent.type = 'success';
+            alertComponent.type.set('success');
             alertFixture.detectChanges();
             const container =
                 alertDebugElement.nativeElement.querySelector('.container');
@@ -61,7 +62,7 @@ describe('AlertComponent.', () => {
         });
 
         it('should render info alert when "info" type is provided.', () => {
-            alertComponent.type = 'info';
+            alertComponent.type.set('info');
             alertFixture.detectChanges();
             const container =
                 alertDebugElement.nativeElement.querySelector('.container');
@@ -69,7 +70,7 @@ describe('AlertComponent.', () => {
         });
 
         it('should render warning alert when "warning" type is provided.', () => {
-            alertComponent.type = 'warning';
+            alertComponent.type.set('warning');
             alertFixture.detectChanges();
             const container =
                 alertDebugElement.nativeElement.querySelector('.container');
@@ -77,7 +78,7 @@ describe('AlertComponent.', () => {
         });
 
         it('should render danger alert when "danger" type is danger.', () => {
-            alertComponent.type = 'danger';
+            alertComponent.type.set('danger');
             alertFixture.detectChanges();
             const container =
                 alertDebugElement.nativeElement.querySelector('.container');
@@ -85,7 +86,7 @@ describe('AlertComponent.', () => {
         });
 
         it('should render success alert when "primary" type is danger.', () => {
-            alertComponent.type = 'primary';
+            alertComponent.type.set('primary');
             alertFixture.detectChanges();
             const container =
                 alertDebugElement.nativeElement.querySelector('.container');
@@ -93,7 +94,7 @@ describe('AlertComponent.', () => {
         });
 
         it('should render secondary alert when "secondary" type is danger.', () => {
-            alertComponent.type = 'secondary';
+            alertComponent.type.set('secondary');
             alertFixture.detectChanges();
             const container =
                 alertDebugElement.nativeElement.querySelector('.container');
@@ -101,7 +102,7 @@ describe('AlertComponent.', () => {
         });
 
         it('should render light alert when "light" type is danger.', () => {
-            alertComponent.type = 'light';
+            alertComponent.type.set('light');
             alertFixture.detectChanges();
             const container =
                 alertDebugElement.nativeElement.querySelector('.container');
@@ -109,7 +110,7 @@ describe('AlertComponent.', () => {
         });
 
         it('should render dark alert when "dark" type is danger.', () => {
-            alertComponent.type = 'dark';
+            alertComponent.type.set('dark');
             alertFixture.detectChanges();
             const container =
                 alertDebugElement.nativeElement.querySelector('.container');
@@ -126,13 +127,13 @@ describe('AlertComponent.', () => {
 
     describe('icon.', () => {
         it('should render with icon if provided.', () => {
-            alertComponent.icon = 'check';
+            alertComponent.icon.set(Icon.checked);
             alertFixture.detectChanges();
             const icon = alertDebugElement.nativeElement.querySelector(
                 '.container > .content > mat-icon',
             );
             expect(icon).toBeDefined();
-            expect(icon.getAttribute('data-mat-icon-name')).toBe('check');
+            expect(icon.getAttribute('data-mat-icon-name')).toBe(Icon.checked);
         });
 
         it('should render without icon if provided.', () => {
@@ -145,7 +146,7 @@ describe('AlertComponent.', () => {
 
     describe('close button.', () => {
         it('should render close button if showCloseButton is true.', () => {
-            alertComponent.showCloseButton = true;
+            alertComponent.showCloseButton.set(true);
             alertFixture.detectChanges();
             const closeButton = alertDebugElement.nativeElement.querySelector(
                 '.container > button',
@@ -159,7 +160,7 @@ describe('AlertComponent.', () => {
         });
 
         it('should not render close button if showCloseButton is false.', () => {
-            alertComponent.showCloseButton = false;
+            alertComponent.showCloseButton.set(false);
             alertFixture.detectChanges();
             const closeButton = alertDebugElement.nativeElement.querySelector(
                 'button.close-button',
@@ -169,7 +170,7 @@ describe('AlertComponent.', () => {
 
         it('should emit onClose event when close button is clicked.', () => {
             spyOn(alertComponent.onClose, 'emit');
-            alertComponent.showCloseButton = true;
+            alertComponent.showCloseButton.set(true);
             alertFixture.detectChanges();
             const closeButton = alertDebugElement.nativeElement.querySelector(
                 'button.close-button',

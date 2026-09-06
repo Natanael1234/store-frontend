@@ -14,6 +14,7 @@ describe('Icon enum', () => {
             checked: 'checked',
             home: 'home',
             person: 'person',
+            error: 'error',
         });
     });
 });

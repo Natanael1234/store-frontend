@@ -28,6 +28,7 @@ import { AlertComponent } from '@components/alert/alert.component';
 import { UserTableRow } from '@components/table/interfaces/user-table-row.interface';
 import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
+import { Icon } from '@enums/icons/icons.enum';
 import { MyCustomPaginatorIntl } from '@i18n/paginator.intl';
 import { AuthInterceptor } from '@interceptors/auth/auth.interceptor';
 import { RowClickEvent } from '@interfaces/row-click.interface';
@@ -77,6 +78,8 @@ import { BehaviorSubject, Subscription } from 'rxjs';
     styleUrl: './users.component.scss',
 })
 export class UsersComponent implements AfterViewInit {
+    protected Icon = Icon;
+
     /* Data */
 
     private userService: UserService = inject(UserService);
@@ -166,7 +169,7 @@ export class UsersComponent implements AfterViewInit {
         this.length.set(PaginatorConfigs.DEFAULT_LENGTH);
         this.pageIndex.set(PaginatorConfigs.DEFAULT_PAGE_INDEX);
         this.pageSize.set(PaginatorConfigs.DEFAULT_PAGE_SIZE);
-        this.error.set('Erro ao buscar usuários'); // TODO: pegar mensagem do erro
+        this.error.set('Erro ao buscar usuários.'); // TODO: pegar mensagem do erro
     }
 
     protected ngOnInit() {

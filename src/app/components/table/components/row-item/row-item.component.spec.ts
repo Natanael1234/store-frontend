@@ -669,7 +669,7 @@ describe('IconRowItemComponent.', () => {
                 });
             });
 
-            xit('icon should be disabled when both disabled and loading models are true', async () => {
+            it('icon should be disabled when both disabled and loading models are true', async () => {
                 component.icon.set('visibility');
                 component.label.set('Test label');
                 component.loading.set(true);
@@ -677,18 +677,16 @@ describe('IconRowItemComponent.', () => {
                 component.tooltip.set('Test tooltip');
                 fixture.detectChanges();
 
-                const state = await harness.getState();
-                console.log(JSON.stringify(state, null, 4));
                 expect(await harness.getState()).toEqual({
                     icon: {
-                        name: 'visibility',
-                        loading: false,
-                        disabled: false,
+                        name: '',
+                        loading: true,
+                        disabled: true,
                     },
                     label: {
-                        text: 'Test label',
-                        loading: false,
-                        disabled: false,
+                        text: '',
+                        loading: true,
+                        disabled: true,
                     },
                 });
                 expect(getComponentInputData()).toEqual({
