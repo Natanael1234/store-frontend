@@ -24,6 +24,7 @@ import {
 } from '@pages/users/responsive-user-filters/user-filter-toollbar/types/on-user-filter-menu-list-close-event.type';
 import { UserFilterToolbarComponent } from '@pages/users/responsive-user-filters/user-filter-toollbar/user-filter-toolbar.component';
 import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
+import { leftMouseClickFilter } from '@utils/mouse-events/mouse-click-filter';
 
 @Component({
     selector: 'app-responsive-user-filters',
@@ -43,7 +44,10 @@ import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
             <app-text-filter
                 (textSearch)="onTextSearch($event)"></app-text-filter>
             @if (isMobile) {
-                <button mat-button (click)="openFilterDialog()">
+                <button
+                    mat-button
+                    (click)="openFilterDialog($event)"
+                    (pointerdown)="openFilterDialog($event)">
                     <mat-icon>filter_list</mat-icon>
                     Ordenar e filtrar
                 </button>
@@ -110,7 +114,11 @@ export class ResponsiveUserFiltersComponent {
         }
     }
 
-    protected openFilterDialog(): void {
+    protected openFilterDialog(event: any): void {
+        if (!leftMouseClickFilter(event)) {
+            return;
+        }
+
         this.dialogRef = this.dialog.open(UserFilterDialogComponent, {
             data: {
                 order: this.getMobileOrderFromOrderBy() || UserOrder.name_asc,

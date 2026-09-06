@@ -3,4 +3,7 @@ export enum Icon {
     visibility = 'visibility',
     send = 'send',
     checked = 'checked',
+    home = 'home',
+    person = 'person',
+    error = 'error',
 }

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, model, Output } from '@angular/core';
-import { UserTableRow } from '@components/table/table/interfaces/user-table-row.interface';
+import { UserTableRow } from '@components/table/interfaces/user-table-row.interface';
 import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
 import { UserOrderParam } from '@pages/users/types/user-order-param.type';

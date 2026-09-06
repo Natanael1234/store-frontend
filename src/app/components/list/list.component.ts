@@ -8,8 +8,21 @@ import { leftMouseClickFilter } from '@utils/mouse-events/mouse-click-filter';
 @Component({
     selector: 'app-list',
     imports: [MatListModule, MatDividerModule, ListItemComponent],
-    templateUrl: './list.component.html',
-    styleUrl: './list.component.scss',
+    template: `
+        <mat-list>
+            @for (item of data(); track item; let last = $last) {
+                <app-list-item
+                    [labels]="item.labels"
+                    [icons]="item.icons"
+                    [loading]="!!loading()"
+                    (click)="onItemClick($event, item.id!)" />
+
+                @if (!last) {
+                    <mat-divider />
+                }
+            }
+        </mat-list>
+    `,
 })
 export class ListComponent {
     public data = model<ListItem[]>([]);

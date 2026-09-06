@@ -1,0 +1,74 @@
+import { ComponentHarness } from '@angular/cdk/testing';
+import { TBodyTrHarness } from '@components/table/test/tbody-tr.harness';
+
+export class TBodyHarness extends ComponentHarness {
+    static hostSelector = 'tbody';
+
+    private readonly hostChildren = this.locatorForAll(':scope > *');
+    private readonly trs = this.locatorForAll(TBodyTrHarness);
+
+    async getErrors() {
+        const errors: string[] = [];
+        const tbodyChildren = await this.hostChildren();
+        for (const tbodyChild of tbodyChildren) {
+            const tbodyChildTagName = await tbodyChild.getProperty('tagName');
+            if (tbodyChildTagName != 'TR') {
+                errors.push(
+                    `Invalid TBODY child. Expected TR. Found ${tbodyChildTagName}.`,
+                );
+            }
+        }
+        const rows = await this.trs();
+        for (const row of rows) {
+            const rowErrors = await row.getErrors();
+            errors.push(...rowErrors);
+        }
+        return errors;
+    }
+
+    async getState(): Promise<
+        {
+            icon?: { name: string; loading: boolean; disabled: boolean };
+            label?: { text: string; loading: boolean; disabled: boolean };
+            shrink: boolean;
+        }[][]
+    > {
+        const trs = await this.trs();
+        const state: any[][] = [];
+        for (const tr of trs) {
+            const trState = await tr.getState();
+            state.push(trState);
+        }
+        return state;
+    }
+
+    async triggerLeftClick(row: number, column?: number | undefined) {
+        const trs = await this.trs();
+        const tr = trs[row];
+        await tr.triggerLeftClick(column);
+    }
+
+    async triggerMiddleClick(row: number, column?: number | undefined) {
+        const trs = await this.trs();
+        const tr = trs[row];
+        await tr.triggerMiddleClick(column);
+    }
+
+    async triggerRightClick(row: number, column?: number | undefined) {
+        const trs = await this.trs();
+        const tr = trs[row];
+        await tr.triggerRightClick(column);
+    }
+
+    async triggerTouch(row: number, column?: number | undefined) {
+        const trs = await this.trs();
+        const tr = trs[row];
+        await tr.triggerTouch(column);
+    }
+
+    async triggerPenClick(row: number, column?: number | undefined) {
+        const trs = await this.trs();
+        const tr = trs[row];
+        await tr.triggerPenClick(column);
+    }
+}

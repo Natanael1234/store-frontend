@@ -1,4 +1,6 @@
 import { ComponentHarness } from '@angular/cdk/testing';
+import { MouseButton } from '@enums/mouse-button/mouse-button.enum';
+import { PointerType } from '@enums/pointer-type/pointer-type.enum';
 
 type UserFilterToolbarState = {
     hasValidStructure: boolean | { [key: string]: string };
@@ -21,6 +23,46 @@ export class ResponsiveUserFiltersHarness extends ComponentHarness {
     private readonly buttonIcons = this.locatorForAll(
         ':scope > div > button > mat-icon',
     );
+
+    async triggerLeftClick() {
+        const button = await this.button();
+        await button?.dispatchEvent('click', {
+            pointerType: PointerType.mouse,
+            button: MouseButton.left,
+        });
+    }
+
+    async triggerMiddleClick() {
+        const button = await this.button();
+        await button?.dispatchEvent('click', {
+            pointerType: PointerType.mouse,
+            button: MouseButton.middle,
+        });
+    }
+
+    async triggerRightClick() {
+        const button = await this.button();
+        await button?.dispatchEvent('click', {
+            pointerType: PointerType.mouse,
+            button: MouseButton.right,
+        });
+    }
+
+    async triggerTouch() {
+        const button = await this.button();
+        await button?.dispatchEvent('pointerdown', {
+            pointerType: PointerType.touch,
+            button: MouseButton.left,
+        });
+    }
+
+    async triggerPenClick(): Promise<void> {
+        const button = await this.button();
+        await button?.dispatchEvent('click', {
+            pointerType: PointerType.pen,
+            button: MouseButton.left,
+        } as any);
+    }
 
     async getHostChildElements() {
         const hostChildren = await this.hostChildrenElements();

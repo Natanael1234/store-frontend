@@ -38,7 +38,7 @@
             "@utils/*": ["./src/app/utils/*"],
             "@validators/*": ["./src/app/validators/*"]
         },
-        "types": ["@angular/localize"]
+        "types": ["@angular/localize", "lodash"]
     },
     "angularCompilerOptions": {
         "enableI18nLegacyMessageIdFormat": false,

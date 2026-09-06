@@ -12,6 +12,9 @@ describe('Icon enum', () => {
             visibility: 'visibility',
             send: 'send',
             checked: 'checked',
+            home: 'home',
+            person: 'person',
+            error: 'error',
         });
     });
 });

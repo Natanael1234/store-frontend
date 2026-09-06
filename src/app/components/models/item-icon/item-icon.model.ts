@@ -1,15 +1,17 @@
+import { Icon } from '@enums/icons/icons.enum';
+
 // TODO: test
 export class ItemIcon {
-    public icon: string;
+    public name?: Icon; // TODO: mudar para name
     public tooltip?: string;
     public disabled: boolean;
 
     constructor(options: {
-        icon: string;
+        name?: Icon;
         tooltip?: string;
         disabled?: boolean;
     }) {
-        this.icon = options.icon;
+        this.name = options.name;
         this.tooltip = options.tooltip;
         this.disabled = options.disabled || false; // TODO: test false by default
     }

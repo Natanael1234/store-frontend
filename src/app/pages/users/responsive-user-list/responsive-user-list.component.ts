@@ -13,16 +13,17 @@ import { ListComponent } from '@components/list/list.component';
 import { ListItem } from '@components/list/types/list-item.model';
 import { ItemIcon } from '@components/models/item-icon/item-icon.model';
 import { ItemLabel } from '@components/models/item-label/item-label.model';
-import { UserColumnLabel } from '@components/table/table/enums/user-column-name/user-column-label.enum';
-import { UserTableRow } from '@components/table/table/interfaces/user-table-row.interface';
-import { ColumnData } from '@components/table/table/model/column-data/column-data.model';
-import { Column } from '@components/table/table/model/column/column.model';
-import { Row } from '@components/table/table/model/row/row.model';
-import { TableSorter } from '@components/table/table/sorter/table-sorter';
-import { TableComponent } from '@components/table/table/table.component';
+import { UserTableRow } from '@components/table/interfaces/user-table-row.interface';
+import { ColumnData } from '@components/table/model/column-data/column-data.model';
+import { Column } from '@components/table/model/column/column.model';
+import { Row } from '@components/table/model/row/row.model';
+import { TableSorter } from '@components/table/sorter/table-sorter';
+import { TableComponent } from '@components/table/table.component';
+import { UserColumnLabel } from '@components/table/user-column-name/user-column-label.enum';
 import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
 import { SortDirection } from '@enums/direction/direction.enum';
+import { Icon } from '@enums/icons/icons.enum';
 import { UserColumnId } from '@pages/users/types/user-column-id/user-column-id.enum';
 import { UserOrderParam } from '@pages/users/types/user-order-param.type';
 import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
@@ -30,8 +31,22 @@ import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 @Component({
     selector: 'app-responsive-user-list',
     imports: [TableComponent, ListComponent, A11yModule],
-    templateUrl: './responsive-user-list.component.html',
-    styleUrl: './responsive-user-list.component.scss',
+    styles: [],
+    template: `
+        @if (mobile()) {
+            <app-list
+                [data]="listData()"
+                [loading]="!!loading()"
+                (itemClick)="fireRowClickEvent($event)"></app-list>
+        } @else {
+            <app-table
+                [columns]="columns()"
+                [data]="tableData()"
+                [loading]="loading()"
+                (headerClick)="fireHeaderClickEvent($event)"
+                (rowClick)="fireRowClickEvent($event)"></app-table>
+        }
+    `,
 })
 export class ResponsiveUserListComponent implements AfterViewInit {
     public mobile = model<boolean>(true);
@@ -93,24 +108,24 @@ export class ResponsiveUserListComponent implements AfterViewInit {
                 id: user.id,
                 labels: [
                     new ItemLabel({
-                        text: this.loading() ? '' : user.name,
+                        text: this.loading() ? undefined : user.name,
                         tooltip: this.loading() ? undefined : user.name,
                         disabled: false,
                     }),
                     new ItemLabel({
-                        text: this.loading() ? '' : user.email,
+                        text: this.loading() ? undefined : user.email,
                         tooltip: this.loading() ? undefined : user.email,
                         disabled: false,
                     }),
                 ],
                 icons: [
                     new ItemIcon({
-                        icon: this.loading() ? '' : 'checked',
+                        name: this.loading() ? undefined : Icon.checked,
                         tooltip: user.active ? 'Ativo' : undefined,
                         disabled: user.active ? false : true,
                     }),
                     new ItemIcon({
-                        icon: this.loading() ? '' : 'checked',
+                        name: this.loading() ? undefined : Icon.checked,
                         tooltip: user.deleted ? 'Deletado' : undefined,
                         disabled: user.deleted ? false : true,
                     }),
@@ -136,13 +151,13 @@ export class ResponsiveUserListComponent implements AfterViewInit {
                         disabled: false,
                     }),
                     active: new ColumnData({
-                        icon: 'checked',
+                        icon: Icon.checked,
                         label: undefined,
                         tooltip: user.active ? 'Ativo' : undefined,
                         disabled: user.active ? false : true,
                     }),
                     deleted: new ColumnData({
-                        icon: 'checked',
+                        icon: Icon.checked,
                         label: undefined,
                         tooltip: user.deleted ? 'Deletado' : undefined,
                         disabled: user.deleted ? false : true,
