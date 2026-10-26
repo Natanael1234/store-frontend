@@ -6,8 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { By } from '@angular/platform-browser';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { NavigationExtras, provideRouter, Router } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { AlertComponent } from '@components/alert/alert.component';
 import { ButtonComponent } from '@components/form/components/button/button.component';
 import { ButtonAppearance } from '@components/form/components/button/enum/appearance/button-appearance.enum';
@@ -20,11 +19,12 @@ import { EditOwnProfileHarness } from '@pages/edit-own-profile/edit-own-profile.
 import { HomeComponent } from '@pages/home/home.component';
 import { AuthService } from '@services/auth/auth.service';
 import { of, Subject, throwError } from 'rxjs';
+import { vi } from 'vitest';
 
-describe('EditOwnProfileComponent.', () => {
+describe('EditOwnProfileComponent', () => {
     let fixture: ComponentFixture<EditOwnProfileComponent>;
     let component: EditOwnProfileComponent;
-    let authServiceSpy: jasmine.SpyObj<AuthService>;
+    let authServiceSpy: { editOwnProfile: ReturnType<typeof vi.fn> };
     let router: Router;
     let harness: EditOwnProfileHarness;
 
@@ -41,27 +41,21 @@ describe('EditOwnProfileComponent.', () => {
     }
 
     function getNameFieldComponent() {
-        return getTextFieldComponents().find(
-            (field) => field.id() == 'name-input',
-        );
+        return getTextFieldComponents().find((field) => field.id() === 'name-input');
     }
 
     function getSaveButtonComponent() {
-        return getButtonComponents().find(
-            (button) => button.id() == 'save-button',
-        );
+        return getButtonComponents().find((button) => button.id() === 'save-button');
     }
 
     function getCancelButtonComponent() {
-        return getButtonComponents().find(
-            (button) => button.id() == 'cancel-button',
-        );
+        return getButtonComponents().find((button) => button.id() === 'cancel-button');
     }
 
-    // TODO: test loading
-
     beforeEach(async () => {
-        const spy = jasmine.createSpyObj('AuthService', ['editOwnProfile']);
+        const authServiceMock = {
+            editOwnProfile: vi.fn(),
+        };
 
         await TestBed.configureTestingModule({
             imports: [
@@ -75,8 +69,7 @@ describe('EditOwnProfileComponent.', () => {
                 ButtonComponent,
             ],
             providers: [
-                provideAnimationsAsync(),
-                { provide: AuthService, useValue: spy },
+                { provide: AuthService, useValue: authServiceMock },
                 provideRouter([
                     {
                         path: 'home',
@@ -86,17 +79,15 @@ describe('EditOwnProfileComponent.', () => {
                 ]),
             ],
         }).compileComponents();
+
         fixture = TestBed.createComponent(EditOwnProfileComponent);
-        authServiceSpy = TestBed.inject(
-            AuthService,
-        ) as jasmine.SpyObj<AuthService>;
+        authServiceSpy = TestBed.inject(AuthService) as unknown as {
+            editOwnProfile: ReturnType<typeof vi.fn>;
+        };
         component = fixture.componentInstance;
         router = TestBed.inject(Router);
         fixture.detectChanges();
-        harness = await TestbedHarnessEnvironment.harnessForFixture(
-            fixture,
-            EditOwnProfileHarness,
-        );
+        harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, EditOwnProfileHarness);
     });
 
     it('should create.', async () => {
@@ -115,9 +106,9 @@ describe('EditOwnProfileComponent.', () => {
         expect(nameField.placeholder()).toBeUndefined();
         expect(nameField.control()).toBeDefined();
         expect(nameField.control()).not.toBeNull();
-        expect(nameField.control()?.disabled).toBeFalse();
+        expect(nameField.control()?.disabled).toBe(false);
         expect(nameField.focusable()).toBeUndefined();
-        expect(nameField.autofocus()).toBeTrue();
+        expect(nameField.autofocus()).toBe(true);
         expect(nameField.readOnly()).toBeUndefined();
         expect(nameField.autocomplete()).toBeUndefined();
         expect(nameField.minLength()).toEqual(UserConfigs.NAME_MIN_LENGTH);
@@ -133,7 +124,7 @@ describe('EditOwnProfileComponent.', () => {
         expect(saveButton.label()).toEqual('Salvar');
         expect(saveButton.icon()).toBeUndefined();
         expect(saveButton.appearance()).toEqual(ButtonAppearance.filled);
-        expect(saveButton.disabled()).toBeFalse();
+        expect(saveButton.disabled()).toBe(false);
         expect(saveButton.focusable()).toBeUndefined();
         expect(saveButton.autofocus()).toBeUndefined();
         expect(saveButton.routerLink()).toBeUndefined();
@@ -148,7 +139,7 @@ describe('EditOwnProfileComponent.', () => {
         expect(cancelButton.label()).toEqual('Cancelar');
         expect(cancelButton.icon()).toBeUndefined();
         expect(cancelButton.appearance()).toEqual(ButtonAppearance.outlined);
-        expect(cancelButton.disabled()).toBeFalse();
+        expect(cancelButton.disabled()).toBe(false);
         expect(cancelButton.focusable()).toBeUndefined();
         expect(cancelButton.autofocus()).toBeUndefined();
         expect(cancelButton.routerLink()).toEqual('/');
@@ -158,9 +149,9 @@ describe('EditOwnProfileComponent.', () => {
 
     it('should go to home page.', async () => {
         const location = TestBed.inject(Location);
-        const routerSpy = spyOn(component['router'], 'navigate');
+        const routerSpy = vi.spyOn(component['router'], 'navigate');
 
-        authServiceSpy.editOwnProfile.and.returnValue(of(true));
+        authServiceSpy.editOwnProfile.mockReturnValue(of(true));
 
         await harness.clickCancelButton();
         expect(location.path()).toBe('');
@@ -177,15 +168,15 @@ describe('EditOwnProfileComponent.', () => {
         expect(errors).toEqual({});
     });
 
-    it("should sucessfully call service's editOwnProfile method on submit.", async () => {
+    it("should successfully call service's editOwnProfile method on submit.", async () => {
         const location = TestBed.inject(Location);
-        const routerSpy = spyOn(component['router'], 'navigate');
+        const routerSpy = vi.spyOn(component['router'], 'navigate');
         component['formGroup'].setValue({ name: 'John Williams' });
-        authServiceSpy.editOwnProfile.and.returnValue(of(true));
+        authServiceSpy.editOwnProfile.mockReturnValue(of(true));
 
         await harness.clickSaveButton();
         expect(location.path()).toBe('');
-        expect(authServiceSpy.editOwnProfile).toHaveBeenCalledOnceWith({
+        expect(authServiceSpy.editOwnProfile).toHaveBeenCalledExactlyOnceWith({
             name: 'John Williams',
         });
 
@@ -199,17 +190,12 @@ describe('EditOwnProfileComponent.', () => {
     });
 
     describe('local errors.', () => {
-        let routerSpy: jasmine.Spy<
-            (
-                commands: readonly any[],
-                extras?: NavigationExtras,
-            ) => Promise<boolean>
-        >;
+        let routerSpy: ReturnType<typeof vi.spyOn>;
 
         beforeEach(() => {
-            authServiceSpy.editOwnProfile.and.returnValue(of(true));
-            routerSpy = spyOn(component['router'], 'navigate');
-            spyOn(router, 'navigateByUrl');
+            authServiceSpy.editOwnProfile.mockReturnValue(of(true));
+            routerSpy = vi.spyOn(component['router'], 'navigate');
+            vi.spyOn(router, 'navigateByUrl');
         });
 
         describe('on blur.', () => {
@@ -305,16 +291,11 @@ describe('EditOwnProfileComponent.', () => {
     });
 
     describe('remote errors.', () => {
-        let routerSpy: jasmine.Spy<
-            (
-                commands: readonly any[],
-                extras?: NavigationExtras,
-            ) => Promise<boolean>
-        >;
+        let routerSpy: ReturnType<typeof vi.spyOn>;
 
         beforeEach(() => {
-            routerSpy = spyOn(component['router'], 'navigate');
-            spyOn(router, 'navigateByUrl');
+            routerSpy = vi.spyOn(component['router'], 'navigate');
+            vi.spyOn(router, 'navigateByUrl');
         });
 
         it('should handle main remote error.', async () => {
@@ -328,9 +309,7 @@ describe('EditOwnProfileComponent.', () => {
             exception.status = HttpStatusCode.UnprocessableEntity;
             exception.statusText = 'Unprocessable Entity';
             const location = TestBed.inject(Location);
-            authServiceSpy.editOwnProfile.and.returnValue(
-                throwError(() => exception),
-            );
+            authServiceSpy.editOwnProfile.mockReturnValue(throwError(() => exception));
             await harness.setValues({ name: 'John Williams' });
             await harness.clickSaveButton();
             fixture.detectChanges();
@@ -359,9 +338,7 @@ describe('EditOwnProfileComponent.', () => {
             exception.status = HttpStatusCode.UnprocessableEntity;
             exception.statusText = 'Unprocessable Entity';
             const location = TestBed.inject(Location);
-            authServiceSpy.editOwnProfile.and.returnValue(
-                throwError(() => exception),
-            );
+            authServiceSpy.editOwnProfile.mockReturnValue(throwError(() => exception));
             await harness.setValues({ name: 'John Williams' });
             await harness.clickSaveButton();
             fixture.detectChanges();
@@ -385,9 +362,7 @@ describe('EditOwnProfileComponent.', () => {
             let subject = new Subject<any>();
 
             component['formGroup'].setValue({ name: 'John Williams' });
-            authServiceSpy.editOwnProfile.and.returnValue(
-                subject.asObservable(),
-            );
+            authServiceSpy.editOwnProfile.mockReturnValue(subject.asObservable());
 
             fixture.detectChanges();
 
@@ -414,7 +389,7 @@ describe('EditOwnProfileComponent.', () => {
             expect(progressBarHarness).toBeNull();
         });
 
-        it('should show stop to show loading after remote error.', async () => {
+        it('should stop showing loading after remote error.', async () => {
             const exception: any = new Error('Request failed!');
             exception.error = {
                 error: ExceptionName.unprocessable_entity,
@@ -427,9 +402,7 @@ describe('EditOwnProfileComponent.', () => {
 
             fixture.detectChanges();
 
-            authServiceSpy.editOwnProfile.and.returnValue(
-                throwError(() => exception),
-            );
+            authServiceSpy.editOwnProfile.mockReturnValue(throwError(() => exception));
             await harness.setValues({ name: 'John Williams' });
             await harness.clickSaveButton();
             fixture.detectChanges();

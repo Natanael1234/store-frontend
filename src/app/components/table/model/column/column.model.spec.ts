@@ -60,9 +60,9 @@ describe('Column', () => {
             position: 2,
         });
 
-        expect(column.sortable).toBeFalse();
-        expect(column.disabled).toBeFalse();
-        expect(column.shrink).toBeFalse();
+        expect(column.sortable).toBe(false);
+        expect(column.disabled).toBe(false);
+        expect(column.shrink).toBe(false);
     });
 
     it('should allow updating properties after creation', () => {

@@ -1,5 +1,5 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AuthResponseDto } from '@services/auth/dtos/auth.response.dto';
 import { EditOwnProfileRequestDto } from '@services/auth/dtos/edit-own-profile.request.dto';
 import { LoginRequestDto } from '@services/auth/dtos/login.request.dto';
@@ -11,151 +11,79 @@ import { AuthRequestRoutes } from '@services/auth/request-routes/auth.request-ro
 import { HttpService } from '@services/http/http.service';
 import { TokenService } from '@services/token/token.service';
 import { normalizeException } from '@utils/exception-normalizer/exception-normalizer';
-import { Observable, of, Subscriber } from 'rxjs';
+import { Observable, catchError, map, of, tap, throwError } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+    providedIn: 'root',
+})
 export class AuthService {
-    httpService: HttpService = inject(HttpService);
-    tokenService: TokenService = inject(TokenService);
-
-    constructor() {}
+    private readonly httpService = inject(HttpService);
+    private readonly tokenService = inject(TokenService);
 
     register(data: RegisterRequestDto): Observable<AuthResponseDto> {
-        return new Observable((observer: Subscriber<AuthResponseDto>) => {
-            this.httpService
-                .post({ path: AuthRequestRoutes.REGISTER.url, data })
-                .subscribe({
-                    next: (response: AuthResponseDto) => {
-                        this.processAuthResponse(observer, response);
-                    },
-                    error: (error: HttpErrorResponse | Error) => {
-                        observer.error(normalizeException(error));
-                    },
-                    complete: () => {
-                        observer.complete();
-                    },
-                });
-        });
+        return this.httpService
+            .post<AuthResponseDto>({ path: AuthRequestRoutes.REGISTER.url, data })
+            .pipe(
+                tap((response) => this.processAuthTokens(response)),
+                catchError(this.handleError),
+            );
     }
 
     login(data: LoginRequestDto): Observable<AuthResponseDto> {
-        return new Observable((observer: Subscriber<AuthResponseDto>) => {
-            const observable = this.httpService.post({
-                path: AuthRequestRoutes.LOGIN.url,
-                data,
-            });
-
-            observable.subscribe({
-                next: (response: AuthResponseDto) => {
-                    this.processAuthResponse(observer, response);
-                },
-                error: (error: any) => {
-                    observer.error(normalizeException(error));
-                },
-                complete: () => {
-                    observer.complete();
-                },
-            });
-        });
+        return this.httpService
+            .post<AuthResponseDto>({ path: AuthRequestRoutes.LOGIN.url, data })
+            .pipe(
+                tap((response) => this.processAuthTokens(response)),
+                catchError(this.handleError),
+            );
     }
 
-    createNewPassword(
-        data: NewPasswordRequestDto,
-    ): Observable<AuthResponseDto> {
-        return new Observable((observer: Subscriber<AuthResponseDto>) => {
-            const observable = this.httpService.post({
-                path: AuthRequestRoutes.NEW_PASSWORD.url,
-                data,
-            });
-
-            observable.subscribe({
-                next: (response: AuthResponseDto) => {
-                    this.processAuthResponse(observer, response);
-                },
-                error: (error: any) => {
-                    observer.error(normalizeException(error));
-                },
-                complete: () => {
-                    observer.complete();
-                },
-            });
-        });
+    createNewPassword(data: NewPasswordRequestDto): Observable<AuthResponseDto> {
+        return this.httpService
+            .post<AuthResponseDto>({ path: AuthRequestRoutes.NEW_PASSWORD.url, data })
+            .pipe(
+                tap((response) => this.processAuthTokens(response)),
+                catchError(this.handleError),
+            );
     }
 
     updateLoggedInUserPassword(
         data: UpdateLoggedInUserPasswordRequestDto,
     ): Observable<AuthResponseDto> {
-        return new Observable((observer: Subscriber<AuthResponseDto>) => {
-            const observable = this.httpService.post({
+        return this.httpService
+            .post<AuthResponseDto>({
                 path: AuthRequestRoutes.UPDATE_LOGGED_IN_USER_PASSWORD.url,
                 data,
-            });
-
-            observable.subscribe({
-                next: (response: AuthResponseDto) => {
-                    this.processAuthResponse(observer, response);
-                },
-                error: (error: any) => {
-                    observer.error(normalizeException(error));
-                },
-                complete: () => {
-                    observer.complete();
-                },
-            });
-        });
+            })
+            .pipe(
+                tap((response) => this.processAuthTokens(response)),
+                catchError(this.handleError),
+            );
     }
 
-    requestPasswordChangeLink(
-        data: RequestPasswordChangeLinkRequestDto,
-    ): Observable<boolean> {
-        return new Observable((observer: Subscriber<boolean>) => {
-            const observable = this.httpService.post({
+    requestPasswordChangeLink(data: RequestPasswordChangeLinkRequestDto): Observable<boolean> {
+        return this.httpService
+            .post<boolean>({
                 path: AuthRequestRoutes.REQUEST_PASSWORD_CREATION.url,
                 data,
-            });
-
-            observable.subscribe({
-                next: (response: boolean) => {
-                    observer.next(response);
-                },
-                error: (error: any) => {
-                    observer.error(normalizeException(error));
-                },
-                complete: () => {
-                    observer.complete();
-                },
-            });
-        });
+            })
+            .pipe(catchError(this.handleError));
     }
 
-    editOwnProfile(data: EditOwnProfileRequestDto): Observable<true> {
-        const editOwnProfileObservable = new Observable(
-            (observer: Subscriber<true>) => {
-                const postObservable = this.httpService.post({
-                    path: AuthRequestRoutes.EDIT_OWN_PROFILE.url,
-                    data,
-                });
-
-                postObservable.subscribe({
-                    next: (response: true) => {
-                        observer.next(true);
-                    },
-                    error: (error: any) => {
-                        observer.error(normalizeException(error));
-                    },
-                    complete: () => {
-                        observer.complete();
-                    },
-                });
-            },
-        );
-
-        return editOwnProfileObservable;
+    editOwnProfile(data: EditOwnProfileRequestDto): Observable<boolean> {
+        return this.httpService
+            .post<boolean>({
+                path: AuthRequestRoutes.EDIT_OWN_PROFILE.url,
+                data,
+            })
+            .pipe(
+                map(() => true),
+                catchError(this.handleError),
+            );
     }
 
     isAuthenticated(): boolean {
-        const accessToken = this.tokenService.getAccessToken();
-        return !!accessToken;
+        return !!this.tokenService.getAccessToken();
     }
 
     /**
@@ -171,59 +99,45 @@ export class AuthService {
             return of(null);
         }
 
-        const refreshTokenObservable = new Observable(
-            (observer: Subscriber<string | null>) => {
-                this.httpService
-                    .post({
-                        path: AuthRequestRoutes.REFRESH.url,
-                        data: { refreshToken },
-                    })
-                    .subscribe({
-                        next: (response: AuthResponseDto) => {
-                            const accessToken = response.data?.payload?.token!;
-                            // don't received access token
-                            if (!accessToken) {
-                                this.tokenService.clearTokens();
-                            }
-                            // received acess token
-                            else {
-                                this.tokenService.setAccessToken(accessToken);
-                            }
-                            // return access token
-                            observer.next(accessToken);
-                        },
-                        error: (error: any) => {
-                            // unauthorized
-                            if (
-                                error instanceof HttpErrorResponse &&
-                                error.status === HttpStatusCode.Unauthorized
-                            ) {
-                                this.tokenService.clearTokens();
-                                observer.next(null);
-                            }
-                            // other errors
-                            else {
-                                observer.error(normalizeException(error));
-                            }
-                        },
-                        complete: () => {
-                            observer.complete();
-                        },
-                    });
-            },
-        );
-
-        return refreshTokenObservable;
+        return this.httpService
+            .post<AuthResponseDto>({
+                path: AuthRequestRoutes.REFRESH.url,
+                data: { refreshToken },
+            })
+            .pipe(
+                map((response) => {
+                    const accessToken = response.data?.payload?.token ?? null;
+                    if (accessToken) {
+                        this.tokenService.setAccessToken(accessToken);
+                    } else {
+                        this.tokenService.clearTokens();
+                    }
+                    return accessToken;
+                }),
+                catchError((error: unknown) => {
+                    if (
+                        error instanceof HttpErrorResponse &&
+                        error.status === HttpStatusCode.Unauthorized
+                    ) {
+                        this.tokenService.clearTokens();
+                        return of(null);
+                    }
+                    return this.handleError(error);
+                }),
+            );
     }
 
-    private processAuthResponse(
-        observer: Subscriber<any>,
-        response: AuthResponseDto,
-    ) {
-        this.tokenService.setAccessToken(response.data?.payload?.token!);
-        this.tokenService.setRefreshToken(
-            response.data?.payload?.refreshToken!,
-        );
-        observer.next(response);
+    private processAuthTokens(response: AuthResponseDto): void {
+        const token = response.data?.payload?.token;
+        const refreshToken = response.data?.payload?.refreshToken;
+
+        // if (token)
+        this.tokenService.setAccessToken(token);
+        // if (refreshToken)
+        this.tokenService.setRefreshToken(refreshToken!);
+    }
+
+    private handleError(error: unknown): Observable<never> {
+        return throwError(() => normalizeException(error));
     }
 }

@@ -13,19 +13,12 @@ type UserFilterToolbarState = {
 export class UserFilterToolbarHarness extends ComponentHarness {
     static hostSelector = 'app-user-filter-toolbar';
     private readonly hostChildrenElements = this.locatorForAll(':scope > *');
-    private readonly formChildrenElements =
-        this.locatorForAll(':scope > form > *');
-    private readonly wrapperChildrenElements = this.locatorForAll(
-        ':scope > form > div > *',
-    );
+    private readonly formChildrenElements = this.locatorForAll(':scope > form > *');
+    private readonly wrapperChildrenElements = this.locatorForAll(':scope > form > div > *');
 
-    private readonly filterButton = this.locatorFor(
-        ':scope button#filter-button',
-    );
+    private readonly filterButton = this.locatorFor(':scope button#filter-button');
 
-    private readonly cancelButton = this.locatorForOptional(
-        ':scope button#cancel-button',
-    );
+    private readonly cancelButton = this.locatorForOptional(':scope button#cancel-button');
 
     private readonly selectFields = this.locatorForAll(SelectFieldHarness);
 
@@ -130,9 +123,7 @@ export class UserFilterToolbarHarness extends ComponentHarness {
         const formChildtagNames: string[] = await Promise.all(
             formChildrenEls.map(
                 async (wrapperChildElement) =>
-                    (await wrapperChildElement.getProperty(
-                        'tagName',
-                    )) as string,
+                    (await wrapperChildElement.getProperty('tagName')) as string,
             ),
         );
         return formChildtagNames;
@@ -143,9 +134,7 @@ export class UserFilterToolbarHarness extends ComponentHarness {
         const wrapperChildtagNames: string[] = await Promise.all(
             wrapperChildrenEls.map(
                 async (wrapperChildElement) =>
-                    (await wrapperChildElement.getProperty(
-                        'tagName',
-                    )) as string,
+                    (await wrapperChildElement.getProperty('tagName')) as string,
             ),
         );
         return wrapperChildtagNames;
@@ -160,10 +149,7 @@ export class UserFilterToolbarHarness extends ComponentHarness {
         const wrapperChildrenEls = await this.getWrapperChildElements();
         const childrenCount = [];
         for (let i = 0; i < wrapperChildrenEls.length; i++) {
-            const count =
-                await wrapperChildrenEls[i].getProperty<number>(
-                    'childElementCount',
-                );
+            const count = await wrapperChildrenEls[i].getProperty<number>('childElementCount');
             childrenCount.push(count);
         }
         return childrenCount;
@@ -172,10 +158,7 @@ export class UserFilterToolbarHarness extends ComponentHarness {
     async getStructureData() {
         const wrapperChildrenTagNames = await this.getWrapperChildrenTagNames();
         const wrapperCols = await this.getWrapperCols();
-        const maxLength = Math.max(
-            wrapperChildrenTagNames.length,
-            wrapperCols.length,
-        );
+        const maxLength = Math.max(wrapperChildrenTagNames.length, wrapperCols.length);
         const dataList: UserFilterChildrenData[] = [];
         for (let i = 0; i < maxLength; i++) {
             const data = {
@@ -205,12 +188,11 @@ export class UserFilterToolbarHarness extends ComponentHarness {
         }
 
         // form contain grid class
-        const formClasses: string[] = (
-            (await hostChildElement.getAttribute('class')) ?? ''
-        ).split(' ');
+        const formClasses: string[] = ((await hostChildElement.getAttribute('class')) ?? '').split(
+            ' ',
+        );
         if (!formClasses.includes('grid')) {
-            errors['gridClassMissingFromTheForm'] =
-                `Grid class missing from the form.`;
+            errors['gridClassMissingFromTheForm'] = `Grid class missing from the form.`;
         }
 
         const formChildren = await this.getFormChildrenTagNames();
@@ -219,8 +201,7 @@ export class UserFilterToolbarHarness extends ComponentHarness {
             !isEqual(['DIV', 'DIV', 'DIV', 'DIV'], formChildren) &&
             !isEqual(['DIV', 'DIV', 'DIV', 'DIV', 'DIV'], formChildren)
         ) {
-            errors['invalidFormChildren'] =
-                `Form children should be divs. Found ${formChildren}.`;
+            errors['invalidFormChildren'] = `Form children should be divs. Found ${formChildren}.`;
         }
 
         const wrapperChildCount = await this.getWrapperChildrenCount();
@@ -234,8 +215,7 @@ export class UserFilterToolbarHarness extends ComponentHarness {
         }
 
         if (formChildren.length !== wrapperChildCount.length) {
-            errors['invalidFormChildChildren'] =
-                `Wrappers should have exctly one child.`;
+            errors['invalidFormChildChildren'] = `Wrappers should have exctly one child.`;
         }
 
         const wrapperChildtagNames = await this.getWrapperChildrenTagNames();
@@ -262,12 +242,7 @@ export class UserFilterToolbarHarness extends ComponentHarness {
             }
         } else if (
             isEqual(
-                [
-                    'APP-SELECT-FIELD',
-                    'APP-SELECT-FIELD',
-                    'APP-BUTTON',
-                    'APP-BUTTON',
-                ],
+                ['APP-SELECT-FIELD', 'APP-SELECT-FIELD', 'APP-BUTTON', 'APP-BUTTON'],
                 wrapperChildtagNames,
             )
         ) {
@@ -277,12 +252,7 @@ export class UserFilterToolbarHarness extends ComponentHarness {
             }
         } else if (
             isEqual(
-                [
-                    'APP-SELECT-FIELD',
-                    'APP-SELECT-FIELD',
-                    'APP-SELECT-FIELD',
-                    'APP-BUTTON',
-                ],
+                ['APP-SELECT-FIELD', 'APP-SELECT-FIELD', 'APP-SELECT-FIELD', 'APP-BUTTON'],
                 wrapperChildtagNames,
             )
         ) {
@@ -291,10 +261,7 @@ export class UserFilterToolbarHarness extends ComponentHarness {
                     `Invalid form wrapper cols. Found ${JSON.stringify(wrapperCols)}.`;
             }
         } else if (
-            isEqual(
-                ['APP-SELECT-FIELD', 'APP-SELECT-FIELD', 'APP-BUTTON'],
-                wrapperChildtagNames,
-            )
+            isEqual(['APP-SELECT-FIELD', 'APP-SELECT-FIELD', 'APP-BUTTON'], wrapperChildtagNames)
         ) {
             if (!isEqual([12, 12, 6], wrapperCols)) {
                 errors['invalidWrapperCols'] =

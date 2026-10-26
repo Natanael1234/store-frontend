@@ -1,43 +1,26 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { By } from '@angular/platform-browser';
-import { RouterModule } from '@angular/router';
+import { provideRouter, withDisabledInitialNavigation } from '@angular/router';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { Component } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavigationRailComponent } from '@components/navigation-rail/navigation-rail.component';
 import { NavigationRailItem } from '@components/navigation-rail/types/navigation-rail-item/navigation-rail-item.type';
 import { MouseButton } from '@enums/mouse-button/mouse-button.enum';
 import { PointerType } from '@enums/pointer-type/pointer-type.enum';
 
-describe('SideMenuComponent.', () => {
+// 💡 Componente Dummy para registrar como destino das rotas
+@Component({ standalone: true, template: '' })
+class DummyComponent {}
+
+describe('NavigationRailComponent', () => {
     let navigationRailComponent: NavigationRailComponent;
     let fixture: ComponentFixture<NavigationRailComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            imports: [
-                CommonModule,
-                NavigationRailComponent,
-                MatButtonModule,
-                MatIconModule,
-                RouterModule,
-            ],
-        }).compileComponents();
-
-        fixture = TestBed.createComponent(NavigationRailComponent);
-        navigationRailComponent = fixture.componentInstance;
-        fixture.detectChanges();
-    });
-
-    it('should create', () => {
-        expect(navigationRailComponent).toBeTruthy();
-    });
-
-    function setupItems(options?: {
-        collapsed: boolean;
-        transition?: boolean;
-    }) {
+    function setupItems(options?: { collapsed: boolean; transition?: boolean }) {
         if (options?.collapsed != null) {
             navigationRailComponent.collapsed.set(options.collapsed);
         }
@@ -80,13 +63,9 @@ describe('SideMenuComponent.', () => {
         if (classes) {
             for (const clazz of Object.keys(classes)) {
                 if (classes[clazz]) {
-                    expect(element.classList)
-                        .withContext('element contains class')
-                        .toContain(clazz);
+                    expect(element.classList).toContain(clazz);
                 } else {
-                    expect(element.classList)
-                        .withContext("element don't contains class")
-                        .not.toContain(clazz);
+                    expect(element.classList).not.toContain(clazz);
                 }
             }
         }
@@ -108,14 +87,15 @@ describe('SideMenuComponent.', () => {
     }) {
         const { collapsed, transition, items } = options;
         const opened = !collapsed;
-        // container
+
         const containerEl = fixture.debugElement.nativeElement.children[0];
         expect(containerEl.children.length).toBe(items.length);
         const buttons = containerEl.children;
+
         for (let i = 0; i < buttons.length; i++) {
             const btn = buttons[i] as HTMLButtonElement;
-            // item/btn
             const item = items[i];
+
             expect(btn.id).toBe(item.id);
             testElement({
                 element: btn,
@@ -125,10 +105,11 @@ describe('SideMenuComponent.', () => {
                     innerHtml: item.innerHtml,
                 },
             });
+
             expect(btn.children[1].children.length).toEqual(1);
             const btnWrapper = btn.children[1].children[0];
             expect(btnWrapper.classList).toContain('button-content-wrapper');
-            // btn wrapper
+
             testElement({
                 element: btnWrapper,
                 expectedElement: {
@@ -136,14 +117,14 @@ describe('SideMenuComponent.', () => {
                 },
             });
             expect(btnWrapper.children.length).toEqual(2);
-            // icon wrapper
+
             const iconWrapper = btnWrapper.children[0];
             testElement({
                 element: iconWrapper,
                 expectedElement: { classes: { 'icon-wrapper': true } },
             });
             expect(iconWrapper.children.length).toEqual(1);
-            // icon
+
             const icon = iconWrapper.children[0];
             testElement({
                 element: icon,
@@ -152,7 +133,7 @@ describe('SideMenuComponent.', () => {
                 },
             });
             expect(icon.innerHTML.trim()).toEqual(item.icon);
-            // label wrapper
+
             const labelWrapper = btnWrapper.children[1];
             testElement({
                 element: labelWrapper,
@@ -168,6 +149,31 @@ describe('SideMenuComponent.', () => {
             expect(labelWrapper.innerHTML.trim()).toEqual(item.label);
         }
     }
+
+    beforeEach(async () => {
+        TestBed.configureTestingModule({
+            imports: [CommonModule, NavigationRailComponent, MatButtonModule, MatIconModule],
+            providers: [
+                // 💡 Declaramos as rotas dummy e wildcard (**), para aceitar qualquer navegação
+                provideRouter(
+                    [
+                        { path: 'home', component: DummyComponent },
+                        { path: 'settings', component: DummyComponent },
+                        { path: '**', component: DummyComponent },
+                    ],
+                    withDisabledInitialNavigation(),
+                ),
+            ],
+        });
+
+        fixture = TestBed.createComponent(NavigationRailComponent);
+        navigationRailComponent = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(navigationRailComponent).toBeTruthy();
+    });
 
     describe('template', () => {
         it('should collapse by default and no transition by default', async () => {
@@ -222,9 +228,11 @@ describe('SideMenuComponent.', () => {
 
     describe('fireOnCloseEvent', () => {
         it('should emit onClose on item left click', () => {
-            spyOn(navigationRailComponent.onClose, 'emit').and.callThrough();
+            vi.spyOn(navigationRailComponent.onClose, 'emit');
             setupItems({ collapsed: true, transition: true });
+
             const btn = fixture.debugElement.query(By.css('button#home_id'));
+
             btn.triggerEventHandler(
                 'click',
                 new PointerEvent('click', {
@@ -232,40 +240,40 @@ describe('SideMenuComponent.', () => {
                     pointerType: PointerType.mouse,
                 }),
             );
-            expect(navigationRailComponent.onClose.emit)
-                .withContext('onClose event fired')
-                .toHaveBeenCalledOnceWith();
+
+            expect(navigationRailComponent.onClose.emit).toHaveBeenCalledOnce();
         });
 
         it('should emit onClose on left pen event', () => {
-            spyOn(navigationRailComponent.onClose, 'emit').and.callThrough();
+            vi.spyOn(navigationRailComponent.onClose, 'emit');
             setupItems({ collapsed: true, transition: true });
+
             const btn = fixture.debugElement.query(By.css('button#home_id'));
             btn.triggerEventHandler(
                 'click',
                 new PointerEvent('click', { pointerType: PointerType.pen }),
             );
-            expect(navigationRailComponent.onClose.emit)
-                .withContext('onClose event fired')
-                .toHaveBeenCalledOnceWith();
+
+            expect(navigationRailComponent.onClose.emit).toHaveBeenCalledOnce();
         });
 
         it('should emit onClose on touch event', () => {
-            spyOn(navigationRailComponent.onClose, 'emit').and.callThrough();
+            vi.spyOn(navigationRailComponent.onClose, 'emit');
             setupItems({ collapsed: true, transition: true });
+
             const btn = fixture.debugElement.query(By.css('button#home_id'));
             btn.triggerEventHandler(
                 'click',
                 new PointerEvent('click', { pointerType: PointerType.touch }),
             );
-            expect(navigationRailComponent.onClose.emit)
-                .withContext('onClose event fired')
-                .toHaveBeenCalledOnceWith();
+
+            expect(navigationRailComponent.onClose.emit).toHaveBeenCalledOnce();
         });
 
         it('should not emit onClose on item right click', () => {
-            spyOn(navigationRailComponent.onClose, 'emit').and.callThrough();
+            vi.spyOn(navigationRailComponent.onClose, 'emit');
             setupItems({ collapsed: true, transition: true });
+
             const btn = fixture.debugElement.query(By.css('button#home_id'));
             btn.triggerEventHandler(
                 'click',
@@ -274,14 +282,14 @@ describe('SideMenuComponent.', () => {
                     pointerType: PointerType.mouse,
                 }),
             );
-            expect(navigationRailComponent.onClose.emit)
-                .withContext('onClose event fired')
-                .not.toHaveBeenCalledOnceWith();
+
+            expect(navigationRailComponent.onClose.emit).not.toHaveBeenCalled();
         });
 
         it('should not emit onClose on item middle click', () => {
-            spyOn(navigationRailComponent.onClose, 'emit').and.callThrough();
+            vi.spyOn(navigationRailComponent.onClose, 'emit');
             setupItems({ collapsed: true, transition: true });
+
             const btn = fixture.debugElement.query(By.css('button#home_id'));
             btn.triggerEventHandler(
                 'click',
@@ -290,9 +298,8 @@ describe('SideMenuComponent.', () => {
                     pointerType: PointerType.mouse,
                 }),
             );
-            expect(navigationRailComponent.onClose.emit)
-                .withContext('onClose event fired')
-                .not.toHaveBeenCalledOnceWith();
+
+            expect(navigationRailComponent.onClose.emit).not.toHaveBeenCalled();
         });
     });
 });

@@ -15,6 +15,7 @@ describe('Icon enum', () => {
             home: 'home',
             person: 'person',
             error: 'error',
+            warning: 'warning',
         });
     });
 });

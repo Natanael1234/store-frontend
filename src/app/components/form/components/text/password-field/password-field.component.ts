@@ -1,19 +1,12 @@
 import { A11yModule } from '@angular/cdk/a11y';
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { CommonModule } from '@angular/common';
-import {
-    Component,
-    computed,
-    EventEmitter,
-    model,
-    Output,
-} from '@angular/core';
+import { Component, EventEmitter, Output, computed, model } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { AutofocusDirective } from '@components/form/directives/autofocus/autofocus.directive';
+import { AutoFocusDirective } from '@components/form/directives/autofocus/autofocus.directive';
 import { AutoCompleteType } from '@components/form/enums/auto-complete-type/auto-complete-type.enum';
 import { FormElementType } from '@components/form/enums/form-element-type/form-element-type.enum';
 import { Icon } from '@enums/icons/icons.enum';
@@ -28,11 +21,10 @@ import { provideNgxMask } from 'ngx-mask';
         MatFormFieldModule,
         MatInputModule,
         TextFieldModule,
-        CommonModule,
         MatIconModule,
         MatIconButton,
         FirstErrorMessagePipe,
-        AutofocusDirective,
+        AutoFocusDirective,
         A11yModule,
     ],
     providers: [provideNgxMask()],
@@ -66,7 +58,7 @@ import { provideNgxMask } from 'ngx-mask';
                 [attr.placeholder]="_placeholder()"
                 [attr.tabindex]="_tabIndex()"
                 [attr.autocomplete]="_autocomplete()"
-                [appAutofocus]="_autofocus()"
+                [appAutoFocus]="_autofocus()"
                 [attr.readonly]="_readOnly()"
                 [attr.minlength]="_minLength()"
                 [attr.maxlength]="_maxLength()"
@@ -79,7 +71,7 @@ import { provideNgxMask } from 'ngx-mask';
                 (click)="toggleVisibility()"
                 type="button"
                 tabIndex="-1"
-                [disabled]="control()?.disabled">
+                [disabled]="control()?.disabled ?? false">
                 <!-- TODO: testar o disabled do botão -->
                 <!-- TOOD: test tabIndex -->
                 <mat-icon>{{ _passwordIcon() }}</mat-icon>
@@ -91,45 +83,42 @@ import { provideNgxMask } from 'ngx-mask';
     `,
 })
 export class PasswordFieldComponent {
-    public id = model<string>();
-    public label = model<string>();
-    public placeholder = model<string>();
-    public control = model<FormControl>();
-    public focusable = model<boolean>();
-    public autofocus = model<boolean>();
-    public autocomplete = model<AutoCompleteType>();
-    public readOnly = model<boolean>();
-    public minLength = model<number>();
-    public maxLength = model<number>();
+    public readonly id = model<string>();
+    public readonly label = model<string>();
+    public readonly placeholder = model<string>();
+    public readonly control = model<FormControl>();
+    public readonly focusable = model<boolean>();
+    public readonly autofocus = model<boolean>();
+    public readonly autocomplete = model<AutoCompleteType>();
+    public readonly readOnly = model<boolean>();
+    public readonly minLength = model<number>();
+    public readonly maxLength = model<number>();
 
-    protected _visible = model<boolean>(false);
+    protected readonly _visible = model<boolean>(false);
 
-    protected _id = computed(() => this.id() ?? '');
-    protected _type = computed<FormElementType.password | FormElementType.text>(
-        () =>
-            !this._visible() ? FormElementType.password : FormElementType.text,
+    protected readonly _id = computed(() => this.id() ?? '');
+    protected readonly _type = computed<FormElementType.password | FormElementType.text>(() =>
+        !this._visible() ? FormElementType.password : FormElementType.text,
     );
-    protected _label = computed(() => this.label() ?? '');
-    protected _placeholder = computed(() => this.placeholder() ?? '');
-    protected _tabIndex = computed(() => ((this.focusable() ?? true) ? 0 : -1));
-    protected _readOnly = computed(() => this.readOnly() ?? false);
-    protected _autocomplete = computed(
-        () => this.autocomplete() ?? AutoCompleteType.off,
-    );
-    protected _autofocus = computed(() => this.autofocus() ?? false);
-    protected _minLength = computed(() => this.minLength() ?? null);
-    protected _maxLength = computed(() => this.maxLength() ?? null);
-    protected _passwordIcon = computed(() =>
+    protected readonly _label = computed(() => this.label() ?? '');
+    protected readonly _placeholder = computed(() => this.placeholder() ?? '');
+    protected readonly _tabIndex = computed(() => ((this.focusable() ?? true) ? 0 : -1));
+    protected readonly _readOnly = computed(() => this.readOnly() ?? false);
+    protected readonly _autocomplete = computed(() => this.autocomplete() ?? AutoCompleteType.off);
+    protected readonly _autofocus = computed(() => this.autofocus() ?? false);
+    protected readonly _minLength = computed(() => this.minLength() ?? null);
+    protected readonly _maxLength = computed(() => this.maxLength() ?? null);
+    protected readonly _passwordIcon = computed(() =>
         this._visible() ? Icon.visibility_off : Icon.visibility,
     );
 
-    @Output() onBlur = new EventEmitter();
+    @Output() public readonly onBlur = new EventEmitter<void>();
 
-    protected toggleVisibility() {
+    protected toggleVisibility(): void {
         this._visible.set(!this._visible());
     }
 
-    protected fireOnBlurEvent() {
+    protected fireOnBlurEvent(): void {
         this.onBlur.emit();
     }
 }

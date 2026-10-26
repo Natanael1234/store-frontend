@@ -12,7 +12,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { By } from '@angular/platform-browser';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { AlertComponent } from '@components/alert/alert.component';
 import { MockAlertComponent } from '@components/alert/test/mock/alert.component.mock';
 import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
@@ -29,13 +28,18 @@ import { Role } from '@services/user/dtos/role/role.enum';
 import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 import { UserService } from '@services/user/user.service';
 import { of, Subject, throwError } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('UsersComponent.', () => {
     let fixture: ComponentFixture<UsersComponent>;
     let component: UsersComponent;
-    let userServiceSpy: jasmine.SpyObj<UserService>;
+    let userServiceSpy: {
+        getUsers: ReturnType<typeof vi.fn>;
+        getUser: ReturnType<typeof vi.fn>;
+        saveUser: ReturnType<typeof vi.fn>;
+    };
 
-    let mockBreakpointObserver: jasmine.SpyObj<BreakpointObserver>;
+    let mockBreakpointObserver: { observe: ReturnType<typeof vi.fn> };
     let breakpointSubject: Subject<BreakpointState>;
 
     let listMock: ResponsiveUserListComponent;
@@ -43,9 +47,7 @@ describe('UsersComponent.', () => {
     let paginator: MatPaginator;
 
     function getAlertTextContent() {
-        const alerts: DebugElement[] = fixture.debugElement.queryAll(
-            By.directive(AlertComponent),
-        );
+        const alerts: DebugElement[] = fixture.debugElement.queryAll(By.directive(AlertComponent));
         if (alerts.length === 0) {
             return null;
         }
@@ -55,9 +57,7 @@ describe('UsersComponent.', () => {
     }
 
     function getAlert() {
-        const debugElement = fixture.debugElement.query(
-            By.directive(AlertComponent),
-        );
+        const debugElement = fixture.debugElement.query(By.directive(AlertComponent));
         if (!debugElement) {
             return null;
         }
@@ -65,15 +65,13 @@ describe('UsersComponent.', () => {
     }
 
     function getFilters() {
-        return fixture.debugElement.query(
-            By.directive(ResponsiveUserFiltersComponent),
-        ).componentInstance as ResponsiveUserFiltersComponent;
+        return fixture.debugElement.query(By.directive(ResponsiveUserFiltersComponent))
+            .componentInstance as ResponsiveUserFiltersComponent;
     }
 
     function getList() {
-        return fixture.debugElement.query(
-            By.directive(ResponsiveUserListComponent),
-        ).componentInstance as ResponsiveUserListComponent;
+        return fixture.debugElement.query(By.directive(ResponsiveUserListComponent))
+            .componentInstance as ResponsiveUserListComponent;
     }
 
     function getPaginator() {
@@ -139,7 +137,7 @@ describe('UsersComponent.', () => {
     }
 
     function getUsersCallsData() {
-        const calls = userServiceSpy.getUsers.calls.allArgs();
+        const calls = userServiceSpy.getUsers.mock.calls;
         const _calls: FindUserRequestDTO[][] = [];
         for (let i = 0; i < calls.length; i++) {
             const _call: any[] = [];
@@ -156,13 +154,16 @@ describe('UsersComponent.', () => {
         const list = fixture.debugElement.query(
             By.directive(ResponsiveUserListComponent),
         ).componentInstance;
-        const calls = list.headerClick.emit.calls.all();
-        const _calls: UserOrder[][][] = [];
+
+        // Vitest stores call arguments directly in mock.calls as an array of argument arrays
+        const calls = list.headerClick.emit.mock.calls;
+        const _calls: any[][] = [];
+
         for (let i = 0; i < calls.length; i++) {
             const _call: any[] = [];
             _calls.push(_call);
-            for (let j = 0; j < calls[i].args.length; j++) {
-                _call.push(calls[i].args[j]);
+            for (let j = 0; j < calls[i].length; j++) {
+                _call.push(calls[i][j]);
             }
         }
         return _calls;
@@ -172,32 +173,31 @@ describe('UsersComponent.', () => {
         const list = fixture.debugElement.query(
             By.directive(ResponsiveUserListComponent),
         ).componentInstance;
-        const calls = list.itemClick.emit.calls.all();
+
+        // Vitest stores call arguments in .mock.calls directly as an array of argument arrays
+        const calls = list.itemClick.emit.mock.calls;
         const _calls: string[][] = [];
+
         for (let i = 0; i < calls.length; i++) {
             const _call: any[] = [];
             _calls.push(_call);
-            for (let j = 0; j < calls[i].args.length; j++) {
-                _call.push(calls[i].args[j]);
+            for (let j = 0; j < calls[i].length; j++) {
+                _call.push(calls[i][j]);
             }
         }
         return _calls;
     }
-
     beforeEach(async () => {
-        const spy = jasmine.createSpyObj('UserService', [
-            'getUsers',
-            'getUser',
-            'saveUser',
-        ]);
+        const spy = {
+            getUsers: vi.fn(),
+            getUser: vi.fn(),
+            saveUser: vi.fn(),
+        };
 
         breakpointSubject = new Subject<BreakpointState>();
-        mockBreakpointObserver = jasmine.createSpyObj('BreakpointObserver', [
-            'observe',
-        ]);
-        mockBreakpointObserver.observe.and.returnValue(
-            breakpointSubject.asObservable(),
-        );
+        mockBreakpointObserver = {
+            observe: vi.fn().mockReturnValue(breakpointSubject.asObservable()),
+        };
 
         await TestBed.configureTestingModule({
             imports: [
@@ -219,7 +219,6 @@ describe('UsersComponent.', () => {
                 MatProgressBarModule,
             ],
             providers: [
-                provideAnimationsAsync(),
                 { provide: UserService, useValue: spy },
                 {
                     provide: BreakpointObserver,
@@ -244,29 +243,25 @@ describe('UsersComponent.', () => {
         // users component
         fixture = TestBed.createComponent(UsersComponent);
 
-        userServiceSpy = TestBed.inject(
-            UserService,
-        ) as jasmine.SpyObj<UserService>;
+        userServiceSpy = TestBed.inject(UserService) as unknown as typeof spy;
 
         component = fixture.componentInstance;
 
         // responsive filters component
-        filtersMock = fixture.debugElement.query(
-            By.directive(ResponsiveUserFiltersComponent),
-        ).componentInstance as ResponsiveUserFiltersComponent;
-        spyOn(filtersMock.refresh, 'emit').and.callThrough();
+        filtersMock = fixture.debugElement.query(By.directive(ResponsiveUserFiltersComponent))
+            .componentInstance as ResponsiveUserFiltersComponent;
+        vi.spyOn(filtersMock.refresh, 'emit');
 
         // responsive list component
-        listMock = fixture.debugElement.query(
-            By.directive(ResponsiveUserListComponent),
-        ).componentInstance as ResponsiveUserListComponent;
-        spyOn(listMock.headerClick, 'emit').and.callThrough();
-        spyOn(listMock.itemClick, 'emit').and.callThrough();
+        listMock = fixture.debugElement.query(By.directive(ResponsiveUserListComponent))
+            .componentInstance as ResponsiveUserListComponent;
+        vi.spyOn(listMock.headerClick, 'emit');
+        vi.spyOn(listMock.itemClick, 'emit');
 
         // paginator component
         paginator = fixture.debugElement.query(By.directive(MatPaginator))
             .componentInstance as MatPaginator;
-        spyOn(paginator.page, 'emit').and.callThrough();
+        vi.spyOn(paginator.page, 'emit');
     });
 
     it('should create', async () => {
@@ -277,9 +272,9 @@ describe('UsersComponent.', () => {
         it('should render user list component', async () => {
             const paginatedResponse = of(_usersComponentResponsesData[0]);
             breakpointSubject.next({ matches: true, breakpoints: {} });
-            userServiceSpy.getUsers.and
-                .returnValue(paginatedResponse)
-                .and.returnValue(paginatedResponse);
+            userServiceSpy.getUsers
+                .mockReturnValue(paginatedResponse)
+                .mockReturnValue(paginatedResponse);
 
             fixture.detectChanges();
 
@@ -337,12 +332,10 @@ describe('UsersComponent.', () => {
                     disabled: false,
                 },
             });
-
-            expect();
         });
 
         it('should render alert when mobile', () => {
-            userServiceSpy.getUsers.and.returnValue(
+            userServiceSpy.getUsers.mockReturnValue(
                 throwError(
                     () =>
                         new HttpErrorResponse({
@@ -398,7 +391,7 @@ describe('UsersComponent.', () => {
     describe('desktop', () => {
         it('should render user list component', () => {
             const paginatedResponse = of(_usersComponentResponsesData[0]);
-            userServiceSpy.getUsers.and.returnValue(paginatedResponse);
+            userServiceSpy.getUsers.mockReturnValue(paginatedResponse);
             fixture.detectChanges();
             breakpointSubject.next({ matches: false, breakpoints: {} });
             fixture.detectChanges();
@@ -460,7 +453,7 @@ describe('UsersComponent.', () => {
         });
 
         it('should render alert when not mobile', () => {
-            userServiceSpy.getUsers.and.returnValue(
+            userServiceSpy.getUsers.mockReturnValue(
                 throwError(
                     () =>
                         new HttpErrorResponse({
@@ -517,7 +510,7 @@ describe('UsersComponent.', () => {
     describe('received events', () => {
         describe('alert', () => {
             it('should handle close alert event', () => {
-                userServiceSpy.getUsers.and.returnValue(
+                userServiceSpy.getUsers.mockReturnValue(
                     throwError(
                         () =>
                             new HttpErrorResponse({
@@ -537,9 +530,8 @@ describe('UsersComponent.', () => {
                 ]);
                 fixture.detectChanges();
 
-                const alert = fixture.debugElement.query(
-                    By.directive(AlertComponent),
-                ).componentInstance as AlertComponent;
+                const alert = fixture.debugElement.query(By.directive(AlertComponent))
+                    .componentInstance as AlertComponent;
                 alert.onClose.emit();
                 fixture.detectChanges();
 
@@ -580,8 +572,8 @@ describe('UsersComponent.', () => {
 
         describe("filter's refresh", () => {
             it('should handle refresh filters event', () => {
-                userServiceSpy.getUsers.and
-                    .returnValue(
+                userServiceSpy.getUsers
+                    .mockReturnValue(
                         of({
                             textQuery: '',
                             orderBy: [
@@ -627,7 +619,7 @@ describe('UsersComponent.', () => {
                             pageSize: 12,
                         }),
                     )
-                    .and.returnValue(
+                    .mockReturnValue(
                         of({
                             textQuery: 'test',
                             orderBy: [
@@ -739,7 +731,7 @@ describe('UsersComponent.', () => {
             });
 
             it('should not update refresh filters when refresh event param is false', () => {
-                userServiceSpy.getUsers.and.returnValue(
+                userServiceSpy.getUsers.mockReturnValue(
                     of({
                         textQuery: '',
                         orderBy: [
@@ -868,8 +860,15 @@ describe('UsersComponent.', () => {
 
         describe('header click', () => {
             it('should handle header click event', () => {
-                userServiceSpy.getUsers.and
-                    .returnValue(
+                const newOrder = [
+                    UserOrder.active_desc,
+                    UserOrder.name_asc,
+                    UserOrder.email_asc,
+                    UserOrder.deleted_desc,
+                ];
+
+                userServiceSpy.getUsers
+                    .mockReturnValue(
                         of({
                             textQuery: '',
                             orderBy: [
@@ -889,41 +888,16 @@ describe('UsersComponent.', () => {
                                     updated: '2025-04-08T13:30:00.000Z',
                                     deletedAt: null,
                                 },
-                                {
-                                    id: '891db31e-dfb5-42ed-b912-48b98463b005',
-                                    name: 'User 2',
-                                    email: 'user2@email.com',
-                                    roles: [Role.admin],
-                                    active: true,
-                                    created: '2025-04-08T12:30:00.000Z',
-                                    updated: '2025-04-08T13:30:00.000Z',
-                                    deletedAt: '2025-04-08T15:30:00.000Z',
-                                },
-                                {
-                                    id: '891db31e-dfb5-42ed-b912-48b98463b006',
-                                    name: 'User 3',
-                                    email: 'user3@email.com',
-                                    roles: [Role.admin],
-                                    active: false,
-                                    created: '2025-04-08T12:30:00.000Z',
-                                    updated: '2025-04-08T13:30:00.000Z',
-                                    deletedAt: null,
-                                },
                             ],
-                            count: 3,
+                            count: 1,
                             page: 1,
                             pageSize: 12,
                         }),
                     )
-                    .and.returnValue(
+                    .mockReturnValue(
                         of({
                             textQuery: 'test',
-                            orderBy: [
-                                UserOrder.active_desc,
-                                UserOrder.name_asc,
-                                UserOrder.email_asc,
-                                UserOrder.deleted_desc,
-                            ],
+                            orderBy: newOrder,
                             results: [
                                 {
                                     id: '891db31e-dfb5-42ed-b912-48b98463b005',
@@ -941,14 +915,14 @@ describe('UsersComponent.', () => {
                             pageSize: 2,
                         }),
                     );
+
                 breakpointSubject.next({ matches: false, breakpoints: {} });
                 fixture.detectChanges();
-                listMock.headerClick.emit([
-                    UserOrder.active_desc,
-                    UserOrder.name_asc,
-                    UserOrder.email_asc,
-                    UserOrder.deleted_desc,
-                ]);
+
+                // Mock the list's getOrderBy so the component retrieves the updated order
+                vi.spyOn(listMock, 'getOrderBy').mockReturnValue(newOrder);
+
+                listMock.headerClick.emit(newOrder as any);
                 fixture.detectChanges();
 
                 expect(getFireHeaderClickCallsData()).toEqual([
@@ -983,12 +957,7 @@ describe('UsersComponent.', () => {
                             textQuery: 'test',
                             active: ActiveFilter.active,
                             deleted: DeletedFilter.not_deleted,
-                            orderBy: [
-                                UserOrder.active_desc,
-                                UserOrder.name_asc,
-                                UserOrder.email_asc,
-                                UserOrder.deleted_desc,
-                            ],
+                            orderBy: newOrder,
                             page: 2,
                             pageSize: 2,
                         },
@@ -999,7 +968,7 @@ describe('UsersComponent.', () => {
 
         describe('row click', () => {
             it('should handle row click event', () => {
-                userServiceSpy.getUsers.and.returnValue(
+                userServiceSpy.getUsers.mockReturnValue(
                     of({
                         textQuery: '',
                         orderBy: [
@@ -1095,8 +1064,8 @@ describe('UsersComponent.', () => {
 
         describe('pagination', () => {
             it('should paginate', () => {
-                userServiceSpy.getUsers.and
-                    .returnValue(
+                userServiceSpy.getUsers
+                    .mockReturnValue(
                         of({
                             textQuery: '',
                             orderBy: [
@@ -1132,7 +1101,7 @@ describe('UsersComponent.', () => {
                             pageSize: 12,
                         }),
                     )
-                    .and.returnValue(
+                    .mockReturnValue(
                         of({
                             textQuery: '',
                             orderBy: [

@@ -58,12 +58,7 @@ describe('Table Sorter', () => {
 
     it('should get orderBy', () => {
         const sorter = new TableSorter(columns);
-        expect(sorter.getOrderBy()).toEqual([
-            'col1_asc',
-            'col2_asc',
-            'col3_asc',
-            'col4_desc',
-        ]);
+        expect(sorter.getOrderBy()).toEqual(['col1_asc', 'col2_asc', 'col3_asc', 'col4_desc']);
     });
 
     it('should sort by sort object', () => {
@@ -73,7 +68,7 @@ describe('Table Sorter', () => {
             direction: SortDirection.desc,
         });
         expect(sorter.getColumns())
-            .withContext('expected columns')
+            // .withContext('expected columns')
             .toEqual([
                 new Column({
                     id: 'col1',
@@ -113,19 +108,14 @@ describe('Table Sorter', () => {
                 }),
             ]);
 
-        expect(sorter.getOrderBy()).toEqual([
-            'col2_desc',
-            'col1_asc',
-            'col3_asc',
-            'col4_desc',
-        ]);
+        expect(sorter.getOrderBy()).toEqual(['col2_desc', 'col1_asc', 'col3_asc', 'col4_desc']);
     });
 
     it('should sort by column id', () => {
         const sorter = new TableSorter(columns);
         sorter.orderByColumnIdAndDirection('col2');
         expect(sorter.getColumns())
-            .withContext('expected columns')
+            // .withContext('expected columns')
             .toEqual([
                 new Column({
                     id: 'col1',
@@ -165,19 +155,14 @@ describe('Table Sorter', () => {
                 }),
             ]);
 
-        expect(sorter.getOrderBy()).toEqual([
-            'col2_desc',
-            'col1_asc',
-            'col3_asc',
-            'col4_desc',
-        ]);
+        expect(sorter.getOrderBy()).toEqual(['col2_desc', 'col1_asc', 'col3_asc', 'col4_desc']);
     });
 
     it('should sort by column id and direction', () => {
         const sorter = new TableSorter(columns);
         sorter.orderByColumnIdAndDirection('col2', SortDirection.desc);
         expect(sorter.getColumns())
-            .withContext('expected columns')
+            // .withContext('expected columns')
             .toEqual([
                 new Column({
                     id: 'col1',
@@ -217,19 +202,14 @@ describe('Table Sorter', () => {
                 }),
             ]);
 
-        expect(sorter.getOrderBy()).toEqual([
-            'col2_desc',
-            'col1_asc',
-            'col3_asc',
-            'col4_desc',
-        ]);
+        expect(sorter.getOrderBy()).toEqual(['col2_desc', 'col1_asc', 'col3_asc', 'col4_desc']);
     });
 
     it('should sort by order id', () => {
         const sorter = new TableSorter(columns);
         sorter.orderByOrderId('col2_desc');
         expect(sorter.getColumns())
-            .withContext('expected columns')
+            // .withContext('expected columns')
             .toEqual([
                 new Column({
                     id: 'col1',
@@ -269,24 +249,14 @@ describe('Table Sorter', () => {
                 }),
             ]);
 
-        expect(sorter.getOrderBy()).toEqual([
-            'col2_desc',
-            'col1_asc',
-            'col3_asc',
-            'col4_desc',
-        ]);
+        expect(sorter.getOrderBy()).toEqual(['col2_desc', 'col1_asc', 'col3_asc', 'col4_desc']);
     });
 
     it('should sort by multiple order ids', () => {
         const sorter = new TableSorter(columns);
-        sorter.orderByOrderIds([
-            'col2_desc',
-            'col1_asc',
-            'col3_desc',
-            'col4_asc',
-        ]);
+        sorter.orderByOrderIds(['col2_desc', 'col1_asc', 'col3_desc', 'col4_asc']);
         expect(sorter.getColumns())
-            .withContext('expected columns')
+            // .withContext('expected columns')
             .toEqual([
                 new Column({
                     id: 'col1',
@@ -326,11 +296,6 @@ describe('Table Sorter', () => {
                 }),
             ]);
 
-        expect(sorter.getOrderBy()).toEqual([
-            'col2_desc',
-            'col1_asc',
-            'col3_desc',
-            'col4_asc',
-        ]);
+        expect(sorter.getOrderBy()).toEqual(['col2_desc', 'col1_asc', 'col3_desc', 'col4_asc']);
     });
 });

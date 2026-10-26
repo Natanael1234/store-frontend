@@ -12,63 +12,61 @@ type CheckboxState = {
 };
 
 export class CheckboxHarness extends ComponentHarness {
-    static hostSelector = 'app-checkbox';
+    public static hostSelector = 'app-checkbox';
+
     private readonly hostChildrenElements = this.locatorForAll(':scope > *');
-    private readonly matCheckboxHarnesses =
-        this.locatorForAll(MatCheckboxHarness);
+    private readonly matCheckboxHarnesses = this.locatorForAll(MatCheckboxHarness);
     private readonly matCheckboxHarness = this.locatorFor(MatCheckboxHarness);
 
-    async getHostChildrenCount() {
+    public async getHostChildrenCount(): Promise<number> {
         return (await this.hostChildrenElements()).length;
     }
 
-    async hostContainsASingleCheckbox() {
+    public async hostContainsASingleCheckbox(): Promise<boolean> {
         const children = await this.hostChildrenElements();
-        if (children.length != 1) return false;
+        if (children.length !== 1) return false;
         const tagName = await children[0].getProperty('tagName');
-        return tagName == 'MAT-CHECKBOX';
+        return tagName === 'MAT-CHECKBOX';
     }
 
-    async isHostChildACheckbox() {
+    public async isHostChildACheckbox(): Promise<boolean> {
         const hostChildren = await this.hostChildrenElements();
         if (hostChildren.length < 1) return false;
         const tagName = await hostChildren[0].getProperty('tagName');
-        return tagName == 'MAT-CHECKBOX';
+        return tagName === 'MAT-CHECKBOX';
     }
 
-    async getHostChildrenTagNames(): Promise<string[]> {
+    public async getHostChildrenTagNames(): Promise<string[]> {
         const children = await this.hostChildrenElements();
         const tagNames: string[] = [];
         for (const child of children) {
-            const tag = (
-                (await child.getProperty('tagName')) as string
-            ).toLowerCase();
+            const tag = ((await child.getProperty('tagName')) as string).toLowerCase();
             tagNames.push(tag);
         }
         return tagNames;
     }
 
-    async getMatCheckboxHarness() {
-        return this.matCheckboxHarness();
+    public async getMatCheckboxHarness(): Promise<MatCheckboxHarness> {
+        return await this.matCheckboxHarness();
     }
 
-    async getMatCheckboxHarnesses() {
-        return this.matCheckboxHarnesses();
+    public async getMatCheckboxHarnesses(): Promise<MatCheckboxHarness[]> {
+        return await this.matCheckboxHarnesses();
     }
 
-    async getCheckboxId(): Promise<string> {
+    public async getCheckboxId(): Promise<string> {
         const checkbox = await this.matCheckboxHarness();
         const host = await checkbox.host();
         return (await host.getAttribute('id')) ?? '';
     }
 
-    async getLabel(): Promise<string> {
+    public async getLabel(): Promise<string> {
         const checkbox = await this.matCheckboxHarness();
         const host = await checkbox.host();
         return (await host.text()) ?? '';
     }
 
-    async setValue(checked: boolean) {
+    public async setValue(checked: boolean): Promise<void> {
         const checkbox = await this.matCheckboxHarness();
         const isChecked = await checkbox.isChecked();
 
@@ -91,25 +89,24 @@ export class CheckboxHarness extends ComponentHarness {
         await checkbox.blur();
     }
 
-    async isChecked() {
+    public async isChecked(): Promise<boolean> {
         const checkbox = await this.matCheckboxHarness();
-        return checkbox.isChecked();
+        return await checkbox.isChecked();
     }
 
-    async isDisabled() {
+    public async isDisabled(): Promise<boolean> {
         const checkbox = await this.matCheckboxHarness();
-        return checkbox.isDisabled();
+        return await checkbox.isDisabled();
     }
 
-    async isCheckboxFocused(): Promise<boolean> {
+    public async isCheckboxFocused(): Promise<boolean> {
         const checkbox = await this.matCheckboxHarness();
         const input = await checkbox._input();
-        const isFocused = await input.isFocused();
-        return isFocused;
+        return await input.isFocused();
     }
 
-    /** 🔹 Retorna todas as classes aplicadas ao mat-form-field */
-    async getMatCheckboxClasses(): Promise<string[]> {
+    /** Retorna todas as classes aplicadas ao mat-checkbox */
+    public async getMatCheckboxClasses(): Promise<string[]> {
         const harness = await this.matCheckboxHarness();
         const host = await harness.host();
         const classAttr = (await host.getAttribute('class')) ?? '';
@@ -119,7 +116,7 @@ export class CheckboxHarness extends ComponentHarness {
             .filter(Boolean);
     }
 
-    async hasVisibleError(): Promise<boolean> {
+    public async hasVisibleError(): Promise<boolean> {
         const classes = await this.getMatCheckboxClasses();
         if (
             classes.includes('ng-touched') &&
@@ -131,36 +128,32 @@ export class CheckboxHarness extends ComponentHarness {
         return false;
     }
 
-    async getButtonChildTagNames(): Promise<string[]> {
+    public async getButtonChildTagNames(): Promise<string[]> {
         const children = await this.hostChildrenElements();
         const tagNames: string[] = [];
         for (const child of children) {
-            const tag = (
-                (await child.getProperty('tagName')) as string
-            ).toLowerCase();
+            const tag = ((await child.getProperty('tagName')) as string).toLowerCase();
             tagNames.push(tag);
         }
-
         return tagNames;
     }
 
-    async getInnerButtonLabel() {
-        const label = (await this.matCheckboxHarness()).getLabelText();
+    public async getInnerButtonLabel(): Promise<string> {
+        const label = await (await this.matCheckboxHarness()).getLabelText();
         return label;
     }
 
-    async click() {
+    public async click(): Promise<void> {
         const checkbox = await this.matCheckboxHarness();
-        (await checkbox._input()).click();
+        await (await checkbox._input()).click();
     }
 
-    async hasValidStructure(): Promise<boolean | { [key: string]: string }> {
-        const errors: any = {};
+    public async hasValidStructure(): Promise<boolean | { [key: string]: string }> {
+        const errors: { [key: string]: string } = {};
 
-        const hasValidChildrenCount = (await this.getHostChildrenCount()) == 1;
+        const hasValidChildrenCount = (await this.getHostChildrenCount()) === 1;
         if (!hasValidChildrenCount) {
-            errors['hasValidChildrenCount'] =
-                `Invalid children count: ${hasValidChildrenCount}.`;
+            errors['hasValidChildrenCount'] = `Invalid children count: ${hasValidChildrenCount}.`;
         }
 
         const isHostChildACheckbox = await this.isHostChildACheckbox();
@@ -171,10 +164,10 @@ export class CheckboxHarness extends ComponentHarness {
 
         // TODO: testar label
 
-        return Object.keys(errors).length == 0 ? true : errors;
+        return Object.keys(errors).length === 0 ? true : errors;
     }
 
-    async getState(): Promise<CheckboxState> {
+    public async getState(): Promise<CheckboxState> {
         const id = await this.getCheckboxId();
         const label = await this.getLabel();
         const isFocused = await this.isCheckboxFocused();

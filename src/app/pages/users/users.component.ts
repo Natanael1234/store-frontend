@@ -1,13 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import {
-    AfterViewInit,
-    Component,
-    computed,
-    inject,
-    model,
-    ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, computed, inject, model, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -16,23 +9,20 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import {
-    MatPaginatorIntl,
-    MatPaginatorModule,
-} from '@angular/material/paginator';
+import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { ActivatedRoute } from '@angular/router';
 import { AlertComponent } from '@components/alert/alert.component';
 import { UserTableRow } from '@components/table/interfaces/user-table-row.interface';
+import { PaginatorConfigs } from '@configs/paginator/paginator.configs';
 import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
 import { Icon } from '@enums/icons/icons.enum';
 import { MyCustomPaginatorIntl } from '@i18n/paginator.intl';
 import { AuthInterceptor } from '@interceptors/auth/auth.interceptor';
 import { RowClickEvent } from '@interfaces/row-click.interface';
-import { PaginatorConfigs } from '@pages/users/configs/paginator/paginator.configs';
 import { UserDialogComponent } from '@pages/users/dialogs/user-dialog/user-dialog.component';
 import { ResponsiveUserFiltersComponent } from '@pages/users/responsive-user-filters/responsive-user-filters.component';
 import { UserFilterDialogComponent } from '@pages/users/responsive-user-filters/user-filter-dialog/user-filter-dialog.component';
@@ -74,8 +64,59 @@ import { BehaviorSubject, Subscription } from 'rxjs';
             },
         },
     ],
-    templateUrl: './users.component.html',
-    styleUrl: './users.component.scss',
+    styles: `
+        .container {
+            padding: 1em;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1em;
+        }
+    `,
+    template: `
+        <div class="container">
+            <!-- error -->
+            @if (error()) {
+                <app-alert
+                    [icon]="Icon.error"
+                    type="danger"
+                    [showCloseButton]="true"
+                    (onClose)="onCloseErrorAlert()">
+                    {{ error() }}
+                </app-alert>
+            }
+
+            <!-- filters -->
+            <app-responsive-user-filters
+                [textQuery]="textQuery()"
+                [orderBy]="orderBy()"
+                [active]="active()"
+                [deleted]="deleted()"
+                [loading]="loading()"
+                [mobile]="mobile()"
+                (refresh)="refreshFilters($event)"></app-responsive-user-filters>
+
+            <!-- list/table -->
+            <app-responsive-user-list
+                [users]="userRows()"
+                [active]="active()"
+                [deleted]="deleted()"
+                [loading]="loading()"
+                [mobile]="mobile()"
+                (headerClick)="fireHeaderClickEvent()"
+                (itemClick)="onItemClick($event)"></app-responsive-user-list>
+
+            <!-- paginator -->
+            <mat-paginator
+                (page)="onPageEvent($event)"
+                [hidePageSize]="!!mobile()"
+                [disabled]="loading()"
+                [pageSizeOptions]="pageSizeOptions()"
+                [length]="length()"
+                [pageSize]="pageSize()"
+                showFirstLastButtons
+                aria-label="Selecione a página"></mat-paginator>
+        </div>
+    `,
 })
 export class UsersComponent implements AfterViewInit {
     protected Icon = Icon;
@@ -84,9 +125,7 @@ export class UsersComponent implements AfterViewInit {
 
     private userService: UserService = inject(UserService);
     protected users = model<UserResponseDto[]>([]);
-    protected userRows = computed<UserTableRow[]>(() =>
-        userResponseToUserTableRow(this.users()),
-    );
+    protected userRows = computed<UserTableRow[]>(() => userResponseToUserTableRow(this.users()));
 
     protected dialogRef?: MatDialogRef<UserFilterDialogComponent, any>;
 
@@ -149,9 +188,7 @@ export class UsersComponent implements AfterViewInit {
         return dto;
     }
 
-    protected set response(
-        response: PaginatedResponseDTO<UserResponseDto, UserOrder>,
-    ) {
+    protected set response(response: PaginatedResponseDTO<UserResponseDto, UserOrder>) {
         this.textQuery.set(response.textQuery);
         this.orderBy.set(response.orderBy);
         this.count.set(response.count);
@@ -175,11 +212,7 @@ export class UsersComponent implements AfterViewInit {
     protected ngOnInit() {
         // TODO: mover para service?
         this.breakpointSubscription = this.breakpointObserver
-            .observe([
-                Breakpoints.XSmall,
-                Breakpoints.Small,
-                Breakpoints.Medium,
-            ])
+            .observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium])
             .subscribe((result) => {
                 const isMobile = result.matches;
                 this.mobile.set(isMobile);

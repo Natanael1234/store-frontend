@@ -7,7 +7,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { ButtonComponent } from '@components/form/components/button/button.component';
 import { ButtonAppearance } from '@components/form/components/button/enum/appearance/button-appearance.enum';
@@ -38,7 +37,6 @@ describe('UserFilterToolbarComponent.', () => {
                 MatSelectModule,
                 MatOptionModule,
                 FormsModule,
-                NoopAnimationsModule, // Evita erros de animação no teste
                 UserFilterToolbarComponent,
             ],
             providers: [provideRouter([])],
@@ -56,9 +54,7 @@ describe('UserFilterToolbarComponent.', () => {
     function getSelectFieldComponents() {
         return fixture.debugElement
             .queryAll(By.directive(SelectFieldComponent))
-            .map(
-                (debugEl) => debugEl.componentInstance as SelectFieldComponent,
-            );
+            .map((debugEl) => debugEl.componentInstance as SelectFieldComponent);
     }
 
     function getButtonComponents() {
@@ -69,7 +65,7 @@ describe('UserFilterToolbarComponent.', () => {
 
     it('should create the component.', async () => {
         expect(toolbarComponent)
-            .withContext('component is defined')
+            // .withContext('component is defined')
             .toBeTruthy();
 
         const state = await harness.getState();
@@ -83,7 +79,7 @@ describe('UserFilterToolbarComponent.', () => {
         });
 
         const selects = await getSelectFieldComponents();
-        expect(selects).toHaveSize(2);
+        expect(selects).toHaveLength(2);
 
         expect(selects[0].id()).toEqual('active-select');
         expect(selects[0].label()).toEqual('Ativos');
@@ -102,7 +98,7 @@ describe('UserFilterToolbarComponent.', () => {
         expect(selects[1].options()).toEqual(DeletedFilterOptions);
 
         const buttons = await getButtonComponents();
-        expect(buttons).toHaveSize(1);
+        expect(buttons).toHaveLength(1);
 
         expect(buttons[0].id()).toEqual('filter-button');
         expect(buttons[0].label()).toEqual('Filtrar');
@@ -138,7 +134,7 @@ describe('UserFilterToolbarComponent.', () => {
             });
 
             const selects = await getSelectFieldComponents();
-            expect(selects).toHaveSize(3);
+            expect(selects).toHaveLength(3);
 
             expect(selects[0].id()).toEqual('order-select');
             expect(selects[0].label()).toEqual('Ordem');
@@ -161,13 +157,11 @@ describe('UserFilterToolbarComponent.', () => {
             expect(selects[2].autofocus()).toBeUndefined();
             expect(selects[2].control()).toBeDefined();
             expect(selects[2].control()).not.toBeNull();
-            expect(selects[2].control()?.value).toEqual(
-                DeletedFilter.not_deleted,
-            );
+            expect(selects[2].control()?.value).toEqual(DeletedFilter.not_deleted);
             expect(selects[2].options()).toEqual(DeletedFilterOptions);
 
             const buttons = await getButtonComponents();
-            expect(buttons).toHaveSize(2);
+            expect(buttons).toHaveLength(2);
 
             expect(buttons[0].id()).toEqual('cancel-button');
             expect(buttons[0].label()).toEqual('Cancelar');
@@ -217,7 +211,7 @@ describe('UserFilterToolbarComponent.', () => {
             });
 
             const selects = await getSelectFieldComponents();
-            expect(selects).toHaveSize(3);
+            expect(selects).toHaveLength(3);
 
             expect(selects[0].id()).toEqual('order-select');
             expect(selects[0].label()).toEqual('Ordem');
@@ -240,13 +234,11 @@ describe('UserFilterToolbarComponent.', () => {
             expect(selects[2].autofocus()).toBeUndefined();
             expect(selects[2].control()).toBeDefined();
             expect(selects[2].control()).not.toBeNull();
-            expect(selects[2].control()?.value).toEqual(
-                DeletedFilter.not_deleted,
-            );
+            expect(selects[2].control()?.value).toEqual(DeletedFilter.not_deleted);
             expect(selects[2].options()).toEqual(DeletedFilterOptions);
 
             const buttons = await getButtonComponents();
-            expect(buttons).toHaveSize(2);
+            expect(buttons).toHaveLength(2);
 
             expect(buttons[0].id()).toEqual('cancel-button');
             expect(buttons[0].label()).toEqual('Cancelar');
@@ -296,7 +288,7 @@ describe('UserFilterToolbarComponent.', () => {
             });
 
             const selects = await getSelectFieldComponents();
-            expect(selects).toHaveSize(3);
+            expect(selects).toHaveLength(3);
 
             expect(selects[0].id()).toEqual('order-select');
             expect(selects[0].label()).toEqual('Ordem');
@@ -319,13 +311,11 @@ describe('UserFilterToolbarComponent.', () => {
             expect(selects[2].autofocus()).toBeUndefined();
             expect(selects[2].control()).toBeDefined();
             expect(selects[2].control()).not.toBeNull();
-            expect(selects[2].control()?.value).toEqual(
-                DeletedFilter.not_deleted,
-            );
+            expect(selects[2].control()?.value).toEqual(DeletedFilter.not_deleted);
             expect(selects[2].options()).toEqual(DeletedFilterOptions);
 
             const buttons = await getButtonComponents();
-            expect(buttons).toHaveSize(2);
+            expect(buttons).toHaveLength(2);
 
             expect(buttons[0].id()).toEqual('cancel-button');
             expect(buttons[0].label()).toEqual('Cancelar');
@@ -374,7 +364,7 @@ describe('UserFilterToolbarComponent.', () => {
             });
 
             const selects = await getSelectFieldComponents();
-            expect(selects).toHaveSize(2);
+            expect(selects).toHaveLength(2);
 
             expect(selects[0].id()).toEqual('active-select');
             expect(selects[0].label()).toEqual('Ativos');
@@ -389,13 +379,11 @@ describe('UserFilterToolbarComponent.', () => {
             expect(selects[1].autofocus()).toBeUndefined();
             expect(selects[1].control()).toBeDefined();
             expect(selects[1].control()).not.toBeNull();
-            expect(selects[1].control()?.value).toEqual(
-                DeletedFilter.not_deleted,
-            );
+            expect(selects[1].control()?.value).toEqual(DeletedFilter.not_deleted);
             expect(selects[1].options()).toEqual(DeletedFilterOptions);
 
             const buttons = await getButtonComponents();
-            expect(buttons).toHaveSize(1);
+            expect(buttons).toHaveLength(1);
 
             expect(buttons[0].id()).toEqual('filter-button');
             expect(buttons[0].label()).toEqual('Filtrar');
@@ -428,7 +416,7 @@ describe('UserFilterToolbarComponent.', () => {
             });
 
             const selects = await getSelectFieldComponents();
-            expect(selects).toHaveSize(2);
+            expect(selects).toHaveLength(2);
 
             expect(selects[0].id()).toEqual('active-select');
             expect(selects[0].label()).toEqual('Ativos');
@@ -443,13 +431,11 @@ describe('UserFilterToolbarComponent.', () => {
             expect(selects[1].autofocus()).toBeUndefined();
             expect(selects[1].control()).toBeDefined();
             expect(selects[1].control()).not.toBeNull();
-            expect(selects[1].control()?.value).toEqual(
-                DeletedFilter.not_deleted,
-            );
+            expect(selects[1].control()?.value).toEqual(DeletedFilter.not_deleted);
             expect(selects[1].options()).toEqual(DeletedFilterOptions);
 
             const buttons = await getButtonComponents();
-            expect(buttons).toHaveSize(1);
+            expect(buttons).toHaveLength(1);
 
             expect(buttons[0].id()).toEqual('filter-button');
             expect(buttons[0].label()).toEqual('Filtrar');
@@ -483,7 +469,7 @@ describe('UserFilterToolbarComponent.', () => {
             });
 
             const selects = await getSelectFieldComponents();
-            expect(selects).toHaveSize(3);
+            expect(selects).toHaveLength(3);
 
             expect(selects[0].id()).toEqual('order-select');
             expect(selects[0].label()).toEqual('Ordem');
@@ -506,13 +492,11 @@ describe('UserFilterToolbarComponent.', () => {
             expect(selects[2].autofocus()).toBeUndefined();
             expect(selects[2].control()).toBeDefined();
             expect(selects[2].control()).not.toBeNull();
-            expect(selects[2].control()?.value).toEqual(
-                DeletedFilter.not_deleted,
-            );
+            expect(selects[2].control()?.value).toEqual(DeletedFilter.not_deleted);
             expect(selects[2].options()).toEqual(DeletedFilterOptions);
 
             const buttons = await getButtonComponents();
-            expect(buttons).toHaveSize(1);
+            expect(buttons).toHaveLength(1);
 
             expect(buttons[0].id()).toEqual('filter-button');
             expect(buttons[0].label()).toEqual('Filtrar');
@@ -547,7 +531,7 @@ describe('UserFilterToolbarComponent.', () => {
             });
 
             const selects = await getSelectFieldComponents();
-            expect(selects).toHaveSize(2);
+            expect(selects).toHaveLength(2);
 
             expect(selects[0].id()).toEqual('active-select');
             expect(selects[0].label()).toEqual('Ativos');
@@ -562,13 +546,11 @@ describe('UserFilterToolbarComponent.', () => {
             expect(selects[1].autofocus()).toBeUndefined();
             expect(selects[1].control()).toBeDefined();
             expect(selects[1].control()).not.toBeNull();
-            expect(selects[1].control()?.value).toEqual(
-                DeletedFilter.not_deleted,
-            );
+            expect(selects[1].control()?.value).toEqual(DeletedFilter.not_deleted);
             expect(selects[1].options()).toEqual(DeletedFilterOptions);
 
             const buttons = await getButtonComponents();
-            expect(buttons).toHaveSize(1);
+            expect(buttons).toHaveLength(1);
 
             expect(buttons[0].id()).toEqual('filter-button');
             expect(buttons[0].label()).toEqual('Filtrar');
@@ -601,7 +583,7 @@ describe('UserFilterToolbarComponent.', () => {
             });
 
             const selects = await getSelectFieldComponents();
-            expect(selects).toHaveSize(2);
+            expect(selects).toHaveLength(2);
 
             expect(selects[0].id()).toEqual('active-select');
             expect(selects[0].label()).toEqual('Ativos');
@@ -616,13 +598,11 @@ describe('UserFilterToolbarComponent.', () => {
             expect(selects[1].autofocus()).toBeUndefined();
             expect(selects[1].control()).toBeDefined();
             expect(selects[1].control()).not.toBeNull();
-            expect(selects[1].control()?.value).toEqual(
-                DeletedFilter.not_deleted,
-            );
+            expect(selects[1].control()?.value).toEqual(DeletedFilter.not_deleted);
             expect(selects[1].options()).toEqual(DeletedFilterOptions);
 
             const buttons = await getButtonComponents();
-            expect(buttons).toHaveSize(1);
+            expect(buttons).toHaveLength(1);
 
             expect(buttons[0].id()).toEqual('filter-button');
             expect(buttons[0].label()).toEqual('Filtrar');
@@ -656,7 +636,7 @@ describe('UserFilterToolbarComponent.', () => {
             });
 
             const selects = await getSelectFieldComponents();
-            expect(selects).toHaveSize(2);
+            expect(selects).toHaveLength(2);
 
             expect(selects[0].id()).toEqual('active-select');
             expect(selects[0].label()).toEqual('Ativos');
@@ -671,13 +651,11 @@ describe('UserFilterToolbarComponent.', () => {
             expect(selects[1].autofocus()).toBeUndefined();
             expect(selects[1].control()).toBeDefined();
             expect(selects[1].control()).not.toBeNull();
-            expect(selects[1].control()?.value).toEqual(
-                DeletedFilter.not_deleted,
-            );
+            expect(selects[1].control()?.value).toEqual(DeletedFilter.not_deleted);
             expect(selects[1].options()).toEqual(DeletedFilterOptions);
 
             const buttons = await getButtonComponents();
-            expect(buttons).toHaveSize(2);
+            expect(buttons).toHaveLength(2);
 
             expect(buttons[0].id()).toEqual('cancel-button');
             expect(buttons[0].label()).toEqual('Cancelar');
@@ -714,29 +692,28 @@ describe('UserFilterToolbarComponent.', () => {
             fixture.componentInstance.showOrder.set(true);
             fixture.componentInstance.showCancelButton.set(true);
             fixture.detectChanges();
-            const [orderSelect, activeSelect, deledtedSelect] =
-                await fixture.debugElement.queryAll(
-                    By.directive(SelectFieldComponent),
-                );
+            const [orderSelect, activeSelect, deledtedSelect] = await fixture.debugElement.queryAll(
+                By.directive(SelectFieldComponent),
+            );
         });
 
         it('should fire on close event when click on filter button.', async () => {
             fixture.componentInstance.showOrder.set(true);
             fixture.componentInstance.showCancelButton.set(true);
-            spyOn(toolbarComponent.onClose, 'emit');
+            vi.spyOn(toolbarComponent.onClose, 'emit');
             await harness.selectOrderOption('Não deletados');
             await harness.selectActiveOption('Todos');
             await harness.selectDeletedOption('Todos');
             await harness.fireFilterButtonClick();
 
-            expect(toolbarComponent.onClose.emit).toHaveBeenCalledOnceWith({
+            expect(toolbarComponent.onClose.emit).toHaveBeenCalledExactlyOnceWith({
                 order: UserOrder.deleted_desc,
                 active: ActiveFilter.all,
                 deleted: DeletedFilter.all,
             });
 
             const selects = await getSelectFieldComponents();
-            expect(selects).toHaveSize(3);
+            expect(selects).toHaveLength(3);
 
             expect(selects[0].id()).toEqual('order-select');
             expect(selects[0].label()).toEqual('Ordem');
@@ -763,7 +740,7 @@ describe('UserFilterToolbarComponent.', () => {
             expect(selects[2].options()).toEqual(DeletedFilterOptions);
 
             const buttons = await getButtonComponents();
-            expect(buttons).toHaveSize(2);
+            expect(buttons).toHaveLength(2);
 
             expect(buttons[0].id()).toEqual('cancel-button');
             expect(buttons[0].label()).toEqual('Cancelar');
@@ -797,18 +774,16 @@ describe('UserFilterToolbarComponent.', () => {
         it('should fire on close event when click on cancel button.', async () => {
             fixture.componentInstance.showOrder.set(true);
             fixture.componentInstance.showCancelButton.set(true);
-            spyOn(toolbarComponent.onClose, 'emit');
+            vi.spyOn(toolbarComponent.onClose, 'emit');
             await harness.selectOrderOption('Não deletados');
             await harness.selectActiveOption('Todos');
             await harness.selectDeletedOption('Todos');
             await harness.fireCancelButtonClick();
 
-            expect(toolbarComponent.onClose.emit).toHaveBeenCalledOnceWith(
-                false,
-            );
+            expect(toolbarComponent.onClose.emit).toHaveBeenCalledExactlyOnceWith(false);
 
             const selects = await getSelectFieldComponents();
-            expect(selects).toHaveSize(3);
+            expect(selects).toHaveLength(3);
 
             expect(selects[0].id()).toEqual('order-select');
             expect(selects[0].label()).toEqual('Ordem');
@@ -831,13 +806,11 @@ describe('UserFilterToolbarComponent.', () => {
             expect(selects[2].autofocus()).toBeUndefined();
             expect(selects[2].control()).toBeDefined();
             expect(selects[2].control()).not.toBeNull();
-            expect(selects[2].control()?.value).toEqual(
-                DeletedFilter.not_deleted,
-            );
+            expect(selects[2].control()?.value).toEqual(DeletedFilter.not_deleted);
             expect(selects[2].options()).toEqual(DeletedFilterOptions);
 
             const buttons = await getButtonComponents();
-            expect(buttons).toHaveSize(2);
+            expect(buttons).toHaveLength(2);
 
             expect(buttons[0].id()).toEqual('cancel-button');
             expect(buttons[0].label()).toEqual('Cancelar');
@@ -871,11 +844,11 @@ describe('UserFilterToolbarComponent.', () => {
         it('should not fire on close event.', async () => {
             fixture.componentInstance.showOrder.set(true);
             fixture.componentInstance.showCancelButton.set(true);
-            spyOn(toolbarComponent.onClose, 'emit');
+            vi.spyOn(toolbarComponent.onClose, 'emit');
             expect(toolbarComponent.onClose.emit).not.toHaveBeenCalled();
 
             const selects = await getSelectFieldComponents();
-            expect(selects).toHaveSize(3);
+            expect(selects).toHaveLength(3);
 
             expect(selects[0].id()).toEqual('order-select');
             expect(selects[0].label()).toEqual('Ordem');
@@ -898,13 +871,11 @@ describe('UserFilterToolbarComponent.', () => {
             expect(selects[2].autofocus()).toBeUndefined();
             expect(selects[2].control()).toBeDefined();
             expect(selects[2].control()).not.toBeNull();
-            expect(selects[2].control()?.value).toEqual(
-                DeletedFilter.not_deleted,
-            );
+            expect(selects[2].control()?.value).toEqual(DeletedFilter.not_deleted);
             expect(selects[2].options()).toEqual(DeletedFilterOptions);
 
             const buttons = await getButtonComponents();
-            expect(buttons).toHaveSize(2);
+            expect(buttons).toHaveLength(2);
 
             expect(buttons[0].id()).toEqual('cancel-button');
             expect(buttons[0].label()).toEqual('Cancelar');

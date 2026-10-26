@@ -1,39 +1,29 @@
-import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output, model } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Icon } from '@enums/icons/icons.enum';
 
 export type AlertType =
-    | 'success'
-    | 'info'
-    | 'warning'
-    | 'danger'
-    | 'primary'
-    | 'secondary'
-    | 'light'
-    | 'dark'; // TODO: separar
+    'success' | 'info' | 'warning' | 'danger' | 'primary' | 'secondary' | 'light' | 'dark';
 
 @Component({
     selector: 'app-alert',
-    imports: [CommonModule, MatIconModule, MatButtonModule],
+    imports: [MatIconModule, MatButtonModule], // Removido CommonModule redundante
     styleUrl: './alert.component.scss',
     template: `
         <div
-            [class.container]="true"
-            [class.success]="type() == 'success'"
-            [class.info]="type() == 'info'"
-            [class.warning]="type() == 'warning'"
-            [class.danger]="type() == 'danger'"
-            [class.primary]="type() == 'primary'"
-            [class.secondary]="type() == 'secondary'"
-            [class.light]="type() == 'light'"
-            [class.dark]="type() == 'dark'">
+            class="container"
+            [class.success]="type() === 'success'"
+            [class.info]="type() === 'info'"
+            [class.warning]="type() === 'warning'"
+            [class.danger]="type() === 'danger'"
+            [class.primary]="type() === 'primary'"
+            [class.secondary]="type() === 'secondary'"
+            [class.light]="type() === 'light'"
+            [class.dark]="type() === 'dark'">
             <div class="content">
-                @if (icon()) {
-                    <mat-icon
-                        aria-hidden="false"
-                        [fontIcon]="icon()!"></mat-icon>
+                @if (icon(); as currentIcon) {
+                    <mat-icon aria-hidden="false" [fontIcon]="currentIcon"></mat-icon>
                 }
                 <div class="message">
                     <ng-content></ng-content>
@@ -53,9 +43,11 @@ export type AlertType =
     `,
 })
 export class AlertComponent {
-    public showCloseButton = model<boolean>();
-    public type = model<AlertType>('success');
-    public icon = model<Icon>();
+    protected readonly Icon = Icon;
 
-    @Output() public onClose: EventEmitter<void> = new EventEmitter();
+    public readonly showCloseButton = model<boolean>(false);
+    public readonly type = model<AlertType>('success');
+    public readonly icon = model<Icon>();
+
+    @Output() public readonly onClose = new EventEmitter<void>();
 }

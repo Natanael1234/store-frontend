@@ -1,4 +1,7 @@
 import { Injectable, inject } from '@angular/core';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
 import { AuthRequestRoutes } from '@services/auth/request-routes/auth.request-routes';
 import { PaginatedResponseDTO } from '@services/dtos/response/pagination/pagination.response.dto';
 import { HttpService } from '@services/http/http.service';
@@ -9,88 +12,52 @@ import { UpdateUserRequestDto } from '@services/user/dtos/user.request/update-us
 import { UserResponseDto } from '@services/user/dtos/user.response/user.response.dto';
 import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 import { normalizeException } from '@utils/exception-normalizer/exception-normalizer';
-import { Observable, Subscriber } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-    httpService: HttpService = inject(HttpService);
-    tokenService: TokenService = inject(TokenService);
+    private readonly httpService = inject(HttpService);
+    private readonly tokenService = inject(TokenService); // TODO: ?
 
     getUsers(
         queryParams: FindUserRequestDTO,
     ): Observable<PaginatedResponseDTO<UserResponseDto, UserOrder>> {
-        const path = AuthRequestRoutes.GET_USERS.url;
-        const observable = new Observable(
-            (
-                observer: Subscriber<
-                    PaginatedResponseDTO<UserResponseDto, UserOrder>
-                >,
-            ) => {
-                const postObservable = this.httpService.get({
-                    path,
-                    queryParams: { query: JSON.stringify(queryParams) },
-                    authorization: true,
-                });
-                this.processResponse(postObservable, observer);
-            },
-        );
-        return observable;
+        return this.httpService
+            .get<PaginatedResponseDTO<UserResponseDto, UserOrder>>({
+                path: AuthRequestRoutes.GET_USERS.url,
+                queryParams: { query: JSON.stringify(queryParams) },
+                authorization: true,
+            })
+            .pipe(catchError((error) => throwError(() => normalizeException(error))));
     }
 
     /**
-     *
      * @param identifier id or email
-     * @returns
      */
     getUser(identifier: string): Observable<UserResponseDto> {
-        const path = `${AuthRequestRoutes.POST_USER.url}\/${identifier}`;
-        return new Observable((observer: Subscriber<UserResponseDto>) => {
-            const postObservable = this.httpService.get({ path });
-            this.processResponse(postObservable, observer);
-        });
+        return this.httpService
+            .get<UserResponseDto>({
+                path: `${AuthRequestRoutes.GET_USERS.url}/${identifier}`,
+            })
+            .pipe(catchError((error) => throwError(() => normalizeException(error))));
     }
 
-    // TODO: test
     createUser(user: CreateUserRequestDto): Observable<UserResponseDto> {
-        const path = AuthRequestRoutes.POST_USER.url;
-        const data = user;
-        return new Observable((observer: Subscriber<UserResponseDto>) => {
-            const postObservable = this.httpService.post({ path, data });
-            this.processResponse(postObservable, observer);
-        });
-    }
-
-    // TODO: test
-    updateUser(
-        userId: string,
-        user: UpdateUserRequestDto,
-    ): Observable<UserResponseDto> {
-        const path = `${AuthRequestRoutes.PATCH_USER.url}\/${userId}`;
-        const data = user;
-        return new Observable((observer: Subscriber<UserResponseDto>) => {
-            const postObservable = this.httpService.patch({
-                path,
-                data,
+        return this.httpService
+            .post<UserResponseDto>({
+                path: AuthRequestRoutes.POST_USER.url,
+                data: user,
                 authorization: true,
-            });
-            this.processResponse(postObservable, observer);
-        });
+            })
+            .pipe(catchError((error) => throwError(() => normalizeException(error))));
     }
 
-    private processResponse(
-        postObservable: Observable<any>,
-        observer: Subscriber<any>,
-    ) {
-        postObservable.subscribe({
-            next: (response: any) => {
-                observer.next(response);
-            },
-            error: (error: any) => {
-                observer.error(normalizeException(error));
-            },
-            complete: () => {
-                observer.complete();
-            },
-        });
+    updateUser(userId: string, user: UpdateUserRequestDto): Observable<UserResponseDto> {
+        return this.httpService
+            .patch<UserResponseDto>({
+                path: `${AuthRequestRoutes.PATCH_USER.url}/${userId}`,
+                data: user,
+                authorization: true,
+            })
+            .pipe(catchError((error) => throwError(() => normalizeException(error))));
     }
 }

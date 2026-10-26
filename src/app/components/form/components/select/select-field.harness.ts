@@ -13,16 +13,11 @@ export class SelectFieldHarness extends ComponentHarness {
     private readonly fieldHarness = this.locatorFor(MatFormFieldHarness);
     private readonly hostChildrenElements = this.locatorForAll(':scope > *');
     private readonly formFieldElement = this.locatorFor('mat-form-field');
-    private readonly labelElement = this.locatorForOptional(
-        'mat-form-field mat-label',
-    );
-    private readonly selectElement = this.locatorFor(
-        ':scope mat-form-field mat-select',
-    );
+    private readonly labelElement = this.locatorForOptional('mat-form-field mat-label');
+    private readonly selectElement = this.locatorFor(':scope mat-form-field mat-select');
     private readonly matSelectHarness = this.locatorFor(MatSelectHarness);
-    private readonly matSelectsEls = this.locatorForAll(
-        ':scope mat-form-field mat-select',
-    );
+    private readonly matSelectsEls = this.locatorForAll(':scope mat-form-field mat-select');
+    private readonly popover = this.locatorForOptional('.cdk-overlay-popover');
     private readonly optionsEl = this.locatorForAll('mat-option');
     private readonly errorEl = this.locatorForOptional('mat-error');
 
@@ -41,9 +36,7 @@ export class SelectFieldHarness extends ComponentHarness {
         const children = await this.hostChildrenElements();
         const tagNames: string[] = [];
         for (const child of children) {
-            const tag = (
-                (await child.getProperty('tagName')) as string
-            ).toLowerCase();
+            const tag = ((await child.getProperty('tagName')) as string).toLowerCase();
             tagNames.push(tag);
         }
         return tagNames;
@@ -199,21 +192,18 @@ export class SelectFieldHarness extends ComponentHarness {
 
         const hasValidChildrenCount = (await this.getHostChildrenCount()) == 1;
         if (!hasValidChildrenCount) {
-            errors['hasValidChildrenCount'] =
-                `Invalid children count: ${hasValidChildrenCount}.`;
+            errors['hasValidChildrenCount'] = `Invalid children count: ${hasValidChildrenCount}.`;
         }
 
         const isHostChildAField = await this.isHostChildAMatFormField();
         if (!isHostChildAField) {
-            errors['isHostChildAField'] =
-                `Host child is not a field ${isHostChildAField}.`;
+            errors['isHostChildAField'] = `Host child is not a field ${isHostChildAField}.`;
         }
 
         const appearance = await this.getFieldAppearance();
         const hasValidAppearance = appearance == 'outline'; // TODO: create a enum
         if (!hasValidAppearance) {
-            errors['hasValidAppearance'] =
-                `Has invalid field appearance: "${appearance}".`;
+            errors['hasValidAppearance'] = `Has invalid field appearance: "${appearance}".`;
         }
 
         // TODO: testar label
@@ -230,6 +220,7 @@ export class SelectFieldHarness extends ComponentHarness {
         const focused = await this.isSelectFocused();
         const disabled = await selectHarness.isDisabled();
         const options = await this.getOptions();
+
         // const formFieldClasses = await this.getFormFieldClasses();
 
         const hasError = await this.hasVisibleError();

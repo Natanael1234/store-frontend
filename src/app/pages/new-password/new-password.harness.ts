@@ -5,93 +5,81 @@ import { ButtonHarness } from '@components/form/components/button/button.harness
 import { PasswordFieldHarness } from '@components/form/components/text/password-field/password-field.harness';
 import { isEqual } from 'lodash';
 
-type TextFieldState = {
+type NewPasswordState = {
     hasValidStructure: boolean | { [key: string]: string };
 };
 
 export class NewPasswordHarness extends ComponentHarness {
-    static hostSelector = 'app-new-password';
+    public static hostSelector = 'app-new-password';
 
     private readonly hostChildElement = this.locatorForOptional(':scope > *');
     private readonly hostChildrenElements = this.locatorForAll(':scope > *');
-    private readonly wrapperChildrenElements = this.locatorForAll(
-        ':scope > form > div > *',
-    );
+    private readonly wrapperChildrenElements = this.locatorForAll(':scope > form > div > *');
 
     private readonly buttonHarnesses = this.locatorForAll(ButtonHarness);
+    private readonly formChildrenElements = this.locatorForAll(':scope > form > *');
 
-    private readonly formChildrenElements =
-        this.locatorForAll(':scope > form > *');
-    private progressBarHarness = this.locatorForOptional(MatProgressBarHarness);
+    private readonly progressBarHarness = this.locatorForOptional(MatProgressBarHarness);
+    private readonly alertHarness = this.locatorForOptional(AlertHarness);
+    private readonly passwordFieldHarnesses = this.locatorForAll(PasswordFieldHarness);
 
-    private alertHarness = this.locatorForOptional(AlertHarness);
-    private passwordFieldHarnesses = this.locatorForAll(PasswordFieldHarness);
-
-    async getHostChildrenCount() {
+    public async getHostChildrenCount(): Promise<number> {
         return (await this.hostChildrenElements()).length;
     }
 
-    async getHostChildTagName() {
+    public async getHostChildTagName(): Promise<string | undefined> {
         const child = await this.hostChildElement();
-        const tagName = await child?.getProperty('tagName');
-        return tagName;
+        if (!child) return undefined;
+        return (await child.getProperty('tagName')) as string;
     }
 
-    async isHostChildAForm() {
+    public async isHostChildAForm(): Promise<boolean> {
         const tagName = await this.getHostChildTagName();
-        const isForm = (await tagName) == 'FORM';
-        return isForm;
+        return tagName === 'FORM';
     }
 
-    async getFormClasses() {
+    public async getFormClasses(): Promise<string[]> {
         const form = await this.hostChildElement();
-        const classStr = await form?.getAttribute('class');
-        const classes = (classStr ?? '').split(' ') as string[];
-        return classes;
+        if (!form) return [];
+        const classStr = await form.getAttribute('class');
+        return (classStr ?? '').split(' ') as string[];
     }
 
-    async formIncludesGridClass() {
+    public async formIncludesGridClass(): Promise<boolean> {
         const formClasses = await this.getFormClasses();
-        const foundClass = formClasses.includes('grid');
-        return foundClass;
+        return formClasses.includes('grid');
     }
 
-    async getFormChildren() {
-        const children = await this.formChildrenElements();
-        return children;
+    public async getFormChildren() {
+        return await this.formChildrenElements();
     }
 
-    async getFormChildrenCount() {
+    public async getFormChildrenCount(): Promise<number> {
         const children = await this.formChildrenElements();
         return children.length;
     }
 
-    async getFormChildrenTagNames() {
+    public async getFormChildrenTagNames(): Promise<string[]> {
         const children = await this.formChildrenElements();
         const tagsNames = await Promise.all(
-            children.map(async (child) => await child.getProperty('tagName')),
+            children.map(async (child) => (await child.getProperty('tagName')) as string),
         );
-        return tagsNames as string[];
+        return tagsNames;
     }
 
-    async getWrapperChildElements() {
-        const formChildren = await this.wrapperChildrenElements();
-        return formChildren;
+    public async getWrapperChildElements() {
+        return await this.wrapperChildrenElements();
     }
 
-    async getInvalidChildrenTagNames() {
+    public async getInvalidChildrenTagNames(): Promise<string[]> {
         const formChildTagNames = await this.getFormChildrenTagNames();
-        const invalidFormChildTagNames = await formChildTagNames.filter(
-            (tagName) => tagName !== 'DIV',
-        );
-        return invalidFormChildTagNames;
+        return formChildTagNames.filter((tagName) => tagName !== 'DIV');
     }
 
-    async getWrapperCols(): Promise<number[]> {
+    public async getWrapperCols(): Promise<(number | undefined)[]> {
         const formChildrenEls = await this.formChildrenElements();
-        const wrapperCols: any[] = [];
-        for (let i = 0; i < formChildrenEls.length; i++) {
-            const formChildrenEl = formChildrenEls[i];
+        const wrapperCols: (number | undefined)[] = [];
+        for (const formChildrenEl of formChildrenEls) {
             const col = (await formChildrenEl.getAttribute('col')) ?? '';
             if (col.trim() === '') {
                 wrapperCols.push(undefined);
@@ -104,124 +92,115 @@ export class NewPasswordHarness extends ComponentHarness {
         return wrapperCols;
     }
 
-    async getWrapperChildrenTagNames(): Promise<string[]> {
+    public async getWrapperChildrenTagNames(): Promise<string[]> {
         const wrapperChildrenEls = await this.getWrapperChildElements();
         const wrapperChildtagNames: string[] = await Promise.all(
             wrapperChildrenEls.map(
                 async (wrapperChildElement) =>
-                    (await wrapperChildElement.getProperty(
-                        'tagName',
-                    )) as string,
+                    (await wrapperChildElement.getProperty('tagName')) as string,
             ),
         );
         return wrapperChildtagNames;
     }
 
-    async getProgressBarHarness() {
-        return this.progressBarHarness();
+    public async getProgressBarHarness() {
+        return await this.progressBarHarness();
     }
 
-    async getAlertHarness() {
-        const alertHarness = await this.alertHarness();
-        return alertHarness;
+    public async getAlertHarness() {
+        return await this.alertHarness();
     }
 
-    async getPasswordFieldHarness() {
+    public async getPasswordFieldHarness() {
         const textFieldsHarnesses = await this.passwordFieldHarnesses();
         return textFieldsHarnesses[0];
     }
 
-    async getRepeatPasswordFieldHarness() {
+    public async getRepeatPasswordFieldHarness() {
         const textFieldsHarnesses = await this.passwordFieldHarnesses();
         return textFieldsHarnesses[1];
     }
 
-    async getButtonHarnesses() {
-        return this.buttonHarnesses();
+    public async getButtonHarnesses() {
+        return await this.buttonHarnesses();
     }
 
-    async getButtonById(id: string) {
+    public async getButtonById(id: string): Promise<ButtonHarness | null> {
         const buttonHarnesses = await this.getButtonHarnesses();
         for (const buttonHarness of buttonHarnesses) {
-            if ((await buttonHarness.getId()) == id) {
+            if ((await buttonHarness.getId()) === id) {
                 return buttonHarness;
             }
         }
         return null;
     }
 
-    async getSaveButton() {
-        return this.getButtonById('save-button');
+    public async getSaveButton() {
+        return await this.getButtonById('save-button');
     }
 
-    async getCancelButton() {
-        return this.getButtonById('cancel-button');
+    public async getCancelButton() {
+        return await this.getButtonById('cancel-button');
     }
 
-    async clickSaveButton() {
-        const button = await this.getSaveButton()!;
-        await button!.click();
+    public async clickSaveButton(): Promise<void> {
+        const button = await this.getSaveButton();
+        if (button) await button.click();
     }
 
-    async clickCancelButton() {
-        const button = await this.getCancelButton()!;
-        await button!.click();
+    public async clickCancelButton(): Promise<void> {
+        const button = await this.getCancelButton();
+        if (button) await button.click();
     }
 
-    async getMainError() {
+    public async getMainError(): Promise<string | undefined> {
         const alertHarness = await this.getAlertHarness();
-        const message = alertHarness?.getTextMessage();
-        return message;
+        return alertHarness ? await alertHarness.getTextMessage() : undefined;
     }
 
-    async getPasswordValue() {
+    public async getPasswordValue(): Promise<string> {
         const field = await this.getPasswordFieldHarness();
-        const value = await field.getInputValue();
-        return value;
+        return await field.getInputValue();
     }
 
-    async setPasswordValue(value: string) {
+    public async setPasswordValue(value: string): Promise<void> {
         const field = await this.getPasswordFieldHarness();
         await field.setInputValue(value);
     }
 
-    async getPasswordError() {
+    public async getPasswordError(): Promise<string | undefined> {
         const field = await this.getPasswordFieldHarness();
-        const error = await field.getErrorMessage();
-        return error;
+        return await field.getErrorMessage();
     }
 
-    async getRepeatPasswordValue() {
+    public async getRepeatPasswordValue(): Promise<string> {
         const field = await this.getRepeatPasswordFieldHarness();
-        const value = await field.getInputValue();
-        return value;
+        return await field.getInputValue();
     }
 
-    async setRepeatPasswordValue(value: string) {
+    public async setRepeatPasswordValue(value: string): Promise<void> {
         const field = await this.getRepeatPasswordFieldHarness();
         await field.setInputValue(value);
     }
 
-    async getRepeatPasswordError() {
+    public async getRepeatPasswordError(): Promise<string | undefined> {
         const field = await this.getRepeatPasswordFieldHarness();
-        const error = await field.getErrorMessage();
-        return error;
+        return await field.getErrorMessage();
     }
 
-    async getValues() {
-        const values = {
+    public async getValues() {
+        return {
             password: await this.getPasswordValue(),
             repeatPassword: await this.getRepeatPasswordValue(),
         };
-        return values;
     }
 
-    async setValues(values: { password: string; repeatPassword: string }) {
+    public async setValues(values: { password: string; repeatPassword: string }): Promise<void> {
         await this.setPasswordValue(values.password);
         await this.setRepeatPasswordValue(values.repeatPassword);
     }
 
-    async getErrors() {
+    public async getErrors() {
         const main = await this.getMainError();
         const password = await this.getPasswordError();
         const repeatPassword = await this.getRepeatPasswordError();
@@ -232,36 +211,33 @@ export class NewPasswordHarness extends ComponentHarness {
             repeatPassword?: string;
         } = {};
 
-        if (main != undefined) {
+        if (main !== undefined) {
             values.main = main;
         }
-        if (password != undefined) {
+        if (password !== undefined) {
             values.password = password;
         }
-        if (repeatPassword != undefined) {
+        if (repeatPassword !== undefined) {
             values.repeatPassword = repeatPassword;
         }
         return values;
     }
 
-    async hasValidStructure(): Promise<boolean | { [key: string]: string }> {
-        const errors: any = {};
+    public async hasValidStructure(): Promise<boolean | { [key: string]: string }> {
+        const errors: { [key: string]: string } = {};
 
-        const hasValidChildrenCount = (await this.getHostChildrenCount()) == 1;
+        const hasValidChildrenCount = (await this.getHostChildrenCount()) === 1;
         if (!hasValidChildrenCount) {
-            errors['hasValidChildrenCount'] =
-                `Invalid children count: ${hasValidChildrenCount}.`;
+            errors['hasValidChildrenCount'] = `Invalid children count: ${hasValidChildrenCount}.`;
         }
 
         const hostChildTagName = await this.getHostChildTagName();
         if (hostChildTagName !== 'FORM') {
-            errors['isHostChildAForm'] =
-                `Host child should be a form. Found: ${hostChildTagName}.`;
+            errors['isHostChildAForm'] = `Host child should be a form. Found: ${hostChildTagName}.`;
         }
 
         if (!(await this.formIncludesGridClass())) {
-            errors['gridClassMissingFromTheForm'] =
-                `Grid class missing from the form.`;
+            errors['gridClassMissingFromTheForm'] = `Grid class missing from the form.`;
         }
 
         const formChildrenCount = await this.getFormChildrenCount();
@@ -270,8 +246,7 @@ export class NewPasswordHarness extends ComponentHarness {
                 `Invalid form child count. Expected from 3 to 6. Found ${formChildrenCount}.`;
         }
 
-        const invalidFormChildTagNames =
-            await this.getInvalidChildrenTagNames();
+        const invalidFormChildTagNames = await this.getInvalidChildrenTagNames();
         if (invalidFormChildTagNames.length) {
             errors['invalidFormChildTagName'] =
                 `Invalid from children. Expected divs.  Found ${invalidFormChildTagNames}.`;
@@ -340,12 +315,10 @@ export class NewPasswordHarness extends ComponentHarness {
         return Object.keys(errors).length == 0 ? true : errors;
     }
 
-    async getState(): Promise<TextFieldState> {
+    public async getState(): Promise<NewPasswordState> {
         const hasValidStructure = await this.hasValidStructure();
-
-        const state = {
+        return {
             hasValidStructure,
         };
-        return state;
     }
 }

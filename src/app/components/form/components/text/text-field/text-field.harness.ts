@@ -1,13 +1,10 @@
 import { ComponentHarness } from '@angular/cdk/testing';
-import {
-    MatErrorHarness,
-    MatFormFieldHarness,
-} from '@angular/material/form-field/testing';
+import { MatErrorHarness, MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatInputHarness } from '@angular/material/input/testing';
 import { AutoCompleteType } from '@components/form/enums/auto-complete-type/auto-complete-type.enum';
 import { InputMode } from '@components/form/enums/input-mode/input-mode.enum';
 
-type TextFieldState = {
+export type TextFieldState = {
     id: string;
     /** input type (text) */
     type: string;
@@ -26,291 +23,281 @@ type TextFieldState = {
     errors: string[];
     hasValidStructure: boolean | { [key: string]: string };
 };
+
 export class TextFieldHarness extends ComponentHarness {
-    static hostSelector = 'app-text-field';
+    public static hostSelector = 'app-text-field';
 
     /** Harnesses filhos */
+    private readonly fieldHarness = this.locatorFor(MatFormFieldHarness);
+    private readonly labelHarness = this.locatorFor(MatFormFieldHarness);
+    private readonly inputHarness = this.locatorFor(MatInputHarness);
+    private readonly errorHarness = this.locatorForOptional(MatErrorHarness);
 
-    private fieldHarness = this.locatorFor(MatFormFieldHarness);
-    private labelHarness = this.locatorFor(MatFormFieldHarness);
-    private inputHarness = this.locatorFor(MatInputHarness);
-    private errorHarness = this.locatorForOptional(MatErrorHarness);
+    private readonly fieldHarnesses = this.locatorForAll(MatFormFieldHarness);
+    private readonly labelHarnessess = this.locatorForAll(MatFormFieldHarness);
+    private readonly inputHarnesses = this.locatorForAll(MatInputHarness);
+    private readonly errorHarnesses = this.locatorForAll(MatErrorHarness);
 
-    private fieldHarnesses = this.locatorForAll(MatFormFieldHarness);
-    private labelHarnessess = this.locatorForAll(MatFormFieldHarness);
-    private inputHarnesses = this.locatorForAll(MatInputHarness);
-    private errorHarnesses = this.locatorForAll(MatErrorHarness);
+    private readonly fieldElement = this.locatorFor('mat-form-field');
+    private readonly labelElement = this.locatorFor('mat-label');
+    private readonly prefixElement = this.locatorForOptional('[matTextPrefix]');
+    private readonly inputElement = this.locatorFor('input');
+    private readonly suffixElement = this.locatorForOptional('[matTextSuffix]');
+    private readonly errorElement = this.locatorForOptional('mat-error');
 
-    private fieldElement = this.locatorFor('mat-form-field');
-    private labelElement = this.locatorFor('mat-label');
-    private prefixElement = this.locatorForOptional('[matTextPrefix]');
-    private inputElement = this.locatorFor('input');
-    private suffixElement = this.locatorForOptional('[matTextSuffix]');
-    private errorElement = this.locatorForOptional('mat-error');
+    private readonly fieldElements = this.locatorForAll('mat-form-field');
+    private readonly labelElements = this.locatorForAll('mat-label');
+    private readonly prefixElements = this.locatorForAll('[matTextPrefix]');
+    private readonly inputElements = this.locatorForAll('input');
+    private readonly suffixElements = this.locatorForAll('[matTextSuffix]');
+    private readonly errorElements = this.locatorForAll('mat-error');
 
-    private fieldElements = this.locatorForAll('mat-form-field');
-    private labelElements = this.locatorForAll('mat-label');
-    private prefixElements = this.locatorForAll('[matTextPrefix]');
-    private inputElements = this.locatorForAll('input');
-    private suffixElements = this.locatorForAll('[matTextSuffix]');
-    private errorElements = this.locatorForAll('mat-error');
-
-    private hostChildrenElements = this.locatorForAll(':scope > *');
+    private readonly hostChildrenElements = this.locatorForAll(':scope > *');
 
     // -----------------------------
     // Métodos utilitários públicos
     // -----------------------------
 
-    async getInputHarness() {
+    public async getInputHarness(): Promise<MatInputHarness> {
         return await this.inputHarness();
     }
 
-    async getHostTagName() {
+    public async getHostTagName(): Promise<string> {
         const hostEl = await this.host();
-        return await hostEl.getProperty('tagName');
+        return (await hostEl.getProperty('tagName')) as string;
     }
 
-    async getInputsHarnesses() {
+    public async getInputsHarnesses(): Promise<MatInputHarness[]> {
         return await this.inputHarnesses();
     }
 
-    async getChildCount() {
+    public async getChildCount(): Promise<number> {
         return (await this.hostChildrenElements()).length;
     }
 
-    async getHostChildrenCount() {
+    public async getHostChildrenCount(): Promise<number> {
         return (await this.hostChildrenElements()).length;
     }
 
-    async getLabelCount() {
+    public async getLabelCount(): Promise<number> {
         return (await this.labelHarnessess()).length;
     }
 
-    async getInputCount() {
+    public async getInputCount(): Promise<number> {
         return (await this.inputElements()).length;
     }
 
-    async getPrefixCount() {
+    public async getPrefixCount(): Promise<number> {
         return (await this.prefixElements()).length;
     }
 
-    async getSuffixCount() {
+    public async getSuffixCount(): Promise<number> {
         return (await this.suffixElements()).length;
     }
 
-    async getErrorCount() {
+    public async getErrorCount(): Promise<number> {
         return (await this.errorHarnesses()).length;
     }
 
-    async getErrorHanerness() {
-        return this.errorHarness();
+    public async getErrorHanerness(): Promise<MatErrorHarness | null> {
+        return await this.errorHarness();
     }
 
-    async getErrorMessage() {
+    public async getErrorMessage(): Promise<string | undefined> {
         const errorHarness = await this.getErrorHanerness();
-        const message = errorHarness?.getText();
-        return message;
+        return errorHarness ? await errorHarness.getText() : undefined;
     }
 
-    async isHostChildAField() {
+    public async isHostChildAField(): Promise<boolean> {
         const hostChildren = await this.hostChildrenElements();
         if (hostChildren.length < 1) return false;
         const tagName = await hostChildren[0].getProperty('tagName');
-        return tagName == 'MAT-FORM-FIELD';
+        return tagName === 'MAT-FORM-FIELD';
     }
 
-    async isChildAField() {
+    public async isChildAField(): Promise<boolean> {
         const hostChildren = await this.hostChildrenElements();
         if (hostChildren.length < 1) return false;
         const tagName = await hostChildren[0].getProperty('tagName');
-        return tagName == 'MAT-FORM-FIELD';
+        return tagName === 'MAT-FORM-FIELD';
     }
 
-    async getErrors() {
+    public async getErrors() {
         const field = await this.fieldHarness();
         return await field.getErrors();
     }
 
-    async getFieldAppearance() {
+    public async getFieldAppearance() {
         const field = await this.fieldHarness();
         return await field.getAppearance();
     }
 
-    async getLabelText(): Promise<string | null> {
+    public async getLabelText(): Promise<string | null> {
         const field = await this.fieldHarness();
-        return field.getLabel();
+        return await field.getLabel();
     }
 
-    async getInputPlaceholder(): Promise<string> {
+    public async getInputPlaceholder(): Promise<string> {
         const input = await this.inputHarness();
-        return input.getPlaceholder();
+        return await input.getPlaceholder();
     }
 
-    async getInputType() {
+    public async getInputType(): Promise<string> {
         const input = await this.inputHarness();
-        return input.getType();
+        return await input.getType();
     }
 
-    async getInputMode() {
+    public async getInputMode(): Promise<InputMode | null> {
         const input = await this.inputElement();
         const str = await input.getAttribute('inputmode');
-        const inputmode = str == 'null' ? null : str;
+        const inputmode = str === 'null' || !str ? null : str;
         return inputmode as InputMode | null;
     }
 
-    async getInputValue(): Promise<string> {
+    public async getInputValue(): Promise<string> {
         const input = await this.inputHarness();
-        return input.getValue();
+        return await input.getValue();
     }
 
-    async setInputValue(value: string): Promise<void> {
+    public async setInputValue(value: string): Promise<void> {
         const input = await this.inputHarness();
         await input.setValue(value);
         await input.blur();
     }
 
-    async getInputTabIndex() {
-        const input = await this.inputHarness();
-
-        const host = await input.host();
-        return host.getAttribute('tabindex');
-    }
-
-    async isInputReadOnly(): Promise<boolean> {
-        const input = await this.inputHarness();
-        return input.isReadonly();
-    }
-
-    async getAutocomplete(): Promise<AutoCompleteType> {
+    public async getInputTabIndex(): Promise<string | null> {
         const input = await this.inputHarness();
         const host = await input.host();
-        return host.getAttribute('autocomplete') as Promise<AutoCompleteType>;
+        return await host.getAttribute('tabindex');
     }
 
-    async isInputFocused(): Promise<boolean> {
+    public async isInputReadOnly(): Promise<boolean> {
         const input = await this.inputHarness();
-        const focused = input.isFocused();
-        return focused;
+        return await input.isReadonly();
     }
 
-    async isInputDisabled(): Promise<boolean> {
+    public async getAutocomplete(): Promise<AutoCompleteType> {
         const input = await this.inputHarness();
-        return input.isDisabled();
+        const host = await input.host();
+        return (await host.getAttribute('autocomplete')) as AutoCompleteType;
     }
 
-    async blurInput(): Promise<void> {
+    public async isInputFocused(): Promise<boolean> {
+        const input = await this.inputHarness();
+        return await input.isFocused();
+    }
+
+    public async isInputDisabled(): Promise<boolean> {
+        const input = await this.inputHarness();
+        return await input.isDisabled();
+    }
+
+    public async blurInput(): Promise<void> {
         const input = await this.inputHarness();
         await input.blur();
     }
 
-    async focusInput(): Promise<void> {
+    public async focusInput(): Promise<void> {
         const input = await this.inputHarness();
         await input.focus();
     }
 
-    async isInputFocusable(): Promise<boolean> {
+    public async isInputFocusable(): Promise<boolean> {
         const input = await this.inputHarness();
         const host = await input.host();
         const tabIndex = await host.getAttribute('tabindex');
-        return tabIndex != '-1';
+        return tabIndex !== '-1';
     }
 
-    async getInputId(): Promise<string> {
+    public async getInputId(): Promise<string> {
         const input = await this.inputHarness();
         const host = await input.host();
         return (await host.getAttribute('id')) ?? '';
     }
 
-    async getInputMinLength() {
+    public async getInputMinLength(): Promise<string | null> {
         const input = await this.inputHarness();
         const host = await input?.host();
-        const minLength = host?.getAttribute('minlength');
+        const minLength = await host?.getAttribute('minlength');
         return minLength ?? null;
     }
 
-    async getInputMaxLength() {
+    public async getInputMaxLength(): Promise<string | null> {
         const input = await this.inputHarness();
         const host = await input?.host();
-        const minLength = host?.getAttribute('maxLength');
-        return minLength ?? null;
+        const maxLength = await host?.getAttribute('maxlength');
+        return maxLength ?? null;
     }
 
     // -----------------------------
     // Prefix/Suffix
     // -----------------------------
 
-    async getPrefixText() {
+    public async getPrefixText(): Promise<string> {
         const field = await this.fieldHarness();
         return await field.getPrefixText();
     }
 
-    async getSuffixText() {
+    public async getSuffixText(): Promise<string> {
         const field = await this.fieldHarness();
         return await field.getSuffixText();
     }
 
-    async hasValidStructure(): Promise<boolean | { [key: string]: string }> {
-        const errors: any = {};
+    public async hasValidStructure(): Promise<boolean | { [key: string]: string }> {
+        const errors: { [key: string]: string } = {};
 
-        const hasValidChildrenCount = (await this.getHostChildrenCount()) == 1;
+        const hasValidChildrenCount = (await this.getHostChildrenCount()) === 1;
         if (!hasValidChildrenCount) {
-            errors['hasValidChildrenCount'] =
-                `Invalid children count: ${hasValidChildrenCount}.`;
+            errors['hasValidChildrenCount'] = `Invalid children count: ${hasValidChildrenCount}.`;
         }
 
         const isHostChildAField = await this.isHostChildAField();
         if (!isHostChildAField) {
-            errors['isHostChildAField'] =
-                `Host child is not a field ${isHostChildAField}.`;
+            errors['isHostChildAField'] = `Host child is not a field ${isHostChildAField}.`;
         }
 
         const appearance = await this.getFieldAppearance();
-        const hasValidAppearance = appearance == 'outline'; // TODO: create a enum
+        const hasValidAppearance = appearance === 'outline';
         if (!hasValidAppearance) {
-            errors['hasValidAppearance'] =
-                `Has invalid field appearance: "${appearance}".`;
+            errors['hasValidAppearance'] = `Has invalid field appearance: "${appearance}".`;
         }
 
         const labelCount = await this.getLabelCount();
-        const hasValidLabelCount = labelCount == 1;
+        const hasValidLabelCount = labelCount === 1;
         if (!hasValidLabelCount) {
-            errors['hasValidLabelCount'] =
-                `Has invalid number of label elements ${labelCount}.`;
+            errors['hasValidLabelCount'] = `Has invalid number of label elements ${labelCount}.`;
         }
 
         const prefixCount = await this.getPrefixCount();
         const hasValidPrefixCount = prefixCount <= 1;
         if (!hasValidPrefixCount) {
-            errors['hasValidPrefixCount'] =
-                `Has invalid number of prefix elements ${prefixCount}.`;
+            errors['hasValidPrefixCount'] = `Has invalid number of prefix elements ${prefixCount}.`;
         }
 
         const inputCount = await this.getInputCount();
-        const hasValidInputCount = inputCount == 1;
+        const hasValidInputCount = inputCount === 1;
         if (!hasValidInputCount) {
-            errors['hasValidInputCount'] =
-                `Has invalid number of input elements : ${inputCount}.`;
+            errors['hasValidInputCount'] = `Has invalid number of input elements : ${inputCount}.`;
         }
 
         const suffixCount = await this.getSuffixCount();
         const hasValidSuffixCount = suffixCount <= 1;
         if (!hasValidSuffixCount) {
-            errors[`hasValidSuffixCount`] =
+            errors['hasValidSuffixCount'] =
                 `Has invalid number of suffix elements: ${suffixCount}.`;
         }
 
         const errorCount = await this.getErrorCount();
         const hasValidErrorCount = errorCount <= 1;
         if (!hasValidErrorCount) {
-            errors['hasValidErrorCount'] =
-                `Has invalid number of error elements ${errorCount}.`;
+            errors['hasValidErrorCount'] = `Has invalid number of error elements ${errorCount}.`;
         }
 
-        return Object.keys(errors).length == 0 ? true : errors;
+        return Object.keys(errors).length === 0 ? true : errors;
     }
 
-    async getState(): Promise<TextFieldState> {
-        const id = await this.getInputId()!;
+    public async getState(): Promise<TextFieldState> {
+        const id = await this.getInputId();
         const type = await this.getInputType();
         const value = await this.getInputValue();
         const label = await this.getLabelText();
@@ -333,7 +320,7 @@ export class TextFieldHarness extends ComponentHarness {
         }
         const hasValidStructure = await this.hasValidStructure();
 
-        const state = {
+        return {
             id,
             type,
             value,
@@ -351,6 +338,5 @@ export class TextFieldHarness extends ComponentHarness {
             errors,
             hasValidStructure,
         };
-        return state;
     }
 }

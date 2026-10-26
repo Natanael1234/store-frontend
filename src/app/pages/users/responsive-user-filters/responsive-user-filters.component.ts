@@ -1,18 +1,11 @@
 import { CommonModule } from '@angular/common';
-import {
-    Component,
-    effect,
-    EventEmitter,
-    inject,
-    model,
-    Output,
-} from '@angular/core';
+import { Component, effect, EventEmitter, inject, model, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { TextFilterComponent } from '@components/alert/text-filter/text-filter.component';
+import { TextFilterComponent } from '@components/text-filter/text-filter.component';
 import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
 import { UserFilterUserDialogData } from '@pages/users/responsive-user-filters/user-filter-dialog/filter-dialog-data';
@@ -28,6 +21,7 @@ import { leftMouseClickFilter } from '@utils/mouse-events/mouse-click-filter';
 
 @Component({
     selector: 'app-responsive-user-filters',
+    standalone: true,
     imports: [
         CommonModule,
         MatIconModule,
@@ -37,12 +31,19 @@ import { leftMouseClickFilter } from '@utils/mouse-events/mouse-click-filter';
         TextFilterComponent,
         UserFilterToolbarComponent,
     ],
-    styles: ['#container { display: flex; flex-direction: column; gap: 1em; }'],
+    styles: [
+        `
+            #container {
+                display: flex;
+                flex-direction: column;
+                gap: 1em;
+            }
+        `,
+    ],
     template: `
-        @let isMobile = !!mobile();
-        <div id="container" [class]="{ filters: true, mobile: isMobile }">
-            <app-text-filter
-                (textSearch)="onTextSearch($event)"></app-text-filter>
+        @let isMobile = mobile();
+        <div id="container" class="filters" [class.mobile]="isMobile">
+            <app-text-filter (textSearch)="onTextSearch($event)"></app-text-filter>
             @if (isMobile) {
                 <button
                     mat-button
@@ -59,33 +60,31 @@ import { leftMouseClickFilter } from '@utils/mouse-events/mouse-click-filter';
                     [deleted]="deleted()"
                     [showCancelButton]="true"
                     [vertical]="false"
-                    (onClose)="
-                        closeFilterMenu($event)
-                    "></app-user-filter-toolbar>
+                    (onClose)="closeFilterMenu($event)"></app-user-filter-toolbar>
             }
         </div>
     `,
 })
 export class ResponsiveUserFiltersComponent {
-    public loading = model<boolean>(false);
-    public mobile = model<boolean>(true);
-    public textQuery = model<string>('');
-    public active = model<ActiveFilter>(ActiveFilter.active);
-    public deleted = model<DeletedFilter>(DeletedFilter.not_deleted);
-    public orderBy = model<UserOrder[]>([
+    public readonly loading = model<boolean>(false);
+    public readonly mobile = model<boolean>(true);
+    public readonly textQuery = model<string>('');
+    public readonly active = model<ActiveFilter>(ActiveFilter.active);
+    public readonly deleted = model<DeletedFilter>(DeletedFilter.not_deleted);
+    public readonly orderBy = model<UserOrder[]>([
         UserOrder.name_asc,
         UserOrder.email_asc,
         UserOrder.active_asc,
         UserOrder.deleted_desc,
     ]);
 
-    protected mobileOrder = model<UserOrder>(UserOrder.name_asc);
-    protected previousMobile = model<boolean>(true);
+    protected readonly mobileOrder = model<UserOrder>(UserOrder.name_asc);
+    protected readonly previousMobile = model<boolean>(true);
 
     protected readonly dialog = inject(MatDialog);
     protected dialogRef?: MatDialogRef<UserFilterDialogComponent, any>;
 
-    @Output() public refresh = new EventEmitter<OnUserFilterEvent>();
+    @Output() public readonly refresh = new EventEmitter<OnUserFilterEvent>();
 
     constructor() {
         effect(() => {
@@ -101,17 +100,18 @@ export class ResponsiveUserFiltersComponent {
         });
     }
 
-    protected closeFilterMenu(event: OnUserFilterMenuListCloseEvent) {
+    protected closeFilterMenu(event: OnUserFilterMenuListCloseEvent): void {
         // if saving
-        if (event) {
-            const { active, deleted, order } =
-                event as OnUserFilterMenuListSubmitEvent;
-
-            this.active.set(active);
-            this.deleted.set(deleted);
-            this.mobileOrder.set(order as UserOrder);
-            this.fireRefreshEvent();
+        if (!event) {
+            return;
         }
+
+        const { active, deleted, order } = event as OnUserFilterMenuListSubmitEvent;
+
+        this.active.set(active);
+        this.deleted.set(deleted);
+        this.mobileOrder.set(order);
+        this.fireRefreshEvent();
     }
 
     protected openFilterDialog(event: any): void {
@@ -133,32 +133,30 @@ export class ResponsiveUserFiltersComponent {
             hasBackdrop: true,
         });
 
-        this.dialogRef
-            .afterClosed()
-            .subscribe((result: UserFilterUserDialogData) => {
-                if (result !== undefined) {
-                    const { order: sort, active, deleted } = result;
-                    if (active) {
-                        this.active.set(active);
-                    }
-                    if (deleted) {
-                        this.deleted.set(deleted);
-                    }
-                    if (sort) {
-                        this.mobileOrder.set(sort);
-                    }
-                    this.fireRefreshEvent();
+        this.dialogRef.afterClosed().subscribe((result: UserFilterUserDialogData) => {
+            if (result !== undefined) {
+                const { order: sort, active, deleted } = result;
+                if (active) {
+                    this.active.set(active);
                 }
-                this.dialogRef = undefined;
-            });
+                if (deleted) {
+                    this.deleted.set(deleted);
+                }
+                if (sort) {
+                    this.mobileOrder.set(sort);
+                }
+                this.fireRefreshEvent();
+            }
+            this.dialogRef = undefined;
+        });
     }
 
-    protected onTextSearch(event: string) {
+    protected onTextSearch(event: string): void {
         this.textQuery.set(event || '');
         this.fireRefreshEvent();
     }
 
-    private fireRefreshEvent() {
+    private fireRefreshEvent(): void {
         const filterEvent: OnUserFilterEvent = {
             textQuery: this.textQuery(),
             order: this.mobileOrder(),
@@ -169,7 +167,7 @@ export class ResponsiveUserFiltersComponent {
         this.refresh.emit(filterEvent);
     }
 
-    private getMobileOrderFromOrderBy() {
+    private getMobileOrderFromOrderBy(): UserOrder {
         const orderBy = this.orderBy();
         return orderBy[0];
     }

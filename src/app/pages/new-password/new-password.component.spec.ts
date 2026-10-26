@@ -6,13 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { By } from '@angular/platform-browser';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import {
-    ActivatedRoute,
-    NavigationExtras,
-    provideRouter,
-    Router,
-} from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { AlertComponent } from '@components/alert/alert.component';
 import { ButtonComponent } from '@components/form/components/button/button.component';
 import { ButtonAppearance } from '@components/form/components/button/enum/appearance/button-appearance.enum';
@@ -27,20 +21,19 @@ import { NewPasswordHarness } from '@pages/new-password/new-password.harness';
 import { AuthService } from '@services/auth/auth.service';
 import { Role } from '@services/user/dtos/role/role.enum';
 import { BehaviorSubject, of, Subject, throwError } from 'rxjs';
+import { vi } from 'vitest';
 
-describe('NewPasswordComponent.', () => {
+describe('NewPasswordComponent', () => {
     let fixture: ComponentFixture<NewPasswordComponent>;
     let component: NewPasswordComponent;
-    let authServiceSpy: jasmine.SpyObj<AuthService>;
+    let authServiceSpy: { createNewPassword: ReturnType<typeof vi.fn> };
     let router: Router;
     let harness: NewPasswordHarness;
 
     function getPasswordFieldComponents() {
         return fixture.debugElement
             .queryAll(By.directive(PasswordFieldComponent))
-            .map(
-                (field) => field.componentInstance,
-            ) as PasswordFieldComponent[];
+            .map((field) => field.componentInstance) as PasswordFieldComponent[];
     }
 
     function getButtonComponents() {
@@ -50,31 +43,25 @@ describe('NewPasswordComponent.', () => {
     }
 
     function getPasswordFieldComponent() {
-        return getPasswordFieldComponents().find(
-            (field) => field.id() == 'password-input',
-        );
+        return getPasswordFieldComponents().find((field) => field.id() === 'password-input');
     }
 
     function getRepeadPasswordFieldComponent() {
-        return getPasswordFieldComponents().find(
-            (field) => field.id() == 'repeat-password-input',
-        );
+        return getPasswordFieldComponents().find((field) => field.id() === 'repeat-password-input');
     }
 
     function getSaveButtonComponent() {
-        return getButtonComponents().find(
-            (button) => button.id() == 'save-button',
-        );
+        return getButtonComponents().find((button) => button.id() === 'save-button');
     }
 
-    function getCanceluttonComponent() {
-        return getButtonComponents().find(
-            (button) => button.id() == 'cancel-button',
-        );
+    function getCancelButtonComponent() {
+        return getButtonComponents().find((button) => button.id() === 'cancel-button');
     }
 
     beforeEach(async () => {
-        const spy = jasmine.createSpyObj('AuthService', ['createNewPassword']);
+        const authServiceMock = {
+            createNewPassword: vi.fn(),
+        };
 
         await TestBed.configureTestingModule({
             imports: [
@@ -88,8 +75,7 @@ describe('NewPasswordComponent.', () => {
                 ButtonComponent,
             ],
             providers: [
-                provideAnimationsAsync(),
-                { provide: AuthService, useValue: spy },
+                { provide: AuthService, useValue: authServiceMock },
                 provideRouter([
                     {
                         path: 'home',
@@ -110,17 +96,15 @@ describe('NewPasswordComponent.', () => {
                 },
             ],
         }).compileComponents();
+
         fixture = TestBed.createComponent(NewPasswordComponent);
-        authServiceSpy = TestBed.inject(
-            AuthService,
-        ) as jasmine.SpyObj<AuthService>;
+        authServiceSpy = TestBed.inject(AuthService) as unknown as {
+            createNewPassword: ReturnType<typeof vi.fn>;
+        };
         component = fixture.componentInstance;
         router = TestBed.inject(Router);
         fixture.detectChanges();
-        harness = await TestbedHarnessEnvironment.harnessForFixture(
-            fixture,
-            NewPasswordHarness,
-        );
+        harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, NewPasswordHarness);
     });
 
     it('should create.', async () => {
@@ -138,19 +122,13 @@ describe('NewPasswordComponent.', () => {
         expect(passwordField.placeholder()).toBeUndefined();
         expect(passwordField.control()).toBeDefined();
         expect(passwordField.control()).not.toBeNull();
-        expect(passwordField.control()?.disabled).toBeFalse();
+        expect(passwordField.control()?.disabled).toBe(false);
         expect(passwordField.focusable()).toBeUndefined();
         expect(passwordField.autofocus()).toBeUndefined();
         expect(passwordField.readOnly()).toBeUndefined();
-        expect(passwordField.autocomplete()).toEqual(
-            AutoCompleteType.new_password,
-        );
-        expect(passwordField.minLength()).toEqual(
-            UserConfigs.PASSWORD_MIN_LENGTH,
-        );
-        expect(passwordField.maxLength()).toEqual(
-            UserConfigs.PASSWORD_MAX_LENGTH,
-        );
+        expect(passwordField.autocomplete()).toEqual(AutoCompleteType.new_password);
+        expect(passwordField.minLength()).toEqual(UserConfigs.PASSWORD_MIN_LENGTH);
+        expect(passwordField.maxLength()).toEqual(UserConfigs.PASSWORD_MAX_LENGTH);
 
         const repeatPasswordField = getRepeadPasswordFieldComponent()!;
 
@@ -161,17 +139,13 @@ describe('NewPasswordComponent.', () => {
         expect(repeatPasswordField.placeholder()).toBeUndefined();
         expect(repeatPasswordField.control()).toBeDefined();
         expect(repeatPasswordField.control()).not.toBeNull();
-        expect(repeatPasswordField.control()?.disabled).toBeFalse();
+        expect(repeatPasswordField.control()?.disabled).toBe(false);
         expect(repeatPasswordField.focusable()).toBeUndefined();
         expect(repeatPasswordField.autofocus()).toBeUndefined();
         expect(repeatPasswordField.readOnly()).toBeUndefined();
         expect(repeatPasswordField.autocomplete()).toBeUndefined();
-        expect(repeatPasswordField.minLength()).toEqual(
-            UserConfigs.PASSWORD_MIN_LENGTH,
-        );
-        expect(repeatPasswordField.maxLength()).toEqual(
-            UserConfigs.PASSWORD_MAX_LENGTH,
-        );
+        expect(repeatPasswordField.minLength()).toEqual(UserConfigs.PASSWORD_MIN_LENGTH);
+        expect(repeatPasswordField.maxLength()).toEqual(UserConfigs.PASSWORD_MAX_LENGTH);
 
         const saveButton = getSaveButtonComponent()!;
 
@@ -181,14 +155,14 @@ describe('NewPasswordComponent.', () => {
         expect(saveButton.label()).toEqual('Salvar');
         expect(saveButton.icon()).toBeUndefined();
         expect(saveButton.appearance()).toEqual(ButtonAppearance.filled);
-        expect(saveButton.disabled()).toBeFalse();
+        expect(saveButton.disabled()).toBe(false);
         expect(saveButton.focusable()).toBeUndefined();
         expect(saveButton.autofocus()).toBeUndefined();
         expect(saveButton.routerLink()).toBeUndefined();
         expect(saveButton.queryParams()).toBeUndefined();
         expect(saveButton.queryParamsHandling()).toBeUndefined();
 
-        const cancelButton = getCanceluttonComponent()!;
+        const cancelButton = getCancelButtonComponent()!;
 
         expect(cancelButton).toBeDefined();
         expect(cancelButton).not.toBeNull();
@@ -196,7 +170,7 @@ describe('NewPasswordComponent.', () => {
         expect(cancelButton.label()).toEqual('Cancelar');
         expect(cancelButton.icon()).toBeUndefined();
         expect(cancelButton.appearance()).toEqual(ButtonAppearance.outlined);
-        expect(cancelButton.disabled()).toBeFalse();
+        expect(cancelButton.disabled()).toBe(false);
         expect(cancelButton.focusable()).toBeUndefined();
         expect(cancelButton.autofocus()).toBeUndefined();
         expect(cancelButton.routerLink()).toEqual('/');
@@ -206,9 +180,9 @@ describe('NewPasswordComponent.', () => {
 
     it('should go to home page.', async () => {
         const location = TestBed.inject(Location);
-        const routerSpy = spyOn(component['router'], 'navigate');
+        const routerSpy = vi.spyOn(component['router'], 'navigate');
 
-        authServiceSpy.createNewPassword.and.returnValue(
+        authServiceSpy.createNewPassword.mockReturnValue(
             of({
                 status: 'success',
                 data: {
@@ -238,23 +212,22 @@ describe('NewPasswordComponent.', () => {
         expect(authServiceSpy.createNewPassword).not.toHaveBeenCalled();
 
         const values = await harness.getValues();
-
         expect(values).toEqual({ password: '', repeatPassword: '' });
 
         const errors = await harness.getErrors();
         expect(errors).toEqual({});
     });
 
-    it("should sucessfully call service's createNewPassword method on submit.", async () => {
+    it("should successfully call service's createNewPassword method on submit.", async () => {
         const location = TestBed.inject(Location);
-        const routerSpy = spyOn(component['router'], 'navigate');
+        const routerSpy = vi.spyOn(component['router'], 'navigate');
         component['formGroup'].setValue({
             hash: 'SOME_HASH',
             password: 'Password123$',
             repeatPassword: 'Password123$',
         });
-        expect(true).toBeTrue();
-        authServiceSpy.createNewPassword.and.returnValue(
+
+        authServiceSpy.createNewPassword.mockReturnValue(
             of({
                 status: 'success',
                 data: {
@@ -279,8 +252,9 @@ describe('NewPasswordComponent.', () => {
         );
 
         await harness.clickSaveButton();
-        expect(location.path()).toBe('');
-        expect(authServiceSpy.createNewPassword).toHaveBeenCalledOnceWith({
+        expect(location.path()).toBe('/login');
+        expect(authServiceSpy.createNewPassword).toHaveBeenCalledOnce();
+        expect(authServiceSpy.createNewPassword).toHaveBeenCalledWith({
             hash: 'SOME_HASH',
             password: 'Password123$',
             repeatPassword: 'Password123$',
@@ -297,15 +271,10 @@ describe('NewPasswordComponent.', () => {
 
     describe('errors.', () => {
         describe('local errors.', () => {
-            let routerSpy: jasmine.Spy<
-                (
-                    commands: readonly any[],
-                    extras?: NavigationExtras,
-                ) => Promise<boolean>
-            >;
+            let routerSpy: ReturnType<typeof vi.spyOn>;
 
             beforeEach(() => {
-                authServiceSpy.createNewPassword.and.returnValue(
+                authServiceSpy.createNewPassword.mockReturnValue(
                     of({
                         status: 'success',
                         data: {
@@ -328,8 +297,8 @@ describe('NewPasswordComponent.', () => {
                         },
                     }),
                 );
-                routerSpy = spyOn(component['router'], 'navigate');
-                spyOn(router, 'navigateByUrl');
+                routerSpy = vi.spyOn(component['router'], 'navigate');
+                vi.spyOn(router, 'navigateByUrl');
             });
 
             describe('on blur.', () => {
@@ -340,9 +309,7 @@ describe('NewPasswordComponent.', () => {
                     });
 
                     const location = TestBed.inject(Location);
-                    expect(
-                        authServiceSpy.createNewPassword,
-                    ).not.toHaveBeenCalled();
+                    expect(authServiceSpy.createNewPassword).not.toHaveBeenCalled();
                     const errors = await harness.getErrors();
                     expect(errors).toEqual({
                         password: 'O comprimento mínimo permitido é 8.',
@@ -413,8 +380,7 @@ describe('NewPasswordComponent.', () => {
 
                             const errors = await harness.getErrors();
                             expect(errors).toEqual({
-                                password:
-                                    'O comprimento máximo permitido é 12.',
+                                password: 'O comprimento máximo permitido é 12.',
                             });
                         });
 
@@ -539,9 +505,7 @@ describe('NewPasswordComponent.', () => {
                     });
                     await harness.clickSaveButton();
 
-                    expect(
-                        authServiceSpy.createNewPassword,
-                    ).not.toHaveBeenCalled();
+                    expect(authServiceSpy.createNewPassword).not.toHaveBeenCalled();
                     expect(location.path()).toBe('');
                     expect(routerSpy).not.toHaveBeenCalled();
                     const errors = await harness.getErrors();
@@ -559,16 +523,11 @@ describe('NewPasswordComponent.', () => {
         });
 
         describe('remote errors.', () => {
-            let routerSpy: jasmine.Spy<
-                (
-                    commands: readonly any[],
-                    extras?: NavigationExtras,
-                ) => Promise<boolean>
-            >;
+            let routerSpy: ReturnType<typeof vi.spyOn>;
 
             beforeEach(() => {
-                routerSpy = spyOn(component['router'], 'navigate');
-                spyOn(router, 'navigateByUrl');
+                routerSpy = vi.spyOn(component['router'], 'navigate');
+                vi.spyOn(router, 'navigateByUrl');
             });
 
             it('should handle main remote error.', async () => {
@@ -582,9 +541,7 @@ describe('NewPasswordComponent.', () => {
                 exception.status = HttpStatusCode.UnprocessableEntity;
                 exception.statusText = 'Unprocessable Entity';
                 const location = TestBed.inject(Location);
-                authServiceSpy.createNewPassword.and.returnValue(
-                    throwError(() => exception),
-                );
+                authServiceSpy.createNewPassword.mockReturnValue(throwError(() => exception));
                 await harness.setValues({
                     password: 'Password123$',
                     repeatPassword: 'Password123$',
@@ -624,9 +581,7 @@ describe('NewPasswordComponent.', () => {
                 exception.status = HttpStatusCode.UnprocessableEntity;
                 exception.statusText = 'Unprocessable Entity';
                 const location = TestBed.inject(Location);
-                authServiceSpy.createNewPassword.and.returnValue(
-                    throwError(() => exception),
-                );
+                authServiceSpy.createNewPassword.mockReturnValue(throwError(() => exception));
                 await harness.setValues({
                     password: 'Password123$',
                     repeatPassword: 'Password123$',
@@ -666,9 +621,7 @@ describe('NewPasswordComponent.', () => {
                 password: 'Password123$',
                 repeatPassword: 'Password123$',
             });
-            authServiceSpy.createNewPassword.and.returnValue(
-                subject.asObservable(),
-            );
+            authServiceSpy.createNewPassword.mockReturnValue(subject.asObservable());
             fixture.detectChanges();
 
             let progressBarHarness = await harness.getProgressBarHarness();
@@ -721,9 +674,7 @@ describe('NewPasswordComponent.', () => {
 
             fixture.detectChanges();
 
-            authServiceSpy.createNewPassword.and.returnValue(
-                throwError(() => exception),
-            );
+            authServiceSpy.createNewPassword.mockReturnValue(throwError(() => exception));
             await harness.setValues({
                 password: 'Password123$',
                 repeatPassword: 'Password123$',

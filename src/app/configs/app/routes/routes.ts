@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { AuthGuard } from '@guards/auth.guard';
+import { authGuard } from '@guards/auth.guard';
 import { HomeComponent } from '@pages/home/home.component';
 import { LoginComponent } from '@pages/login/login.component';
 import { NewPasswordComponent } from '@pages/new-password/new-password.component';
@@ -32,7 +32,7 @@ const routeConfig: Routes = [
         path: 'update-password',
         component: UpdateLoggedInUserPasswordComponent,
         title: 'Update Password Page',
-        canActivate: [AuthGuard],
+        canActivate: [authGuard],
     },
     {
         path: 'request-password-change-link',
@@ -43,13 +43,13 @@ const routeConfig: Routes = [
         path: 'users',
         component: UsersComponent,
         title: 'Users',
-        canActivate: [AuthGuard],
+        canActivate: [authGuard],
     },
     {
         path: 'user',
         component: UserComponent,
         title: 'User',
-        canActivate: [AuthGuard],
+        canActivate: [authGuard],
     },
     {
         path: 'test',

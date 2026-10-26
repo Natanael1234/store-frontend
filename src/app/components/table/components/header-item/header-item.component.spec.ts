@@ -31,10 +31,7 @@ describe('HeaderItemComponent.', () => {
         component = fixture.componentInstance;
         fixture.detectChanges();
 
-        harness = await TestbedHarnessEnvironment.harnessForFixture(
-            fixture,
-            HeaderItemHarness,
-        );
+        harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, HeaderItemHarness);
     });
 
     it('should create', () => {
@@ -43,7 +40,7 @@ describe('HeaderItemComponent.', () => {
 
     describe('label', () => {
         it('should display label based on label model', async () => {
-            spyOn(component.onSelect, 'emit');
+            vi.spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
@@ -71,7 +68,7 @@ describe('HeaderItemComponent.', () => {
 
     describe('direction', () => {
         it('should be sortable by default', async () => {
-            spyOn(component.onSelect, 'emit');
+            vi.spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
@@ -95,8 +92,8 @@ describe('HeaderItemComponent.', () => {
             await harness.triggerLeftClick();
 
             expect(component.onSelect.emit)
-                .withContext('onSelect event fired')
-                .toHaveBeenCalledOnceWith({
+                // .withContext'onSelect event fired')
+                .toHaveBeenCalledExactlyOnceWith({
                     columnId: 'col1',
                     direction: SortDirection.desc,
                 });
@@ -117,7 +114,7 @@ describe('HeaderItemComponent.', () => {
         });
 
         it('should be sortable when sortable is true', async () => {
-            spyOn(component.onSelect, 'emit');
+            vi.spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
@@ -142,8 +139,8 @@ describe('HeaderItemComponent.', () => {
             await harness.triggerLeftClick();
 
             expect(component.onSelect.emit)
-                .withContext('onSelect event fired')
-                .toHaveBeenCalledOnceWith({
+                // .withContext('onSelect event fired')
+                .toHaveBeenCalledExactlyOnceWith({
                     columnId: 'col1',
                     direction: SortDirection.desc,
                 });
@@ -164,7 +161,7 @@ describe('HeaderItemComponent.', () => {
         });
 
         it('should be not sortable when sortable is false', async () => {
-            spyOn(component.onSelect, 'emit');
+            vi.spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
@@ -188,7 +185,7 @@ describe('HeaderItemComponent.', () => {
             await harness.triggerLeftClick();
 
             expect(component.onSelect.emit)
-                .withContext('onSelect event fired')
+                // .withContext'onSelect event fired')
                 .not.toHaveBeenCalled();
 
             expect(await harness.getState()).toEqual({
@@ -206,7 +203,7 @@ describe('HeaderItemComponent.', () => {
         });
 
         it('should update icon based on direction model', async () => {
-            spyOn(component.onSelect, 'emit');
+            vi.spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
@@ -279,7 +276,7 @@ describe('HeaderItemComponent.', () => {
         });
 
         it('should update direction model on left mouse button click', async () => {
-            spyOn(component.onSelect, 'emit');
+            vi.spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
@@ -361,7 +358,7 @@ describe('HeaderItemComponent.', () => {
         });
 
         it('should toggle sort direction on touch', async () => {
-            spyOn(component.onSelect, 'emit');
+            vi.spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
@@ -403,7 +400,7 @@ describe('HeaderItemComponent.', () => {
         });
 
         it('should toggle sort direction on pen touch', async () => {
-            spyOn(component.onSelect, 'emit');
+            vi.spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
@@ -445,7 +442,7 @@ describe('HeaderItemComponent.', () => {
         });
 
         it('should not toggle sort direction on middle mouse button click', async () => {
-            spyOn(component.onSelect, 'emit');
+            vi.spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
@@ -485,7 +482,7 @@ describe('HeaderItemComponent.', () => {
         });
 
         it('should not toggle sort direction on right mouse button click', async () => {
-            spyOn(component.onSelect, 'emit');
+            vi.spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
@@ -527,7 +524,7 @@ describe('HeaderItemComponent.', () => {
 
     describe('disabled', () => {
         it('should be not disabled by default', async () => {
-            spyOn(component.onSelect, 'emit');
+            vi.spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
@@ -551,8 +548,8 @@ describe('HeaderItemComponent.', () => {
             await harness.triggerLeftClick();
 
             expect(component.onSelect.emit)
-                .withContext('onSelect event fired')
-                .toHaveBeenCalledOnceWith({
+                // .withContext'onSelect event fired')
+                .toHaveBeenCalledExactlyOnceWith({
                     columnId: 'col1',
                     direction: SortDirection.desc,
                 });
@@ -573,7 +570,7 @@ describe('HeaderItemComponent.', () => {
         });
 
         it('should be not disabled when disable is false', async () => {
-            spyOn(component.onSelect, 'emit');
+            vi.spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
@@ -598,8 +595,8 @@ describe('HeaderItemComponent.', () => {
             await harness.triggerLeftClick();
 
             expect(component.onSelect.emit)
-                .withContext('onSelect event fired')
-                .toHaveBeenCalledOnceWith({
+                // .withContext'onSelect event fired')
+                .toHaveBeenCalledExactlyOnceWith({
                     columnId: 'col1',
                     direction: SortDirection.desc,
                 });
@@ -620,7 +617,7 @@ describe('HeaderItemComponent.', () => {
         });
 
         it('should be disabled when disable is true', async () => {
-            spyOn(component.onSelect, 'emit');
+            vi.spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
@@ -645,7 +642,7 @@ describe('HeaderItemComponent.', () => {
             await harness.triggerLeftClick();
 
             expect(component.onSelect.emit)
-                .withContext('onSelect event fired')
+                // .withContext('onSelect event fired')
                 .not.toHaveBeenCalled();
 
             expect(await harness.getState()).toEqual({
@@ -666,7 +663,7 @@ describe('HeaderItemComponent.', () => {
 
     describe('sortable', () => {
         it('should be sortable by default', async () => {
-            spyOn(component.onSelect, 'emit');
+            vi.spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
@@ -689,8 +686,8 @@ describe('HeaderItemComponent.', () => {
             await harness.triggerLeftClick();
 
             expect(component.onSelect.emit)
-                .withContext('onSelect event fired')
-                .toHaveBeenCalledOnceWith({
+                // .withContext('onSelect event fired')
+                .toHaveBeenCalledExactlyOnceWith({
                     columnId: 'col1',
                     direction: SortDirection.desc,
                 });
@@ -711,7 +708,7 @@ describe('HeaderItemComponent.', () => {
         });
 
         it('should be sortable when sortable is true', async () => {
-            spyOn(component.onSelect, 'emit');
+            vi.spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
@@ -735,8 +732,8 @@ describe('HeaderItemComponent.', () => {
             await harness.triggerLeftClick();
 
             expect(component.onSelect.emit)
-                .withContext('onSelect event fired')
-                .toHaveBeenCalledOnceWith({
+                // .withContext('onSelect event fired')
+                .toHaveBeenCalledExactlyOnceWith({
                     columnId: 'col1',
                     direction: SortDirection.desc,
                 });
@@ -757,7 +754,7 @@ describe('HeaderItemComponent.', () => {
         });
 
         it('should be not sortable when sortable is false', async () => {
-            spyOn(component.onSelect, 'emit');
+            vi.spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
@@ -781,7 +778,7 @@ describe('HeaderItemComponent.', () => {
             await harness.triggerLeftClick();
 
             expect(component.onSelect.emit)
-                .withContext('onSelect event fired')
+                // .withContext('onSelect event fired')
                 .not.toHaveBeenCalled();
 
             expect(await harness.getState()).toEqual({
@@ -801,7 +798,7 @@ describe('HeaderItemComponent.', () => {
 
     describe('loading', () => {
         it('should be not loading by default', async () => {
-            spyOn(component.onSelect, 'emit');
+            vi.spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
@@ -823,7 +820,7 @@ describe('HeaderItemComponent.', () => {
         });
 
         it('should be not loading when loading is false', async () => {
-            spyOn(component.onSelect, 'emit');
+            vi.spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);
@@ -848,7 +845,7 @@ describe('HeaderItemComponent.', () => {
         });
 
         it('should be loading when loading is true', async () => {
-            spyOn(component.onSelect, 'emit');
+            vi.spyOn(component.onSelect, 'emit');
             component.id.set('col1');
             component.label.set('Column 1');
             component.direction.set(SortDirection.asc);

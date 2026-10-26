@@ -31,7 +31,7 @@ import { TextFormat } from '@components/form/enums/text-format/text-format.enum'
 import { TextMask } from '@components/form/enums/text-mask/text-mask.enum';
 import { UserConfigs } from '@configs/user/user.configs';
 import { Icon } from '@enums/icons/icons.enum';
-import { ResponsityService } from '@services/responsivity/responsivity.service';
+import { ResponsivityService } from '@services/responsivity/responsivity.service';
 import { cepValidator } from '@validators/cep/cep.validator';
 import { cnpjValidator } from '@validators/cnpj/cnpj.validator';
 import { cpfValidator } from '@validators/cpf/cpf.validator';
@@ -75,7 +75,7 @@ import { Subscription } from 'rxjs';
     templateUrl: './test.component.html',
 })
 export class TestComponent {
-    protected responsivity: ResponsityService = inject(ResponsityService);
+    protected responsivity: ResponsivityService = inject(ResponsivityService);
     private resizeSubscription!: Subscription;
 
     protected formGroup = new FormGroup(
@@ -194,14 +194,12 @@ export class TestComponent {
     }
 
     public ngAfterViewInit() {
-        this.resizeSubscription = this.responsivity.mobile.subscribe(
-            (mobile) => {
-                this.mobile = mobile;
-                // this.formGroup.markAllAsTouched();
-                // this.formGroup.markAllAsDirty();
-                // this.formGroup.updateValueAndValidity();
-            },
-        );
+        this.resizeSubscription = this.responsivity.mobile.subscribe((mobile) => {
+            this.mobile = mobile;
+            // this.formGroup.markAllAsTouched();
+            // this.formGroup.markAllAsDirty();
+            // this.formGroup.updateValueAndValidity();
+        });
     }
 
     public ngOnDestroy() {

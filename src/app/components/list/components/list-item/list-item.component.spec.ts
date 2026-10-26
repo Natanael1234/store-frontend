@@ -20,10 +20,7 @@ describe('ListItemComponent.', () => {
         component = fixture.componentInstance;
         fixture.detectChanges();
 
-        harness = await TestbedHarnessEnvironment.harnessForFixture(
-            fixture,
-            ListItemHarness,
-        );
+        harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, ListItemHarness);
     });
 
     it('should rebder list item without labels and icons ant not loading by default', async () => {

@@ -1,9 +1,5 @@
 import { Component, inject, model } from '@angular/core';
-import {
-    MAT_DIALOG_DATA,
-    MatDialogModule,
-    MatDialogRef,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { UserFilterUserDialogData } from '@pages/users/responsive-user-filters/user-filter-dialog/filter-dialog-data';
 import { OnUserFilterMenuListCloseEvent } from '@pages/users/responsive-user-filters/user-filter-toollbar/types/on-user-filter-menu-list-close-event.type';
 import { UserFilterToolbarComponent } from '@pages/users/responsive-user-filters/user-filter-toollbar/user-filter-toolbar.component';
@@ -11,7 +7,11 @@ import { UserFilterToolbarComponent } from '@pages/users/responsive-user-filters
 @Component({
     selector: 'app-user-filter-dialog',
     imports: [UserFilterToolbarComponent, MatDialogModule],
-    styleUrl: './user-filter-dialog.component.scss',
+    styles: `
+        .wrapper {
+            padding: 1em;
+        }
+    `,
     template: `
         <div class="wrapper">
             <app-user-filter-toolbar
@@ -26,18 +26,13 @@ import { UserFilterToolbarComponent } from '@pages/users/responsive-user-filters
     `,
 })
 export class UserFilterDialogComponent {
-    public data: UserFilterUserDialogData =
-        inject<UserFilterUserDialogData>(MAT_DIALOG_DATA);
-    public dialogRef: MatDialogRef<
-        UserFilterDialogComponent,
-        OnUserFilterMenuListCloseEvent
-    > = inject(
-        MatDialogRef<UserFilterDialogComponent, OnUserFilterMenuListCloseEvent>,
-    );
+    public data: UserFilterUserDialogData = inject<UserFilterUserDialogData>(MAT_DIALOG_DATA);
+    public dialogRef: MatDialogRef<UserFilterDialogComponent, OnUserFilterMenuListCloseEvent> =
+        inject(MatDialogRef<UserFilterDialogComponent, OnUserFilterMenuListCloseEvent>);
 
-    readonly order = model(this.data.order);
-    readonly active = model(this.data.active);
-    readonly deleted = model(this.data.deleted);
+    public readonly order = model(this.data.order);
+    public readonly active = model(this.data.active);
+    public readonly deleted = model(this.data.deleted);
 
     protected closeFilterMenu(event: OnUserFilterMenuListCloseEvent): void {
         this.dialogRef.close(event);

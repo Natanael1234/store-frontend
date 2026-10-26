@@ -12,9 +12,7 @@ export class ListItemHarness extends ComponentHarness {
         ':scope > #container> #right-column > *',
     );
     private readonly container = this.locatorFor(':scope > #container');
-    private readonly labels = this.locatorForAll(
-        ':scope > #container > #left-column > div',
-    );
+    private readonly labels = this.locatorForAll(':scope > #container > #left-column > div');
     private readonly labelChildren = this.locatorForAll(
         ':scope > #container > #left-column > div > *',
     );
@@ -88,8 +86,7 @@ export class ListItemHarness extends ComponentHarness {
 
         const hostChildTagName = await hostChildren[0].getProperty('tagName');
         if (hostChildTagName != 'DIV') {
-            errors['hostChildTagName'] =
-                `Host child should be a div. Found ${hostChildTagName}.`;
+            errors['hostChildTagName'] = `Host child should be a div. Found ${hostChildTagName}.`;
         }
 
         const containerChildren = await this.containerChildren();
@@ -98,15 +95,13 @@ export class ListItemHarness extends ComponentHarness {
                 `Container has invalid child count. Expected 2. Found ${containerChildren.length}.`;
         }
 
-        const leftColumnTagName =
-            await containerChildren[0].getProperty('tagName');
+        const leftColumnTagName = await containerChildren[0].getProperty('tagName');
         if (leftColumnTagName != 'DIV') {
             errors['leftColumId'] =
                 `First container column must be a div. Found ${leftColumnTagName}.`;
         }
 
-        const rightColumnTagName =
-            await containerChildren[1].getProperty('tagName');
+        const rightColumnTagName = await containerChildren[1].getProperty('tagName');
         if (rightColumnTagName != 'DIV') {
             errors['leftColumId'] =
                 `Second container column must be a div. Found ${rightColumnTagName}.`;
@@ -120,8 +115,7 @@ export class ListItemHarness extends ComponentHarness {
 
         const rightColumnId = await containerChildren[1].getProperty('id');
         if (rightColumnId != 'right-column') {
-            errors['rightColumId'] =
-                `'right-column' id missing in first container child.`;
+            errors['rightColumId'] = `'right-column' id missing in first container child.`;
         }
 
         for (const leftColumnChild of await this.leftColumnChildren()) {
@@ -140,7 +134,9 @@ export class ListItemHarness extends ComponentHarness {
             }
         }
 
-        expect(await this.labelChildren()).toHaveSize(0);
+        if ((await this.labelChildren()).length) {
+            errors['klabelChildren'] = `Expected label do not have children.`;
+        }
 
         let containsLoading = !!(await this.loadingElements()).length;
         let containsNotLoading = !!(await this.notLoadingElements()).length;
