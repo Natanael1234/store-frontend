@@ -1,7 +1,4 @@
-import {
-    MatRadioButtonHarness,
-    MatRadioGroupHarness,
-} from '@angular/material/radio/testing';
+import { MatRadioButtonHarness, MatRadioGroupHarness } from '@angular/material/radio/testing';
 
 import { ComponentHarness } from '@angular/cdk/testing';
 
@@ -13,6 +10,7 @@ export class RadioGroupHarness extends ComponentHarness {
     private groupHarness = this.locatorFor(MatRadioGroupHarness);
     private groupsHarnesses = this.locatorForAll(MatRadioGroupHarness);
     private labelEl = this.locatorForOptional('mat-label');
+    private inputEls = this.locatorForAll('input');
     private radioButtonsHarnesses = this.locatorForAll(MatRadioButtonHarness);
 
     async getHostChildrenCount() {
@@ -23,9 +21,7 @@ export class RadioGroupHarness extends ComponentHarness {
         const children = await this.hostChildrenElements();
         const tagNames: string[] = [];
         for (const child of children) {
-            const tag = (
-                (await child.getProperty('tagName')) as string
-            ).toLowerCase();
+            const tag = ((await child.getProperty('tagName')) as string).toLowerCase();
             tagNames.push(tag);
         }
         return tagNames;
@@ -97,17 +93,20 @@ export class RadioGroupHarness extends ComponentHarness {
 
     async getOptions() {
         const radioButtons = await this.getRadioButtons();
+        const inputs = await this.inputEls();
         const options = [];
+        let i = 0;
         for (const radioButton of radioButtons) {
             const option = {
                 id: await radioButton.getId(),
                 value: await radioButton.getValue(),
                 label: await radioButton.getLabelText(),
                 isChecked: await radioButton.isChecked(),
-                isFocused: await radioButton.isFocused(),
+                isFocused: await inputs[i].isFocused(),
                 isDisabled: await radioButton.isDisabled(),
             };
             options.push(option);
+            i++;
         }
         return options;
     }
@@ -117,8 +116,7 @@ export class RadioGroupHarness extends ComponentHarness {
 
         const hasValidChildrenCount = (await this.getHostChildrenCount()) == 1;
         if (!hasValidChildrenCount) {
-            errors['hasValidChildrenCount'] =
-                `Invalid children count: ${hasValidChildrenCount}.`;
+            errors['hasValidChildrenCount'] = `Invalid children count: ${hasValidChildrenCount}.`;
         }
 
         const isHostChildARadioGroup = await this.isHostChildARadioGroup();

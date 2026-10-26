@@ -1,13 +1,8 @@
 import { ComponentHarness } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { Component } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
-import {
-    FormControl,
-    FormsModule,
-    ReactiveFormsModule,
-    Validators,
-} from '@angular/forms';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NumericFieldComponent } from '@components/form/components/text/numeric-field/numeric-field.component';
 import { NumericFieldHarness } from '@components/form/components/text/numeric-field/numeric-field.harness';
 import { AutoCompleteType } from '@components/form/enums/auto-complete-type/auto-complete-type.enum';
@@ -22,14 +17,16 @@ describe('NumericFieldComponent.', () => {
     let control: FormControl;
     let pipe: NgxMaskPipe;
 
+    const flushFocusTimer = (): void => {
+        fixture.detectChanges();
+        vi.advanceTimersByTime(0);
+    };
+
     beforeEach(async () => {
+        vi.useFakeTimers();
+
         await TestBed.configureTestingModule({
-            imports: [
-                FormsModule,
-                ReactiveFormsModule,
-                NumericFieldComponent,
-                NgxMaskDirective,
-            ],
+            imports: [FormsModule, ReactiveFormsModule, NumericFieldComponent, NgxMaskDirective],
             providers: [provideNgxMask(), NgxMaskPipe],
         }).compileComponents();
 
@@ -41,10 +38,11 @@ describe('NumericFieldComponent.', () => {
         component.control.set(control);
         fixture.detectChanges();
 
-        harness = await TestbedHarnessEnvironment.harnessForFixture(
-            fixture,
-            NumericFieldHarness,
-        );
+        harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, NumericFieldHarness);
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
     });
 
     it('should create.', () => {
@@ -73,6 +71,8 @@ describe('NumericFieldComponent.', () => {
         });
         component.control.set(control);
 
+        flushFocusTimer();
+
         const state = await harness.getState();
         expect(state).toEqual({
             id: 'quantity',
@@ -96,9 +96,9 @@ describe('NumericFieldComponent.', () => {
         });
 
         // TODO: test blur event
-        // const spy = spyOn(options.component.onBlur, 'emit');
+        // const spy = vi.spyOn(options.component.onBlur, 'emit');
         // await harness.blurInput();
-        // expect(spy).withContext('onBlur event').toHaveBeenCalledOnceWith();
+        // expect(spy).withContext('onBlur event').toHaveBeenCalledExactlyOnceWith();
     });
 
     it('should set component without optional properties', async () => {
@@ -108,11 +108,10 @@ describe('NumericFieldComponent.', () => {
         });
         component.control.set(control);
         component.decimalPlaces.set(2);
-        fixture.detectChanges();
 
         const state = await harness.getState();
         expect(state).toEqual({
-            id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+            id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
             type: FormElementType.text,
             value: '9.667',
             label: '',
@@ -133,11 +132,12 @@ describe('NumericFieldComponent.', () => {
         });
     });
 
-    describe('parameters:.', () => {
-        describe('id:.', () => {
+    describe('parameters.', () => {
+        describe('id.', () => {
             it('should set id', async () => {
                 component.id.set('test-id');
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
@@ -163,9 +163,11 @@ describe('NumericFieldComponent.', () => {
             });
 
             it('should generate id', async () => {
+                flushFocusTimer();
+
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -187,14 +189,15 @@ describe('NumericFieldComponent.', () => {
             });
         });
 
-        describe('label:.', () => {
+        describe('label.', () => {
             it('should set label', async () => {
                 component.label.set('Test label');
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: 'Test label',
@@ -217,8 +220,10 @@ describe('NumericFieldComponent.', () => {
 
             it('should empty label by default', async () => {
                 const state = await harness.getState();
+                flushFocusTimer();
+
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -240,14 +245,15 @@ describe('NumericFieldComponent.', () => {
             });
         });
 
-        describe('placeholder:.', () => {
+        describe('placeholder.', () => {
             it('should set placeholder', async () => {
                 component.placeholder.set('Test placeholder');
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -269,9 +275,11 @@ describe('NumericFieldComponent.', () => {
             });
 
             it('should empty placeholder by default', async () => {
+                flushFocusTimer();
+
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -293,11 +301,13 @@ describe('NumericFieldComponent.', () => {
             });
         });
 
-        describe('focusable:.', () => {
+        describe('focusable.', () => {
             it('should set focusable =true by default', async () => {
+                flushFocusTimer();
+
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -320,11 +330,12 @@ describe('NumericFieldComponent.', () => {
 
             it('should set focusable = true', async () => {
                 component.focusable.set(true);
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -347,11 +358,12 @@ describe('NumericFieldComponent.', () => {
 
             it('should set focusable = false', async () => {
                 component.focusable.set(false);
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -373,7 +385,7 @@ describe('NumericFieldComponent.', () => {
             });
         });
 
-        xdescribe('autofocus.', () => {
+        describe.skip('autofocus.', () => {
             /** As the first focusable element is automatically focused creates a scenario where the field is the second focusable element. */
             @Component({
                 selector: 'autofocus-test',
@@ -381,10 +393,7 @@ describe('NumericFieldComponent.', () => {
                 template: `
                     <!-- button is focused by default -->
                     <button>Test</button>
-                    <app-numeric-field
-                        id="input"
-                        [control]="control"
-                        [autofocus]="false" />
+                    <app-numeric-field id="input" [control]="control" [autofocus]="false" />
                 `,
             })
             class AutofocusTestComponent {
@@ -393,8 +402,7 @@ describe('NumericFieldComponent.', () => {
 
             class TestHarness extends ComponentHarness {
                 static hostSelector = 'autofocus-test';
-                private numericFieldHarness =
-                    this.locatorFor(NumericFieldHarness);
+                private numericFieldHarness = this.locatorFor(NumericFieldHarness);
                 getNumericFieldHarness() {
                     return this.numericFieldHarness();
                 }
@@ -407,21 +415,19 @@ describe('NumericFieldComponent.', () => {
 
             beforeEach(async () => {
                 fixture = TestBed.createComponent(AutofocusTestComponent);
-                fixture.detectChanges();
+
                 testHarness = await TestbedHarnessEnvironment.harnessForFixture(
                     fixture,
                     TestHarness,
                 );
-                numericFieldComponent =
-                    fixture.debugElement.children[1].componentInstance;
-                numericFieldHarness =
-                    await testHarness.getNumericFieldHarness();
+                numericFieldComponent = fixture.debugElement.children[1].componentInstance;
+                numericFieldHarness = await testHarness.getNumericFieldHarness();
             });
 
             it('should set autofocus = false by default.', async () => {
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -446,11 +452,10 @@ describe('NumericFieldComponent.', () => {
                 const tf = fixture.debugElement.children[1]
                     .componentInstance as NumericFieldComponent;
                 tf.autofocus.set(false);
-                fixture.detectChanges();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -475,11 +480,10 @@ describe('NumericFieldComponent.', () => {
                 const tf = fixture.debugElement.children[1]
                     .componentInstance as NumericFieldComponent;
                 tf.autofocus.set(true);
-                fixture.detectChanges();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -501,11 +505,13 @@ describe('NumericFieldComponent.', () => {
             });
         });
 
-        describe('readOnly:.', () => {
+        describe('readOnly.', () => {
             it('should set readOnly = false by default', async () => {
+                flushFocusTimer();
+
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -528,11 +534,12 @@ describe('NumericFieldComponent.', () => {
 
             it('should set readOnly = true', async () => {
                 component.readOnly.set(true);
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -555,11 +562,12 @@ describe('NumericFieldComponent.', () => {
 
             it('should set readOnly = false', async () => {
                 component.readOnly.set(false);
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -583,11 +591,11 @@ describe('NumericFieldComponent.', () => {
 
         describe('autocomplete.', () => {
             it('should set autocomplete = off by default.', async () => {
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -610,11 +618,12 @@ describe('NumericFieldComponent.', () => {
 
             it('autocomplete should be set on.', async () => {
                 component.autocomplete.set(AutoCompleteType.on);
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -637,11 +646,12 @@ describe('NumericFieldComponent.', () => {
 
             it('autocomplete should be set off.', async () => {
                 component.autocomplete.set(AutoCompleteType.off);
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -663,13 +673,13 @@ describe('NumericFieldComponent.', () => {
             });
         });
 
-        describe('minLength:.', () => {
+        describe('minLength.', () => {
             it('should not set minLength', async () => {
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -692,11 +702,12 @@ describe('NumericFieldComponent.', () => {
 
             it('should set minLength', async () => {
                 component.minLength.set(5);
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -718,13 +729,13 @@ describe('NumericFieldComponent.', () => {
             });
         });
 
-        describe('maxLength:.', () => {
+        describe('maxLength.', () => {
             it('should not set maxLength', async () => {
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -747,11 +758,12 @@ describe('NumericFieldComponent.', () => {
 
             it('should set maxLength', async () => {
                 component.maxLength.set(5);
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -773,13 +785,13 @@ describe('NumericFieldComponent.', () => {
             });
         });
 
-        describe('min:.', () => {
+        describe('min.', () => {
             it('should not set min', async () => {
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -802,11 +814,12 @@ describe('NumericFieldComponent.', () => {
 
             it('should set min', async () => {
                 component.min.set(5);
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -828,13 +841,13 @@ describe('NumericFieldComponent.', () => {
             });
         });
 
-        describe('max:.', () => {
+        describe('max.', () => {
             it('should not set max', async () => {
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -857,11 +870,12 @@ describe('NumericFieldComponent.', () => {
 
             it('should set max', async () => {
                 component.max.set(5);
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -883,13 +897,13 @@ describe('NumericFieldComponent.', () => {
             });
         });
 
-        describe('step:.', () => {
+        describe('step.', () => {
             it('should not set step', async () => {
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -912,11 +926,12 @@ describe('NumericFieldComponent.', () => {
 
             it('should set step', async () => {
                 component.step.set(5);
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -938,13 +953,13 @@ describe('NumericFieldComponent.', () => {
             });
         });
 
-        describe('prefix:.', () => {
+        describe('prefix.', () => {
             it('should not set prefix', async () => {
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -967,11 +982,12 @@ describe('NumericFieldComponent.', () => {
 
             it('should set prefix', async () => {
                 component.prefix.set('R$');
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -993,13 +1009,13 @@ describe('NumericFieldComponent.', () => {
             });
         });
 
-        describe('suffix:.', () => {
+        describe('suffix.', () => {
             it('should not set prefix', async () => {
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -1022,11 +1038,12 @@ describe('NumericFieldComponent.', () => {
 
             it('should set suffix', async () => {
                 component.suffix.set('reais');
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -1048,14 +1065,15 @@ describe('NumericFieldComponent.', () => {
             });
         });
 
-        xdescribe('leadZero:.', () => {
-            xit('should not set leadZero', async () => {
+        describe.skip('leadZero.', () => {
+            it.skip('should not set leadZero', async () => {
                 control.setValue('005');
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '5',
                     label: '',
@@ -1079,11 +1097,12 @@ describe('NumericFieldComponent.', () => {
             it('should set leadZero', async () => {
                 control.setValue('0005');
                 component.leadZero.set(true);
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '0,005',
                     label: '',
@@ -1104,17 +1123,18 @@ describe('NumericFieldComponent.', () => {
                 });
             });
 
-            it('should set leadZero with limited decimal places', fakeAsync(async () => {
+            it('should set leadZero with limited decimal places', async () => {
                 control.setValue('0005');
                 component.decimalPlaces.set(2);
                 component.leadZero.set(true);
 
                 await fixture.whenStable();
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '0,005',
                     label: '',
@@ -1133,18 +1153,18 @@ describe('NumericFieldComponent.', () => {
                     errors: [],
                     hasValidStructure: true,
                 });
-            }));
+            });
         });
 
-        describe('decimalPlaces:.', () => {
+        describe('decimalPlaces.', () => {
             it('should not set decimalPlaces (unlimited by default)', async () => {
                 component.control.set(new FormControl('1567.54546'));
 
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '1.567,54546',
                     label: '',
@@ -1168,11 +1188,12 @@ describe('NumericFieldComponent.', () => {
             it('should set decimalPlaces = 2', async () => {
                 component.control.set(new FormControl('1567.54545'));
                 component.decimalPlaces.set(2);
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '1.567,54',
                     label: '',
@@ -1196,11 +1217,12 @@ describe('NumericFieldComponent.', () => {
             it('should set decimalPlaces = 0', async () => {
                 component.control.set(new FormControl('1567.54545'));
                 component.decimalPlaces.set(0);
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '1.567',
                     label: '',
@@ -1222,14 +1244,15 @@ describe('NumericFieldComponent.', () => {
             });
         });
 
-        describe('allowNegativeNumbers:.', () => {
+        describe('allowNegativeNumbers.', () => {
             it('should not set allowNegativeNumbers (allow by default)', async () => {
                 component.control.set(new FormControl('-1567'));
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '-1.567',
                     label: '',
@@ -1253,11 +1276,12 @@ describe('NumericFieldComponent.', () => {
             it('should set allowNegativeNumbers = true', async () => {
                 component.allowNegativeNumbers.set(true);
                 component.control.set(new FormControl('-2567'));
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '-2.567',
                     label: '',
@@ -1281,11 +1305,12 @@ describe('NumericFieldComponent.', () => {
             it('should set allowNegativeNumbers = false', async () => {
                 component.allowNegativeNumbers.set(false);
                 component.control.set(new FormControl('-3567'));
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '3.567',
                     label: '',
@@ -1309,15 +1334,16 @@ describe('NumericFieldComponent.', () => {
 
         describe('blur', () => {
             it('should fire blur event.', async () => {
-                const spy = jasmine.createSpy('onBlur spy');
+                const spy = vi.fn();
                 component.onBlur.subscribe(spy);
                 await harness.blurInput();
-                expect(spy).toHaveBeenCalledOnceWith(undefined);
-                fixture.detectChanges();
+                expect(spy).toHaveBeenCalledExactlyOnceWith(undefined);
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -1339,14 +1365,15 @@ describe('NumericFieldComponent.', () => {
             });
 
             it('should not fire blur event.', async () => {
-                const spy = jasmine.createSpy('onBlur spy');
+                const spy = vi.fn();
                 component.onBlur.subscribe(spy);
                 expect(spy).not.toHaveBeenCalled();
-                fixture.detectChanges();
+
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -1399,24 +1426,31 @@ describe('NumericFieldComponent.', () => {
         let textFieldHarness: NumericFieldHarness;
         let textFieldComponent: NumericFieldComponent;
 
+        const flushFocusTimer = (): void => {
+            fixture.detectChanges();
+            vi.advanceTimersByTime(0);
+        };
+
         beforeEach(async () => {
+            vi.useFakeTimers();
+
             fixture = TestBed.createComponent(AutofocusTestComponent);
             fixture.detectChanges();
-            testHarness = await TestbedHarnessEnvironment.harnessForFixture(
-                fixture,
-                TestHarness,
-            );
-            textFieldComponent =
-                fixture.debugElement.children[1].componentInstance;
+            testHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, TestHarness);
+            textFieldComponent = fixture.debugElement.children[1].componentInstance;
             textFieldHarness = await testHarness.getTextFieldHarness();
         });
 
+        afterEach(() => {
+            vi.useRealTimers();
+        });
+
         it('should set autofocus = false by default.', async () => {
-            fixture.detectChanges();
+            flushFocusTimer();
 
             const state = await textFieldHarness.getState();
             expect(state).toEqual({
-                id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                 type: FormElementType.text,
                 value: '',
                 label: '',
@@ -1439,11 +1473,12 @@ describe('NumericFieldComponent.', () => {
 
         it('should set autofocus = false.', async () => {
             textFieldComponent.autofocus.set(false);
-            fixture.detectChanges();
+
+            flushFocusTimer();
 
             const state = await textFieldHarness.getState();
             expect(state).toEqual({
-                id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                 type: FormElementType.text,
                 value: '',
                 label: '',
@@ -1466,11 +1501,12 @@ describe('NumericFieldComponent.', () => {
 
         it('should set autofocus = true.', async () => {
             textFieldComponent.autofocus.set(true);
-            fixture.detectChanges();
+
+            flushFocusTimer();
 
             const state = await textFieldHarness.getState();
             expect(state).toEqual({
-                id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                 type: FormElementType.text,
                 value: '',
                 label: '',

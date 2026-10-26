@@ -1,44 +1,49 @@
 // src/app/guards/auth.guard.spec.ts
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { AuthGuard } from '@guards/auth.guard';
+import { authGuard } from '@guards/auth.guard';
 import { AuthService } from '@services/auth/auth.service';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
-describe('AuthGuard', () => {
-    let guard: AuthGuard;
-    let authServiceSpy: jasmine.SpyObj<AuthService>;
-    let routerSpy: jasmine.SpyObj<Router>;
+describe('authGuard', () => {
+    let authServiceSpy: Mocked<AuthService>;
+    let routerSpy: Mocked<Router>;
 
     beforeEach(() => {
-        const authSpy = jasmine.createSpyObj('AuthService', [
-            'isAuthenticated',
-        ]);
-        const router = jasmine.createSpyObj('Router', ['navigate']);
+        const authSpy = {
+            isAuthenticated: vi.fn(),
+        };
+        const router = {
+            navigate: vi.fn(),
+        };
 
         TestBed.configureTestingModule({
             providers: [
-                AuthGuard,
                 { provide: AuthService, useValue: authSpy },
                 { provide: Router, useValue: router },
             ],
         });
-        guard = TestBed.inject(AuthGuard);
-        authServiceSpy = TestBed.inject(
-            AuthService,
-        ) as jasmine.SpyObj<AuthService>;
-        routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+
+        authServiceSpy = TestBed.inject(AuthService) as Mocked<AuthService>;
+        routerSpy = TestBed.inject(Router) as Mocked<Router>;
     });
 
+    const executeGuard = () => TestBed.runInInjectionContext(() => authGuard({} as any, {} as any));
+
     it('deve permitir acesso se o usuário estiver autenticado', () => {
-        // authServiceSpy.isAuthenticated.and.returnValue(of(true));
-        authServiceSpy.isAuthenticated.and.returnValue(true);
-        expect(guard.canActivate()).toBeTrue();
+        authServiceSpy.isAuthenticated.mockReturnValue(true);
+
+        const result = executeGuard();
+
+        expect(result).toBe(true);
     });
 
     it('deve redirecionar para o login se o usuário não estiver autenticado', () => {
-        // authServiceSpy.isAuthenticated.and.returnValue(of(false));
-        authServiceSpy.isAuthenticated.and.returnValue(false);
-        expect(guard.canActivate()).toBeFalse();
+        authServiceSpy.isAuthenticated.mockReturnValue(false);
+
+        const result = executeGuard();
+
+        expect(result).toBe(false);
         expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
     });
 });

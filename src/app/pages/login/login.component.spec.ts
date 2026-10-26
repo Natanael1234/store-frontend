@@ -5,8 +5,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { By } from '@angular/platform-browser';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { NavigationExtras, provideRouter, Router } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { AlertComponent } from '@components/alert/alert.component';
 import { ButtonComponent } from '@components/form/components/button/button.component';
 import { ButtonAppearance } from '@components/form/components/button/enum/appearance/button-appearance.enum';
@@ -23,11 +22,12 @@ import { RegisterComponent } from '@pages/register/register.component';
 import { AuthService } from '@services/auth/auth.service';
 import { Role } from '@services/user/dtos/role/role.enum';
 import { of, Subject, throwError } from 'rxjs';
+import { vi } from 'vitest';
 
-describe('LoginComponent.', () => {
+describe('LoginComponent', () => {
     let fixture: ComponentFixture<LoginComponent>;
     let component: LoginComponent;
-    let authServiceSpy: jasmine.SpyObj<AuthService>;
+    let authServiceSpy: { login: ReturnType<typeof vi.fn> };
     let router: Router;
     let harness: LoginHarness;
 
@@ -40,9 +40,7 @@ describe('LoginComponent.', () => {
     function getPasswordFieldComponents() {
         return fixture.debugElement
             .queryAll(By.directive(PasswordFieldComponent))
-            .map(
-                (field) => field.componentInstance,
-            ) as PasswordFieldComponent[];
+            .map((field) => field.componentInstance) as PasswordFieldComponent[];
     }
 
     function getButtonComponents() {
@@ -52,31 +50,26 @@ describe('LoginComponent.', () => {
     }
 
     function getEmailFieldComponent() {
-        return getTextFieldComponents().find(
-            (field) => field.id() == 'email-input',
-        );
+        return getTextFieldComponents().find((field) => field.id() === 'email-input');
     }
 
     function getPasswordFieldComponent() {
-        return getPasswordFieldComponents().find(
-            (field) => field.id() == 'password-input',
-        );
+        return getPasswordFieldComponents().find((field) => field.id() === 'password-input');
     }
 
     function getLoginButtonComponent() {
-        return getButtonComponents().find(
-            (button) => button.id() == 'login-button',
-        );
+        return getButtonComponents().find((button) => button.id() === 'login-button');
     }
 
     function getRegisterButtonComponent() {
-        return getButtonComponents().find(
-            (button) => button.id() == 'register-button',
-        );
+        return getButtonComponents().find((button) => button.id() === 'register-button');
     }
 
     beforeEach(async () => {
-        const spy = jasmine.createSpyObj('AuthService', ['login']);
+        const authServiceMock = {
+            login: vi.fn(),
+        };
+
         await TestBed.configureTestingModule({
             imports: [
                 LoginComponent,
@@ -89,8 +82,7 @@ describe('LoginComponent.', () => {
                 ButtonComponent,
             ],
             providers: [
-                provideAnimationsAsync(),
-                { provide: AuthService, useValue: spy },
+                { provide: AuthService, useValue: authServiceMock },
                 provideRouter([
                     {
                         path: 'register',
@@ -100,17 +92,15 @@ describe('LoginComponent.', () => {
                 ]),
             ],
         }).compileComponents();
+
         fixture = TestBed.createComponent(LoginComponent);
-        authServiceSpy = TestBed.inject(
-            AuthService,
-        ) as jasmine.SpyObj<AuthService>;
+        authServiceSpy = TestBed.inject(AuthService) as unknown as {
+            login: ReturnType<typeof vi.fn>;
+        };
         component = fixture.componentInstance;
         router = TestBed.inject(Router);
         fixture.detectChanges();
-        harness = await TestbedHarnessEnvironment.harnessForFixture(
-            fixture,
-            LoginHarness,
-        );
+        harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, LoginHarness);
     });
 
     it('should create.', async () => {
@@ -129,7 +119,7 @@ describe('LoginComponent.', () => {
         expect(emailField.placeholder()).toBeUndefined();
         expect(emailField.control()).toBeDefined();
         expect(emailField.control()).not.toBeNull();
-        expect(emailField.control()?.disabled).toBeFalse();
+        expect(emailField.control()?.disabled).toBe(false);
         expect(emailField.focusable()).toBeUndefined();
         expect(emailField.autofocus()).toBeUndefined();
         expect(emailField.readOnly()).toBeUndefined();
@@ -148,19 +138,13 @@ describe('LoginComponent.', () => {
         expect(passwordField.placeholder()).toBeUndefined();
         expect(passwordField.control()).toBeDefined();
         expect(passwordField.control()).not.toBeNull();
-        expect(passwordField.control()?.disabled).toBeFalse();
+        expect(passwordField.control()?.disabled).toBe(false);
         expect(passwordField.focusable()).toBeUndefined();
         expect(passwordField.autofocus()).toBeUndefined();
         expect(passwordField.readOnly()).toBeUndefined();
-        expect(passwordField.autocomplete()).toEqual(
-            AutoCompleteType.current_password,
-        );
-        expect(passwordField.minLength()).toEqual(
-            UserConfigs.PASSWORD_MIN_LENGTH,
-        );
-        expect(passwordField.maxLength()).toEqual(
-            UserConfigs.PASSWORD_MAX_LENGTH,
-        );
+        expect(passwordField.autocomplete()).toEqual(AutoCompleteType.current_password);
+        expect(passwordField.minLength()).toEqual(UserConfigs.PASSWORD_MIN_LENGTH);
+        expect(passwordField.maxLength()).toEqual(UserConfigs.PASSWORD_MAX_LENGTH);
 
         const loginButton = getLoginButtonComponent()!;
 
@@ -170,7 +154,7 @@ describe('LoginComponent.', () => {
         expect(loginButton.label()).toEqual('Login');
         expect(loginButton.icon()).toBeUndefined();
         expect(loginButton.appearance()).toEqual(ButtonAppearance.filled);
-        expect(loginButton.disabled()).toBeFalse();
+        expect(loginButton.disabled()).toBe(false);
         expect(loginButton.focusable()).toBeUndefined();
         expect(loginButton.autofocus()).toBeUndefined();
         expect(loginButton.routerLink()).toBeUndefined();
@@ -182,12 +166,10 @@ describe('LoginComponent.', () => {
         expect(registerButton).toBeDefined();
         expect(registerButton).not.toBeNull();
         expect(registerButton.id()).toEqual('register-button');
-        expect(registerButton.label()).toEqual(
-            'Não tem tem uma conta? <b>Cadastre-se</b>',
-        );
+        expect(registerButton.label()).toEqual('Não tem tem uma conta? <b>Cadastre-se</b>');
         expect(registerButton.icon()).toBeUndefined();
         expect(registerButton.appearance()).toEqual(ButtonAppearance.outlined);
-        expect(registerButton.disabled()).toBeFalse();
+        expect(registerButton.disabled()).toBe(false);
         expect(registerButton.focusable()).toBeUndefined();
         expect(registerButton.autofocus()).toBeUndefined();
         expect(registerButton.routerLink()).toEqual('/register');
@@ -197,9 +179,9 @@ describe('LoginComponent.', () => {
 
     it('should go to register page.', async () => {
         const location = TestBed.inject(Location);
-        const routerSpy = spyOn(component['router'], 'navigate');
+        const routerSpy = vi.spyOn(component['router'], 'navigate');
 
-        authServiceSpy.login.and.returnValue(
+        authServiceSpy.login.mockReturnValue(
             of({
                 status: 'success',
                 data: {
@@ -235,15 +217,15 @@ describe('LoginComponent.', () => {
         expect(errors).toEqual({});
     });
 
-    it("should sucessfully call service's login method on submit.", async () => {
+    it("should successfully call service's login method on submit.", async () => {
         const location = TestBed.inject(Location);
 
-        const routerSpy = spyOn(component['router'], 'navigate');
+        const routerSpy = vi.spyOn(component['router'], 'navigate');
         component['formGroup'].setValue({
             email: 'john@example.com',
             password: 'Password123$',
         });
-        authServiceSpy.login.and.returnValue(
+        authServiceSpy.login.mockReturnValue(
             of({
                 status: 'success',
                 data: {
@@ -268,7 +250,8 @@ describe('LoginComponent.', () => {
         );
         await harness.clickLoginButton();
         expect(location.path()).toBe('');
-        expect(authServiceSpy.login).toHaveBeenCalledOnceWith({
+        expect(authServiceSpy.login).toHaveBeenCalledOnce();
+        expect(authServiceSpy.login).toHaveBeenCalledWith({
             email: 'john@example.com',
             password: 'Password123$',
         });
@@ -283,15 +266,10 @@ describe('LoginComponent.', () => {
     });
 
     describe('local errors.', () => {
-        let routerSpy: jasmine.Spy<
-            (
-                commands: readonly any[],
-                extras?: NavigationExtras,
-            ) => Promise<boolean>
-        >;
+        let routerSpy: ReturnType<typeof vi.spyOn>;
 
         beforeEach(() => {
-            authServiceSpy.login.and.returnValue(
+            authServiceSpy.login.mockReturnValue(
                 of({
                     status: 'success',
                     data: {
@@ -314,8 +292,8 @@ describe('LoginComponent.', () => {
                     },
                 }),
             );
-            routerSpy = spyOn(component['router'], 'navigate');
-            spyOn(router, 'navigateByUrl');
+            routerSpy = vi.spyOn(component['router'], 'navigate');
+            vi.spyOn(router, 'navigateByUrl');
         });
 
         describe('on blur.', () => {
@@ -370,7 +348,7 @@ describe('LoginComponent.', () => {
 
                     it('should accept email with min length.', async () => {
                         await harness.setValues({
-                            email: 'w@x.com', // TODO: deveria aceitar w@x.c?
+                            email: 'w@x.com',
                             password: 'Password123$',
                         });
 
@@ -380,9 +358,7 @@ describe('LoginComponent.', () => {
 
                     it('should accept name with max length.', async () => {
                         await harness.setValues({
-                            email:
-                                'X'.repeat(UserConfigs.NAME_MAX_LENGTH - 4) +
-                                '@x.c',
+                            email: 'X'.repeat(UserConfigs.NAME_MAX_LENGTH - 4) + '@x.c',
                             password: 'Password123$',
                         });
 
@@ -550,16 +526,11 @@ describe('LoginComponent.', () => {
     });
 
     describe('remote errors.', () => {
-        let routerSpy: jasmine.Spy<
-            (
-                commands: readonly any[],
-                extras?: NavigationExtras,
-            ) => Promise<boolean>
-        >;
+        let routerSpy: ReturnType<typeof vi.spyOn>;
 
         beforeEach(() => {
-            routerSpy = spyOn(component['router'], 'navigate');
-            spyOn(router, 'navigateByUrl');
+            routerSpy = vi.spyOn(component['router'], 'navigate');
+            vi.spyOn(router, 'navigateByUrl');
         });
 
         it('should handle main remote error.', async () => {
@@ -573,7 +544,7 @@ describe('LoginComponent.', () => {
             exception.status = HttpStatusCode.UnprocessableEntity;
             exception.statusText = 'Unprocessable Entity';
             const location = TestBed.inject(Location);
-            authServiceSpy.login.and.returnValue(throwError(() => exception));
+            authServiceSpy.login.mockReturnValue(throwError(() => exception));
             await harness.setValues({
                 email: 'john@email.com',
                 password: 'Password123$',
@@ -609,7 +580,7 @@ describe('LoginComponent.', () => {
             exception.status = HttpStatusCode.UnprocessableEntity;
             exception.statusText = 'Unprocessable Entity';
             const location = TestBed.inject(Location);
-            authServiceSpy.login.and.returnValue(throwError(() => exception));
+            authServiceSpy.login.mockReturnValue(throwError(() => exception));
             await harness.setValues({
                 email: 'john@email.com',
                 password: 'Password123$',
@@ -646,7 +617,7 @@ describe('LoginComponent.', () => {
                 email: 'john@example.com',
                 password: 'Password123$',
             });
-            authServiceSpy.login.and.returnValue(subject.asObservable());
+            authServiceSpy.login.mockReturnValue(subject.asObservable());
 
             fixture.detectChanges();
 
@@ -701,7 +672,7 @@ describe('LoginComponent.', () => {
 
             fixture.detectChanges();
 
-            authServiceSpy.login.and.returnValue(throwError(() => exception));
+            authServiceSpy.login.mockReturnValue(throwError(() => exception));
             await harness.setValues({
                 email: 'john@example.com',
                 password: 'Password123$',

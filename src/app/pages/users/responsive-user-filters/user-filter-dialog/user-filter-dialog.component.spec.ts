@@ -93,16 +93,13 @@ describe('UserFilterDialogComponent.', () => {
     });
 
     it('should contain user filter toolbar', () => {
-        const toolbars = fixture.debugElement.queryAll(
-            By.directive(UserFilterToolbarComponent),
-        );
+        const toolbars = fixture.debugElement.queryAll(By.directive(UserFilterToolbarComponent));
         expect(toolbars.length).toBe(1);
     });
 
     it('should initialize toolbar inputs', () => {
-        const toolbar = fixture.debugElement.query(
-            By.directive(UserFilterToolbarComponent),
-        ).componentInstance as UserFilterToolbarComponent;
+        const toolbar = fixture.debugElement.query(By.directive(UserFilterToolbarComponent))
+            .componentInstance as UserFilterToolbarComponent;
 
         expect(toolbar.order()).toEqual(UserOrder.email_asc);
         expect(toolbar.active()).toEqual(ActiveFilter.inactive);
@@ -116,9 +113,8 @@ describe('UserFilterDialogComponent.', () => {
 
         fixture.detectChanges();
 
-        const toolbar = fixture.debugElement.query(
-            By.directive(UserFilterToolbarComponent),
-        ).componentInstance as UserFilterToolbarComponent;
+        const toolbar = fixture.debugElement.query(By.directive(UserFilterToolbarComponent))
+            .componentInstance as UserFilterToolbarComponent;
 
         expect(toolbar.order()).toEqual(UserOrder.email_desc);
         expect(toolbar.active()).toEqual(ActiveFilter.all);
@@ -126,7 +122,7 @@ describe('UserFilterDialogComponent.', () => {
     });
 
     it('should close the dialog with the selected event data', () => {
-        const closeSpy = spyOn(dialogRef, 'close');
+        const closeSpy = vi.spyOn(dialogRef, 'close');
 
         expect(component.order()).toEqual(UserOrder.email_asc);
         expect(component.active()).toEqual(ActiveFilter.inactive);
@@ -138,9 +134,8 @@ describe('UserFilterDialogComponent.', () => {
 
         fixture.detectChanges();
 
-        const toolbarMock = fixture.debugElement.query(
-            By.directive(UserFilterToolbarComponent),
-        ).componentInstance as UserFilterToolbarComponent;
+        const toolbarMock = fixture.debugElement.query(By.directive(UserFilterToolbarComponent))
+            .componentInstance as UserFilterToolbarComponent;
 
         toolbarMock.onClose.emit({
             order: UserOrder.email_desc,
@@ -159,7 +154,7 @@ describe('UserFilterDialogComponent.', () => {
     });
 
     it('should close the dialog with false when cancel is triggered', () => {
-        const closeSpy = spyOn(dialogRef, 'close');
+        const closeSpy = vi.spyOn(dialogRef, 'close');
 
         expect(component.order()).toEqual(UserOrder.email_asc);
         expect(component.active()).toEqual(ActiveFilter.inactive);
@@ -171,9 +166,8 @@ describe('UserFilterDialogComponent.', () => {
 
         fixture.detectChanges();
 
-        const toolbarMock = fixture.debugElement.query(
-            By.directive(UserFilterToolbarComponent),
-        ).componentInstance as UserFilterToolbarComponent;
+        const toolbarMock = fixture.debugElement.query(By.directive(UserFilterToolbarComponent))
+            .componentInstance as UserFilterToolbarComponent;
 
         toolbarMock.onClose.emit(false);
 

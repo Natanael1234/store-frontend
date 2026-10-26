@@ -7,12 +7,9 @@ import { Icon } from '@enums/icons/icons.enum';
 import { MouseButton } from '@enums/mouse-button/mouse-button.enum';
 import { PointerType } from '@enums/pointer-type/pointer-type.enum';
 
-type ButtonState = {
+export type ButtonState = {
     id: string | null;
-    type:
-        | FormElementType.button
-        | FormElementType.submit
-        | FormElementType.reset;
+    type: FormElementType.button | FormElementType.submit | FormElementType.reset;
     label: string | null;
     icon: Icon | null;
     appearance: ButtonAppearance | null;
@@ -23,168 +20,149 @@ type ButtonState = {
 };
 
 export class ButtonHarness extends ComponentHarness {
-    static hostSelector = 'app-button';
+    public static hostSelector = 'app-button';
+
     private readonly hostChildrenElements = this.locatorForAll(':scope > *');
-    private buttonElement = this.locatorFor('button');
-    private readonly buttonChildrenElements = this.locatorForAll(
-        ':scope > button > *',
-    );
-    private icon = this.locatorFor(MatIconHarness);
-    private icons = this.locatorForAll(MatIconHarness);
-    private label = this.locatorForOptional('mat-label');
+    private readonly buttonElement = this.locatorFor('button');
+    private readonly buttonChildrenElements = this.locatorForAll(':scope > button > *');
+    private readonly icons = this.locatorForAll(MatIconHarness);
+    private readonly label = this.locatorForOptional('mat-label');
 
-    private innerButtonIcon = this.locatorForOptional(
-        ':scope > button > mat-icon',
-    );
-    private innerButtonIcons = this.locatorForAll(':scope > button > mat-icon');
-    private innerButtonLabel = this.locatorFor(
+    private readonly innerButtonIcons = this.locatorForAll(':scope > button > mat-icon');
+    private readonly innerButtonLabel = this.locatorFor(
         ':scope > button > .mdc-button__label > mat-label',
     );
-    private innerButtonLabels = this.locatorForAll(
+    private readonly innerButtonLabels = this.locatorForAll(
         ':scope > button > .mdc-button__label > mat-label',
     );
-    private matButtonHarness = this.locatorFor(MatButtonHarness);
+    private readonly matButtonHarness = this.locatorFor(MatButtonHarness);
 
-    async getHostChildrenCount() {
+    public async getHostChildrenCount(): Promise<number> {
         return (await this.hostChildrenElements()).length;
     }
 
-    async hostContainsASingleButton() {
+    public async hostContainsASingleButton(): Promise<boolean> {
         const children = await this.hostChildrenElements();
-        if (children.length != 1) return false;
+        if (children.length !== 1) return false;
         const tagName = await children[0].getProperty('tagName');
-        return tagName == 'BUTTON';
+        return tagName === 'BUTTON';
     }
 
-    async isHostChildAButton() {
+    public async isHostChildAButton(): Promise<boolean> {
         const hostChildren = await this.hostChildrenElements();
         if (hostChildren.length < 1) return false;
         const tagName = await hostChildren[0].getProperty('tagName');
-        return tagName == 'BUTTON';
+        return tagName === 'BUTTON';
     }
 
-    async getButton() {
+    public async getButton() {
         return this.buttonElement();
     }
 
-    async getId() {
+    public async getId(): Promise<string | null> {
         const button = await this.getButton();
-        const id = await button.getAttribute('id');
-        return id;
+        return await button.getAttribute('id');
     }
 
-    async getType() {
+    public async getType(): Promise<
+        FormElementType.button | FormElementType.submit | FormElementType.reset
+    > {
         const button = await this.getButton();
         const type = (await button.getAttribute('type')) as
-            | FormElementType.button
-            | FormElementType.submit
-            | FormElementType.reset;
+            FormElementType.button | FormElementType.submit | FormElementType.reset;
         return type;
     }
 
-    async getLabel() {
+    public async getLabel() {
         return this.label();
     }
 
-    async isFocusable() {
+    public async isFocusable(): Promise<boolean> {
         const button = await this.getButton();
         const tabIndex = await button.getProperty('tabIndex');
         return tabIndex !== -1;
     }
 
-    async isFocused() {
+    public async isFocused(): Promise<boolean> {
         const button = await this.getButton();
-        const isFocused = await button.isFocused();
-        return isFocused;
+        return await button.isFocused();
     }
 
-    async getButtonClasses() {
-        const classes =
-            (await (await this.buttonElement()).getAttribute('class')) ?? '';
+    public async getButtonClasses(): Promise<string[]> {
+        const classes = (await (await this.buttonElement()).getAttribute('class')) ?? '';
         return classes.split(' ');
     }
 
-    async isButtonDisabled() {
+    public async isButtonDisabled(): Promise<boolean> {
         const button = await this.buttonElement();
-        return button.getProperty('disabled');
+        return await button.getProperty('disabled');
     }
 
-    async getIcon() {
+    public async getIcon() {
         const icons = await this.icons();
         return icons[0];
     }
 
-    async getIconText() {
+    public async getIconText(): Promise<Icon | null> {
         const icon = await this.getIcon();
         if (!icon) {
             return null;
         }
-        const iconName = (await icon.getName()) as Icon | null;
-        return iconName;
+        return (await icon.getName()) as Icon | null;
     }
 
-    async getInnerButtonLabelText(): Promise<string | null> {
+    public async getInnerButtonLabelText(): Promise<string | null> {
         const label = await this.getInnerButtonLabel();
         return label ? (await label.text()).trim() : null;
     }
 
-    // async isDisabled(): Promise<boolean> {
-    //     const button = await this.button();
-    //     return await button.isDisabled();
-    // }
-
-    async getHostChildTagNames(): Promise<string[]> {
+    public async getHostChildTagNames(): Promise<string[]> {
         const children = await this.hostChildrenElements();
         const tagNames: string[] = [];
         for (const child of children) {
-            const tag = (
-                (await child.getProperty('tagName')) as string
-            ).toLowerCase();
+            const tag = ((await child.getProperty('tagName')) as string).toLowerCase();
             tagNames.push(tag);
         }
         return tagNames;
     }
 
-    async hostContainsOnlyAButton(): Promise<boolean> {
+    public async hostContainsOnlyAButton(): Promise<boolean> {
         const tags = await this.getHostChildTagNames();
-        if (tags.length != 1) return false;
+        if (tags.length !== 1) return false;
         return tags.every((tag) => ['button'].includes(tag));
     }
 
-    async getButtonChildTagNames(): Promise<string[]> {
+    public async getButtonChildTagNames(): Promise<string[]> {
         const children = await this.buttonChildrenElements();
         const tagNames: string[] = [];
         for (const child of children) {
-            const tag = (
-                (await child.getProperty('tagName')) as string
-            ).toLowerCase();
+            const tag = ((await child.getProperty('tagName')) as string).toLowerCase();
             tagNames.push(tag);
         }
-
         return tagNames;
     }
 
-    async hasNoIcon() {
+    public async hasNoIcon(): Promise<boolean> {
         const icons = await this.innerButtonIcons();
-        return icons.length == 0;
+        return icons.length === 0;
     }
 
-    async hasOnlyOneIcon() {
+    public async hasOnlyOneIcon(): Promise<boolean> {
         const icons = await this.innerButtonIcons();
-        return icons.length == 1;
+        return icons.length === 1;
     }
 
-    async hasOnlyOneLabel() {
+    public async hasOnlyOneLabel(): Promise<boolean> {
         const labels = await this.innerButtonLabels();
-        return labels.length == 1;
+        return labels.length === 1;
     }
 
-    async isIconBeforeLabel(): Promise<boolean> {
+    public async isIconBeforeLabel(): Promise<boolean> {
         const children = await this.buttonChildrenElements();
         let iconIdx = -1;
         let labelIdx = -1;
         for (let i = 0; i < children.length; i++) {
-            if ((await children[i].getProperty('tagName')) == 'MAT-ICON') {
+            if ((await children[i].getProperty('tagName')) === 'MAT-ICON') {
                 iconIdx = i;
             }
             if (await children[i].hasClass('mdc-button__label')) {
@@ -194,12 +172,11 @@ export class ButtonHarness extends ComponentHarness {
         return iconIdx < labelIdx;
     }
 
-    async getInnerButtonLabel() {
-        const label = await this.innerButtonLabel();
-        return label;
+    public async getInnerButtonLabel() {
+        return await this.innerButtonLabel();
     }
 
-    async click() {
+    public async click(): Promise<void> {
         const button = await this.matButtonHarness();
         const host = await button.host();
         await host.dispatchEvent('click', {
@@ -208,7 +185,7 @@ export class ButtonHarness extends ComponentHarness {
         });
     }
 
-    async getButtonStyle() {
+    public async getButtonStyle(): Promise<ButtonAppearance | null> {
         const button = await this.getButton();
         const clazzStr = (await button.getAttribute('class')) ?? '';
         const clazzList = clazzStr.split(' ');
@@ -229,13 +206,12 @@ export class ButtonHarness extends ComponentHarness {
         return null;
     }
 
-    async hasValidStructure(): Promise<boolean | { [key: string]: string }> {
-        const errors: any = {};
+    public async hasValidStructure(): Promise<boolean | { [key: string]: string }> {
+        const errors: { [key: string]: string } = {};
 
-        const hasValidChildrenCount = (await this.getHostChildrenCount()) == 1;
+        const hasValidChildrenCount = (await this.getHostChildrenCount()) === 1;
         if (!hasValidChildrenCount) {
-            errors['hasValidChildrenCount'] =
-                `Invalid children count: ${hasValidChildrenCount}.`;
+            errors['hasValidChildrenCount'] = `Invalid children count: ${hasValidChildrenCount}.`;
         }
 
         const isHostChildAButton = await this.isHostChildAButton();
@@ -243,12 +219,10 @@ export class ButtonHarness extends ComponentHarness {
             errors['isHostChildAButton'] = `Host child is not a button.`;
         }
 
-        // TODO: testar label
-
-        return Object.keys(errors).length == 0 ? true : errors;
+        return Object.keys(errors).length === 0 ? true : errors;
     }
 
-    async getState(): Promise<ButtonState> {
+    public async getState(): Promise<ButtonState> {
         const id = await this.getId();
         const type = await this.getType();
         const label = await this.getInnerButtonLabelText();

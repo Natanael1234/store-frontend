@@ -25,9 +25,7 @@ describe('ResponsiveUserListComponent.', () => {
     let fixture: ComponentFixture<ResponsiveUserListComponent>;
 
     function getList() {
-        const debugElements = fixture.debugElement.queryAll(
-            By.directive(ListComponent),
-        );
+        const debugElements = fixture.debugElement.queryAll(By.directive(ListComponent));
         if (!debugElements.length) {
             return null;
         }
@@ -35,9 +33,7 @@ describe('ResponsiveUserListComponent.', () => {
     }
 
     function getTable() {
-        const debugElements = fixture.debugElement.queryAll(
-            By.directive(TableComponent),
-        );
+        const debugElements = fixture.debugElement.queryAll(By.directive(TableComponent));
         if (!debugElements.length) {
             return null;
         }
@@ -65,11 +61,7 @@ describe('ResponsiveUserListComponent.', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [
-                ResponsiveUserListComponent,
-                MockTableComponent,
-                MockListComponent,
-            ],
+            imports: [ResponsiveUserListComponent, MockTableComponent, MockListComponent],
             providers: [provideRouter([])],
         })
             .overrideComponent(ListComponent, {
@@ -1454,8 +1446,8 @@ describe('ResponsiveUserListComponent.', () => {
 
     describe('events', () => {
         beforeEach(() => {
-            spyOn(component.headerClick, 'emit');
-            spyOn(component.itemClick, 'emit');
+            vi.spyOn(component.headerClick, 'emit');
+            vi.spyOn(component.itemClick, 'emit');
         });
 
         describe('list', () => {
@@ -1483,10 +1475,8 @@ describe('ResponsiveUserListComponent.', () => {
                 list.itemClick.emit('891db31e-dfb5-42ed-b912-48b98463b004');
                 fixture.detectChanges();
                 expect(component.itemClick.emit)
-                    .withContext('list item click event called')
-                    .toHaveBeenCalledWith(
-                        '891db31e-dfb5-42ed-b912-48b98463b004',
-                    );
+                    // .withContext('list item click event called')
+                    .toHaveBeenCalledWith('891db31e-dfb5-42ed-b912-48b98463b004');
 
                 fixture.detectChanges();
 
@@ -1578,7 +1568,7 @@ describe('ResponsiveUserListComponent.', () => {
                 table.headerClick.emit('name_asc');
                 fixture.detectChanges();
                 expect(component.headerClick.emit)
-                    .withContext('header click event called')
+                    // .withContext('header click event called')
                     .toHaveBeenCalledWith();
 
                 fixture.detectChanges();
@@ -1711,7 +1701,7 @@ describe('ResponsiveUserListComponent.', () => {
                 table.rowClick.emit(UserOrder.active_desc);
                 fixture.detectChanges();
                 expect(component.itemClick.emit)
-                    .withContext('table row click event called')
+                    // .withContext('table row click event called')
                     .toHaveBeenCalledWith(UserOrder.active_desc);
 
                 fixture.detectChanges();

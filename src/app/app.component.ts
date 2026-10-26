@@ -17,7 +17,7 @@ import { NavigationRailComponent } from '@components/navigation-rail/navigation-
 import { NavigationRailItem } from '@components/navigation-rail/types/navigation-rail-item/navigation-rail-item.type';
 import { ToolbarComponent } from '@components/toolbar/toolbar.component';
 import { DrawerMode } from '@enums/drawer-mode/drawer-mode';
-import { ResponsityService } from '@services/responsivity/responsivity.service';
+import { ResponsivityService } from '@services/responsivity/responsivity.service';
 import { ThemeService } from '@services/theme/theme.service';
 import { Subscription } from 'rxjs';
 
@@ -37,12 +37,11 @@ import { Subscription } from 'rxjs';
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
-    animations: [],
 })
 export class AppComponent implements AfterViewInit {
     protected mobile = model<boolean>(false);
     protected hasBackdrop = computed(() => this.mobile());
-    protected responsivity: ResponsityService = inject(ResponsityService);
+    protected responsivity: ResponsivityService = inject(ResponsivityService);
     private resizeSubscription!: Subscription;
     protected themeService: ThemeService = inject(ThemeService);
     public railCollapsed = model<boolean>(false);
@@ -75,18 +74,16 @@ export class AppComponent implements AfterViewInit {
 
     public ngAfterViewInit() {
         let transition = false;
-        this.resizeSubscription = this.responsivity.mobile.subscribe(
-            (mobile) => {
-                if (mobile) {
-                    this.expandRail({ transition: true });
-                    this.setMobile({ mobile: true, transition });
-                } else {
-                    this.expandRail({ transition: false });
-                    this.setMobile({ mobile: false, transition });
-                }
-                transition = true;
-            },
-        );
+        this.resizeSubscription = this.responsivity.mobile.subscribe((mobile) => {
+            if (mobile) {
+                this.expandRail({ transition: true });
+                this.setMobile({ mobile: true, transition });
+            } else {
+                this.expandRail({ transition: false });
+                this.setMobile({ mobile: false, transition });
+            }
+            transition = true;
+        });
         this.cdr.detectChanges();
     }
 

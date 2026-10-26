@@ -5,242 +5,219 @@ import { ButtonHarness } from '@components/form/components/button/button.harness
 import { TextFieldHarness } from '@components/form/components/text/text-field/text-field.harness';
 import { isEqual } from 'lodash';
 
-type TextFieldState = {
+type RequestPasswordLinkState = {
     hasValidStructure: boolean | { [key: string]: string };
 };
 
 export class RequestPasswordLinkHarness extends ComponentHarness {
-    static hostSelector = 'app-login';
+    public static hostSelector = 'app-request-password-change';
 
     private readonly hostChildElement = this.locatorForOptional(':scope > *');
     private readonly hostChildrenElements = this.locatorForAll(':scope > *');
-    private readonly wrapperChildrenElements = this.locatorForAll(
-        ':scope > form > div > *',
-    );
+    private readonly wrapperChildrenElements = this.locatorForAll(':scope > form > div > *');
     private readonly buttonHarnesses = this.locatorForAll(ButtonHarness);
 
-    private readonly formChildrenElements =
-        this.locatorForAll(':scope > form > *');
+    private readonly formChildrenElements = this.locatorForAll(':scope > form > *');
 
-    private progressBarHarness = this.locatorForOptional(MatProgressBarHarness);
-    private alertHarness = this.locatorForOptional(AlertHarness);
-    private textFieldHarness = this.locatorFor(TextFieldHarness);
+    private readonly progressBarHarness = this.locatorForOptional(MatProgressBarHarness);
+    private readonly alertHarness = this.locatorForOptional(AlertHarness);
+    private readonly textFieldHarness = this.locatorFor(TextFieldHarness);
 
-    async getHostChildrenCount() {
+    public async getHostChildrenCount(): Promise<number> {
         return (await this.hostChildrenElements()).length;
     }
 
-    async getHostChildTagName() {
+    public async getHostChildTagName(): Promise<string | undefined> {
         const child = await this.hostChildElement();
-        const tagName = await child?.getProperty('tagName');
-        return tagName;
+        if (!child) return undefined;
+        return (await child.getProperty('tagName')) as string;
     }
 
-    async isHostChildAForm() {
+    public async isHostChildAForm(): Promise<boolean> {
         const tagName = await this.getHostChildTagName();
-        const isForm = (await tagName) == 'FORM';
-        return isForm;
+        return tagName === 'FORM';
     }
 
-    async getFormClasses() {
+    public async getFormClasses(): Promise<string[]> {
         const form = await this.hostChildElement();
-        const classStr = await form?.getAttribute('class');
-        const classes = (classStr ?? '').split(' ') as string[];
-        return classes;
+        if (!form) return [];
+        const classStr = await form.getAttribute('class');
+        return (classStr ?? '').split(' ') as string[];
     }
 
-    async formIncludesGridClass() {
+    public async formIncludesGridClass(): Promise<boolean> {
         const formClasses = await this.getFormClasses();
-        const foundClass = formClasses.includes('grid');
-        return foundClass;
+        return formClasses.includes('grid');
     }
 
-    async getFormChildren() {
-        const children = await this.formChildrenElements();
-        return children;
+    public async getFormChildren() {
+        return await this.formChildrenElements();
     }
 
-    async getFormChildrenCount() {
+    public async getFormChildrenCount(): Promise<number> {
         const children = await this.formChildrenElements();
         return children.length;
     }
 
-    async getFormChildrenTagNames() {
+    public async getFormChildrenTagNames(): Promise<string[]> {
         const children = await this.formChildrenElements();
         const tagsNames = await Promise.all(
-            children.map(async (child) => await child.getProperty('tagName')),
+            children.map(async (child) => (await child.getProperty('tagName')) as string),
         );
-        return tagsNames as string[];
+        return tagsNames;
     }
 
-    async getWrapperChildElements() {
-        const formChildren = await this.wrapperChildrenElements();
-        return formChildren;
+    public async getWrapperChildElements() {
+        return await this.wrapperChildrenElements();
     }
 
-    async getInvalidChildrenTagNames() {
+    public async getInvalidChildrenTagNames(): Promise<string[]> {
         const formChildTagNames = await this.getFormChildrenTagNames();
-        const invalidFormChildTagNames = await formChildTagNames.filter(
-            (tagName) => tagName !== 'DIV',
-        );
-        return invalidFormChildTagNames;
+        return formChildTagNames.filter((tagName) => tagName !== 'DIV');
     }
 
-    async getWrapperCols(): Promise<number[]> {
+    public async getWrapperCols(): Promise<(number | undefined)[]> {
         const formChildrenEls = await this.formChildrenElements();
-        const wrapperCols: any[] = [];
-        for (let i = 0; i < formChildrenEls.length; i++) {
-            const formChildrenEl = formChildrenEls[i];
+        const wrapperCols: (number | undefined)[] = [];
+        for (const formChildrenEl of formChildrenEls) {
             const col = (await formChildrenEl.getAttribute('col')) ?? '';
-            if (col.trim() === '') {
+            if (col.trim() === '' || Number.isNaN(Number(col))) {
                 wrapperCols.push(undefined);
-            } else if (!Number.isNaN(Number(col))) {
-                wrapperCols.push(+col);
             } else {
-                wrapperCols.push(undefined);
+                wrapperCols.push(+col);
             }
         }
         return wrapperCols;
     }
 
-    async getWrapperChildrenTagNames(): Promise<string[]> {
+    public async getWrapperChildrenTagNames(): Promise<string[]> {
         const wrapperChildrenEls = await this.getWrapperChildElements();
         const wrapperChildtagNames: string[] = await Promise.all(
             wrapperChildrenEls.map(
                 async (wrapperChildElement) =>
-                    (await wrapperChildElement.getProperty(
-                        'tagName',
-                    )) as string,
+                    (await wrapperChildElement.getProperty('tagName')) as string,
             ),
         );
         return wrapperChildtagNames;
     }
 
-    async getProgressBarHarness() {
-        return this.progressBarHarness();
+    public async getProgressBarHarness() {
+        return await this.progressBarHarness();
     }
 
-    async getAlertHarness() {
+    public async getAlertHarness() {
         return await this.alertHarness();
     }
 
-    async getEmailFieldHarness() {
+    public async getEmailFieldHarness() {
         return this.textFieldHarness();
     }
 
-    async getButtonHarness() {
-        return this.buttonHarnesses();
+    public async getButtonHarness() {
+        return await this.buttonHarnesses();
     }
 
-    async getButtonById(id: string) {
+    public async getButtonById(id: string): Promise<ButtonHarness | null> {
         const buttonHarnesses = await this.getButtonHarness();
         for (const buttonHarness of buttonHarnesses) {
-            if ((await buttonHarness.getId()) == id) {
+            if ((await buttonHarness.getId()) === id) {
                 return buttonHarness;
             }
         }
         return null;
     }
 
-    async getRequestButton() {
-        return this.getButtonById('request-button');
+    public async getRequestButton() {
+        return await this.getButtonById('request-button');
     }
 
-    async getCancelButton() {
-        return this.getButtonById('cancel-button');
+    public async getCancelButton() {
+        return await this.getButtonById('cancel-button');
     }
 
-    async clickCancelButton() {
-        const button = await this.getCancelButton()!;
-        await button!.click();
+    public async clickCancelButton(): Promise<void> {
+        const button = await this.getCancelButton();
+        if (button) await button.click();
     }
 
-    async clickRequestButton() {
-        const button = await this.getRequestButton()!;
-        await button!.click();
+    public async clickRequestButton(): Promise<void> {
+        const button = await this.getRequestButton();
+        if (button) await button.click();
     }
 
-    async getMainError() {
+    public async getMainError(): Promise<string | undefined> {
         const alertHarness = await this.getAlertHarness();
-        const message = alertHarness?.getTextMessage();
-        return message;
+        return alertHarness ? await alertHarness.getTextMessage() : undefined;
     }
 
-    async getEmailValue() {
+    public async getEmailValue(): Promise<string> {
         const field = await this.getEmailFieldHarness();
-        const value = await field.getInputValue();
-        return value;
+        return await field.getInputValue();
     }
 
-    async setEmailValue(value: string) {
+    public async setEmailValue(value: string): Promise<void> {
         const field = await this.getEmailFieldHarness();
         await field.setInputValue(value);
     }
 
-    async getEmailrror() {
+    public async getEmailrror(): Promise<string | undefined> {
         const field = await this.getEmailFieldHarness();
-        const error = await field.getErrorMessage();
-        return error;
+        return await field.getErrorMessage();
     }
 
-    async getValues() {
-        const values = { email: await this.getEmailValue() };
-        return values;
+    public async getValues() {
+        return {
+            email: await this.getEmailValue(),
+        };
     }
 
-    async setValues(values: { email: string }) {
+    public async setValues(values: { email: string }): Promise<void> {
         await this.setEmailValue(values.email);
     }
 
-    async getErrors() {
+    public async getErrors() {
         const main = await this.getMainError();
         const email = await this.getEmailrror();
 
         const values: { main?: string; email?: string } = {};
 
-        if (main != undefined) {
+        if (main !== undefined) {
             values.main = main;
         }
-
-        if (email != undefined) {
+        if (email !== undefined) {
             values.email = email;
         }
 
         return values;
     }
 
-    async hasValidStructure(): Promise<boolean | { [key: string]: string }> {
-        const errors: any = {};
+    public async hasValidStructure(): Promise<boolean | { [key: string]: string }> {
+        const errors: { [key: string]: string } = {};
 
-        const hasValidChildrenCount = (await this.getHostChildrenCount()) == 1;
+        const hasValidChildrenCount = (await this.getHostChildrenCount()) === 1;
         if (!hasValidChildrenCount) {
-            errors['hasValidChildrenCount'] =
-                `Invalid children count: ${hasValidChildrenCount}.`;
+            errors['hasValidChildrenCount'] = `Invalid children count: ${hasValidChildrenCount}.`;
         }
 
         const hostChildTagName = await this.getHostChildTagName();
         if (hostChildTagName !== 'FORM') {
-            errors['isHostChildAForm'] =
-                `Host child should be a form. Found: ${hostChildTagName}.`;
+            errors['isHostChildAForm'] = `Host child should be a form. Found: ${hostChildTagName}.`;
         }
 
         if (!(await this.formIncludesGridClass())) {
-            errors['gridClassMissingFromTheForm'] =
-                `Grid class missing from the form.`;
+            errors['gridClassMissingFromTheForm'] = `Grid class missing from the form.`;
         }
 
         const formChildrenCount = await this.getFormChildrenCount();
         if (formChildrenCount < 3 || formChildrenCount > 5) {
             errors['formChildCount'] =
-                `Invalid form child count. Expected from 3 to 6. Found ${formChildrenCount}.`;
+                `Invalid form child count. Expected from 3 to 5. Found ${formChildrenCount}.`;
         }
 
-        const invalidFormChildTagNames =
-            await this.getInvalidChildrenTagNames();
-
+        const invalidFormChildTagNames = await this.getInvalidChildrenTagNames();
         if (invalidFormChildTagNames.length) {
             errors['invalidFormChildTagName'] =
-                `Invalid from children. Expected divs.  Found ${invalidFormChildTagNames}.`;
+                `Invalid form children. Expected divs. Found ${invalidFormChildTagNames}.`;
         }
 
         const wrapperChildtagNames = await this.getWrapperChildrenTagNames();
@@ -283,13 +260,7 @@ export class RequestPasswordLinkHarness extends ComponentHarness {
                 errors['invalidWrapperCols'] =
                     `Invalid form wrapper cols. Found ${JSON.stringify(wrapperCols)}.`;
             }
-        } else if (
-            isEqual(wrapperChildtagNames, [
-                'APP-TEXT-FIELD',
-                'APP-BUTTON',
-                'APP-BUTTON',
-            ])
-        ) {
+        } else if (isEqual(wrapperChildtagNames, ['APP-TEXT-FIELD', 'APP-BUTTON', 'APP-BUTTON'])) {
             if (!isEqual([12, 12, 12], wrapperCols)) {
                 errors['invalidWrapperCols'] =
                     `Invalid form wrapper cols. Found ${JSON.stringify(wrapperCols)}.`;
@@ -302,12 +273,10 @@ export class RequestPasswordLinkHarness extends ComponentHarness {
         return Object.keys(errors).length == 0 ? true : errors;
     }
 
-    async getState(): Promise<TextFieldState> {
+    public async getState(): Promise<RequestPasswordLinkState> {
         const hasValidStructure = await this.hasValidStructure();
-
-        const state = {
+        return {
             hasValidStructure,
         };
-        return state;
     }
 }

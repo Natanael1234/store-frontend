@@ -1,32 +1,28 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
+import { StorageKey } from '@enums/storage/keys/storage-key.enum';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class TokenService {
-  private readonly ACCESS_TOKEN_KEY = 'access_token';
-  private readonly REFRESH_TOKEN_KEY = 'refresh_token';
+    constructor() {}
 
-  constructor() {}
+    getAccessToken(): string | null {
+        return localStorage.getItem(StorageKey.access_token) || null;
+    }
 
-  getAccessToken(): string | null {
-    return localStorage.getItem(this.ACCESS_TOKEN_KEY) || null;
-  }
+    setAccessToken(accessToken: string): void {
+        localStorage.setItem(StorageKey.access_token, accessToken);
+    }
 
-  setAccessToken(accessToken: string): void {
-    localStorage.setItem(this.ACCESS_TOKEN_KEY, accessToken);
-  }
+    getRefreshToken(): string | null {
+        return localStorage.getItem(StorageKey.refresh_token) || null;
+    }
 
-  getRefreshToken(): string | null {
-    return localStorage.getItem(this.REFRESH_TOKEN_KEY) || null;
-  }
+    setRefreshToken(refreshToken: string): void {
+        localStorage.setItem(StorageKey.refresh_token, refreshToken);
+    }
 
-  setRefreshToken(refreshToken: string): void {
-    localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
-  }
-
-  clearTokens(): void {
-    localStorage.removeItem(this.ACCESS_TOKEN_KEY);
-    localStorage.removeItem(this.REFRESH_TOKEN_KEY);
-  }
+    clearTokens(): void {
+        localStorage.removeItem(StorageKey.access_token);
+        localStorage.removeItem(StorageKey.refresh_token);
+    }
 }

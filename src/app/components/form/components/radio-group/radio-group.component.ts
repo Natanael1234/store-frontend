@@ -3,7 +3,7 @@ import { Component, computed, model } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatRadioModule } from '@angular/material/radio';
-import { AutofocusDirective } from '@components/form/directives/autofocus/autofocus.directive';
+import { AutoFocusDirective } from '@components/form/directives/autofocus/autofocus.directive';
 
 @Component({
     selector: 'app-radio-group',
@@ -13,7 +13,7 @@ import { AutofocusDirective } from '@components/form/directives/autofocus/autofo
         CommonModule,
         MatRadioModule,
         MatFormFieldModule,
-        AutofocusDirective,
+        AutoFocusDirective,
     ],
     styles: `
         :host {
@@ -32,7 +32,7 @@ import { AutofocusDirective } from '@components/form/directives/autofocus/autofo
             @for (option of options() || []; track $index) {
                 <mat-radio-button
                     [value]="option.value"
-                    [appAutofocus]="$index == 0 ? _autofocus() : false"
+                    [appAutoFocus]="$index == 0 ? _autofocus() : false"
                     [tabIndex]="_tabIndex()">
                     {{ option.label }}
                 </mat-radio-button>

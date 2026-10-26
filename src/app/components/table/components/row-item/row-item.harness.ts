@@ -1,4 +1,5 @@
 import { ComponentHarness } from '@angular/cdk/testing';
+import { MatIconHarness } from '@angular/material/icon/testing';
 import { MouseButton } from '@enums/mouse-button/mouse-button.enum';
 import { PointerType } from '@enums/pointer-type/pointer-type.enum';
 
@@ -7,13 +8,14 @@ export class RowItemHarness extends ComponentHarness {
 
     private readonly hostChildElement = this.locatorFor(':scope > *');
     private readonly hostChildElements = this.locatorForAll(':scope > *');
-    private readonly containerChildElements =
-        this.locatorForAll('#container > *');
+    private readonly containerChildElements = this.locatorForAll('#container > *');
     private readonly labelChildElements = this.locatorForAll('#label > *');
 
     private readonly containerElement = this.locatorFor('#container');
     private readonly labelElement = this.locatorForOptional('#label');
     private readonly iconElement = this.locatorForOptional('#icon');
+
+    private readonly icon = this.locatorForOptional(MatIconHarness);
 
     async containsLabel() {
         return !!(await this.labelElement());
@@ -33,11 +35,14 @@ export class RowItemHarness extends ComponentHarness {
     }
 
     async getIcon() {
-        const icon = await this.iconElement();
-        if (!icon) return undefined;
-        const disabled = await icon.hasClass('disabled');
-        const loading = await icon.hasClass('skeleton-loader');
-        const name = await icon.getProperty('innerText');
+        const iconEl = await this.iconElement();
+        const icon = await this.icon();
+        if (!iconEl) return undefined;
+        const disabled = await iconEl.hasClass('disabled');
+        const loading = await iconEl.hasClass('skeleton-loader');
+        // const name = await iconEl.getProperty('innerText');
+        const name = await icon?.getName();
+
         return { name, loading, disabled };
     }
 
@@ -78,9 +83,7 @@ export class RowItemHarness extends ComponentHarness {
         const childElements = await this.hostChildElements();
         const tagNames: string[] = [];
         for (const childElement of childElements) {
-            const tag = (
-                (await childElement.getProperty('tagName')) as string
-            ).toLowerCase();
+            const tag = ((await childElement.getProperty('tagName')) as string).toLowerCase();
             tagNames.push(tag);
         }
         return tagNames;
@@ -156,9 +159,7 @@ export class RowItemHarness extends ComponentHarness {
 
         const hostChildren = await this.hostChildElements();
         if (hostChildren.length != 1) {
-            errors.push(
-                `APP-ROW-ITEM Host should have 1 child. Found ${hostChildren.length}.`,
-            );
+            errors.push(`APP-ROW-ITEM Host should have 1 child. Found ${hostChildren.length}.`);
         }
 
         const hostChildTagName = await hostChildren[0].getProperty('tagName');
@@ -204,16 +205,14 @@ export class RowItemHarness extends ComponentHarness {
 
         if (showIcon) {
             const secondContainerChild = containerChildren[0];
-            const secondContainerChildTagName =
-                await secondContainerChild.getProperty('tagName');
+            const secondContainerChildTagName = await secondContainerChild.getProperty('tagName');
             if (secondContainerChildTagName != 'MAT-ICON') {
                 errors.push(
                     `Invalid APP-ROW-ITEM second container child. Expected MAT-ICON. $Found ${secondContainerChildTagName}.`,
                 );
             }
 
-            const secondContainerChildId =
-                await secondContainerChild.getProperty('id');
+            const secondContainerChildId = await secondContainerChild.getProperty('id');
             if (secondContainerChildId != 'icon') {
                 errors.push(
                     `Invalid APP-ROW-ITEM second container child id. Expected "arrow". Found "${secondContainerChildId}".`,
@@ -226,15 +225,13 @@ export class RowItemHarness extends ComponentHarness {
 
         if (showLabel) {
             const firstContainerChild = containerChildren[showIcon ? 1 : 0];
-            const firstContainerChildTagName =
-                await firstContainerChild.getProperty('tagName');
+            const firstContainerChildTagName = await firstContainerChild.getProperty('tagName');
             if (firstContainerChildTagName != 'SPAN') {
                 errors.push(
                     `Invalid APP-ROW-ITEM first container child. Expected SPAN. Found ${firstContainerChildTagName}`,
                 );
             }
-            const firstContainerChildId =
-                await firstContainerChild.getProperty('id');
+            const firstContainerChildId = await firstContainerChild.getProperty('id');
             if (firstContainerChildId != 'label') {
                 errors.push(
                     `Invalid APP-ROW-ITEM container child id. Expected "label". Found "${firstContainerChildId}".`,

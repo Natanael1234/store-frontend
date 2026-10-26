@@ -1,16 +1,10 @@
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { CommonModule } from '@angular/common';
-import {
-    Component,
-    computed,
-    EventEmitter,
-    model,
-    Output,
-} from '@angular/core';
+import { Component, computed, EventEmitter, model, Output } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { AutofocusDirective } from '@components/form/directives/autofocus/autofocus.directive';
+import { AutoFocusDirective } from '@components/form/directives/autofocus/autofocus.directive';
 import { AutoCompleteType } from '@components/form/enums/auto-complete-type/auto-complete-type.enum';
 import { FormElementType } from '@components/form/enums/form-element-type/form-element-type.enum';
 import { InputMode } from '@components/form/enums/input-mode/input-mode.enum';
@@ -28,7 +22,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
         CommonModule,
         MatIconModule,
         FirstErrorMessagePipe,
-        AutofocusDirective,
+        AutoFocusDirective,
     ],
     providers: [provideNgxMask()],
     styles: `
@@ -71,7 +65,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
                 [attr.tabindex]="_tabIndex()"
                 [attr.readonly]="_readOnly()"
                 [attr.autocomplete]="_autocomplete()"
-                [appAutofocus]="_autofocus()"
+                [appAutoFocus]="_autofocus()"
                 [attr.minlength]="_minLength()"
                 [attr.maxlength]="_maxLength()"
                 [attr.min]="_min()"
@@ -123,9 +117,7 @@ export class NumericFieldComponent {
     protected _type = computed(() => FormElementType.text);
     protected _label = computed(() => this.label() ?? '');
     protected _placeholder = computed(() => this.placeholder() ?? null);
-    protected _autocomplete = computed(
-        () => this.autocomplete() ?? AutoCompleteType.off,
-    );
+    protected _autocomplete = computed(() => this.autocomplete() ?? AutoCompleteType.off);
     protected _autofocus = computed(() => this.autofocus() ?? false);
     protected _readOnly = computed(() => this.readOnly() ?? false);
     protected _tabIndex = computed(() => (this.focusable() ? 0 : -1));
@@ -161,9 +153,7 @@ export class NumericFieldComponent {
     protected _min = computed(() => this.min() ?? null);
     protected _max = computed(() => this.max() ?? null);
     protected _step = computed(() => this.step() ?? null);
-    protected _allowNegativeNumbers = computed(
-        () => this.allowNegativeNumbers() ?? true,
-    );
+    protected _allowNegativeNumbers = computed(() => this.allowNegativeNumbers() ?? true);
     protected _inputMode = computed(() => {
         const decimalPlaces = this._decimalPlaces();
         if (decimalPlaces) {

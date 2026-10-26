@@ -2,12 +2,7 @@ import { ComponentHarness } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-    FormControl,
-    FormsModule,
-    ReactiveFormsModule,
-    Validators,
-} from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PasswordFieldComponent } from '@components/form/components/text/password-field/password-field.component';
 import { PasswordFieldHarness } from '@components/form/components/text/password-field/password-field.harness';
 import { AutoCompleteType } from '@components/form/enums/auto-complete-type/auto-complete-type.enum';
@@ -22,12 +17,7 @@ describe('PasswordFieldComponent.', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [
-                FormsModule,
-                ReactiveFormsModule,
-                PasswordFieldComponent,
-                NgxMaskDirective,
-            ],
+            imports: [FormsModule, ReactiveFormsModule, PasswordFieldComponent, NgxMaskDirective],
         }).compileComponents();
 
         fixture = TestBed.createComponent(PasswordFieldComponent);
@@ -36,10 +26,7 @@ describe('PasswordFieldComponent.', () => {
         component.control.set(control);
         fixture.detectChanges();
 
-        harness = await TestbedHarnessEnvironment.harnessForFixture(
-            fixture,
-            PasswordFieldHarness,
-        );
+        harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, PasswordFieldHarness);
     });
 
     it('should create', () => {
@@ -89,7 +76,7 @@ describe('PasswordFieldComponent.', () => {
 
         const state = await harness.getState();
         expect(state).toEqual({
-            id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+            id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
             type: FormElementType.password,
             value: 'Abc123$',
             label: '',
@@ -132,7 +119,7 @@ describe('PasswordFieldComponent.', () => {
             it('should generate id.', async () => {
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.password,
                     value: '',
                     label: '',
@@ -156,7 +143,7 @@ describe('PasswordFieldComponent.', () => {
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.password,
                     value: '',
                     label: 'Test label',
@@ -175,7 +162,7 @@ describe('PasswordFieldComponent.', () => {
             it('should empty label by default.', async () => {
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.password,
                     value: '',
                     label: '',
@@ -198,7 +185,7 @@ describe('PasswordFieldComponent.', () => {
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.password,
                     value: '',
                     label: '',
@@ -221,7 +208,7 @@ describe('PasswordFieldComponent.', () => {
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.password,
                     value: '',
                     label: '',
@@ -243,7 +230,7 @@ describe('PasswordFieldComponent.', () => {
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.password,
                     value: '',
                     label: '',
@@ -264,7 +251,7 @@ describe('PasswordFieldComponent.', () => {
             it('should set not readonly by default.', async () => {
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.password,
                     value: '',
                     label: '',
@@ -286,7 +273,7 @@ describe('PasswordFieldComponent.', () => {
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.password,
                     value: '',
                     label: '',
@@ -308,7 +295,7 @@ describe('PasswordFieldComponent.', () => {
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.password,
                     value: '',
                     label: '',
@@ -329,7 +316,7 @@ describe('PasswordFieldComponent.', () => {
             it('should set not autocomplete by default.', async () => {
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.password,
                     value: '',
                     label: '',
@@ -351,7 +338,7 @@ describe('PasswordFieldComponent.', () => {
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.password,
                     value: '',
                     label: '',
@@ -373,7 +360,7 @@ describe('PasswordFieldComponent.', () => {
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.password,
                     value: '',
                     label: '',
@@ -395,7 +382,7 @@ describe('PasswordFieldComponent.', () => {
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.password,
                     value: '',
                     label: '',
@@ -418,7 +405,7 @@ describe('PasswordFieldComponent.', () => {
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.password,
                     value: '',
                     label: '',
@@ -440,7 +427,7 @@ describe('PasswordFieldComponent.', () => {
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.password,
                     value: '',
                     label: '',
@@ -463,7 +450,7 @@ describe('PasswordFieldComponent.', () => {
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.password,
                     value: '',
                     label: '',
@@ -485,7 +472,7 @@ describe('PasswordFieldComponent.', () => {
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.password,
                     value: '',
                     label: '',
@@ -504,15 +491,15 @@ describe('PasswordFieldComponent.', () => {
 
         describe('blur', () => {
             it('should fire blur event.', async () => {
-                const spy = jasmine.createSpy('onBlur spy');
+                const spy = vi.fn();
                 component.onBlur.subscribe(spy);
                 await harness.blurInput();
-                expect(spy).toHaveBeenCalledOnceWith(undefined);
+                expect(spy).toHaveBeenCalledExactlyOnceWith(undefined);
                 fixture.detectChanges();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.password,
                     value: '',
                     label: '',
@@ -530,14 +517,14 @@ describe('PasswordFieldComponent.', () => {
 
             it('should not fire blur event.', async () => {
                 // Arrange
-                const spy = jasmine.createSpy('onBlur spy');
+                const spy = vi.fn();
                 component.onBlur.subscribe(spy);
                 expect(spy).not.toHaveBeenCalled();
                 fixture.detectChanges();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.password,
                     value: '',
                     label: '',
@@ -588,12 +575,8 @@ describe('PasswordFieldComponent.', () => {
         beforeEach(async () => {
             fixture = TestBed.createComponent(AutofocusTestComponent);
             fixture.detectChanges();
-            testHarness = await TestbedHarnessEnvironment.harnessForFixture(
-                fixture,
-                TestHarness,
-            );
-            textFieldComponent =
-                fixture.debugElement.children[1].componentInstance;
+            testHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, TestHarness);
+            textFieldComponent = fixture.debugElement.children[1].componentInstance;
             textFieldHarness = await testHarness.getTextFieldHarness();
         });
 
@@ -602,7 +585,7 @@ describe('PasswordFieldComponent.', () => {
 
             const state = await textFieldHarness.getState();
             expect(state).toEqual({
-                id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                 type: FormElementType.password,
                 value: '',
                 label: '',
@@ -618,13 +601,13 @@ describe('PasswordFieldComponent.', () => {
             });
         });
 
-        xit('should set autofocus = false.', async () => {
+        it.skip('should set autofocus = false.', async () => {
             textFieldComponent.autofocus.set(false);
             fixture.detectChanges();
 
             const state = await textFieldHarness.getState();
             expect(state).toEqual({
-                id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                 type: FormElementType.password,
                 value: '',
                 label: '',
@@ -640,13 +623,13 @@ describe('PasswordFieldComponent.', () => {
             });
         });
 
-        xit('should set autofocus = true.', async () => {
+        it.skip('should set autofocus = true.', async () => {
             textFieldComponent.autofocus.set(true);
             fixture.detectChanges();
 
             const state = await textFieldHarness.getState();
             expect(state).toEqual({
-                id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                 type: FormElementType.password,
                 value: '',
                 label: '',

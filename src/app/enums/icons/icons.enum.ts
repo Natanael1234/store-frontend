@@ -6,4 +6,5 @@ export enum Icon {
     home = 'home',
     person = 'person',
     error = 'error',
+    warning = 'warning',
 }

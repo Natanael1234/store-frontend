@@ -5,8 +5,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { By } from '@angular/platform-browser';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { NavigationExtras, provideRouter, Router } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { AlertComponent } from '@components/alert/alert.component';
 import { ButtonComponent } from '@components/form/components/button/button.component';
 import { ButtonAppearance } from '@components/form/components/button/enum/appearance/button-appearance.enum';
@@ -21,11 +20,12 @@ import { RequestPasswordChangeLinkComponent } from '@pages/request-password-chan
 import { RequestPasswordLinkHarness } from '@pages/request-password-change-link/request-password-link.harness';
 import { AuthService } from '@services/auth/auth.service';
 import { of, Subject, throwError } from 'rxjs';
+import { vi } from 'vitest';
 
-describe('RequestPasswordChangeLinkComponent.', () => {
+describe('RequestPasswordChangeLinkComponent', () => {
     let fixture: ComponentFixture<RequestPasswordChangeLinkComponent>;
     let component: RequestPasswordChangeLinkComponent;
-    let authServiceSpy: jasmine.SpyObj<AuthService>;
+    let authServiceSpy: { requestPasswordChangeLink: ReturnType<typeof vi.fn> };
     let router: Router;
     let harness: RequestPasswordLinkHarness;
 
@@ -42,34 +42,25 @@ describe('RequestPasswordChangeLinkComponent.', () => {
     }
 
     function getEmailFieldComponent() {
-        return getTextFieldComponents().find(
-            (field) => field.id() == 'email-input',
-        );
+        return getTextFieldComponents().find((field) => field.id() === 'email-input');
     }
 
     function getRequestButtonComponent() {
-        return getButtonComponents().find(
-            (button) => button.id() == 'request-button',
-        );
+        return getButtonComponents().find((button) => button.id() === 'request-button');
     }
 
     function getCancelButtonComponent() {
-        return getButtonComponents().find(
-            (button) => button.id() == 'cancel-button',
-        );
+        return getButtonComponents().find((button) => button.id() === 'cancel-button');
     }
 
     beforeEach(async () => {
-        const spy = jasmine.createSpyObj('AuthService.', [
-            'requestPasswordChangeLink',
-        ]);
+        const authServiceMock = {
+            requestPasswordChangeLink: vi.fn(),
+        };
+
         await TestBed.configureTestingModule({
             imports: [
                 RequestPasswordChangeLinkComponent,
-                FormsModule,
-                ReactiveFormsModule,
-                MatProgressBarModule,
-                AlertComponent,
                 FormsModule,
                 ReactiveFormsModule,
                 MatProgressBarModule,
@@ -78,8 +69,7 @@ describe('RequestPasswordChangeLinkComponent.', () => {
                 ButtonComponent,
             ],
             providers: [
-                provideAnimationsAsync(),
-                { provide: AuthService, useValue: spy },
+                { provide: AuthService, useValue: authServiceMock },
                 provideRouter([
                     {
                         path: '',
@@ -89,10 +79,11 @@ describe('RequestPasswordChangeLinkComponent.', () => {
                 ]),
             ],
         }).compileComponents();
+
         fixture = TestBed.createComponent(RequestPasswordChangeLinkComponent);
-        authServiceSpy = TestBed.inject(
-            AuthService,
-        ) as jasmine.SpyObj<AuthService>;
+        authServiceSpy = TestBed.inject(AuthService) as unknown as {
+            requestPasswordChangeLink: ReturnType<typeof vi.fn>;
+        };
         component = fixture.componentInstance;
         router = TestBed.inject(Router);
         fixture.detectChanges();
@@ -118,7 +109,7 @@ describe('RequestPasswordChangeLinkComponent.', () => {
         expect(emailField.placeholder()).toBeUndefined();
         expect(emailField.control()).toBeDefined();
         expect(emailField.control()).not.toBeNull();
-        expect(emailField.control()?.disabled).toBeFalse();
+        expect(emailField.control()?.disabled).toBe(false);
         expect(emailField.focusable()).toBeUndefined();
         expect(emailField.autofocus()).toBeUndefined();
         expect(emailField.readOnly()).toBeUndefined();
@@ -136,7 +127,7 @@ describe('RequestPasswordChangeLinkComponent.', () => {
         expect(requestButton.label()).toEqual('Mudar senha');
         expect(requestButton.icon()).toBeUndefined();
         expect(requestButton.appearance()).toEqual(ButtonAppearance.filled);
-        expect(requestButton.disabled()).toBeFalse();
+        expect(requestButton.disabled()).toBe(false);
         expect(requestButton.focusable()).toBeUndefined();
         expect(requestButton.autofocus()).toBeUndefined();
         expect(requestButton.routerLink()).toBeUndefined();
@@ -151,7 +142,7 @@ describe('RequestPasswordChangeLinkComponent.', () => {
         expect(cancelButton.label()).toEqual('Cancelar');
         expect(cancelButton.icon()).toBeUndefined();
         expect(cancelButton.appearance()).toEqual(ButtonAppearance.outlined);
-        expect(cancelButton.disabled()).toBeFalse();
+        expect(cancelButton.disabled()).toBe(false);
         expect(cancelButton.focusable()).toBeUndefined();
         expect(cancelButton.autofocus()).toBeUndefined();
         expect(cancelButton.routerLink()).toEqual('/');
@@ -161,9 +152,9 @@ describe('RequestPasswordChangeLinkComponent.', () => {
 
     it('should cancel and go to home page.', async () => {
         const location = TestBed.inject(Location);
-        const routerSpy = spyOn(component['router'], 'navigate');
+        const routerSpy = vi.spyOn(component['router'], 'navigate');
 
-        authServiceSpy.requestPasswordChangeLink.and.returnValue(of(true));
+        authServiceSpy.requestPasswordChangeLink.mockReturnValue(of(true));
 
         await harness.clickRequestButton();
         expect(location.path()).toBe('');
@@ -177,18 +168,18 @@ describe('RequestPasswordChangeLinkComponent.', () => {
         expect(errors).toEqual({});
     });
 
-    it("should sucessfully call service's requestPasswordChangeLink method on submit.", async () => {
-        // TODO: testar se está autenticado
+    it("should successfully call service's requestPasswordChangeLink method on submit.", async () => {
         const location = TestBed.inject(Location);
 
-        const routerSpy = spyOn(component['router'], 'navigate');
+        const routerSpy = vi.spyOn(component['router'], 'navigate');
         component['formGroup'].setValue({ email: 'john@example.com' });
-        authServiceSpy.requestPasswordChangeLink.and.returnValue(of(true));
+        authServiceSpy.requestPasswordChangeLink.mockReturnValue(of(true));
         await harness.clickRequestButton();
         expect(location.path()).toBe('');
-        expect(
-            authServiceSpy.requestPasswordChangeLink,
-        ).toHaveBeenCalledOnceWith({ email: 'john@example.com' });
+        expect(authServiceSpy.requestPasswordChangeLink).toHaveBeenCalledOnce();
+        expect(authServiceSpy.requestPasswordChangeLink).toHaveBeenCalledWith({
+            email: 'john@example.com',
+        });
 
         const values = await harness.getValues();
         expect(values).toEqual({ email: '' });
@@ -201,19 +192,12 @@ describe('RequestPasswordChangeLinkComponent.', () => {
 
     describe('errors.', () => {
         describe('local errors.', () => {
-            let routerSpy: jasmine.Spy<
-                (
-                    commands: readonly any[],
-                    extras?: NavigationExtras,
-                ) => Promise<boolean>
-            >;
+            let routerSpy: ReturnType<typeof vi.spyOn>;
 
             beforeEach(() => {
-                authServiceSpy.requestPasswordChangeLink.and.returnValue(
-                    of(true),
-                );
-                routerSpy = spyOn(component['router'], 'navigate');
-                spyOn(router, 'navigateByUrl');
+                authServiceSpy.requestPasswordChangeLink.mockReturnValue(of(true));
+                routerSpy = vi.spyOn(component['router'], 'navigate');
+                vi.spyOn(router, 'navigateByUrl');
             });
 
             describe('on blur.', () => {
@@ -221,9 +205,7 @@ describe('RequestPasswordChangeLinkComponent.', () => {
                     await harness.setValues({ email: 'john@' });
 
                     const location = TestBed.inject(Location);
-                    expect(
-                        authServiceSpy.requestPasswordChangeLink,
-                    ).not.toHaveBeenCalled();
+                    expect(authServiceSpy.requestPasswordChangeLink).not.toHaveBeenCalled();
                     const errors = await harness.getErrors();
                     expect(errors).toEqual({
                         email: 'E-mail inválido.',
@@ -261,7 +243,7 @@ describe('RequestPasswordChangeLinkComponent.', () => {
 
                         it('should accept email with min length.', async () => {
                             await harness.setValues({
-                                email: 'w@x.com', // TODO: deveria aceitar w@x.c?
+                                email: 'w@x.com',
                             });
 
                             const errors = await harness.getErrors();
@@ -270,10 +252,7 @@ describe('RequestPasswordChangeLinkComponent.', () => {
 
                         it('should accept name with max length.', async () => {
                             await harness.setValues({
-                                email:
-                                    'X'.repeat(
-                                        UserConfigs.NAME_MAX_LENGTH - 4,
-                                    ) + '@x.c',
+                                email: 'X'.repeat(UserConfigs.NAME_MAX_LENGTH - 4) + '@x.c',
                             });
 
                             const errors = await harness.getErrors();
@@ -289,9 +268,7 @@ describe('RequestPasswordChangeLinkComponent.', () => {
                     await harness.setValues({ email: 'john@' });
                     await harness.clickCancelButton();
 
-                    expect(
-                        authServiceSpy.requestPasswordChangeLink,
-                    ).not.toHaveBeenCalled();
+                    expect(authServiceSpy.requestPasswordChangeLink).not.toHaveBeenCalled();
                     expect(location.path()).toBe('');
                     expect(routerSpy).not.toHaveBeenCalled();
                     const errors = await harness.getErrors();
@@ -303,16 +280,11 @@ describe('RequestPasswordChangeLinkComponent.', () => {
         });
 
         describe('remote errors.', () => {
-            let routerSpy: jasmine.Spy<
-                (
-                    commands: readonly any[],
-                    extras?: NavigationExtras,
-                ) => Promise<boolean>
-            >;
+            let routerSpy: ReturnType<typeof vi.spyOn>;
 
             beforeEach(() => {
-                routerSpy = spyOn(component['router'], 'navigate');
-                spyOn(router, 'navigateByUrl');
+                routerSpy = vi.spyOn(component['router'], 'navigate');
+                vi.spyOn(router, 'navigateByUrl');
             });
 
             it('should handle main remote error.', async () => {
@@ -326,16 +298,16 @@ describe('RequestPasswordChangeLinkComponent.', () => {
                 exception.status = HttpStatusCode.UnprocessableEntity;
                 exception.statusText = 'Unprocessable Entity';
                 const location = TestBed.inject(Location);
-                authServiceSpy.requestPasswordChangeLink.and.returnValue(
+                authServiceSpy.requestPasswordChangeLink.mockReturnValue(
                     throwError(() => exception),
                 );
                 await harness.setValues({ email: 'john@email.com' });
                 await harness.clickRequestButton();
                 fixture.detectChanges();
 
-                expect(
-                    authServiceSpy.requestPasswordChangeLink,
-                ).toHaveBeenCalledWith({ email: 'john@email.com' });
+                expect(authServiceSpy.requestPasswordChangeLink).toHaveBeenCalledWith({
+                    email: 'john@email.com',
+                });
 
                 const errors = await harness.getErrors();
                 expect(errors).toEqual({ main: 'Algo deu errado!' });
@@ -357,7 +329,7 @@ describe('RequestPasswordChangeLinkComponent.', () => {
                 exception.status = HttpStatusCode.UnprocessableEntity;
                 exception.statusText = 'Unprocessable Entity';
                 const location = TestBed.inject(Location);
-                authServiceSpy.requestPasswordChangeLink.and.returnValue(
+                authServiceSpy.requestPasswordChangeLink.mockReturnValue(
                     throwError(() => exception),
                 );
                 await harness.setValues({ email: 'john@email.com' });
@@ -365,9 +337,9 @@ describe('RequestPasswordChangeLinkComponent.', () => {
                 fixture.detectChanges();
 
                 expect(location.path()).toBe('');
-                expect(
-                    authServiceSpy.requestPasswordChangeLink,
-                ).toHaveBeenCalledWith({ email: 'john@email.com' });
+                expect(authServiceSpy.requestPasswordChangeLink).toHaveBeenCalledWith({
+                    email: 'john@email.com',
+                });
 
                 const errors = await harness.getErrors();
                 expect(errors).toEqual({ email: 'Error 1' });
@@ -384,9 +356,7 @@ describe('RequestPasswordChangeLinkComponent.', () => {
             let subject = new Subject<any>();
 
             component['formGroup'].setValue({ email: 'john@example.com' });
-            authServiceSpy.requestPasswordChangeLink.and.returnValue(
-                subject.asObservable(),
-            );
+            authServiceSpy.requestPasswordChangeLink.mockReturnValue(subject.asObservable());
 
             fixture.detectChanges();
 
@@ -421,9 +391,7 @@ describe('RequestPasswordChangeLinkComponent.', () => {
 
             fixture.detectChanges();
 
-            authServiceSpy.requestPasswordChangeLink.and.returnValue(
-                throwError(() => exception),
-            );
+            authServiceSpy.requestPasswordChangeLink.mockReturnValue(throwError(() => exception));
             await harness.setValues({ email: 'john@example.com' });
             await harness.clickRequestButton();
             fixture.detectChanges();

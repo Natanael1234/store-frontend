@@ -3,9 +3,7 @@ import { ComponentHarness } from '@angular/cdk/testing';
 export class AlertHarness extends ComponentHarness {
     static hostSelector = 'app-alert';
 
-    private messageContainer = this.locatorFor(
-        ':scope > .container > .content > .message',
-    );
+    private messageContainer = this.locatorFor(':scope > .container > .content > .message');
 
     async getMessageContainer() {
         return this.messageContainer();

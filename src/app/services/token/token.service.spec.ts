@@ -4,7 +4,6 @@ import { TokenService } from '@services/token/token.service';
 let store: { [key: string]: string } = {};
 
 export class LocalStorageMock implements Storage {
-    constructor() {}
     getItem(key: string): string | null {
         return store[key] || null;
     }
@@ -30,22 +29,27 @@ export class LocalStorageMock implements Storage {
     }
 }
 
-describe('TokenService.', () => {
+describe('TokenService', () => {
     let service: TokenService;
     let localStorageMock: LocalStorageMock;
 
     beforeEach(() => {
+        store = {}; // Reset mock store state
+        localStorageMock = new LocalStorageMock();
+
+        // Replace global window.localStorage entirely
+        vi.stubGlobal('localStorage', localStorageMock);
+
         TestBed.configureTestingModule({
             providers: [TokenService],
         });
+
         service = TestBed.inject(TokenService);
-        localStorageMock = new LocalStorageMock();
-        spyOn(localStorage, 'getItem').and.callFake(localStorageMock.getItem);
-        spyOn(localStorage, 'setItem').and.callFake(localStorageMock.setItem);
-        spyOn(localStorage, 'removeItem').and.callFake(
-            localStorageMock.removeItem,
-        );
-        spyOn(localStorage, 'clear').and.callFake(localStorageMock.clear);
+    });
+
+    afterEach(() => {
+        // Restaura as variáveis globais originais após a execução da suíte de testes
+        vi.unstubAllGlobals();
     });
 
     it('should be created', () => {

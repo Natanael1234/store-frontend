@@ -1,14 +1,5 @@
 import { A11yModule } from '@angular/cdk/a11y';
-
-import {
-    AfterViewInit,
-    Component,
-    computed,
-    effect,
-    EventEmitter,
-    model,
-    Output,
-} from '@angular/core';
+import { Component, computed, effect, EventEmitter, model, Output } from '@angular/core';
 import { ListComponent } from '@components/list/list.component';
 import { ListItem } from '@components/list/types/list-item.model';
 import { ItemIcon } from '@components/models/item-icon/item-icon.model';
@@ -48,7 +39,7 @@ import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
         }
     `,
 })
-export class ResponsiveUserListComponent implements AfterViewInit {
+export class ResponsiveUserListComponent {
     public mobile = model<boolean>(true);
     public loading = model<boolean | undefined>(false);
     public active = model<ActiveFilter>(ActiveFilter.active);
@@ -57,12 +48,8 @@ export class ResponsiveUserListComponent implements AfterViewInit {
     @Output() public headerClick = new EventEmitter();
     @Output() public itemClick = new EventEmitter<string>();
 
-    protected activeOrderEnabled = computed<boolean>(
-        () => this.active() == ActiveFilter.all,
-    );
-    protected deleteOrderEnabled = computed<boolean>(
-        () => this.deleted() == DeletedFilter.all,
-    );
+    protected activeOrderEnabled = computed<boolean>(() => this.active() == ActiveFilter.all);
+    protected deleteOrderEnabled = computed<boolean>(() => this.deleted() == DeletedFilter.all);
     protected sorter = new TableSorter([
         new Column({
             id: UserColumnId.name,
@@ -170,24 +157,16 @@ export class ResponsiveUserListComponent implements AfterViewInit {
     constructor() {
         effect(() => {
             const activeColumn = this.sorter.getColumn(UserColumnId.active);
-            if (
-                activeColumn &&
-                activeColumn?.sortable != this.activeOrderEnabled()
-            ) {
+            if (activeColumn && activeColumn?.sortable != this.activeOrderEnabled()) {
                 activeColumn.sortable = this.activeOrderEnabled();
             }
 
             const deletedColumn = this.sorter.getColumn(UserColumnId.deleted);
-            if (
-                deletedColumn &&
-                deletedColumn?.sortable != this.deleteOrderEnabled()
-            ) {
+            if (deletedColumn && deletedColumn?.sortable != this.deleteOrderEnabled()) {
                 deletedColumn.sortable = this.deleteOrderEnabled();
             }
         });
     }
-
-    ngAfterViewInit() {}
 
     public updateSort(order: UserOrderParam) {
         if (this.loading() || !order) {
@@ -203,8 +182,7 @@ export class ResponsiveUserListComponent implements AfterViewInit {
     }
 
     public getOrderBy(): UserOrder[] {
-        const orderBy = this.sorter.getOrderBy() as UserOrder[];
-        return orderBy;
+        return this.sorter.getOrderBy() as UserOrder[];
     }
 
     public getMobileOrderBy() {

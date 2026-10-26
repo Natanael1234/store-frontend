@@ -23,7 +23,7 @@ describe('ColumnData', () => {
         expect(column.icon).toBeUndefined();
         expect(column.label).toBeUndefined();
         expect(column.tooltip).toBeUndefined();
-        expect(column.disabled).toBeFalse();
+        expect(column.disabled).toBe(false);
     });
 
     it('should allow only a few fields', () => {

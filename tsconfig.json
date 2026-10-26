@@ -1,49 +1,58 @@
 /* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
-    "compileOnSave": false,
-    "compilerOptions": {
-        "rootDir": "./src",
-        "outDir": "./dist",
-        "forceConsistentCasingInFileNames": true,
-        "strict": true,
-        "noImplicitOverride": true,
-        "noPropertyAccessFromIndexSignature": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
-        "skipLibCheck": true,
-        "esModuleInterop": true,
-        "sourceMap": true,
-        "declaration": false,
-        "experimentalDecorators": true,
-        "moduleResolution": "bundler",
-        "importHelpers": true,
-        "target": "ES2022",
-        "module": "ES2022",
-        "useDefineForClassFields": false,
-        "lib": ["ES2022", "dom"],
-        "paths": {
-            "@components/*": ["./src/app/components/*"],
-            "@configs/*": ["./src/app/configs/*"],
-            "@constants/*": ["./src/app/constants/*"],
-            "@directives/*": ["./src/app/directives/*"],
-            "@enums/*": ["./src/app/enums/*"],
-            "@guards/*": ["./src/app/guards/*"],
-            "@i18n/*": ["./src/app/i18n/*"],
-            "@interceptors/*": ["./src/app/interceptors/*"],
-            "@interfaces/*": ["./src/app/interfaces/*"],
-            "@messages/*": ["./src/app/messages/*"],
-            "@pages/*": ["./src/app/pages/*"],
-            "@pipes/*": ["./src/app/pipes/*"],
-            "@services/*": ["./src/app/services/*"],
-            "@utils/*": ["./src/app/utils/*"],
-            "@validators/*": ["./src/app/validators/*"]
-        },
-        "types": ["@angular/localize", "lodash"]
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "declaration": false,
+    "experimentalDecorators": true,
+    "moduleResolution": "bundler",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "useDefineForClassFields": false,
+    "lib": ["ES2022", "dom"],
+    "paths": {
+      "@components/*": ["./src/app/components/*"],
+      "@configs/*": ["./src/app/configs/*"],
+      "@constants/*": ["./src/app/constants/*"],
+      "@directives/*": ["./src/app/directives/*"],
+      "@enums/*": ["./src/app/enums/*"],
+      "@guards/*": ["./src/app/guards/*"],
+      "@i18n/*": ["./src/app/i18n/*"],
+      "@interceptors/*": ["./src/app/interceptors/*"],
+      "@interfaces/*": ["./src/app/interfaces/*"],
+      "@messages/*": ["./src/app/messages/*"],
+      "@pages/*": ["./src/app/pages/*"],
+      "@pipes/*": ["./src/app/pipes/*"],
+      "@services/*": ["./src/app/services/*"],
+      "@utils/*": ["./src/app/utils/*"],
+      "@validators/*": ["./src/app/validators/*"]
     },
-    "angularCompilerOptions": {
-        "enableI18nLegacyMessageIdFormat": false,
-        "strictInjectionParameters": true,
-        "strictInputAccessModifiers": true,
-        "strictTemplates": true
+    "types": ["@angular/localize", "lodash"]
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
     }
+  ]
 }

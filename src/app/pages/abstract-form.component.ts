@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { inject, signal } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
 import { ButtonAppearance } from '@components/form/components/button/enum/appearance/button-appearance.enum';
@@ -14,108 +14,115 @@ import { Observable } from 'rxjs';
 
 export abstract class AbstractFormComponent<FormDataDto, RequestResponseDto> {
     protected abstract formGroup: FormGroup;
-    protected loading: boolean = false;
-    protected mainError?: string;
-    protected router: Router = inject(Router);
 
-    protected TextFormat = TextFormat;
-    protected TextMask = TextMask;
-    protected AutoCompleteType = AutoCompleteType;
-    protected ButtonAppearance = ButtonAppearance;
-    protected FormElementType = FormElementType;
-    protected InputMode = InputMode;
-    protected EmailConstants = EmailConstants;
-    protected UserConfigs = UserConfigs;
+    protected readonly loading = signal<boolean>(false);
+    protected readonly mainError = signal<string | undefined>(undefined);
 
-    protected onSubmit() {
+    protected readonly router = inject(Router);
+
+    // Proteção contra vazamento de memória (Memory Leak) ao destruir o componente
+    // Nota: Requer que a classe seja instanciada no contexto de injeção (o que é padrão em componentes Angular)
+    // protected readonly destroyRef = inject(DestroyRef);
+
+    // Exposição de Enums e Constantes para templates
+    protected readonly TextFormat = TextFormat;
+    protected readonly TextMask = TextMask;
+    protected readonly AutoCompleteType = AutoCompleteType;
+    protected readonly ButtonAppearance = ButtonAppearance;
+    protected readonly FormElementType = FormElementType;
+    protected readonly InputMode = InputMode;
+    protected readonly EmailConstants = EmailConstants;
+    protected readonly UserConfigs = UserConfigs;
+
+    protected onSubmit(): void {
         if (!this.canSubmit()) {
             return;
         }
         this.onBeforeSubmit();
-        const observable = this.fireSubmitRequest();
+
         this.clearRemoteErrors();
-        observable.subscribe({
-            next: (authResponse) => this.onSubmitNext(authResponse),
-            error: (error: HttpErrorResponse) => this.onSubmitError(error),
-            complete: () => this.onSubmitComplete(),
-        });
+
+        this.fireSubmitRequest()
+            // .pipe(takeUntilDestroyed()) // Adicionar se desejar segurança contra unsubscription pendente
+            .subscribe({
+                next: (authResponse) => this.onSubmitNext(authResponse),
+                error: (error: HttpErrorResponse) => this.onSubmitError(error),
+                complete: () => this.onSubmitComplete(),
+            });
     }
 
-    protected canSubmit() {
+    protected canSubmit(): boolean {
         this.formGroup.updateValueAndValidity();
         return this.isFormValid();
     }
 
-    protected onBeforeSubmit() {
+    protected onBeforeSubmit(): void {
         this.startLoading();
         this.disableForm();
     }
 
-    protected onSubmitNext(authResponse: RequestResponseDto) {
+    protected onSubmitNext(authResponse: RequestResponseDto): void {
+        // Hook opcional
         // this.stopLoading();
     }
 
-    protected onSubmitComplete() {
+    protected onSubmitComplete(): void {
         this.clearRemoteErrors();
         this.resetForm();
         this.stopLoading();
         this.navigateAfterComplete();
     }
 
-    protected onSubmitError(error: HttpErrorResponse) {
-        if (typeof error == 'string') {
+    protected onSubmitError(error: HttpErrorResponse): void {
+        if (typeof error === 'string') {
             this.setRemoteErrors({ main: error });
-        } else if (typeof error.error?.message == 'string') {
+        } else if (typeof error.error?.message === 'string') {
             this.setRemoteErrors({ main: error.error.message });
         } else {
             this.setRemoteErrors(error.error?.message ?? {});
         }
-        this.enableform();
+        this.enableForm();
         this.stopLoading();
     }
 
     protected navigateAfterComplete(): void {}
 
-    protected disableForm() {
+    protected disableForm(): void {
         this.formGroup.disable();
     }
 
-    protected enableform() {
+    protected enableForm(): void {
         this.formGroup.enable();
     }
 
-    protected resetForm() {
+    protected resetForm(): void {
         this.formGroup.reset();
     }
 
-    protected isFormValid() {
+    protected isFormValid(): boolean {
         return this.formGroup.valid;
     }
 
     protected abstract fireSubmitRequest(): Observable<RequestResponseDto>;
 
-    protected getFormData() {
+    protected getFormData(): FormDataDto {
         return this.formGroup.getRawValue() as FormDataDto;
     }
 
-    protected navigateToHome() {
-        this.navigateTo(['/']);
+    protected navigateToHome(): Promise<boolean> {
+        return this.navigateTo(['/']);
     }
 
-    protected navigateToLogin() {
-        this.navigateTo(['/login']);
+    protected navigateToLogin(): Promise<boolean> {
+        return this.navigateTo(['/login']);
     }
 
-    protected navigateToRegister() {
-        this.navigateTo(['/register']);
+    protected navigateToRegister(): Promise<boolean> {
+        return this.navigateTo(['/register']);
     }
 
-    protected navigateTo(commands: readonly any[], extras?: NavigationExtras) {
-        if (extras) {
-            return this.router.navigate(commands, extras);
-        } else {
-            return this.router.navigate(commands);
-        }
+    protected navigateTo(commands: readonly any[], extras?: NavigationExtras): Promise<boolean> {
+        return extras ? this.router.navigate(commands, extras) : this.router.navigate(commands);
     }
 
     protected abstract setRemoteErrors(errors?: any): void;
@@ -123,10 +130,10 @@ export abstract class AbstractFormComponent<FormDataDto, RequestResponseDto> {
     protected abstract clearRemoteErrors(): void;
 
     protected startLoading(): void {
-        this.loading = true;
+        this.loading.set(true);
     }
 
     protected stopLoading(): void {
-        this.loading = false;
+        this.loading.set(false);
     }
 }

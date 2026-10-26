@@ -34,10 +34,7 @@ describe('ButtonComponent.', () => {
         component = fixture.componentInstance;
         fixture.detectChanges();
 
-        harness = await TestbedHarnessEnvironment.harnessForFixture(
-            fixture,
-            ButtonHarness,
-        );
+        harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, ButtonHarness);
     });
 
     it('should create.', () => {
@@ -471,7 +468,7 @@ describe('ButtonComponent.', () => {
 
     describe('events.', () => {
         it('should emit the click event when the left mouse button is clicked', async () => {
-            spyOn(component.onClick, 'emit');
+            vi.spyOn(component.onClick, 'emit');
 
             // const event = new MouseEvent('click', { button: 0 });
             const button = fixture.debugElement.query(By.css('button'));
@@ -487,7 +484,7 @@ describe('ButtonComponent.', () => {
         });
 
         it('should emit the click event when the left mouse button is clicked', async () => {
-            spyOn(component.onClick, 'emit');
+            vi.spyOn(component.onClick, 'emit');
             const button = fixture.debugElement.query(By.css('button'));
             button.triggerEventHandler(
                 'click',
@@ -501,7 +498,7 @@ describe('ButtonComponent.', () => {
         });
 
         it('should not emit the click event when another mouse button is clicked', async () => {
-            spyOn(component.onClick, 'emit');
+            vi.spyOn(component.onClick, 'emit');
             const button = fixture.debugElement.query(By.css('button'));
             button.triggerEventHandler(
                 'click',
@@ -515,7 +512,7 @@ describe('ButtonComponent.', () => {
         });
 
         it('should emit the click event on pen evend', async () => {
-            spyOn(component.onClick, 'emit');
+            vi.spyOn(component.onClick, 'emit');
             const button = fixture.debugElement.query(By.css('button'));
             button.triggerEventHandler(
                 'click',
@@ -526,7 +523,7 @@ describe('ButtonComponent.', () => {
         });
 
         it('should emit the click event on pen touch', async () => {
-            spyOn(component.onClick, 'emit');
+            vi.spyOn(component.onClick, 'emit');
             const button = fixture.debugElement.query(By.css('button'));
             button.triggerEventHandler(
                 'click',
@@ -710,12 +707,12 @@ describe('ButtonComponent.', () => {
     });
 });
 
-xdescribe('ButtonComponent.', () => {
+describe.skip('ButtonComponent.', () => {
     describe('autofocus.', () => {
         /** As the first focusable element is automatically focused creates a scenario where the field is the second focusable element. */
         @Component({
             selector: 'autofocus-test',
-            imports: [ButtonComponent],
+            // imports: [ButtonComponent],
             template: `
                 <!-- button is focused by default -->
                 <input />
@@ -745,8 +742,7 @@ xdescribe('ButtonComponent.', () => {
                 testFixture,
                 TestHarness,
             );
-            buttonComponent =
-                testFixture.debugElement.children[1].componentInstance;
+            buttonComponent = testFixture.debugElement.children[1].componentInstance;
             buttonHarness = await testHarness.getNumericFieldHarness();
             testFixture.detectChanges();
         });

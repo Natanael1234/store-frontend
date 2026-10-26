@@ -1,4 +1,3 @@
-/// <reference types="jasmine" />
 import { Component, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AlertComponent } from '@components/alert/alert.component';
@@ -47,8 +46,7 @@ describe('AlertComponent.', () => {
         alertComponent.type.set('success');
         alertComponent.icon.set('a' as Icon);
         alertFixture.detectChanges();
-        const container =
-            alertDebugElement.nativeElement.querySelector('.container');
+        const container = alertDebugElement.nativeElement.querySelector('.container');
         expect(container.classList).toContain('success');
     });
 
@@ -56,71 +54,62 @@ describe('AlertComponent.', () => {
         it('should render success alert when "success" type is provided.', () => {
             alertComponent.type.set('success');
             alertFixture.detectChanges();
-            const container =
-                alertDebugElement.nativeElement.querySelector('.container');
+            const container = alertDebugElement.nativeElement.querySelector('.container');
             expect(container.classList).toContain('success');
         });
 
         it('should render info alert when "info" type is provided.', () => {
             alertComponent.type.set('info');
             alertFixture.detectChanges();
-            const container =
-                alertDebugElement.nativeElement.querySelector('.container');
+            const container = alertDebugElement.nativeElement.querySelector('.container');
             expect(container.classList).toContain('info');
         });
 
         it('should render warning alert when "warning" type is provided.', () => {
             alertComponent.type.set('warning');
             alertFixture.detectChanges();
-            const container =
-                alertDebugElement.nativeElement.querySelector('.container');
+            const container = alertDebugElement.nativeElement.querySelector('.container');
             expect(container.classList).toContain('warning');
         });
 
         it('should render danger alert when "danger" type is danger.', () => {
             alertComponent.type.set('danger');
             alertFixture.detectChanges();
-            const container =
-                alertDebugElement.nativeElement.querySelector('.container');
+            const container = alertDebugElement.nativeElement.querySelector('.container');
             expect(container.classList).toContain('danger');
         });
 
         it('should render success alert when "primary" type is danger.', () => {
             alertComponent.type.set('primary');
             alertFixture.detectChanges();
-            const container =
-                alertDebugElement.nativeElement.querySelector('.container');
+            const container = alertDebugElement.nativeElement.querySelector('.container');
             expect(container.classList).toContain('primary');
         });
 
         it('should render secondary alert when "secondary" type is danger.', () => {
             alertComponent.type.set('secondary');
             alertFixture.detectChanges();
-            const container =
-                alertDebugElement.nativeElement.querySelector('.container');
+            const container = alertDebugElement.nativeElement.querySelector('.container');
             expect(container.classList).toContain('secondary');
         });
 
         it('should render light alert when "light" type is danger.', () => {
             alertComponent.type.set('light');
             alertFixture.detectChanges();
-            const container =
-                alertDebugElement.nativeElement.querySelector('.container');
+            const container = alertDebugElement.nativeElement.querySelector('.container');
             expect(container.classList).toContain('light');
         });
 
         it('should render dark alert when "dark" type is danger.', () => {
             alertComponent.type.set('dark');
             alertFixture.detectChanges();
-            const container =
-                alertDebugElement.nativeElement.querySelector('.container');
+            const container = alertDebugElement.nativeElement.querySelector('.container');
             expect(container.classList).toContain('dark');
         });
 
         it('should render success alert when type is not provided.', () => {
             alertFixture.detectChanges();
-            const container =
-                alertDebugElement.nativeElement.querySelector('.container');
+            const container = alertDebugElement.nativeElement.querySelector('.container');
             expect(container.classList).toContain('success');
         });
     });
@@ -138,8 +127,7 @@ describe('AlertComponent.', () => {
 
         it('should render without icon if provided.', () => {
             alertFixture.detectChanges();
-            const icon =
-                alertDebugElement.nativeElement.querySelector('mat-icon');
+            const icon = alertDebugElement.nativeElement.querySelector('mat-icon');
             expect(icon).toBeNull();
         });
     });
@@ -148,9 +136,8 @@ describe('AlertComponent.', () => {
         it('should render close button if showCloseButton is true.', () => {
             alertComponent.showCloseButton.set(true);
             alertFixture.detectChanges();
-            const closeButton = alertDebugElement.nativeElement.querySelector(
-                '.container > button',
-            );
+            const closeButton =
+                alertDebugElement.nativeElement.querySelector('.container > button');
             expect(closeButton).toBeTruthy();
             const icon = alertDebugElement.nativeElement.querySelector(
                 '.container > button > mat-icon',
@@ -162,19 +149,17 @@ describe('AlertComponent.', () => {
         it('should not render close button if showCloseButton is false.', () => {
             alertComponent.showCloseButton.set(false);
             alertFixture.detectChanges();
-            const closeButton = alertDebugElement.nativeElement.querySelector(
-                'button.close-button',
-            );
+            const closeButton =
+                alertDebugElement.nativeElement.querySelector('button.close-button');
             expect(closeButton).toBeNull();
         });
 
         it('should emit onClose event when close button is clicked.', () => {
-            spyOn(alertComponent.onClose, 'emit');
+            vi.spyOn(alertComponent.onClose, 'emit');
             alertComponent.showCloseButton.set(true);
             alertFixture.detectChanges();
-            const closeButton = alertDebugElement.nativeElement.querySelector(
-                'button.close-button',
-            );
+            const closeButton =
+                alertDebugElement.nativeElement.querySelector('button.close-button');
             closeButton.click();
             expect(alertComponent.onClose.emit).toHaveBeenCalled();
         });
@@ -182,7 +167,7 @@ describe('AlertComponent.', () => {
 
     describe('content.', () => {
         it('should project content inside <ng-content></ng-content>', async () => {
-            expect(hostDebugElement.children).toHaveSize(1);
+            expect(hostDebugElement.children).length(1);
             const message = hostDebugElement.nativeElement.querySelector(
                 'app-alert > .container > .content > .message > div.test',
             );

@@ -10,23 +10,16 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@services/auth/auth.service';
 import { TokenService } from '@services/token/token.service';
-import {
-    BehaviorSubject,
-    catchError,
-    filter,
-    Observable,
-    switchMap,
-    take,
-    throwError,
-} from 'rxjs';
+import { BehaviorSubject, catchError, filter, Observable, switchMap, take, throwError } from 'rxjs';
 
 const AUTHORIZATION = 'Authorization'; // TODO: isolar
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
     private isRefreshing = false;
-    private refreshTokenSubject: BehaviorSubject<string | null> =
-        new BehaviorSubject<string | null>(null);
+    private refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<
+        string | null
+    >(null);
 
     constructor(
         private authService: AuthService,
@@ -34,10 +27,7 @@ export class AuthInterceptor implements HttpInterceptor {
         private router: Router,
     ) {}
 
-    intercept(
-        req: HttpRequest<any>,
-        next: HttpHandler,
-    ): Observable<HttpEvent<any>> {
+    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         if (req.headers.get(AUTHORIZATION) !== 'true') {
             this.removeToken(req);
             return next.handle(req);
@@ -77,10 +67,7 @@ export class AuthInterceptor implements HttpInterceptor {
         }
     }
 
-    private refreshToken(
-        req: HttpRequest<any>,
-        next: HttpHandler,
-    ): Observable<HttpEvent<any>> {
+    private refreshToken(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         // if not refreshing access token
         if (!this.isRefreshing) {
             this.isRefreshing = true;
@@ -112,17 +99,12 @@ export class AuthInterceptor implements HttpInterceptor {
             return this.refreshTokenSubject.pipe(
                 filter((isAuthenticated) => isAuthenticated !== null),
                 take(1),
-                switchMap((accessToken) =>
-                    next.handle(this.addToken(req, accessToken)),
-                ),
+                switchMap((accessToken) => next.handle(this.addToken(req, accessToken))),
             );
         }
     }
 
-    private addToken(
-        req: HttpRequest<any>,
-        accessToken: string | null,
-    ): HttpRequest<any> {
+    private addToken(req: HttpRequest<any>, accessToken: string | null): HttpRequest<any> {
         return req.clone({
             setHeaders: { Authorization: `Bearer ${accessToken || ''}` },
         });

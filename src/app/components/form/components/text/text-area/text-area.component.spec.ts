@@ -3,12 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ComponentHarness } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { Component } from '@angular/core';
-import {
-    FormControl,
-    FormsModule,
-    ReactiveFormsModule,
-    Validators,
-} from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TextAreaFieldComponent } from '@components/form/components/text/text-area/text-area.component';
 import { TextAreaFieldHarness } from '@components/form/components/text/text-area/text-area.harness';
 
@@ -21,7 +16,14 @@ describe('TextAreaComponent.', () => {
     let control: FormControl;
     let harness: TextAreaFieldHarness;
 
+    const flushFocusTimer = (): void => {
+        fixture.detectChanges();
+        vi.advanceTimersByTime(0);
+    };
+
     beforeEach(async () => {
+        vi.useFakeTimers();
+
         await TestBed.configureTestingModule({
             imports: [FormsModule, ReactiveFormsModule, TextAreaFieldComponent],
         }).compileComponents();
@@ -32,10 +34,11 @@ describe('TextAreaComponent.', () => {
         component.control.set(control);
         fixture.detectChanges();
 
-        harness = await TestbedHarnessEnvironment.harnessForFixture(
-            fixture,
-            TextAreaFieldHarness,
-        );
+        harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, TextAreaFieldHarness);
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
     });
 
     it('should create..', () => {
@@ -61,7 +64,7 @@ describe('TextAreaComponent.', () => {
         control.markAsDirty();
         control.markAsTouched();
         control.updateValueAndValidity();
-        fixture.detectChanges();
+        flushFocusTimer();
 
         const state = await harness.getState();
         expect(state).toEqual({
@@ -85,7 +88,7 @@ describe('TextAreaComponent.', () => {
         describe('id.', () => {
             it('should set id.', async () => {
                 component.id.set('test-id');
-                fixture.detectChanges();
+                flushFocusTimer();
                 const state = await harness.getState();
                 expect(state).toEqual({
                     id: 'test-id',
@@ -107,7 +110,7 @@ describe('TextAreaComponent.', () => {
             it('should generate id.', async () => {
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     value: '',
                     label: '',
                     placeholder: '',
@@ -127,11 +130,11 @@ describe('TextAreaComponent.', () => {
         describe('label.', () => {
             it('should set label.', async () => {
                 component.label.set('Test label');
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     value: '',
                     label: 'Test label',
                     placeholder: '',
@@ -150,7 +153,7 @@ describe('TextAreaComponent.', () => {
             it('should empty label by default.', async () => {
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     value: '',
                     label: '',
                     placeholder: '',
@@ -170,11 +173,11 @@ describe('TextAreaComponent.', () => {
         describe('placeholder.', () => {
             it('should set placeholder.', async () => {
                 component.placeholder.set('Test placeholder');
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     value: '',
                     label: '',
                     placeholder: 'Test placeholder',
@@ -193,7 +196,7 @@ describe('TextAreaComponent.', () => {
             it('should empty placeholder by default.', async () => {
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     value: '',
                     label: '',
                     placeholder: '',
@@ -214,7 +217,7 @@ describe('TextAreaComponent.', () => {
             it('should set focusable = true by default.', async () => {
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     value: '',
                     label: '',
                     placeholder: '',
@@ -232,11 +235,11 @@ describe('TextAreaComponent.', () => {
 
             it('should set focusable.', async () => {
                 component.focusable.set(true);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     value: '',
                     label: '',
                     placeholder: '',
@@ -254,11 +257,11 @@ describe('TextAreaComponent.', () => {
 
             it('should set not focusable.', async () => {
                 component.focusable.set(false);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     value: '',
                     label: '',
                     placeholder: '',
@@ -279,7 +282,7 @@ describe('TextAreaComponent.', () => {
             it('should set not readonly by default.', async () => {
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     value: '',
                     label: '',
                     placeholder: '',
@@ -297,11 +300,11 @@ describe('TextAreaComponent.', () => {
 
             it('should set readonly = true.', async () => {
                 component.readOnly.set(true);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     value: '',
                     label: '',
                     placeholder: '',
@@ -319,11 +322,11 @@ describe('TextAreaComponent.', () => {
 
             it('should set readonly = false.', async () => {
                 component.readOnly.set(false);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     value: '',
                     label: '',
                     placeholder: '',
@@ -342,11 +345,11 @@ describe('TextAreaComponent.', () => {
 
         describe('minLength.', () => {
             it('should not set minLength.', async () => {
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     value: '',
                     label: '',
                     placeholder: '',
@@ -364,11 +367,11 @@ describe('TextAreaComponent.', () => {
 
             it('should set minLength.', async () => {
                 component.minLength.set(5);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     value: '',
                     label: '',
                     placeholder: '',
@@ -387,11 +390,11 @@ describe('TextAreaComponent.', () => {
 
         describe('maxLength.', () => {
             it('should not set maxLength.', async () => {
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     value: '',
                     label: '',
                     placeholder: '',
@@ -409,11 +412,11 @@ describe('TextAreaComponent.', () => {
 
             it('should set maxLength.', async () => {
                 component.maxLength.set(5);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     value: '',
                     label: '',
                     placeholder: '',
@@ -432,11 +435,11 @@ describe('TextAreaComponent.', () => {
 
         describe('autosizeMinRows.', () => {
             it('should not set autosizeMinRows.', async () => {
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     value: '',
                     label: '',
                     placeholder: '',
@@ -454,11 +457,11 @@ describe('TextAreaComponent.', () => {
 
             it('should set autosizeMinRows.', async () => {
                 component.autosizeMinRows.set(5);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     value: '',
                     label: '',
                     placeholder: '',
@@ -477,11 +480,11 @@ describe('TextAreaComponent.', () => {
 
         describe('autosizeMaxRows.', () => {
             it('should not set autosizeMaxRows.', async () => {
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     value: '',
                     label: '',
                     placeholder: '',
@@ -499,11 +502,11 @@ describe('TextAreaComponent.', () => {
 
             it('should set autosizeMaxRows.', async () => {
                 component.autosizeMaxRows.set(5);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     value: '',
                     label: '',
                     placeholder: '',
@@ -551,24 +554,31 @@ describe('TextAreaComponent.', () => {
         let textAreaFieldHarness: TextAreaFieldHarness;
         let textAreaFieldComponent: TextAreaFieldComponent;
 
+        const flushFocusTimer = (): void => {
+            fixture.detectChanges();
+            vi.advanceTimersByTime(0);
+        };
+
         beforeEach(async () => {
+            vi.useFakeTimers();
+
             fixture = TestBed.createComponent(AutofocusTestComponent);
             fixture.detectChanges();
-            testHarness = await TestbedHarnessEnvironment.harnessForFixture(
-                fixture,
-                TestHarness,
-            );
-            textAreaFieldComponent =
-                fixture.debugElement.children[1].componentInstance;
+            testHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, TestHarness);
+            textAreaFieldComponent = fixture.debugElement.children[1].componentInstance;
             textAreaFieldHarness = await testHarness.getTextFieldHarness();
         });
 
+        afterEach(() => {
+            vi.useRealTimers();
+        });
+
         it('should set autofocus = false by default.', async () => {
-            fixture.detectChanges();
+            flushFocusTimer();
 
             const state = await textAreaFieldHarness.getState();
             expect(state).toEqual({
-                id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                 value: '',
                 label: '',
                 placeholder: '',
@@ -586,11 +596,11 @@ describe('TextAreaComponent.', () => {
 
         it('should set autofocus = false.', async () => {
             textAreaFieldComponent.autofocus.set(false);
-            fixture.detectChanges();
+            flushFocusTimer();
 
             const state = await textAreaFieldHarness.getState();
             expect(state).toEqual({
-                id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                 value: '',
                 label: '',
                 placeholder: '',
@@ -608,11 +618,11 @@ describe('TextAreaComponent.', () => {
 
         it('should set autofocus = true.', async () => {
             textAreaFieldComponent.autofocus.set(true);
-            fixture.detectChanges();
+            flushFocusTimer();
 
             const state = await textAreaFieldHarness.getState();
             expect(state).toEqual({
-                id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                 value: '',
                 label: '',
                 placeholder: '',

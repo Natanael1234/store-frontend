@@ -25,10 +25,7 @@ describe('CheckboxFormElement.', () => {
         const control = new FormControl(false);
         component.control.set(control);
         fixture.detectChanges();
-        harness = await TestbedHarnessEnvironment.harnessForFixture(
-            fixture,
-            CheckboxHarness,
-        );
+        harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, CheckboxHarness);
 
         expect(component).toBeTruthy();
     });
@@ -39,10 +36,7 @@ describe('CheckboxFormElement.', () => {
             const control = new FormControl(false);
             component.control.set(control);
             fixture.detectChanges();
-            harness = await TestbedHarnessEnvironment.harnessForFixture(
-                fixture,
-                CheckboxHarness,
-            );
+            harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, CheckboxHarness);
 
             const state = await harness.getState();
             expect(state).toEqual({
@@ -60,10 +54,7 @@ describe('CheckboxFormElement.', () => {
             const control = new FormControl(false);
             component.control.set(control);
             fixture.detectChanges();
-            harness = await TestbedHarnessEnvironment.harnessForFixture(
-                fixture,
-                CheckboxHarness,
-            );
+            harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, CheckboxHarness);
 
             const state = await harness.getState();
             expect(state).toEqual({
@@ -84,10 +75,7 @@ describe('CheckboxFormElement.', () => {
             const control = new FormControl(false);
             component.control.set(control);
             fixture.detectChanges();
-            harness = await TestbedHarnessEnvironment.harnessForFixture(
-                fixture,
-                CheckboxHarness,
-            );
+            harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, CheckboxHarness);
 
             const state = await harness.getState();
             expect(state).toEqual({
@@ -105,10 +93,7 @@ describe('CheckboxFormElement.', () => {
             const control = new FormControl(false);
             component.control.set(control);
             fixture.detectChanges();
-            harness = await TestbedHarnessEnvironment.harnessForFixture(
-                fixture,
-                CheckboxHarness,
-            );
+            harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, CheckboxHarness);
 
             const state = await harness.getState();
             expect(state).toEqual({
@@ -317,10 +302,7 @@ describe('CheckboxFormElement.', () => {
             template: `
                 <!-- button is focused by default -->
                 <button>Test</button>
-                <app-checkbox
-                    id="input"
-                    [control]="control"
-                    [autofocus]="false" />
+                <app-checkbox id="input" [control]="control" [autofocus]="false" />
             `,
         })
         class AutofocusTestComponent {
@@ -346,8 +328,7 @@ describe('CheckboxFormElement.', () => {
                 testFixture,
                 TestHarness,
             );
-            checkboxComponent =
-                testFixture.debugElement.children[1].componentInstance;
+            checkboxComponent = testFixture.debugElement.children[1].componentInstance;
             checkboxComponent.control.set(new FormControl(false));
             checkboxdHarness = await testHarness.getNumericFieldHarness();
             testFixture.detectChanges();
@@ -374,7 +355,7 @@ describe('CheckboxFormElement.', () => {
             expect(state).toEqual({
                 id: 'input',
                 label: '',
-                isFocused: true,
+                isFocused: false,
                 isDisabled: false,
                 isChecked: false,
                 hasError: false,

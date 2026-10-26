@@ -1,16 +1,10 @@
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { CommonModule } from '@angular/common';
-import {
-    Component,
-    computed,
-    EventEmitter,
-    model,
-    Output,
-} from '@angular/core';
+import { Component, computed, EventEmitter, model, Output } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { AutofocusDirective } from '@components/form/directives/autofocus/autofocus.directive';
+import { AutoFocusDirective } from '@components/form/directives/autofocus/autofocus.directive';
 import { FirstErrorMessagePipe } from '@pipes/first-error-message.pipe';
 import { provideNgxMask } from 'ngx-mask';
 
@@ -24,7 +18,7 @@ import { provideNgxMask } from 'ngx-mask';
         CommonModule,
         MatIconModule,
         FirstErrorMessagePipe,
-        AutofocusDirective,
+        AutoFocusDirective,
     ],
     providers: [provideNgxMask()],
     styles: `
@@ -48,7 +42,7 @@ import { provideNgxMask } from 'ngx-mask';
                 [attr.id]="_id()"
                 [attr.placeholder]="_placeholder()"
                 [attr.tabindex]="_tabIndex()"
-                [appAutofocus]="_autofocus()"
+                [appAutoFocus]="_autofocus()"
                 [attr.readonly]="_readOnly()"
                 [attr.minlength]="_minLength()"
                 [attr.maxlength]="_maxLength()"

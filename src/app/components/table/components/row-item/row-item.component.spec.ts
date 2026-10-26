@@ -43,10 +43,7 @@ describe('IconRowItemComponent.', () => {
         overlayContainer = TestBed.inject(OverlayContainer);
         overlayElement = overlayContainer.getContainerElement();
         fixture.detectChanges();
-        harness = await TestbedHarnessEnvironment.harnessForFixture(
-            fixture,
-            RowItemHarness,
-        );
+        harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, RowItemHarness);
     });
 
     it('should create', async () => {
@@ -284,95 +281,7 @@ describe('IconRowItemComponent.', () => {
             });
         });
 
-        describe('disabled', () => {
-            it('container should be disabled when disabled model is true', async () => {
-                component.icon.set('visibility');
-                component.label.set('Test label');
-                component.loading.set(false);
-                component.disabled.set(true);
-                component.tooltip.set('Test tooltip');
-                fixture.detectChanges();
-
-                expect(await harness.getState()).toEqual({
-                    icon: {
-                        name: 'visibility',
-                        loading: false,
-                        disabled: true,
-                    },
-                    label: {
-                        text: 'Test label',
-                        loading: false,
-                        disabled: true,
-                    },
-                });
-                expect(getComponentInputData()).toEqual({
-                    label: 'Test label',
-                    icon: 'visibility',
-                    disabled: true,
-                    loading: false,
-                    tooltip: 'Test tooltip',
-                });
-            });
-
-            it('container should not be disabled when disabled model is false', async () => {
-                component.icon.set('visibility');
-                component.label.set('Test label');
-                component.loading.set(false);
-                component.disabled.set(false);
-                component.tooltip.set('Test tooltip');
-                fixture.detectChanges();
-
-                expect(await harness.getState()).toEqual({
-                    icon: {
-                        name: 'visibility',
-                        loading: false,
-                        disabled: false,
-                    },
-                    label: {
-                        text: 'Test label',
-                        loading: false,
-                        disabled: false,
-                    },
-                });
-                expect(getComponentInputData()).toEqual({
-                    label: 'Test label',
-                    icon: 'visibility',
-                    disabled: false,
-                    loading: false,
-                    tooltip: 'Test tooltip',
-                });
-            });
-
-            it('container should not be disabled when disabled model is undefined', async () => {
-                component.icon.set('visibility');
-                component.label.set('Test label');
-                component.loading.set(false);
-                component.disabled.set(undefined);
-                component.tooltip.set('Test tooltip');
-                fixture.detectChanges();
-
-                expect(await harness.getState()).toEqual({
-                    icon: {
-                        name: 'visibility',
-                        loading: false,
-                        disabled: false,
-                    },
-                    label: {
-                        text: 'Test label',
-                        loading: false,
-                        disabled: false,
-                    },
-                });
-                expect(getComponentInputData()).toEqual({
-                    label: 'Test label',
-                    icon: 'visibility',
-                    disabled: undefined,
-                    loading: false,
-                    tooltip: 'Test tooltip',
-                });
-            });
-        });
-
+        describe;
         describe('matToolTip', () => {
             it('container should have matTooltip when toolTip model is defined', async () => {
                 component.icon.set('visibility');

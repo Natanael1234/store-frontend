@@ -6,8 +6,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { By } from '@angular/platform-browser';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { NavigationExtras, provideRouter, Router } from '@angular/router';
+
+import { provideRouter, Router } from '@angular/router';
 import { AlertComponent } from '@components/alert/alert.component';
 import { ButtonComponent } from '@components/form/components/button/button.component';
 import { ButtonAppearance } from '@components/form/components/button/enum/appearance/button-appearance.enum';
@@ -25,11 +25,12 @@ import { RegisterHarness } from '@pages/register/register.harness';
 import { AuthService } from '@services/auth/auth.service';
 import { Role } from '@services/user/dtos/role/role.enum';
 import { of, Subject, throwError } from 'rxjs';
+import { vi } from 'vitest';
 
-describe('RegisterComponent.', () => {
+describe('RegisterComponent', () => {
     let fixture: ComponentFixture<RegisterComponent>;
     let component: RegisterComponent;
-    let authServiceSpy: jasmine.SpyObj<AuthService>;
+    let authServiceSpy: { register: ReturnType<typeof vi.fn> };
     let router: Router;
     let harness: RegisterHarness;
 
@@ -42,17 +43,13 @@ describe('RegisterComponent.', () => {
     function getPasswordFieldComponents() {
         return fixture.debugElement
             .queryAll(By.directive(PasswordFieldComponent))
-            .map(
-                (field) => field.componentInstance,
-            ) as PasswordFieldComponent[];
+            .map((field) => field.componentInstance) as PasswordFieldComponent[];
     }
 
-    function getCheckboxeComponents() {
+    function getCheckboxComponents() {
         return fixture.debugElement
             .queryAll(By.directive(CheckboxComponent))
-            .map(
-                (checkbox) => checkbox.componentInstance,
-            ) as CheckboxComponent[];
+            .map((checkbox) => checkbox.componentInstance) as CheckboxComponent[];
     }
 
     function getButtonComponents() {
@@ -62,51 +59,37 @@ describe('RegisterComponent.', () => {
     }
 
     function getNameFieldComponent() {
-        return getTextFieldComponents().find(
-            (field) => field.id() == 'name-input',
-        );
+        return getTextFieldComponents().find((field) => field.id() === 'name-input');
     }
 
     function getEmailFieldComponent() {
-        return getTextFieldComponents().find(
-            (field) => field.id() == 'email-input',
-        );
+        return getTextFieldComponents().find((field) => field.id() === 'email-input');
     }
 
     function getPasswordFieldComponent() {
-        return getPasswordFieldComponents().find(
-            (field) => field.id() == 'password-input',
-        );
+        return getPasswordFieldComponents().find((field) => field.id() === 'password-input');
     }
 
-    function getRepeadPasswordFieldComponent() {
-        return getPasswordFieldComponents().find(
-            (field) => field.id() == 'repeat-password-input',
-        );
+    function getRepeatedPasswordFieldComponent() {
+        return getPasswordFieldComponents().find((field) => field.id() === 'repeat-password-input');
     }
 
     function getAcceptTermsCheckboxComponent() {
-        return getCheckboxeComponents().find(
-            (field) => field.id() == 'accept-terms-checkbox',
-        );
+        return getCheckboxComponents().find((field) => field.id() === 'accept-terms-checkbox');
     }
 
     function getRegisterButtonComponent() {
-        return getButtonComponents().find(
-            (button) => button.id() == 'register-button',
-        );
+        return getButtonComponents().find((button) => button.id() === 'register-button');
     }
 
     function getLoginButtonComponent() {
-        return getButtonComponents().find(
-            (button) => button.id() == 'login-button',
-        );
+        return getButtonComponents().find((button) => button.id() === 'login-button');
     }
 
     // TODO: test loading
 
     beforeEach(async () => {
-        const spy = jasmine.createSpyObj('AuthService', ['register']);
+        const authServiceMock = { register: vi.fn() };
 
         await TestBed.configureTestingModule({
             imports: [
@@ -122,8 +105,7 @@ describe('RegisterComponent.', () => {
                 ButtonComponent,
             ],
             providers: [
-                provideAnimationsAsync(),
-                { provide: AuthService, useValue: spy },
+                { provide: AuthService, useValue: authServiceMock },
                 provideRouter([
                     {
                         path: 'login',
@@ -134,16 +116,13 @@ describe('RegisterComponent.', () => {
             ],
         }).compileComponents();
         fixture = TestBed.createComponent(RegisterComponent);
-        authServiceSpy = TestBed.inject(
-            AuthService,
-        ) as jasmine.SpyObj<AuthService>;
+        authServiceSpy = TestBed.inject(AuthService) as unknown as {
+            register: ReturnType<typeof vi.fn>;
+        };
         component = fixture.componentInstance;
         router = TestBed.inject(Router);
         fixture.detectChanges();
-        harness = await TestbedHarnessEnvironment.harnessForFixture(
-            fixture,
-            RegisterHarness,
-        );
+        harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, RegisterHarness);
     });
 
     it('should create.', async () => {
@@ -162,9 +141,9 @@ describe('RegisterComponent.', () => {
         expect(nameField.placeholder()).toBeUndefined();
         expect(nameField.control()).toBeDefined();
         expect(nameField.control()).not.toBeNull();
-        expect(nameField.control()?.disabled).toBeFalse();
+        expect(nameField.control()?.disabled).toBe(false);
         expect(nameField.focusable()).toBeUndefined();
-        expect(nameField.autofocus()).toBeTrue();
+        expect(nameField.autofocus()).toBe(true);
         expect(nameField.readOnly()).toBeUndefined();
         expect(nameField.autocomplete()).toBeUndefined();
         expect(nameField.minLength()).toEqual(UserConfigs.NAME_MIN_LENGTH);
@@ -182,7 +161,7 @@ describe('RegisterComponent.', () => {
         expect(emailField.placeholder()).toBeUndefined();
         expect(emailField.control()).toBeDefined();
         expect(emailField.control()).not.toBeNull();
-        expect(emailField.control()?.disabled).toBeFalse();
+        expect(emailField.control()?.disabled).toBe(false);
         expect(emailField.focusable()).toBeUndefined();
         expect(emailField.autofocus()).toBeUndefined();
         expect(emailField.readOnly()).toBeUndefined();
@@ -201,21 +180,15 @@ describe('RegisterComponent.', () => {
         expect(passwordField.placeholder()).toBeUndefined();
         expect(passwordField.control()).toBeDefined();
         expect(passwordField.control()).not.toBeNull();
-        expect(passwordField.control()?.disabled).toBeFalse();
+        expect(passwordField.control()?.disabled).toBe(false);
         expect(passwordField.focusable()).toBeUndefined();
         expect(passwordField.autofocus()).toBeUndefined();
         expect(passwordField.readOnly()).toBeUndefined();
-        expect(passwordField.autocomplete()).toEqual(
-            AutoCompleteType.new_password,
-        );
-        expect(passwordField.minLength()).toEqual(
-            UserConfigs.PASSWORD_MIN_LENGTH,
-        );
-        expect(passwordField.maxLength()).toEqual(
-            UserConfigs.PASSWORD_MAX_LENGTH,
-        );
+        expect(passwordField.autocomplete()).toEqual(AutoCompleteType.new_password);
+        expect(passwordField.minLength()).toEqual(UserConfigs.PASSWORD_MIN_LENGTH);
+        expect(passwordField.maxLength()).toEqual(UserConfigs.PASSWORD_MAX_LENGTH);
 
-        const repeatPasswordField = getRepeadPasswordFieldComponent()!;
+        const repeatPasswordField = getRepeatedPasswordFieldComponent()!;
 
         expect(repeatPasswordField).toBeDefined();
         expect(repeatPasswordField).not.toBeNull();
@@ -224,17 +197,13 @@ describe('RegisterComponent.', () => {
         expect(repeatPasswordField.placeholder()).toBeUndefined();
         expect(repeatPasswordField.control()).toBeDefined();
         expect(repeatPasswordField.control()).not.toBeNull();
-        expect(repeatPasswordField.control()?.disabled).toBeFalse();
+        expect(repeatPasswordField.control()?.disabled).toBe(false);
         expect(repeatPasswordField.focusable()).toBeUndefined();
         expect(repeatPasswordField.autofocus()).toBeUndefined();
         expect(repeatPasswordField.readOnly()).toBeUndefined();
         expect(repeatPasswordField.autocomplete()).toBeUndefined();
-        expect(repeatPasswordField.minLength()).toEqual(
-            UserConfigs.PASSWORD_MIN_LENGTH,
-        );
-        expect(repeatPasswordField.maxLength()).toEqual(
-            UserConfigs.PASSWORD_MAX_LENGTH,
-        );
+        expect(repeatPasswordField.minLength()).toEqual(UserConfigs.PASSWORD_MIN_LENGTH);
+        expect(repeatPasswordField.maxLength()).toEqual(UserConfigs.PASSWORD_MAX_LENGTH);
 
         const acceptTermsCheckbox = getAcceptTermsCheckboxComponent()!;
 
@@ -246,7 +215,7 @@ describe('RegisterComponent.', () => {
         );
         expect(acceptTermsCheckbox.control()).toBeDefined();
         expect(acceptTermsCheckbox.control()).not.toBeNull();
-        expect(acceptTermsCheckbox.control()?.disabled).toBeFalse();
+        expect(acceptTermsCheckbox.control()?.disabled).toBe(false);
         expect(acceptTermsCheckbox.focusable()).toBeUndefined();
         expect(acceptTermsCheckbox.autofocus()).toBeUndefined();
 
@@ -258,7 +227,7 @@ describe('RegisterComponent.', () => {
         expect(registerButton.label()).toEqual('Registrar');
         expect(registerButton.icon()).toBeUndefined();
         expect(registerButton.appearance()).toEqual(ButtonAppearance.filled);
-        expect(registerButton.disabled()).toBeFalse();
+        expect(registerButton.disabled()).toBe(false);
         expect(registerButton.focusable()).toBeUndefined();
         expect(registerButton.autofocus()).toBeUndefined();
         expect(registerButton.routerLink()).toBeUndefined();
@@ -273,7 +242,7 @@ describe('RegisterComponent.', () => {
         expect(loginButton.label()).toEqual('Já tem uma conta? <b>Login</b>');
         expect(loginButton.icon()).toBeUndefined();
         expect(loginButton.appearance()).toEqual(ButtonAppearance.outlined);
-        expect(loginButton.disabled()).toBeFalse();
+        expect(loginButton.disabled()).toBe(false);
         expect(loginButton.focusable()).toBeUndefined();
         expect(loginButton.autofocus()).toBeUndefined();
         expect(loginButton.routerLink()).toEqual('/login');
@@ -283,9 +252,9 @@ describe('RegisterComponent.', () => {
 
     it('should go to login page.', async () => {
         const location = TestBed.inject(Location);
-        const routerSpy = spyOn(component['router'], 'navigate');
+        const routerSpy = vi.spyOn(component['router'], 'navigate');
 
-        authServiceSpy.register.and.returnValue(
+        authServiceSpy.register.mockReturnValue(
             of({
                 status: 'success',
                 data: {
@@ -328,9 +297,9 @@ describe('RegisterComponent.', () => {
         expect(errors).toEqual({});
     });
 
-    it("should sucessfully call service's register method on submit.", async () => {
+    it("should successfully call service's register method on submit.", async () => {
         const location = TestBed.inject(Location);
-        const routerSpy = spyOn(component['router'], 'navigate');
+        const routerSpy = vi.spyOn(component['router'], 'navigate');
         component['formGroup'].setValue({
             name: 'John Williams',
             email: 'john@example.com',
@@ -338,7 +307,7 @@ describe('RegisterComponent.', () => {
             repeatPassword: 'Password123$',
             acceptTerms: true,
         });
-        authServiceSpy.register.and.returnValue(
+        authServiceSpy.register.mockReturnValue(
             of({
                 status: 'success',
                 data: {
@@ -363,8 +332,9 @@ describe('RegisterComponent.', () => {
         );
 
         await harness.clickRegisterButton();
-        expect(location.path()).toBe('');
-        expect(authServiceSpy.register).toHaveBeenCalledOnceWith({
+        expect(location.path()).toBe('/login');
+        expect(authServiceSpy.register).toHaveBeenCalledOnce();
+        expect(authServiceSpy.register).toHaveBeenCalledWith({
             name: 'John Williams',
             email: 'john@example.com',
             password: 'Password123$',
@@ -389,15 +359,10 @@ describe('RegisterComponent.', () => {
 
     describe('errors.', () => {
         describe('local errors.', () => {
-            let routerSpy: jasmine.Spy<
-                (
-                    commands: readonly any[],
-                    extras?: NavigationExtras,
-                ) => Promise<boolean>
-            >;
+            let routerSpy: ReturnType<typeof vi.spyOn>;
 
             beforeEach(() => {
-                authServiceSpy.register.and.returnValue(
+                authServiceSpy.register.mockReturnValue(
                     of({
                         status: 'success',
                         data: {
@@ -420,8 +385,8 @@ describe('RegisterComponent.', () => {
                         },
                     }),
                 );
-                routerSpy = spyOn(component['router'], 'navigate');
-                spyOn(router, 'navigateByUrl');
+                routerSpy = vi.spyOn(component['router'], 'navigate');
+                vi.spyOn(router, 'navigateByUrl');
             });
 
             describe('on blur.', () => {
@@ -489,9 +454,7 @@ describe('RegisterComponent.', () => {
 
                         it('should reject name shorter than min length.', async () => {
                             await harness.setValues({
-                                name: 'x'.repeat(
-                                    UserConfigs.NAME_MIN_LENGTH - 1,
-                                ),
+                                name: 'x'.repeat(UserConfigs.NAME_MIN_LENGTH - 1),
                                 email: 'john@email.com',
                                 password: 'Password123$',
                                 repeatPassword: 'Password123$',
@@ -519,9 +482,7 @@ describe('RegisterComponent.', () => {
 
                         it('should reject name longer than max length.', async () => {
                             await harness.setValues({
-                                name: 'X'.repeat(
-                                    UserConfigs.NAME_MAX_LENGTH + 1,
-                                ),
+                                name: 'X'.repeat(UserConfigs.NAME_MAX_LENGTH + 1),
                                 email: 'john@email.com',
                                 password: 'Password123$',
                                 repeatPassword: 'Password123$',
@@ -582,10 +543,7 @@ describe('RegisterComponent.', () => {
                         it('should accept name with max length.', async () => {
                             await harness.setValues({
                                 name: 'John Williams',
-                                email:
-                                    'X'.repeat(
-                                        UserConfigs.NAME_MAX_LENGTH - 4,
-                                    ) + '@x.c',
+                                email: 'X'.repeat(UserConfigs.NAME_MAX_LENGTH - 4) + '@x.c',
                                 password: 'Password123$',
                                 repeatPassword: 'Password123$',
                                 acceptTerms: true,
@@ -665,8 +623,7 @@ describe('RegisterComponent.', () => {
 
                             const errors = await harness.getErrors();
                             expect(errors).toEqual({
-                                password:
-                                    'O comprimento máximo permitido é 12.',
+                                password: 'O comprimento máximo permitido é 12.',
                             });
                         });
 
@@ -873,16 +830,11 @@ describe('RegisterComponent.', () => {
         });
 
         describe('remote errors.', () => {
-            let routerSpy: jasmine.Spy<
-                (
-                    commands: readonly any[],
-                    extras?: NavigationExtras,
-                ) => Promise<boolean>
-            >;
+            let routerSpy: ReturnType<typeof vi.spyOn>;
 
             beforeEach(() => {
-                routerSpy = spyOn(component['router'], 'navigate');
-                spyOn(router, 'navigateByUrl');
+                routerSpy = vi.spyOn(component['router'], 'navigate');
+                vi.spyOn(router, 'navigateByUrl');
             });
 
             it('should handle main remote error.', async () => {
@@ -896,9 +848,7 @@ describe('RegisterComponent.', () => {
                 exception.status = HttpStatusCode.UnprocessableEntity;
                 exception.statusText = 'Unprocessable Entity';
                 const location = TestBed.inject(Location);
-                authServiceSpy.register.and.returnValue(
-                    throwError(() => exception),
-                );
+                authServiceSpy.register.mockReturnValue(throwError(() => exception));
                 await harness.setValues({
                     name: 'John Williams',
                     email: 'john@email.com',
@@ -949,9 +899,7 @@ describe('RegisterComponent.', () => {
                 exception.status = HttpStatusCode.UnprocessableEntity;
                 exception.statusText = 'Unprocessable Entity';
                 const location = TestBed.inject(Location);
-                authServiceSpy.register.and.returnValue(
-                    throwError(() => exception),
-                );
+                authServiceSpy.register.mockReturnValue(throwError(() => exception));
                 await harness.setValues({
                     name: 'John Williams',
                     email: 'john@email.com',
@@ -995,7 +943,7 @@ describe('RegisterComponent.', () => {
 
     describe('loading.', () => {
         it('should show loading while requesting.', async () => {
-            let subject = new Subject<any>();
+            const subject = new Subject<any>();
 
             component['formGroup'].setValue({
                 name: 'John Williams',
@@ -1004,13 +952,14 @@ describe('RegisterComponent.', () => {
                 repeatPassword: 'Password123$',
                 acceptTerms: true,
             });
-            authServiceSpy.register.and.returnValue(subject.asObservable());
+            authServiceSpy.register.mockReturnValue(subject.asObservable());
             fixture.detectChanges();
 
             let progressBarHarness = await harness.getProgressBarHarness();
             expect(progressBarHarness).toBeNull();
 
             await harness.clickRegisterButton();
+            fixture.detectChanges();
             subject.next({
                 status: 'success',
                 data: {
@@ -1057,9 +1006,7 @@ describe('RegisterComponent.', () => {
 
             fixture.detectChanges();
 
-            authServiceSpy.register.and.returnValue(
-                throwError(() => exception),
-            );
+            authServiceSpy.register.mockReturnValue(throwError(() => exception));
             await harness.setValues({
                 name: 'John Williams',
                 email: 'john@example.com',

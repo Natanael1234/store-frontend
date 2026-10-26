@@ -1,11 +1,10 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
-import { MockTextFilterComponent } from '@components/alert/text-filter/test/mock/text-filter.component.mock';
-import { TextFilterComponent } from '@components/alert/text-filter/text-filter.component';
+import { MockTextFilterComponent } from '@components/text-filter/test/mock/text-filter.component.mock';
+import { TextFilterComponent } from '@components/text-filter/text-filter.component';
 import { ActiveFilter } from '@enums/active-filter/active-filter.enum';
 import { DeletedFilter } from '@enums/deleted-filter/deleted-filter.enum';
 import { ResponsiveUserFiltersComponent } from '@pages/users/responsive-user-filters/responsive-user-filters.component';
@@ -15,12 +14,13 @@ import { UserFilterToolbarComponent } from '@pages/users/responsive-user-filters
 import { MockUserFilterToolbarComponent } from '@pages/users/responsive-user-filters/user-filter-toollbar/user-filter-toolbar.component.mock';
 import { UserOrder } from '@services/user/enums/user-order/user-order.enum';
 import { of } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-describe('ResponsiveUserFiltersComponent.', () => {
+describe('ResponsiveUserFiltersComponent', () => {
     let fixture: ComponentFixture<ResponsiveUserFiltersComponent>;
     let component: ResponsiveUserFiltersComponent;
     let textFilter: TextFilterComponent;
-    let dialogSpy: jasmine.SpyObj<MatDialog>;
+    let dialogSpy: { open: ReturnType<typeof vi.fn> };
     let harness: ResponsiveUserFiltersHarness;
 
     function getContainer(options: { mobile: boolean }) {
@@ -28,26 +28,24 @@ describe('ResponsiveUserFiltersComponent.', () => {
         return fixture.debugElement.query(By.css(css));
     }
 
-    function getTextFilter() {
+    function getTextFilter(): TextFilterComponent {
         const container = fixture.debugElement.children[0];
         const textFilter = container.children[0];
         return textFilter.componentInstance as TextFilterComponent;
     }
 
-    function getButton() {
+    function getButton(): HTMLButtonElement | null {
         const container = fixture.debugElement.children[0];
         const element = container.children[1];
-        const isButton = element.name == 'button';
+        const isButton = element.name === 'button';
         return isButton ? (element.nativeElement as HTMLButtonElement) : null;
     }
 
-    function getToolbar() {
+    function getToolbar(): UserFilterToolbarComponent | null {
         const container = fixture.debugElement.children[0];
         const element = container.children[1];
-        const isToolbar = element.name == 'app-user-filter-toolbar';
-        return isToolbar
-            ? (element.componentInstance as UserFilterToolbarComponent)
-            : null;
+        const isToolbar = element.name === 'app-user-filter-toolbar';
+        return isToolbar ? (element.componentInstance as UserFilterToolbarComponent) : null;
     }
 
     function getComponentData() {
@@ -76,7 +74,7 @@ describe('ResponsiveUserFiltersComponent.', () => {
         };
     }
 
-    function getbuttonData() {
+    function getButtonData() {
         const button = getButton();
         if (!button) {
             return null;
@@ -85,8 +83,8 @@ describe('ResponsiveUserFiltersComponent.', () => {
         const result: { icon?: string; label?: string } = {};
         for (let i = 0; i < children.length; i++) {
             const child = children[i];
-            if (child.tagName == 'MAT-ICON') {
-                result.icon = child.innerHTML;
+            if (child.tagName === 'MAT-ICON') {
+                result.icon = child.innerHTML.trim();
             } else if (child.classList.contains('mdc-button__label')) {
                 result.label = child.innerHTML.trim();
             }
@@ -94,19 +92,16 @@ describe('ResponsiveUserFiltersComponent.', () => {
         return result;
     }
 
-    function hasTextFilter() {
+    function hasTextFilter(): boolean {
         return !!getTextFilter();
     }
 
     beforeEach(async () => {
-        dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
+        dialogSpy = { open: vi.fn() };
 
         await TestBed.configureTestingModule({
             imports: [ResponsiveUserFiltersComponent, MockTextFilterComponent],
-            providers: [
-                { provide: MatDialog, useValue: dialogSpy },
-                provideRouter([]),
-            ],
+            providers: [{ provide: MatDialog, useValue: dialogSpy }, provideRouter([])],
         })
             .overrideComponent(TextFilterComponent, {
                 remove: { imports: [TextFilterComponent] },
@@ -120,13 +115,12 @@ describe('ResponsiveUserFiltersComponent.', () => {
 
         fixture = TestBed.createComponent(ResponsiveUserFiltersComponent);
 
-        textFilter = fixture.debugElement.query(
-            By.directive(TextFilterComponent),
-        ).componentInstance as TextFilterComponent;
-        spyOn(textFilter.textSearch, 'emit').and.callThrough();
+        textFilter = fixture.debugElement.query(By.directive(TextFilterComponent))
+            .componentInstance as TextFilterComponent;
+        vi.spyOn(textFilter.textSearch, 'emit');
 
         component = fixture.componentInstance;
-        spyOn(component.refresh, 'emit');
+        vi.spyOn(component.refresh, 'emit');
 
         fixture.detectChanges();
 
@@ -168,8 +162,8 @@ describe('ResponsiveUserFiltersComponent.', () => {
 
             // TODO: test event (textSearch)
 
-            expect(hasTextFilter()).toBeTrue();
-            expect(getbuttonData()).toEqual({
+            expect(hasTextFilter()).toBe(true);
+            expect(getButtonData()).toEqual({
                 icon: 'filter_list',
                 label: 'Ordenar e filtrar',
             });
@@ -183,10 +177,8 @@ describe('ResponsiveUserFiltersComponent.', () => {
             const state = await harness.getState();
             expect(state).toEqual({ hasValidStructure: true });
 
-            // TODO: test event (textSearch)
-
-            expect(hasTextFilter()).toBeTrue();
-            expect(getbuttonData()).toEqual({
+            expect(hasTextFilter()).toBe(true);
+            expect(getButtonData()).toEqual({
                 icon: 'filter_list',
                 label: 'Ordenar e filtrar',
             });
@@ -200,10 +192,8 @@ describe('ResponsiveUserFiltersComponent.', () => {
             const state = await harness.getState();
             expect(state).toEqual({ hasValidStructure: true });
 
-            // TODO: test event (textSearch)
-
-            expect(hasTextFilter()).toBeTrue();
-            expect(getbuttonData()).toBeNull();
+            expect(hasTextFilter()).toBe(true);
+            expect(getButtonData()).toBeNull();
             expect(getToolbarData()).toEqual({
                 vertical: false,
                 order: UserOrder.name_asc,
@@ -226,8 +216,8 @@ describe('ResponsiveUserFiltersComponent.', () => {
             const state = await harness.getState();
             expect(state).toEqual({ hasValidStructure: true });
 
-            expect(hasTextFilter()).toBeTrue();
-            expect(getbuttonData()).toEqual({
+            expect(hasTextFilter()).toBe(true);
+            expect(getButtonData()).toEqual({
                 icon: 'filter_list',
                 label: 'Ordenar e filtrar',
             });
@@ -246,9 +236,8 @@ describe('ResponsiveUserFiltersComponent.', () => {
             const state = await harness.getState();
             expect(state).toEqual({ hasValidStructure: true });
 
-            // TODO: test event (textSearch)
-            expect(hasTextFilter()).toBeTrue();
-            expect(getbuttonData()).toBeNull();
+            expect(hasTextFilter()).toBe(true);
+            expect(getButtonData()).toBeNull();
             expect(getToolbarData()).toEqual({
                 vertical: false,
                 order: UserOrder.active_desc,
@@ -264,22 +253,25 @@ describe('ResponsiveUserFiltersComponent.', () => {
         describe('dialog.', () => {
             it('should open dialog on left click.', async () => {
                 fixture.detectChanges();
-                const dialogRefSpyObj = jasmine.createSpyObj({
-                    afterClosed: of({
-                        active: ActiveFilter.all,
-                        deleted: DeletedFilter.all,
-                        order: UserOrder.active_desc,
-                    }), // valor que será emitido
-                });
-                dialogSpy.open.and.returnValue(dialogRefSpyObj);
+
+                const dialogRefSpyObj = {
+                    afterClosed: vi.fn().mockReturnValue(
+                        of({
+                            active: ActiveFilter.all,
+                            deleted: DeletedFilter.all,
+                            order: UserOrder.active_desc,
+                        }),
+                    ), // valor que será emitido
+                };
+
+                dialogSpy.open.mockReturnValue(dialogRefSpyObj);
 
                 fixture.detectChanges();
                 await harness.triggerLeftClick();
 
-                // on dialog opening
                 expect(dialogSpy.open).toHaveBeenCalledWith(
                     UserFilterDialogComponent,
-                    jasmine.objectContaining({
+                    expect.objectContaining({
                         data: {
                             order: UserOrder.name_asc,
                             active: ActiveFilter.active,
@@ -296,7 +288,7 @@ describe('ResponsiveUserFiltersComponent.', () => {
                 expect(component.active()).toEqual(ActiveFilter.all);
                 expect(component.deleted()).toEqual(DeletedFilter.all);
                 expect(component.refresh.emit)
-                    .withContext('refresh event called')
+                    // .withContext('refresh event called')
                     .toHaveBeenCalledWith({
                         textQuery: '',
                         active: ActiveFilter.all,
@@ -310,14 +302,17 @@ describe('ResponsiveUserFiltersComponent.', () => {
 
             it('should not open dialog on middle click.', async () => {
                 fixture.detectChanges();
-                const dialogRefSpyObj = jasmine.createSpyObj({
-                    afterClosed: of({
-                        active: ActiveFilter.all,
-                        deleted: DeletedFilter.all,
-                        order: UserOrder.active_desc,
-                    }), // valor que será emitido
-                });
-                dialogSpy.open.and.returnValue(dialogRefSpyObj);
+                const dialogRefSpyObj = {
+                    afterClosed: vi.fn().mockReturnValue(
+                        of({
+                            active: ActiveFilter.all,
+                            deleted: DeletedFilter.all,
+                            order: UserOrder.active_desc,
+                        }),
+                    ), // valor que será emitido
+                };
+
+                dialogSpy.open.mockReturnValue(dialogRefSpyObj);
 
                 fixture.detectChanges();
                 await harness.triggerMiddleClick();
@@ -330,14 +325,16 @@ describe('ResponsiveUserFiltersComponent.', () => {
 
             it('should not open dialog on right click.', async () => {
                 fixture.detectChanges();
-                const dialogRefSpyObj = jasmine.createSpyObj({
-                    afterClosed: of({
-                        active: ActiveFilter.all,
-                        deleted: DeletedFilter.all,
-                        order: UserOrder.active_desc,
-                    }), // valor que será emitido
-                });
-                dialogSpy.open.and.returnValue(dialogRefSpyObj);
+                const dialogRefSpyObj = {
+                    afterClosed: vi.fn().mockReturnValue(
+                        of({
+                            active: ActiveFilter.all,
+                            deleted: DeletedFilter.all,
+                            order: UserOrder.active_desc,
+                        }),
+                    ), // valor que será emitido
+                };
+                dialogSpy.open.mockReturnValue(dialogRefSpyObj);
 
                 fixture.detectChanges();
                 await harness.triggerRightClick();
@@ -350,14 +347,16 @@ describe('ResponsiveUserFiltersComponent.', () => {
 
             it('should open dialog on touch.', async () => {
                 fixture.detectChanges();
-                const dialogRefSpyObj = jasmine.createSpyObj({
-                    afterClosed: of({
-                        active: ActiveFilter.all,
-                        deleted: DeletedFilter.all,
-                        order: UserOrder.active_desc,
-                    }), // valor que será emitido
-                });
-                dialogSpy.open.and.returnValue(dialogRefSpyObj);
+                const dialogRefSpyObj = {
+                    afterClosed: vi.fn().mockReturnValue(
+                        of({
+                            active: ActiveFilter.all,
+                            deleted: DeletedFilter.all,
+                            order: UserOrder.active_desc,
+                        }),
+                    ), // valor que será emitido
+                };
+                dialogSpy.open.mockReturnValue(dialogRefSpyObj);
 
                 fixture.detectChanges();
                 await harness.triggerTouch();
@@ -365,7 +364,7 @@ describe('ResponsiveUserFiltersComponent.', () => {
                 // on dialog opening
                 expect(dialogSpy.open).toHaveBeenCalledWith(
                     UserFilterDialogComponent,
-                    jasmine.objectContaining({
+                    expect.objectContaining({
                         data: {
                             order: UserOrder.name_asc,
                             active: ActiveFilter.active,
@@ -382,7 +381,7 @@ describe('ResponsiveUserFiltersComponent.', () => {
                 expect(component.active()).toEqual(ActiveFilter.all);
                 expect(component.deleted()).toEqual(DeletedFilter.all);
                 expect(component.refresh.emit)
-                    .withContext('refresh event called')
+                    // .withContext('refresh event called')
                     .toHaveBeenCalledWith({
                         textQuery: '',
                         active: ActiveFilter.all,
@@ -396,14 +395,16 @@ describe('ResponsiveUserFiltersComponent.', () => {
 
             it('should open dialog on pen click.', async () => {
                 fixture.detectChanges();
-                const dialogRefSpyObj = jasmine.createSpyObj({
-                    afterClosed: of({
-                        active: ActiveFilter.all,
-                        deleted: DeletedFilter.all,
-                        order: UserOrder.active_desc,
-                    }), // valor que será emitido
-                });
-                dialogSpy.open.and.returnValue(dialogRefSpyObj);
+                const dialogRefSpyObj = {
+                    afterClosed: vi.fn().mockReturnValue(
+                        of({
+                            active: ActiveFilter.all,
+                            deleted: DeletedFilter.all,
+                            order: UserOrder.active_desc,
+                        }),
+                    ), // valor que será emitido
+                };
+                dialogSpy.open.mockReturnValue(dialogRefSpyObj);
 
                 fixture.detectChanges();
                 await harness.triggerPenClick();
@@ -411,7 +412,7 @@ describe('ResponsiveUserFiltersComponent.', () => {
                 // on dialog opening
                 expect(dialogSpy.open).toHaveBeenCalledWith(
                     UserFilterDialogComponent,
-                    jasmine.objectContaining({
+                    expect.objectContaining({
                         data: {
                             order: UserOrder.name_asc,
                             active: ActiveFilter.active,
@@ -428,8 +429,8 @@ describe('ResponsiveUserFiltersComponent.', () => {
                 expect(component.active()).toEqual(ActiveFilter.all);
                 expect(component.deleted()).toEqual(DeletedFilter.all);
                 expect(component.refresh.emit)
-                    .withContext('refresh event called')
-                    .toHaveBeenCalledWith({
+                    // .withContext('refresh event called')
+                    .toHaveBeenCalledExactlyOnceWith({
                         textQuery: '',
                         active: ActiveFilter.all,
                         deleted: DeletedFilter.all,
@@ -446,8 +447,8 @@ describe('ResponsiveUserFiltersComponent.', () => {
                 textFilter.textSearch.emit('test');
                 expect(component.textQuery()).toEqual('test');
                 expect(component.refresh.emit)
-                    .withContext('refresh event called')
-                    .toHaveBeenCalledOnceWith({
+                    // .withContext('refresh event called')
+                    .toHaveBeenCalledWith({
                         textQuery: 'test',
                         active: ActiveFilter.active,
                         deleted: DeletedFilter.not_deleted,
@@ -483,10 +484,10 @@ describe('ResponsiveUserFiltersComponent.', () => {
                 expect(component.loading()).toEqual(false);
                 expect(component.mobile()).toEqual(false);
                 expect(component.textQuery()).toEqual('test');
-                expect(component.active() == ActiveFilter.all);
-                expect(component.deleted() == DeletedFilter.all);
+                expect(component.active()).toEqual(ActiveFilter.all);
+                expect(component.deleted()).toEqual(DeletedFilter.all);
 
-                expect(component.refresh.emit).toHaveBeenCalledOnceWith({
+                expect(component.refresh.emit).toHaveBeenCalledExactlyOnceWith({
                     textQuery: 'test',
                     active: ActiveFilter.all,
                     deleted: DeletedFilter.all,

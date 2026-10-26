@@ -25,13 +25,10 @@ describe('ListComponent.', () => {
             icons: ItemIcon[];
             loading: boolean;
         }[] = [];
-        const listItems = fixture.debugElement.queryAll(
-            By.directive(ListItemComponent),
-        );
+        const listItems = fixture.debugElement.queryAll(By.directive(ListItemComponent));
 
         for (const listItem of listItems) {
-            const _listItemComponent =
-                listItem.componentInstance as ListItemComponent;
+            const _listItemComponent = listItem.componentInstance as ListItemComponent;
             _items.push({
                 labels: _listItemComponent.labels(),
                 icons: _listItemComponent.icons(),
@@ -62,12 +59,9 @@ describe('ListComponent.', () => {
         component = fixture.componentInstance;
         fixture.detectChanges();
 
-        spyOn(component.itemClick, 'emit');
+        vi.spyOn(component.itemClick, 'emit');
 
-        harness = await TestbedHarnessEnvironment.harnessForFixture(
-            fixture,
-            ListHarness,
-        );
+        harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, ListHarness);
     });
 
     it('should create', async () => {
@@ -203,10 +197,8 @@ describe('ListComponent.', () => {
 
             await harness.click(0);
             expect(component.itemClick.emit)
-                .withContext('itemClick event fired')
-                .toHaveBeenCalledOnceWith(
-                    '891db31e-dfb5-42ed-b912-48b98463b004',
-                );
+                // .withContext('itemClick event fired')
+                .toHaveBeenCalledExactlyOnceWith('891db31e-dfb5-42ed-b912-48b98463b004');
         });
 
         it('should render loading list', async () => {
@@ -316,7 +308,7 @@ describe('ListComponent.', () => {
 
             await harness.click(0);
             expect(component.itemClick.emit)
-                .withContext('itemClick event not fired')
+                // .withContext('itemClick event not fired')
                 .not.toHaveBeenCalled();
         });
     });

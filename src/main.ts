@@ -2,12 +2,7 @@
 
 import { bootstrapApplication } from '@angular/platform-browser';
 // import { appConfig } from './app/configs/app/app.config'; // TODO:
-import {
-    HTTP_INTERCEPTORS,
-    provideHttpClient,
-    withInterceptorsFromDi,
-} from '@angular/common/http';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import routeConfig from '@configs/app/routes/routes';
 import { AuthInterceptor } from '@interceptors/auth/auth.interceptor';
@@ -17,9 +12,7 @@ import { AppComponent } from './app/app.component';
 bootstrapApplication(AppComponent, {
     providers: [
         provideRouter(routeConfig),
-        provideHttpClient(),
-        provideAnimationsAsync(),
-        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
         provideHttpClient(withInterceptorsFromDi()),
+        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     ],
 }).catch((err) => console.error(err));

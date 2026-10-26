@@ -1,9 +1,6 @@
 import { ComponentHarness } from '@angular/cdk/testing';
 import { MatButtonHarness } from '@angular/material/button/testing';
-import {
-    MatErrorHarness,
-    MatFormFieldHarness,
-} from '@angular/material/form-field/testing';
+import { MatErrorHarness, MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatIconHarness } from '@angular/material/icon/testing';
 import { MatInputHarness } from '@angular/material/input/testing';
 import { AutoCompleteType } from '@components/form/enums/auto-complete-type/auto-complete-type.enum';
@@ -27,41 +24,41 @@ type TextFieldState = {
     errors: string[];
     hasValidStructure: boolean | { [key: string]: string };
 };
+
 export class PasswordFieldHarness extends ComponentHarness {
-    static hostSelector = 'app-password-field';
+    public static hostSelector = 'app-password-field';
 
     /** Harnesses filhos */
+    private readonly fieldHarness = this.locatorFor(MatFormFieldHarness);
+    private readonly labelHarness = this.locatorFor(MatFormFieldHarness);
+    private readonly inputHarness = this.locatorFor(MatInputHarness);
+    private readonly buttonHarness = this.locatorForOptional(MatButtonHarness);
+    private readonly iconHarness = this.locatorForOptional(MatIconHarness);
+    private readonly errorHarness = this.locatorForOptional(MatErrorHarness);
 
-    private fieldHarness = this.locatorFor(MatFormFieldHarness);
-    private labelHarness = this.locatorFor(MatFormFieldHarness);
-    private inputHarness = this.locatorFor(MatInputHarness);
-    private buttonHarness = this.locatorForOptional(MatButtonHarness);
-    private iconHarness = this.locatorForOptional(MatIconHarness);
-    private errorHarness = this.locatorForOptional(MatErrorHarness);
+    private readonly fieldHarnesses = this.locatorForAll(MatFormFieldHarness);
+    private readonly labelHarnessess = this.locatorForAll(MatFormFieldHarness);
+    private readonly inputHarnesses = this.locatorForAll(MatInputHarness);
+    private readonly iconHarnessess = this.locatorForAll(MatIconHarness);
+    private readonly buttonHarnesses = this.locatorForAll(MatButtonHarness);
+    private readonly errorHarnesses = this.locatorForAll(MatErrorHarness);
 
-    private fieldHarnesses = this.locatorForAll(MatFormFieldHarness);
-    private labelHarnessess = this.locatorForAll(MatFormFieldHarness);
-    private inputHarnesses = this.locatorForAll(MatInputHarness);
-    private iconHarnessess = this.locatorForAll(MatIconHarness);
-    private buttonHarnesses = this.locatorForAll(MatButtonHarness);
-    private errorHarnesses = this.locatorForAll(MatErrorHarness);
+    private readonly fieldElement = this.locatorFor('mat-form-field');
+    private readonly labelElement = this.locatorFor('mat-label');
+    private readonly inputElement = this.locatorFor('input');
+    private readonly iconElement = this.locatorForOptional('mat-icon');
+    private readonly buttonElement = this.locatorForOptional('button');
+    private readonly errorElement = this.locatorForOptional('mat-error');
 
-    private fieldElement = this.locatorFor('mat-form-field');
-    private labelElement = this.locatorFor('mat-label');
-    private inputElement = this.locatorFor('input');
-    private iconElement = this.locatorForOptional('mat-icon');
-    private buttonElement = this.locatorForOptional('button');
-    private errorElement = this.locatorForOptional('mat-error');
+    private readonly fieldElements = this.locatorForAll('mat-form-field');
+    private readonly labelElements = this.locatorForAll('mat-label');
+    private readonly inputElements = this.locatorForAll('input');
+    private readonly iconElements = this.locatorForAll('mat-icon');
+    private readonly buttonElements = this.locatorForAll('button');
+    private readonly errorElements = this.locatorForAll('mat-error');
 
-    private fieldElements = this.locatorForAll('mat-form-field');
-    private labelElements = this.locatorForAll('mat-label');
-    private inputElements = this.locatorForAll('input');
-    private iconElements = this.locatorForAll('mat-icon');
-    private buttonElements = this.locatorForAll('button');
-    private errorElements = this.locatorForAll('mat-error');
-
-    private hostChildrenElements = this.locatorForAll(':scope > *');
-    private iconInsideButton = this.locatorForAll(
+    private readonly hostChildrenElements = this.locatorForAll(':scope > *');
+    private readonly iconInsideButton = this.locatorForAll(
         ':scope > mat-form-field button > mat-icon',
     );
 
@@ -69,261 +66,250 @@ export class PasswordFieldHarness extends ComponentHarness {
     // Métodos utilitários públicos
     // -----------------------------
 
-    async getInputHarness() {
+    public async getInputHarness(): Promise<MatInputHarness> {
         return await this.inputHarness();
     }
 
-    async getHostTagName() {
+    public async getHostTagName(): Promise<string> {
         const hostEl = await this.host();
-        return await hostEl.getProperty('tagName');
+        return (await hostEl.getProperty('tagName')) as string;
     }
 
-    async getInputsHarnesses() {
+    public async getInputsHarnesses(): Promise<MatInputHarness[]> {
         return await this.inputHarnesses();
     }
 
-    async getChildCount() {
+    public async getChildCount(): Promise<number> {
         return (await this.hostChildrenElements()).length;
     }
 
-    async getHostChildrenCount() {
+    public async getHostChildrenCount(): Promise<number> {
         return (await this.hostChildrenElements()).length;
     }
 
-    async getLabelCount() {
+    public async getLabelCount(): Promise<number> {
         return (await this.labelHarnessess()).length;
     }
 
-    async getInputCount() {
+    public async getInputCount(): Promise<number> {
         return (await this.inputElements()).length;
     }
 
-    async getButtonCount() {
+    public async getButtonCount(): Promise<number> {
         return (await this.buttonElements()).length;
     }
 
-    async getIconCount() {
+    public async getIconCount(): Promise<number> {
         return (await this.iconHarnessess()).length;
     }
 
-    async getErrorCount() {
+    public async getErrorCount(): Promise<number> {
         return (await this.errorHarnesses()).length;
     }
 
-    async getErrorHanerness() {
-        return this.errorHarness();
+    public async getErrorHanerness(): Promise<MatErrorHarness | null> {
+        return await this.errorHarness();
     }
 
-    async getErrorMessage() {
+    public async getErrorMessage(): Promise<string | undefined> {
         const errorHarness = await this.getErrorHanerness();
-        const message = errorHarness?.getText();
-        return message;
+        return errorHarness ? await errorHarness.getText() : undefined;
     }
 
-    async isHostChildAField() {
+    public async isHostChildAField(): Promise<boolean> {
         const hostChildren = await this.hostChildrenElements();
         if (hostChildren.length < 1) return false;
         const tagName = await hostChildren[0].getProperty('tagName');
-        return tagName == 'MAT-FORM-FIELD';
+        return tagName === 'MAT-FORM-FIELD';
     }
 
-    async isChildAField() {
+    public async isChildAField(): Promise<boolean> {
         const hostChildren = await this.hostChildrenElements();
         if (hostChildren.length < 1) return false;
         const tagName = await hostChildren[0].getProperty('tagName');
-        return tagName == 'MAT-FORM-FIELD';
+        return tagName === 'MAT-FORM-FIELD';
     }
 
-    async getErrors() {
+    public async getErrors() {
         const field = await this.fieldHarness();
         return await field.getErrors();
     }
 
-    async getFieldAppearance() {
+    public async getFieldAppearance() {
         const field = await this.fieldHarness();
         return await field.getAppearance();
     }
 
-    async getLabelText(): Promise<string | null> {
+    public async getLabelText(): Promise<string | null> {
         const field = await this.fieldHarness();
-        return field.getLabel();
+        return await field.getLabel();
     }
 
-    async getInputPlaceholder(): Promise<string> {
+    public async getInputPlaceholder(): Promise<string> {
         const input = await this.inputHarness();
-        return input.getPlaceholder();
+        return await input.getPlaceholder();
     }
 
-    async getInputType() {
+    public async getInputType(): Promise<string> {
         const input = await this.inputHarness();
-        return input.getType();
+        return await input.getType();
     }
 
-    async getInputValue(): Promise<string> {
+    public async getInputValue(): Promise<string> {
         const input = await this.inputHarness();
-        return input.getValue();
+        return await input.getValue();
     }
 
-    async setInputValue(value: string): Promise<void> {
+    public async setInputValue(value: string): Promise<void> {
         const input = await this.inputHarness();
         await input.setValue(value);
         await input.blur();
     }
 
-    async getInputTabIndex() {
-        const input = await this.inputHarness();
-
-        const host = await input.host();
-        return host.getAttribute('tabindex');
-    }
-
-    async isInputReadOnly(): Promise<boolean> {
-        const input = await this.inputHarness();
-        return input.isReadonly();
-    }
-
-    async getAutocomplete(): Promise<AutoCompleteType> {
+    public async getInputTabIndex(): Promise<string | null> {
         const input = await this.inputHarness();
         const host = await input.host();
-        return host.getAttribute('autocomplete') as Promise<AutoCompleteType>;
+        return await host.getAttribute('tabindex');
     }
 
-    async isInputFocused(): Promise<boolean> {
+    public async isInputReadOnly(): Promise<boolean> {
         const input = await this.inputHarness();
-        const focused = input.isFocused();
-        return focused;
+        return await input.isReadonly();
     }
 
-    async isInputDisabled(): Promise<boolean> {
+    public async getAutocomplete(): Promise<AutoCompleteType> {
         const input = await this.inputHarness();
-        return input.isDisabled();
+        const host = await input.host();
+        return (await host.getAttribute('autocomplete')) as AutoCompleteType;
     }
 
-    async blurInput(): Promise<void> {
+    public async isInputFocused(): Promise<boolean> {
+        const input = await this.inputHarness();
+        return await input.isFocused();
+    }
+
+    public async isInputDisabled(): Promise<boolean> {
+        const input = await this.inputHarness();
+        return await input.isDisabled();
+    }
+
+    public async blurInput(): Promise<void> {
         const input = await this.inputHarness();
         await input.blur();
     }
 
-    async focusInput(): Promise<void> {
+    public async focusInput(): Promise<void> {
         const input = await this.inputHarness();
         await input.focus();
     }
 
-    async isInputFocusable(): Promise<boolean> {
+    public async isInputFocusable(): Promise<boolean> {
         const input = await this.inputHarness();
         const host = await input.host();
         const tabIndex = await host.getAttribute('tabindex');
-        return tabIndex != '-1';
+        return tabIndex !== '-1';
     }
 
-    async getInputId(): Promise<string> {
+    public async getInputId(): Promise<string> {
         const input = await this.inputHarness();
         const host = await input.host();
         return (await host.getAttribute('id')) ?? '';
     }
 
-    async getInputMinLength() {
+    public async getInputMinLength(): Promise<string | null> {
         const input = await this.inputHarness();
         const host = await input?.host();
-        const minLength = host?.getAttribute('minlength');
+        const minLength = await host?.getAttribute('minlength');
         return minLength ?? null;
     }
 
-    async getInputMaxLength() {
+    public async getInputMaxLength(): Promise<string | null> {
         const input = await this.inputHarness();
         const host = await input?.host();
-        const minLength = host?.getAttribute('maxLength');
-        return minLength ?? null;
+        const maxLength = await host?.getAttribute('maxlength');
+        return maxLength ?? null;
     }
 
     // -----------------------------
     // Controles de senha / ícone
     // -----------------------------
 
-    async hasPasswordToggleButton(): Promise<boolean> {
+    public async hasPasswordToggleButton(): Promise<boolean> {
         return (await this.buttonHarness()) !== null;
     }
 
-    async setPasswordVisible(visible: boolean): Promise<boolean> {
+    public async setPasswordVisible(visible: boolean): Promise<boolean> {
         const button = await this.buttonHarness();
         if (!button) return false;
         const inputType = await this.getInputType();
-        const isVisible = inputType != FormElementType.password;
+        const isVisible = inputType !== FormElementType.password;
         if ((visible && !isVisible) || (!visible && isVisible)) {
-            const button = await this.buttonHarness();
-            if (button) await button.click();
+            await button.click();
         }
         return true;
     }
 
-    async clickPasswordToggle(): Promise<void> {
+    public async clickPasswordToggle(): Promise<void> {
         const button = await this.buttonHarness();
         if (button) await button.click();
     }
 
-    async getPasswordIconName(): Promise<string | null> {
+    public async getPasswordIconName(): Promise<string | null> {
         const icon = await this.iconHarness();
-        return icon ? icon.getName() : null;
+        return icon ? await icon.getName() : null;
     }
 
-    async buttonContainsIcon(): Promise<boolean> {
+    public async buttonContainsIcon(): Promise<boolean> {
         const buttonIcons = await this.iconInsideButton();
-        return buttonIcons.length == 1;
+        return buttonIcons.length === 1;
     }
 
-    async isTextVisible() {
+    public async isTextVisible(): Promise<boolean> {
         const type = await this.getInputType();
-        return type == InputType.text;
+        return type === InputType.text;
     }
 
-    async hasValidStructure(): Promise<boolean | { [key: string]: string }> {
-        const errors: any = {};
+    public async hasValidStructure(): Promise<boolean | { [key: string]: string }> {
+        const errors: { [key: string]: string } = {};
 
-        const hasValidChildrenCount = (await this.getHostChildrenCount()) == 1;
+        const hasValidChildrenCount = (await this.getHostChildrenCount()) === 1;
         if (!hasValidChildrenCount) {
-            errors['hasValidChildrenCount'] =
-                `Invalid children count: ${hasValidChildrenCount}.`;
+            errors['hasValidChildrenCount'] = `Invalid children count: ${hasValidChildrenCount}.`;
         }
 
         const isHostChildAField = await this.isHostChildAField();
         if (!isHostChildAField) {
-            errors['isHostChildAField'] =
-                `Host child is not a field ${isHostChildAField}.`;
+            errors['isHostChildAField'] = `Host child is not a field ${isHostChildAField}.`;
         }
 
         const appearance = await this.getFieldAppearance();
-        const hasValidAppearance = appearance == 'outline'; // TODO: create a enum
+        const hasValidAppearance = appearance === 'outline';
         if (!hasValidAppearance) {
-            errors['hasValidAppearance'] =
-                `Has invalid field appearance: "${appearance}".`;
+            errors['hasValidAppearance'] = `Has invalid field appearance: "${appearance}".`;
         }
 
         const labelCount = await this.getLabelCount();
-        const hasValidLabelCount = labelCount == 1;
+        const hasValidLabelCount = labelCount === 1;
         if (!hasValidLabelCount) {
-            errors['hasValidLabelCount'] =
-                `Has invalid number of label elements ${labelCount}.`;
+            errors['hasValidLabelCount'] = `Has invalid number of label elements ${labelCount}.`;
         }
 
         const inputCount = await this.getInputCount();
-        const hasValidInputCount = inputCount == 1;
+        const hasValidInputCount = inputCount === 1;
         if (!hasValidInputCount) {
-            errors['hasValidInputCount'] =
-                `Has invalid number of input elements : ${inputCount}.`;
+            errors['hasValidInputCount'] = `Has invalid number of input elements : ${inputCount}.`;
         }
 
         const buttonCount = await this.getButtonCount();
         const hasValidButtonCount = buttonCount <= 1;
         if (!hasValidButtonCount) {
-            errors['hasValidButtonCount'] =
-                `Has invalid number of button elements ${buttonCount}.`;
+            errors['hasValidButtonCount'] = `Has invalid number of button elements ${buttonCount}.`;
         }
 
         const iconCount = await this.getIconCount();
         const validIconCount = iconCount <= 1;
         if (!validIconCount) {
-            errors['hasNoIcons'] =
-                `Has invalid number of icon elements ${iconCount}.`;
+            errors['hasNoIcons'] = `Has invalid number of icon elements ${iconCount}.`;
         }
 
         const type = await this.getInputType();
@@ -331,8 +317,8 @@ export class PasswordFieldHarness extends ComponentHarness {
             const iconName = await this.getPasswordIconName();
 
             const isValidIcon =
-                (iconName == Icon.visibility && type == InputType.password) ||
-                (iconName == Icon.visibility_off && type == InputType.text);
+                (iconName === Icon.visibility && type === InputType.password) ||
+                (iconName === Icon.visibility_off && type === InputType.text);
             if (!isValidIcon) {
                 errors['hasValidIcon'] =
                     `Has invalid icon name "${iconName}" for input type "${type}".`;
@@ -340,22 +326,21 @@ export class PasswordFieldHarness extends ComponentHarness {
         }
 
         const buttonsContainsIcon = await this.buttonContainsIcon();
-        if (buttonCount == 1 && !buttonsContainsIcon) {
+        if (buttonCount === 1 && !buttonsContainsIcon) {
             errors['buttonsContainsIcon'] = `Button does not contain icon.`;
         }
 
         const errorCount = await this.getErrorCount();
         const hasValidErrorCount = errorCount <= 1;
         if (!hasValidErrorCount) {
-            errors['hasValidErrorCount'] =
-                `Has invalid number of error elements ${errorCount}.`;
+            errors['hasValidErrorCount'] = `Has invalid number of error elements ${errorCount}.`;
         }
 
-        return Object.keys(errors).length == 0 ? true : errors;
+        return Object.keys(errors).length === 0 ? true : errors;
     }
 
-    async getState(): Promise<TextFieldState> {
-        const id = await this.getInputId()!;
+    public async getState(): Promise<TextFieldState> {
+        const id = await this.getInputId();
         const type = await this.getInputType();
         const value = await this.getInputValue();
         const label = await this.getLabelText();
@@ -366,7 +351,7 @@ export class PasswordFieldHarness extends ComponentHarness {
         const autocomplete = await this.getAutocomplete();
         const _minLength = await this.getInputMinLength();
         const minLength = _minLength != null ? Number(_minLength) : null;
-        let _maxLength = await this.getInputMaxLength();
+        const _maxLength = await this.getInputMaxLength();
         const maxLength = _maxLength != null ? Number(_maxLength) : null;
         const _errors = await this.getErrors();
         const errors: string[] = [];
@@ -375,7 +360,7 @@ export class PasswordFieldHarness extends ComponentHarness {
         }
         const hasValidStructure = await this.hasValidStructure();
 
-        const state = {
+        return {
             id,
             type,
             value,
@@ -390,6 +375,5 @@ export class PasswordFieldHarness extends ComponentHarness {
             errors,
             hasValidStructure,
         };
-        return state;
     }
 }

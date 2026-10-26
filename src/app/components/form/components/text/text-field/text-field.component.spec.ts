@@ -2,12 +2,7 @@ import { ComponentHarness } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-    FormControl,
-    FormsModule,
-    ReactiveFormsModule,
-    Validators,
-} from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TextFieldComponent } from '@components/form/components/text/text-field/text-field.component';
 import { TextFieldHarness } from '@components/form/components/text/text-field/text-field.harness';
 import { AutoCompleteType } from '@components/form/enums/auto-complete-type/auto-complete-type.enum';
@@ -23,14 +18,16 @@ describe('TextFieldComponent.', () => {
     let harness: TextFieldHarness;
     let control: FormControl;
 
+    const flushFocusTimer = (): void => {
+        fixture.detectChanges();
+        vi.advanceTimersByTime(0);
+    };
+
     beforeEach(async () => {
+        vi.useFakeTimers();
+
         await TestBed.configureTestingModule({
-            imports: [
-                FormsModule,
-                ReactiveFormsModule,
-                TextFieldComponent,
-                NgxMaskDirective,
-            ],
+            imports: [FormsModule, ReactiveFormsModule, TextFieldComponent, NgxMaskDirective],
         }).compileComponents();
 
         fixture = TestBed.createComponent(TextFieldComponent);
@@ -39,10 +36,11 @@ describe('TextFieldComponent.', () => {
         component.control.set(control);
         fixture.detectChanges();
 
-        harness = await TestbedHarnessEnvironment.harnessForFixture(
-            fixture,
-            TextFieldHarness,
-        );
+        harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, TextFieldHarness);
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
     });
 
     it('should create', () => {
@@ -66,7 +64,7 @@ describe('TextFieldComponent.', () => {
         component.maxLength.set(14); // including formatting characters
         component.prefix.set('R$');
         component.suffix.set('reais');
-        fixture.detectChanges();
+        flushFocusTimer();
 
         const state = await harness.getState();
         expect(state).toEqual({
@@ -95,11 +93,11 @@ describe('TextFieldComponent.', () => {
             updateOn: 'change',
         });
         component.control.set(control);
-        fixture.detectChanges();
+        flushFocusTimer();
 
         const state = await harness.getState();
         expect(state).toEqual({
-            id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+            id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
             type: FormElementType.text,
             value: '9667',
             label: '',
@@ -122,7 +120,7 @@ describe('TextFieldComponent.', () => {
         describe('id.', () => {
             it('should set id.', async () => {
                 component.id.set('test-id');
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
@@ -148,7 +146,7 @@ describe('TextFieldComponent.', () => {
             it('should generate id.', async () => {
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -171,11 +169,11 @@ describe('TextFieldComponent.', () => {
         describe('label.', () => {
             it('should set label.', async () => {
                 component.label.set('Test label');
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: 'Test label',
@@ -197,7 +195,7 @@ describe('TextFieldComponent.', () => {
             it('should empty label by default.', async () => {
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -220,11 +218,11 @@ describe('TextFieldComponent.', () => {
         describe('format.', () => {
             it('should not set text format.', async () => {
                 component.format.set(undefined);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -246,11 +244,11 @@ describe('TextFieldComponent.', () => {
             it('should set text format.', async () => {
                 component.format.set(TextFormat.text);
                 component.autofocus.set(undefined);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -272,11 +270,11 @@ describe('TextFieldComponent.', () => {
             it('should set text format.', async () => {
                 component.format.set(TextFormat.search);
                 component.autofocus.set(undefined);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -299,11 +297,11 @@ describe('TextFieldComponent.', () => {
                 control.setValue('Test');
                 component.format.set(TextFormat.search);
                 component.autofocus.set(undefined);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: 'Test',
                     label: '',
@@ -326,11 +324,11 @@ describe('TextFieldComponent.', () => {
                 control.setValue('81220601000101');
                 component.format.set(TextFormat.cnpj);
                 component.autofocus.set(undefined);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '81.220.601/0001-01',
                     label: '',
@@ -353,11 +351,11 @@ describe('TextFieldComponent.', () => {
                 control.setValue('67351279004');
                 component.format.set(TextFormat.cpf);
                 component.autofocus.set(undefined);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '673.512.790-04',
                     label: '',
@@ -380,11 +378,11 @@ describe('TextFieldComponent.', () => {
                 control.setValue('54580745');
                 component.format.set(TextFormat.zipCode);
                 component.autofocus.set(undefined);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '54580-745',
                     label: '',
@@ -407,11 +405,11 @@ describe('TextFieldComponent.', () => {
                 control.setValue('02032026');
                 component.format.set(TextFormat.date);
                 component.autofocus.set(undefined);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '02/03/2026',
                     label: '',
@@ -434,11 +432,11 @@ describe('TextFieldComponent.', () => {
                 control.setValue('2236');
                 component.format.set(TextFormat.time);
                 component.autofocus.set(undefined);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '22:36',
                     label: '',
@@ -461,11 +459,11 @@ describe('TextFieldComponent.', () => {
                 control.setValue('51999999999');
                 component.format.set(TextFormat.phone);
                 component.autofocus.set(undefined);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '(51) 99999-9999',
                     label: '',
@@ -488,11 +486,11 @@ describe('TextFieldComponent.', () => {
                 control.setValue('user@mail.com');
                 component.format.set(TextFormat.email);
                 component.autofocus.set(undefined);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: 'user@mail.com',
                     label: '',
@@ -515,11 +513,11 @@ describe('TextFieldComponent.', () => {
                 control.setValue('https://www.google.com.br');
                 component.format.set(TextFormat.url);
                 component.autofocus.set(undefined);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: 'https://www.google.com.br',
                     label: '',
@@ -545,7 +543,7 @@ describe('TextFieldComponent.', () => {
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -566,12 +564,12 @@ describe('TextFieldComponent.', () => {
 
             it('should set focusable.', async () => {
                 component.focusable.set(true);
-                fixture.detectChanges();
+                flushFocusTimer();
                 await harness.focusInput();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -592,11 +590,11 @@ describe('TextFieldComponent.', () => {
 
             it('should set not focusable.', async () => {
                 component.focusable.set(false);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -620,7 +618,7 @@ describe('TextFieldComponent.', () => {
             it('should set not readonly by default.', async () => {
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -641,11 +639,11 @@ describe('TextFieldComponent.', () => {
 
             it('should set readonly = true.', async () => {
                 component.readOnly.set(true);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -666,11 +664,11 @@ describe('TextFieldComponent.', () => {
 
             it('should set readonly = false.', async () => {
                 component.readOnly.set(false);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -694,7 +692,7 @@ describe('TextFieldComponent.', () => {
             it('should set not autocomplete by default.', async () => {
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -715,11 +713,11 @@ describe('TextFieldComponent.', () => {
 
             it('should set autocomplete = on.', async () => {
                 component.autocomplete.set(AutoCompleteType.on);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -740,11 +738,11 @@ describe('TextFieldComponent.', () => {
 
             it('should set autocomplete = off.', async () => {
                 component.autocomplete.set(AutoCompleteType.off);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -765,11 +763,11 @@ describe('TextFieldComponent.', () => {
 
             it('should set autocomplete = another type.', async () => {
                 component.autocomplete.set(AutoCompleteType.country);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -791,11 +789,11 @@ describe('TextFieldComponent.', () => {
 
         describe('minLength.', () => {
             it('should not set minLength.', async () => {
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -816,11 +814,11 @@ describe('TextFieldComponent.', () => {
 
             it('should set minLength.', async () => {
                 component.minLength.set(5);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -842,11 +840,11 @@ describe('TextFieldComponent.', () => {
 
         describe('maxLength.', () => {
             it('should not set maxLength.', async () => {
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -867,11 +865,11 @@ describe('TextFieldComponent.', () => {
 
             it('should set maxLength.', async () => {
                 component.maxLength.set(5);
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -893,11 +891,11 @@ describe('TextFieldComponent.', () => {
 
         describe('prefix.', () => {
             it('should not set prefix.', async () => {
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -918,11 +916,11 @@ describe('TextFieldComponent.', () => {
 
             it('should set prefix.', async () => {
                 component.prefix.set('R$');
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -944,11 +942,11 @@ describe('TextFieldComponent.', () => {
 
         describe('suffix.', () => {
             it('should not set prefix.', async () => {
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -969,11 +967,11 @@ describe('TextFieldComponent.', () => {
 
             it('should set suffix.', async () => {
                 component.suffix.set('reais');
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -995,15 +993,15 @@ describe('TextFieldComponent.', () => {
 
         describe('blur', () => {
             it('should fire blur event.', async () => {
-                const spy = jasmine.createSpy('onBlur spy');
+                const spy = vi.fn();
                 component.onBlur.subscribe(spy);
                 await harness.blurInput();
-                expect(spy).toHaveBeenCalledOnceWith(undefined);
-                fixture.detectChanges();
+                expect(spy).toHaveBeenCalledExactlyOnceWith(undefined);
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -1024,14 +1022,14 @@ describe('TextFieldComponent.', () => {
 
             it('should not fire blur event.', async () => {
                 // Arrange
-                const spy = jasmine.createSpy('onBlur spy');
+                const spy = vi.fn();
                 component.onBlur.subscribe(spy);
                 expect(spy).not.toHaveBeenCalled();
-                fixture.detectChanges();
+                flushFocusTimer();
 
                 const state = await harness.getState();
                 expect(state).toEqual({
-                    id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                    id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                     type: FormElementType.text,
                     value: '',
                     label: '',
@@ -1056,11 +1054,11 @@ describe('TextFieldComponent.', () => {
                 it('email mask', async () => {
                     control.setValue('user@email.com');
                     component.mask.set(TextMask.email);
-                    fixture.detectChanges();
+                    flushFocusTimer();
 
                     const state = await harness.getState();
                     expect(state).toEqual({
-                        id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                        id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                         type: FormElementType.text,
                         value: 'user@email.com',
                         label: '',
@@ -1114,24 +1112,31 @@ describe('TextFieldComponent.', () => {
         let textFieldHarness: TextFieldHarness;
         let textFieldComponent: TextFieldComponent;
 
+        const flushFocusTimer = (): void => {
+            fixture.detectChanges();
+            vi.advanceTimersByTime(0);
+        };
+
         beforeEach(async () => {
+            vi.useFakeTimers();
+
             fixture = TestBed.createComponent(AutofocusTestComponent);
             fixture.detectChanges();
-            testHarness = await TestbedHarnessEnvironment.harnessForFixture(
-                fixture,
-                TestHarness,
-            );
-            textFieldComponent =
-                fixture.debugElement.children[1].componentInstance;
+            testHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, TestHarness);
+            textFieldComponent = fixture.debugElement.children[1].componentInstance;
             textFieldHarness = await testHarness.getTextFieldHarness();
         });
 
+        afterEach(() => {
+            vi.useRealTimers();
+        });
+
         it('should set autofocus = false by default.', async () => {
-            fixture.detectChanges();
+            flushFocusTimer();
 
             const state = await textFieldHarness.getState();
             expect(state).toEqual({
-                id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                 type: FormElementType.text,
                 value: '',
                 label: '',
@@ -1152,11 +1157,11 @@ describe('TextFieldComponent.', () => {
 
         it('should set autofocus = false.', async () => {
             textFieldComponent.autofocus.set(false);
-            fixture.detectChanges();
+            flushFocusTimer();
 
             const state = await textFieldHarness.getState();
             expect(state).toEqual({
-                id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                 type: FormElementType.text,
                 value: '',
                 label: '',
@@ -1177,11 +1182,11 @@ describe('TextFieldComponent.', () => {
 
         it('should set autofocus = true.', async () => {
             textFieldComponent.autofocus.set(true);
-            fixture.detectChanges();
+            flushFocusTimer();
 
             const state = await textFieldHarness.getState();
             expect(state).toEqual({
-                id: jasmine.stringMatching(/^mat-input-[a-z0-9]+$/),
+                id: expect.stringMatching(/^mat-input-[a-z0-9]+$/),
                 type: FormElementType.text,
                 value: '',
                 label: '',

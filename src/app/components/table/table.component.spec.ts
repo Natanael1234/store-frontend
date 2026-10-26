@@ -42,12 +42,9 @@ describe('TableComponent.', () => {
         tableComponent = fixture.componentInstance;
         fixture.detectChanges();
 
-        spyOn(tableComponent.headerClick, 'emit');
-        spyOn(tableComponent.rowClick, 'emit');
-        harness = await TestbedHarnessEnvironment.harnessForFixture(
-            fixture,
-            TableComponentHarness,
-        );
+        vi.spyOn(tableComponent.headerClick, 'emit');
+        vi.spyOn(tableComponent.rowClick, 'emit');
+        harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, TableComponentHarness);
     });
 
     it('should create', () => {
@@ -1377,19 +1374,16 @@ describe('TableComponent.', () => {
                 fixture.detectChanges();
 
                 // header click
-                const headerItem = fixture.debugElement.query(
-                    By.directive(HeaderItemComponent),
-                ).componentInstance as HeaderItemComponent;
+                const headerItem = fixture.debugElement.query(By.directive(HeaderItemComponent))
+                    .componentInstance as HeaderItemComponent;
                 headerItem.onSelect.emit({
                     columnId: 'name',
                     direction: SortDirection.asc,
                 });
-                expect(
-                    tableComponent.headerClick.emit,
-                ).toHaveBeenCalledOnceWith('name_asc');
+                expect(tableComponent.headerClick.emit).toHaveBeenCalledExactlyOnceWith('name_asc');
 
                 await harness.triggerRowLeftClick(0);
-                expect(tableComponent.rowClick.emit).toHaveBeenCalledOnceWith(
+                expect(tableComponent.rowClick.emit).toHaveBeenCalledExactlyOnceWith(
                     '891db31e-dfb5-42ed-b912-48b98463b004',
                 );
             });
@@ -1400,9 +1394,8 @@ describe('TableComponent.', () => {
                 fixture.detectChanges();
 
                 // header click
-                const headerItem = fixture.debugElement.query(
-                    By.directive(HeaderItemComponent),
-                ).componentInstance as HeaderItemComponent;
+                const headerItem = fixture.debugElement.query(By.directive(HeaderItemComponent))
+                    .componentInstance as HeaderItemComponent;
                 headerItem.onSelect.emit({
                     columnId: 'name',
                     direction: SortDirection.asc,
@@ -1422,7 +1415,7 @@ describe('TableComponent.', () => {
                     await harness.triggerRowLeftClick(0);
 
                     expect(tableComponent.rowClick.emit)
-                        .withContext('row click event called')
+                        // .withContext('row click event called')
                         .toHaveBeenCalledTimes(1);
                 });
 
@@ -1432,7 +1425,7 @@ describe('TableComponent.', () => {
                     await harness.triggerRowLeftClick(0);
 
                     expect(tableComponent.rowClick.emit)
-                        .withContext('row click event called')
+                        // .withContext('row click event called')
                         .toHaveBeenCalledTimes(1);
                 });
 
@@ -1442,7 +1435,7 @@ describe('TableComponent.', () => {
                     await harness.triggerRowLeftClick(0);
 
                     expect(tableComponent.rowClick.emit)
-                        .withContext('row click event called')
+                        // .withContext('row click event called')
                         .not.toHaveBeenCalled();
                 });
             });
@@ -1453,7 +1446,7 @@ describe('TableComponent.', () => {
                     await harness.triggerRowMiddleClick(0);
 
                     expect(tableComponent.rowClick.emit)
-                        .withContext('row click event called')
+                        // .withContext('row click event called')
                         .not.toHaveBeenCalled();
                 });
 
@@ -1463,7 +1456,7 @@ describe('TableComponent.', () => {
                     await harness.triggerRowMiddleClick(0);
 
                     expect(tableComponent.rowClick.emit)
-                        .withContext('row click event called')
+                        // .withContext('row click event called')
                         .not.toHaveBeenCalled();
                 });
 
@@ -1473,7 +1466,7 @@ describe('TableComponent.', () => {
                     await harness.triggerRowMiddleClick(0);
 
                     expect(tableComponent.rowClick.emit)
-                        .withContext('row click event called')
+                        // .withContext('row click event called')
                         .not.toHaveBeenCalled();
                 });
             });
@@ -1484,7 +1477,7 @@ describe('TableComponent.', () => {
                     await harness.triggerRowRightClick(0);
 
                     expect(tableComponent.rowClick.emit)
-                        .withContext('row click event called')
+                        // .withContext('row click event called')
                         .not.toHaveBeenCalled();
                 });
 
@@ -1494,7 +1487,7 @@ describe('TableComponent.', () => {
                     await harness.triggerRowRightClick(0);
 
                     expect(tableComponent.rowClick.emit)
-                        .withContext('row click event called')
+                        // .withContext('row click event called')
                         .not.toHaveBeenCalled();
                 });
 
@@ -1504,7 +1497,7 @@ describe('TableComponent.', () => {
                     await harness.triggerRowRightClick(0);
 
                     expect(tableComponent.rowClick.emit)
-                        .withContext('row click event called')
+                        // .withContext('row click event called')
                         .not.toHaveBeenCalled();
                 });
             });
@@ -1516,7 +1509,7 @@ describe('TableComponent.', () => {
                 await harness.triggerRowTouch(0);
 
                 expect(tableComponent.rowClick.emit)
-                    .withContext('row click event called')
+                    // .withContext('row click event called')
                     .toHaveBeenCalledTimes(1);
             });
 
@@ -1526,7 +1519,7 @@ describe('TableComponent.', () => {
                 await harness.triggerRowTouch(0);
 
                 expect(tableComponent.rowClick.emit)
-                    .withContext('row click event called')
+                    // .withContext('row click event called')
                     .toHaveBeenCalledTimes(1);
             });
 
@@ -1537,7 +1530,7 @@ describe('TableComponent.', () => {
                 await harness.triggerRowTouch(0);
 
                 expect(tableComponent.rowClick.emit)
-                    .withContext('row click event called')
+                    // .withContext('row click event called')
                     .not.toHaveBeenCalled();
             });
         });
@@ -1549,7 +1542,7 @@ describe('TableComponent.', () => {
                 await harness.triggerRowPenClick(0);
 
                 expect(tableComponent.rowClick.emit)
-                    .withContext('row click event called')
+                    // .withContext('row click event called')
                     .toHaveBeenCalledTimes(1);
             });
 
@@ -1559,7 +1552,7 @@ describe('TableComponent.', () => {
                 await harness.triggerRowPenClick(0);
 
                 expect(tableComponent.rowClick.emit)
-                    .withContext('row click event called')
+                    // .withContext('row click event called')
                     .toHaveBeenCalledTimes(1);
             });
 
@@ -1570,7 +1563,7 @@ describe('TableComponent.', () => {
                 await harness.triggerRowPenClick(0);
 
                 expect(tableComponent.rowClick.emit)
-                    .withContext('row click event called')
+                    // .withContext('row click event called')
                     .not.toHaveBeenCalled();
             });
         });
